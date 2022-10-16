@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.jmsfx.svg.adapter.FXPaintAdapter;
 import nz.co.ctg.jmsfx.svg.animate.Animate;
 import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
 import nz.co.ctg.jmsfx.svg.animate.AnimateMotion;
@@ -25,6 +26,8 @@ import nz.co.ctg.jmsfx.svg.animate.Set;
 import nz.co.ctg.jmsfx.svg.document.Desc;
 import nz.co.ctg.jmsfx.svg.document.Metadata;
 import nz.co.ctg.jmsfx.svg.document.Title;
+
+import javafx.scene.paint.Paint;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {
@@ -164,16 +167,16 @@ public class AbstractSvgShape {
     protected String fontWeight;
 
     @XmlAttribute(name = "fill")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fill;
+    @XmlJavaTypeAdapter(FXPaintAdapter.class)
+    protected Paint fill;
 
     @XmlAttribute(name = "fill-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fillRule;
 
     @XmlAttribute(name = "stroke")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String stroke;
+    @XmlJavaTypeAdapter(FXPaintAdapter.class)
+    protected Paint stroke;
 
     @XmlAttribute(name = "stroke-dasharray")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -1143,10 +1146,10 @@ public class AbstractSvgShape {
      *
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public String getFill() {
+    public Paint getFill() {
         return fill;
     }
 
@@ -1155,10 +1158,10 @@ public class AbstractSvgShape {
      *
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public void setFill(String value) {
+    public void setFill(Paint value) {
         this.fill = value;
     }
 
@@ -1191,10 +1194,10 @@ public class AbstractSvgShape {
      *
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public String getStroke() {
+    public Paint getStroke() {
         return stroke;
     }
 
@@ -1203,10 +1206,10 @@ public class AbstractSvgShape {
      *
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public void setStroke(String value) {
+    public void setStroke(Paint value) {
         this.stroke = value;
     }
 
