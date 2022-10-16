@@ -27,8 +27,8 @@ import nz.co.ctg.jmsfx.svg.document.Image;
 import nz.co.ctg.jmsfx.svg.document.Marker;
 import nz.co.ctg.jmsfx.svg.document.Metadata;
 import nz.co.ctg.jmsfx.svg.document.Script;
-import nz.co.ctg.jmsfx.svg.document.SvgGroup;
-import nz.co.ctg.jmsfx.svg.document.SvgRootElement;
+import nz.co.ctg.jmsfx.svg.document.FXVGGroup;
+import nz.co.ctg.jmsfx.svg.document.FXVGRootElement;
 import nz.co.ctg.jmsfx.svg.document.Switch;
 import nz.co.ctg.jmsfx.svg.document.Symbol;
 import nz.co.ctg.jmsfx.svg.document.Title;
@@ -64,13 +64,13 @@ import nz.co.ctg.jmsfx.svg.paint.LinearGradient;
 import nz.co.ctg.jmsfx.svg.paint.Pattern;
 import nz.co.ctg.jmsfx.svg.paint.RadialGradient;
 import nz.co.ctg.jmsfx.svg.paint.Stop;
-import nz.co.ctg.jmsfx.svg.path.SvgPath;
-import nz.co.ctg.jmsfx.svg.shape.SvgCircle;
-import nz.co.ctg.jmsfx.svg.shape.SvgEllipse;
-import nz.co.ctg.jmsfx.svg.shape.SvgLine;
-import nz.co.ctg.jmsfx.svg.shape.SvgPolygon;
-import nz.co.ctg.jmsfx.svg.shape.SvgPolyline;
-import nz.co.ctg.jmsfx.svg.shape.SvgRectangle;
+import nz.co.ctg.jmsfx.svg.path.FXVGPath;
+import nz.co.ctg.jmsfx.svg.shape.FXVGCircle;
+import nz.co.ctg.jmsfx.svg.shape.FXVGEllipse;
+import nz.co.ctg.jmsfx.svg.shape.FXVGLine;
+import nz.co.ctg.jmsfx.svg.shape.FXVGPolygon;
+import nz.co.ctg.jmsfx.svg.shape.FXVGPolyline;
+import nz.co.ctg.jmsfx.svg.shape.FXVGRectangle;
 import nz.co.ctg.jmsfx.svg.style.Style;
 import nz.co.ctg.jmsfx.svg.text.AltGlyph;
 import nz.co.ctg.jmsfx.svg.text.AltGlyphDef;
@@ -85,7 +85,7 @@ import nz.co.ctg.jmsfx.svg.text.Glyph;
 import nz.co.ctg.jmsfx.svg.text.GlyphRef;
 import nz.co.ctg.jmsfx.svg.text.Hkern;
 import nz.co.ctg.jmsfx.svg.text.MissingGlyph;
-import nz.co.ctg.jmsfx.svg.text.SvgText;
+import nz.co.ctg.jmsfx.svg.text.FXVGText;
 import nz.co.ctg.jmsfx.svg.text.TextPath;
 import nz.co.ctg.jmsfx.svg.text.Tref;
 import nz.co.ctg.jmsfx.svg.text.Tspan;
@@ -190,19 +190,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SvgRootElement }
+     * Create an instance of {@link FXVGRootElement }
      * 
      */
-    public SvgRootElement createSvgRootElement() {
-        return new SvgRootElement();
+    public FXVGRootElement createSvgRootElement() {
+        return new FXVGRootElement();
     }
 
     /**
-     * Create an instance of {@link SvgGroup }
+     * Create an instance of {@link FXVGGroup }
      * 
      */
-    public SvgGroup createSvgGroup() {
-        return new SvgGroup();
+    public FXVGGroup createSvgGroup() {
+        return new FXVGGroup();
     }
 
     /**
@@ -246,67 +246,67 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SvgPath }
+     * Create an instance of {@link FXVGPath }
      * 
      */
-    public SvgPath createSvgPath() {
-        return new SvgPath();
+    public FXVGPath createSvgPath() {
+        return new FXVGPath();
     }
 
     /**
-     * Create an instance of {@link SvgRectangle }
+     * Create an instance of {@link FXVGRectangle }
      * 
      */
-    public SvgRectangle createSvgRectangle() {
-        return new SvgRectangle();
+    public FXVGRectangle createSvgRectangle() {
+        return new FXVGRectangle();
     }
 
     /**
-     * Create an instance of {@link SvgCircle }
+     * Create an instance of {@link FXVGCircle }
      * 
      */
-    public SvgCircle createSvgCircle() {
-        return new SvgCircle();
+    public FXVGCircle createSvgCircle() {
+        return new FXVGCircle();
     }
 
     /**
-     * Create an instance of {@link SvgLine }
+     * Create an instance of {@link FXVGLine }
      * 
      */
-    public SvgLine createSvgLine() {
-        return new SvgLine();
+    public FXVGLine createSvgLine() {
+        return new FXVGLine();
     }
 
     /**
-     * Create an instance of {@link SvgEllipse }
+     * Create an instance of {@link FXVGEllipse }
      * 
      */
-    public SvgEllipse createSvgEllipse() {
-        return new SvgEllipse();
+    public FXVGEllipse createSvgEllipse() {
+        return new FXVGEllipse();
     }
 
     /**
-     * Create an instance of {@link SvgPolyline }
+     * Create an instance of {@link FXVGPolyline }
      * 
      */
-    public SvgPolyline createSvgPolyline() {
-        return new SvgPolyline();
+    public FXVGPolyline createSvgPolyline() {
+        return new FXVGPolyline();
     }
 
     /**
-     * Create an instance of {@link SvgPolygon }
+     * Create an instance of {@link FXVGPolygon }
      * 
      */
-    public SvgPolygon createSvgPolygon() {
-        return new SvgPolygon();
+    public FXVGPolygon createSvgPolygon() {
+        return new FXVGPolygon();
     }
 
     /**
-     * Create an instance of {@link SvgText }
+     * Create an instance of {@link FXVGText }
      * 
      */
-    public SvgText createSvgText() {
-        return new SvgText();
+    public FXVGText createSvgText() {
+        return new FXVGText();
     }
 
     /**

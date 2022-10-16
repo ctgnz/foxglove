@@ -38,8 +38,8 @@ import nz.co.ctg.jmsfx.svg.document.Image;
 import nz.co.ctg.jmsfx.svg.document.Marker;
 import nz.co.ctg.jmsfx.svg.document.Metadata;
 import nz.co.ctg.jmsfx.svg.document.Script;
-import nz.co.ctg.jmsfx.svg.document.SvgGroup;
-import nz.co.ctg.jmsfx.svg.document.SvgRootElement;
+import nz.co.ctg.jmsfx.svg.document.FXVGGroup;
+import nz.co.ctg.jmsfx.svg.document.FXVGRootElement;
 import nz.co.ctg.jmsfx.svg.document.Switch;
 import nz.co.ctg.jmsfx.svg.document.Symbol;
 import nz.co.ctg.jmsfx.svg.document.Title;
@@ -50,13 +50,13 @@ import nz.co.ctg.jmsfx.svg.paint.ColorProfile;
 import nz.co.ctg.jmsfx.svg.paint.LinearGradient;
 import nz.co.ctg.jmsfx.svg.paint.Pattern;
 import nz.co.ctg.jmsfx.svg.paint.RadialGradient;
-import nz.co.ctg.jmsfx.svg.path.SvgPath;
-import nz.co.ctg.jmsfx.svg.shape.SvgCircle;
-import nz.co.ctg.jmsfx.svg.shape.SvgEllipse;
-import nz.co.ctg.jmsfx.svg.shape.SvgLine;
-import nz.co.ctg.jmsfx.svg.shape.SvgPolygon;
-import nz.co.ctg.jmsfx.svg.shape.SvgPolyline;
-import nz.co.ctg.jmsfx.svg.shape.SvgRectangle;
+import nz.co.ctg.jmsfx.svg.path.FXVGPath;
+import nz.co.ctg.jmsfx.svg.shape.FXVGCircle;
+import nz.co.ctg.jmsfx.svg.shape.FXVGEllipse;
+import nz.co.ctg.jmsfx.svg.shape.FXVGLine;
+import nz.co.ctg.jmsfx.svg.shape.FXVGPolygon;
+import nz.co.ctg.jmsfx.svg.shape.FXVGPolyline;
+import nz.co.ctg.jmsfx.svg.shape.FXVGRectangle;
 import nz.co.ctg.jmsfx.svg.style.Style;
 
 
@@ -290,22 +290,22 @@ public class MissingGlyph {
         @XmlElement(name = "animateMotion", type = AnimateMotion.class),
         @XmlElement(name = "animateColor", type = AnimateColor.class),
         @XmlElement(name = "animateTransform", type = AnimateTransform.class),
-        @XmlElement(name = "svg", type = SvgRootElement.class),
-        @XmlElement(name = "g", type = SvgGroup.class),
+        @XmlElement(name = "svg", type = FXVGRootElement.class),
+        @XmlElement(name = "g", type = FXVGGroup.class),
         @XmlElement(name = "defs", type = Defs.class),
         @XmlElement(name = "symbol", type = Symbol.class),
         @XmlElement(name = "use", type = Use.class),
         @XmlElement(name = "switch", type = Switch.class),
         @XmlElement(name = "image", type = Image.class),
         @XmlElement(name = "style", type = Style.class),
-        @XmlElement(name = "path", type = SvgPath.class),
-        @XmlElement(name = "rect", type = SvgRectangle.class),
-        @XmlElement(name = "circle", type = SvgCircle.class),
-        @XmlElement(name = "line", type = SvgLine.class),
-        @XmlElement(name = "ellipse", type = SvgEllipse.class),
-        @XmlElement(name = "polyline", type = SvgPolyline.class),
-        @XmlElement(name = "polygon", type = SvgPolygon.class),
-        @XmlElement(name = "text", type = SvgText.class),
+        @XmlElement(name = "path", type = FXVGPath.class),
+        @XmlElement(name = "rect", type = FXVGRectangle.class),
+        @XmlElement(name = "circle", type = FXVGCircle.class),
+        @XmlElement(name = "line", type = FXVGLine.class),
+        @XmlElement(name = "ellipse", type = FXVGEllipse.class),
+        @XmlElement(name = "polyline", type = FXVGPolyline.class),
+        @XmlElement(name = "polygon", type = FXVGPolygon.class),
+        @XmlElement(name = "text", type = FXVGText.class),
         @XmlElement(name = "altGlyphDef", type = AltGlyphDef.class),
         @XmlElement(name = "marker", type = Marker.class),
         @XmlElement(name = "color-profile", type = ColorProfile.class),
@@ -2031,22 +2031,22 @@ public class MissingGlyph {
      * {@link AnimateMotion }
      * {@link AnimateColor }
      * {@link AnimateTransform }
-     * {@link SvgRootElement }
-     * {@link SvgGroup }
+     * {@link FXVGRootElement }
+     * {@link FXVGGroup }
      * {@link Defs }
      * {@link Symbol }
      * {@link Use }
      * {@link Switch }
      * {@link Image }
      * {@link Style }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
-     * {@link SvgText }
+     * {@link FXVGPath }
+     * {@link FXVGRectangle }
+     * {@link FXVGCircle }
+     * {@link FXVGLine }
+     * {@link FXVGEllipse }
+     * {@link FXVGPolyline }
+     * {@link FXVGPolygon }
+     * {@link FXVGText }
      * {@link AltGlyphDef }
      * {@link Marker }
      * {@link ColorProfile }

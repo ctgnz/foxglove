@@ -27,14 +27,14 @@ import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
 import nz.co.ctg.jmsfx.svg.animate.AnimateMotion;
 import nz.co.ctg.jmsfx.svg.animate.AnimateTransform;
 import nz.co.ctg.jmsfx.svg.animate.Set;
-import nz.co.ctg.jmsfx.svg.path.SvgPath;
-import nz.co.ctg.jmsfx.svg.shape.SvgCircle;
-import nz.co.ctg.jmsfx.svg.shape.SvgEllipse;
-import nz.co.ctg.jmsfx.svg.shape.SvgLine;
-import nz.co.ctg.jmsfx.svg.shape.SvgPolygon;
-import nz.co.ctg.jmsfx.svg.shape.SvgPolyline;
-import nz.co.ctg.jmsfx.svg.shape.SvgRectangle;
-import nz.co.ctg.jmsfx.svg.text.SvgText;
+import nz.co.ctg.jmsfx.svg.path.FXVGPath;
+import nz.co.ctg.jmsfx.svg.shape.FXVGCircle;
+import nz.co.ctg.jmsfx.svg.shape.FXVGEllipse;
+import nz.co.ctg.jmsfx.svg.shape.FXVGLine;
+import nz.co.ctg.jmsfx.svg.shape.FXVGPolygon;
+import nz.co.ctg.jmsfx.svg.shape.FXVGPolyline;
+import nz.co.ctg.jmsfx.svg.shape.FXVGRectangle;
+import nz.co.ctg.jmsfx.svg.text.FXVGText;
 
 
 /**
@@ -292,10 +292,10 @@ public class Switch {
         @XmlElement(name = "desc", type = Desc.class),
         @XmlElement(name = "title", type = Title.class),
         @XmlElement(name = "metadata", type = Metadata.class),
-        @XmlElement(name = "svg", type = SvgRootElement.class),
-        @XmlElement(name = "g", type = SvgGroup.class),
+        @XmlElement(name = "svg", type = FXVGRootElement.class),
+        @XmlElement(name = "g", type = FXVGGroup.class),
         @XmlElement(name = "use", type = Use.class),
-        @XmlElement(name = "text", type = SvgText.class),
+        @XmlElement(name = "text", type = FXVGText.class),
         @XmlElement(name = "animate", type = Animate.class),
         @XmlElement(name = "set", type = Set.class),
         @XmlElement(name = "animateMotion", type = AnimateMotion.class),
@@ -303,13 +303,13 @@ public class Switch {
         @XmlElement(name = "animateTransform", type = AnimateTransform.class),
         @XmlElement(name = "switch", type = Switch.class),
         @XmlElement(name = "image", type = Image.class),
-        @XmlElement(name = "path", type = SvgPath.class),
-        @XmlElement(name = "rect", type = SvgRectangle.class),
-        @XmlElement(name = "circle", type = SvgCircle.class),
-        @XmlElement(name = "line", type = SvgLine.class),
-        @XmlElement(name = "ellipse", type = SvgEllipse.class),
-        @XmlElement(name = "polyline", type = SvgPolyline.class),
-        @XmlElement(name = "polygon", type = SvgPolygon.class),
+        @XmlElement(name = "path", type = FXVGPath.class),
+        @XmlElement(name = "rect", type = FXVGRectangle.class),
+        @XmlElement(name = "circle", type = FXVGCircle.class),
+        @XmlElement(name = "line", type = FXVGLine.class),
+        @XmlElement(name = "ellipse", type = FXVGEllipse.class),
+        @XmlElement(name = "polyline", type = FXVGPolyline.class),
+        @XmlElement(name = "polygon", type = FXVGPolygon.class),
         @XmlElement(name = "a", type = Anchor.class),
         @XmlElement(name = "foreignObject", type = ForeignObject.class)
     })
@@ -2256,10 +2256,10 @@ public class Switch {
      * {@link Desc }
      * {@link Title }
      * {@link Metadata }
-     * {@link SvgRootElement }
-     * {@link SvgGroup }
+     * {@link FXVGRootElement }
+     * {@link FXVGGroup }
      * {@link Use }
-     * {@link SvgText }
+     * {@link FXVGText }
      * {@link Animate }
      * {@link Set }
      * {@link AnimateMotion }
@@ -2267,13 +2267,13 @@ public class Switch {
      * {@link AnimateTransform }
      * {@link Switch }
      * {@link Image }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
+     * {@link FXVGPath }
+     * {@link FXVGRectangle }
+     * {@link FXVGCircle }
+     * {@link FXVGLine }
+     * {@link FXVGEllipse }
+     * {@link FXVGPolyline }
+     * {@link FXVGPolygon }
      * {@link Anchor }
      * {@link ForeignObject }
      * 

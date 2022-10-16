@@ -11,8 +11,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import nz.co.ctg.jmsfx.svg.document.SvgGroup;
-import nz.co.ctg.jmsfx.svg.document.SvgRootElement;
+import nz.co.ctg.jmsfx.svg.document.FXVGGroup;
+import nz.co.ctg.jmsfx.svg.document.FXVGRootElement;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,9 +26,9 @@ public class SvgParseTest {
 
     @Test
     public void testParse() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(SvgRootElement.class);
+        JAXBContext context = JAXBContext.newInstance(FXVGRootElement.class);
         Unmarshaller u = context.createUnmarshaller();
-        JAXBElement<SvgRootElement> element = u.unmarshal(new StreamSource(SvgRootElement.class.getResourceAsStream("/test.svg")), SvgRootElement.class);
+        JAXBElement<FXVGRootElement> element = u.unmarshal(new StreamSource(FXVGRootElement.class.getResourceAsStream("/test.svg")), FXVGRootElement.class);
         assertThat(element.getValue(), notNullValue());
         element.getValue().getElements().forEach(el -> {
             printElement(el);
@@ -37,19 +37,19 @@ public class SvgParseTest {
 
     private void printElement(Object el) {
         System.out.println(el);
-        if (el instanceof SvgGroup) {
-            ((SvgGroup) el).getElements().forEach(this::printElement);
+        if (el instanceof FXVGGroup) {
+            ((FXVGGroup) el).getElements().forEach(this::printElement);
         }
     }
 
     @Test
     public void testWrite() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(SvgRootElement.class);
+        JAXBContext context = JAXBContext.newInstance(FXVGRootElement.class);
         Marshaller m = context.createMarshaller();
         StringWriter out = new StringWriter();
-        SvgRootElement svgRootElement = new SvgRootElement();
-        svgRootElement.getElements().add(new SvgGroup());
-        m.marshal(svgRootElement, out);
+        FXVGRootElement fXVGRootElement = new FXVGRootElement();
+        fXVGRootElement.getElements().add(new FXVGGroup());
+        m.marshal(fXVGRootElement, out);
         System.out.println(out);
     }
 
