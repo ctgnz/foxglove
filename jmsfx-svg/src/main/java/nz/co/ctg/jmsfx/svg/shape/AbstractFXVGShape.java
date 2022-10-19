@@ -1,6 +1,7 @@
 package nz.co.ctg.jmsfx.svg.shape;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,9 +15,18 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.CSSValue;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.jmsfx.svg.FXVGConditionalFeatures;
+import nz.co.ctg.jmsfx.svg.FXVGElement;
+import nz.co.ctg.jmsfx.svg.FXVGEventListener;
+import nz.co.ctg.jmsfx.svg.FXVGExternalResourcesRequired;
+import nz.co.ctg.jmsfx.svg.FXVGStylable;
+import nz.co.ctg.jmsfx.svg.FXVGTransformable;
 import nz.co.ctg.jmsfx.svg.adapter.FXVGPaintAdapter;
 import nz.co.ctg.jmsfx.svg.animate.Animate;
 import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
@@ -24,18 +34,22 @@ import nz.co.ctg.jmsfx.svg.animate.AnimateMotion;
 import nz.co.ctg.jmsfx.svg.animate.AnimateTransform;
 import nz.co.ctg.jmsfx.svg.animate.Set;
 import nz.co.ctg.jmsfx.svg.document.Desc;
+import nz.co.ctg.jmsfx.svg.document.FXVGRootElement;
 import nz.co.ctg.jmsfx.svg.document.Metadata;
 import nz.co.ctg.jmsfx.svg.document.Title;
 
 import javafx.scene.paint.Paint;
+import javafx.scene.transform.Transform;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {
-    "elements"
+    "content"
 })
-public class AbstractFXVGShape {
+public class AbstractFXVGShape implements FXVGElement, FXVGConditionalFeatures, FXVGExternalResourcesRequired, FXVGStylable, FXVGTransformable, FXVGEventListener {
 
     protected static final int maxLen = 10;
+
+    /* SVGElement */
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -46,6 +60,8 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlBase;
 
+    /* SVGLangSpace */
+
     @XmlAttribute(name = "xml:lang")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlLang;
@@ -53,6 +69,8 @@ public class AbstractFXVGShape {
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
+
+    /* SVGTests */
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -66,17 +84,25 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String systemLanguage;
 
+    /* SVGStylable */
+
     @XmlAttribute(name = "style")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String style;
 
     @XmlAttribute(name = "class")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String clazz;
+    protected String className;
+
+    /* Container */
 
     @XmlAttribute(name = "enable-background")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String enableBackground;
+
+    /* Presentation */
+
+    /* Viewport */
 
     @XmlAttribute(name = "clip")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -86,9 +112,13 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String overflow;
 
+    /* Text */
+
     @XmlAttribute(name = "writing-mode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String writingMode;
+
+    /* Text Content */
 
     @XmlAttribute(name = "alignment-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -138,6 +168,8 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String wordSpacing;
 
+    /* Font */
+
     @XmlAttribute(name = "font-family")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontFamily;
@@ -165,6 +197,8 @@ public class AbstractFXVGShape {
     @XmlAttribute(name = "font-weight")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontWeight;
+
+    /* Paint */
 
     @XmlAttribute(name = "fill")
     @XmlJavaTypeAdapter(FXVGPaintAdapter.class)
@@ -202,6 +236,8 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeWidth;
 
+    /* Color */
+
     @XmlAttribute(name = "color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String color;
@@ -214,6 +250,8 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorRendering;
 
+    /* Opacity */
+
     @XmlAttribute(name = "opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String opacity;
@@ -225,6 +263,8 @@ public class AbstractFXVGShape {
     @XmlAttribute(name = "stroke-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeOpacity;
+
+    /* Graphics */
 
     @XmlAttribute(name = "display")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -250,6 +290,8 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String visibility;
 
+    /* Marker */
+
     @XmlAttribute(name = "marker-start")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerStart;
@@ -262,9 +304,13 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerEnd;
 
+    /* Color Profile */
+
     @XmlAttribute(name = "color-profile")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String colorProfile;
+
+    /* Gradient */
 
     @XmlAttribute(name = "stop-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -274,6 +320,8 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopOpacity;
 
+    /* Clip */
+
     @XmlAttribute(name = "clip-path")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clipPath;
@@ -282,21 +330,31 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String clipRule;
 
+    /* Mask */
+
     @XmlAttribute(name = "mask")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String mask;
+
+    /* Filter */
 
     @XmlAttribute(name = "filter")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String filter;
 
+    /* Filter Color */
+
     @XmlAttribute(name = "color-interpolation-filters")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolationFilters;
 
+    /* Cursor */
+
     @XmlAttribute(name = "cursor")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String cursor;
+
+    /* Other Presentation */
 
     @XmlAttribute(name = "flood-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -309,6 +367,8 @@ public class AbstractFXVGShape {
     @XmlAttribute(name = "lighting-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String lightingColor;
+
+    /* Graphical Events */
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -350,13 +410,18 @@ public class AbstractFXVGShape {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
 
+    /* SVGExternalResourcesRequired */
+
     @XmlAttribute(name = "externalResourcesRequired")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String externalResourcesRequired;
+    protected boolean externalResourcesRequired;
+
+    /* SVGTransformable */
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String transform;
+
+    /* Content */
 
     @XmlElements({
         @XmlElement(name = "desc", type = Desc.class, namespace = "http://www.w3.org/2000/svg"),
@@ -368,7 +433,7 @@ public class AbstractFXVGShape {
         @XmlElement(name = "animateColor", type = AnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = AnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> elements;
+    protected List<Object> content;
 
     public AbstractFXVGShape() {
     }
@@ -381,6 +446,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -393,6 +459,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setId(String value) {
         this.id = value;
     }
@@ -405,6 +472,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlBase() {
         return xmlBase;
     }
@@ -417,6 +485,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlBase(String value) {
         this.xmlBase = value;
     }
@@ -429,6 +498,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlLang() {
         return xmlLang;
     }
@@ -441,6 +511,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlLang(String value) {
         this.xmlLang = value;
     }
@@ -453,6 +524,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlSpace() {
         return xmlSpace;
     }
@@ -465,6 +537,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlSpace(String value) {
         this.xmlSpace = value;
     }
@@ -477,6 +550,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getRequiredFeatures() {
         return requiredFeatures;
     }
@@ -489,6 +563,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setRequiredFeatures(String value) {
         this.requiredFeatures = value;
     }
@@ -501,6 +576,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getRequiredExtensions() {
         return requiredExtensions;
     }
@@ -513,6 +589,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setRequiredExtensions(String value) {
         this.requiredExtensions = value;
     }
@@ -525,6 +602,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getSystemLanguage() {
         return systemLanguage;
     }
@@ -537,6 +615,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setSystemLanguage(String value) {
         this.systemLanguage = value;
     }
@@ -549,6 +628,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStyle() {
         return style;
     }
@@ -561,6 +641,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStyle(String value) {
         this.style = value;
     }
@@ -573,8 +654,9 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getClazz() {
-        return clazz;
+    @Override
+    public String getClassName() {
+        return className;
     }
 
     /**
@@ -585,8 +667,9 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setClazz(String value) {
-        this.clazz = value;
+    @Override
+    public void setClassName(String value) {
+        this.className = value;
     }
 
     /**
@@ -597,6 +680,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getEnableBackground() {
         return enableBackground;
     }
@@ -609,6 +693,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setEnableBackground(String value) {
         this.enableBackground = value;
     }
@@ -621,6 +706,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getClip() {
         return clip;
     }
@@ -633,6 +719,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setClip(String value) {
         this.clip = value;
     }
@@ -645,6 +732,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getOverflow() {
         return overflow;
     }
@@ -657,6 +745,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setOverflow(String value) {
         this.overflow = value;
     }
@@ -669,6 +758,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getWritingMode() {
         return writingMode;
     }
@@ -681,6 +771,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setWritingMode(String value) {
         this.writingMode = value;
     }
@@ -693,6 +784,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getAlignmentBaseline() {
         return alignmentBaseline;
     }
@@ -705,6 +797,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setAlignmentBaseline(String value) {
         this.alignmentBaseline = value;
     }
@@ -717,6 +810,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getBaselineShift() {
         return baselineShift;
     }
@@ -729,6 +823,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setBaselineShift(String value) {
         this.baselineShift = value;
     }
@@ -741,6 +836,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getDirection() {
         return direction;
     }
@@ -753,6 +849,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setDirection(String value) {
         this.direction = value;
     }
@@ -765,6 +862,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getDominantBaseline() {
         return dominantBaseline;
     }
@@ -777,6 +875,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setDominantBaseline(String value) {
         this.dominantBaseline = value;
     }
@@ -789,6 +888,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getGlyphOrientationHorizontal() {
         return glyphOrientationHorizontal;
     }
@@ -801,6 +901,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setGlyphOrientationHorizontal(String value) {
         this.glyphOrientationHorizontal = value;
     }
@@ -813,6 +914,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getGlyphOrientationVertical() {
         return glyphOrientationVertical;
     }
@@ -825,6 +927,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setGlyphOrientationVertical(String value) {
         this.glyphOrientationVertical = value;
     }
@@ -837,6 +940,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getKerning() {
         return kerning;
     }
@@ -849,6 +953,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setKerning(String value) {
         this.kerning = value;
     }
@@ -861,6 +966,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getLetterSpacing() {
         return letterSpacing;
     }
@@ -873,6 +979,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setLetterSpacing(String value) {
         this.letterSpacing = value;
     }
@@ -885,6 +992,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getTextAnchor() {
         return textAnchor;
     }
@@ -897,6 +1005,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setTextAnchor(String value) {
         this.textAnchor = value;
     }
@@ -909,6 +1018,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getTextDecoration() {
         return textDecoration;
     }
@@ -921,6 +1031,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setTextDecoration(String value) {
         this.textDecoration = value;
     }
@@ -933,6 +1044,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getUnicodeBidi() {
         return unicodeBidi;
     }
@@ -945,6 +1057,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setUnicodeBidi(String value) {
         this.unicodeBidi = value;
     }
@@ -957,6 +1070,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getWordSpacing() {
         return wordSpacing;
     }
@@ -969,6 +1083,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setWordSpacing(String value) {
         this.wordSpacing = value;
     }
@@ -981,6 +1096,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFontFamily() {
         return fontFamily;
     }
@@ -993,6 +1109,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFontFamily(String value) {
         this.fontFamily = value;
     }
@@ -1005,6 +1122,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFontSize() {
         return fontSize;
     }
@@ -1017,6 +1135,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFontSize(String value) {
         this.fontSize = value;
     }
@@ -1029,6 +1148,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFontSizeAdjust() {
         return fontSizeAdjust;
     }
@@ -1041,6 +1161,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFontSizeAdjust(String value) {
         this.fontSizeAdjust = value;
     }
@@ -1053,6 +1174,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFontStretch() {
         return fontStretch;
     }
@@ -1065,6 +1187,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFontStretch(String value) {
         this.fontStretch = value;
     }
@@ -1077,6 +1200,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFontStyle() {
         return fontStyle;
     }
@@ -1089,6 +1213,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFontStyle(String value) {
         this.fontStyle = value;
     }
@@ -1101,6 +1226,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFontVariant() {
         return fontVariant;
     }
@@ -1113,6 +1239,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFontVariant(String value) {
         this.fontVariant = value;
     }
@@ -1125,6 +1252,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFontWeight() {
         return fontWeight;
     }
@@ -1137,6 +1265,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFontWeight(String value) {
         this.fontWeight = value;
     }
@@ -1149,6 +1278,7 @@ public class AbstractFXVGShape {
      *     {@link Paint }
      *
      */
+    @Override
     public Paint getFill() {
         return fill;
     }
@@ -1161,6 +1291,7 @@ public class AbstractFXVGShape {
      *     {@link Paint }
      *
      */
+    @Override
     public void setFill(Paint value) {
         this.fill = value;
     }
@@ -1173,6 +1304,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFillRule() {
         return fillRule;
     }
@@ -1185,6 +1317,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFillRule(String value) {
         this.fillRule = value;
     }
@@ -1197,6 +1330,7 @@ public class AbstractFXVGShape {
      *     {@link Paint }
      *
      */
+    @Override
     public Paint getStroke() {
         return stroke;
     }
@@ -1209,6 +1343,7 @@ public class AbstractFXVGShape {
      *     {@link Paint }
      *
      */
+    @Override
     public void setStroke(Paint value) {
         this.stroke = value;
     }
@@ -1221,6 +1356,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeDasharray() {
         return strokeDasharray;
     }
@@ -1233,6 +1369,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeDasharray(String value) {
         this.strokeDasharray = value;
     }
@@ -1245,6 +1382,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeDashoffset() {
         return strokeDashoffset;
     }
@@ -1257,6 +1395,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeDashoffset(String value) {
         this.strokeDashoffset = value;
     }
@@ -1269,6 +1408,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeLinecap() {
         return strokeLinecap;
     }
@@ -1281,6 +1421,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeLinecap(String value) {
         this.strokeLinecap = value;
     }
@@ -1293,6 +1434,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeLinejoin() {
         return strokeLinejoin;
     }
@@ -1305,6 +1447,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeLinejoin(String value) {
         this.strokeLinejoin = value;
     }
@@ -1317,6 +1460,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeMiterlimit() {
         return strokeMiterlimit;
     }
@@ -1329,6 +1473,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeMiterlimit(String value) {
         this.strokeMiterlimit = value;
     }
@@ -1341,6 +1486,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeWidth() {
         return strokeWidth;
     }
@@ -1353,6 +1499,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeWidth(String value) {
         this.strokeWidth = value;
     }
@@ -1365,6 +1512,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getColor() {
         return color;
     }
@@ -1377,6 +1525,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setColor(String value) {
         this.color = value;
     }
@@ -1389,6 +1538,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getColorInterpolation() {
         return colorInterpolation;
     }
@@ -1401,6 +1551,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setColorInterpolation(String value) {
         this.colorInterpolation = value;
     }
@@ -1413,6 +1564,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getColorRendering() {
         return colorRendering;
     }
@@ -1425,6 +1577,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setColorRendering(String value) {
         this.colorRendering = value;
     }
@@ -1437,6 +1590,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getOpacity() {
         return opacity;
     }
@@ -1449,6 +1603,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setOpacity(String value) {
         this.opacity = value;
     }
@@ -1461,6 +1616,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFillOpacity() {
         return fillOpacity;
     }
@@ -1473,6 +1629,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFillOpacity(String value) {
         this.fillOpacity = value;
     }
@@ -1485,6 +1642,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeOpacity() {
         return strokeOpacity;
     }
@@ -1497,6 +1655,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeOpacity(String value) {
         this.strokeOpacity = value;
     }
@@ -1509,6 +1668,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getDisplay() {
         return display;
     }
@@ -1521,6 +1681,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setDisplay(String value) {
         this.display = value;
     }
@@ -1533,6 +1694,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getImageRendering() {
         return imageRendering;
     }
@@ -1545,6 +1707,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setImageRendering(String value) {
         this.imageRendering = value;
     }
@@ -1557,6 +1720,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getPointerEvents() {
         return pointerEvents;
     }
@@ -1569,6 +1733,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setPointerEvents(String value) {
         this.pointerEvents = value;
     }
@@ -1581,6 +1746,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getShapeRendering() {
         return shapeRendering;
     }
@@ -1593,6 +1759,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setShapeRendering(String value) {
         this.shapeRendering = value;
     }
@@ -1605,6 +1772,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getTextRendering() {
         return textRendering;
     }
@@ -1617,6 +1785,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setTextRendering(String value) {
         this.textRendering = value;
     }
@@ -1629,6 +1798,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getVisibility() {
         return visibility;
     }
@@ -1641,6 +1811,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setVisibility(String value) {
         this.visibility = value;
     }
@@ -1653,6 +1824,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerStart() {
         return markerStart;
     }
@@ -1665,6 +1837,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerStart(String value) {
         this.markerStart = value;
     }
@@ -1677,6 +1850,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerMid() {
         return markerMid;
     }
@@ -1689,6 +1863,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerMid(String value) {
         this.markerMid = value;
     }
@@ -1701,6 +1876,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerEnd() {
         return markerEnd;
     }
@@ -1713,6 +1889,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerEnd(String value) {
         this.markerEnd = value;
     }
@@ -1725,6 +1902,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getColorProfile() {
         return colorProfile;
     }
@@ -1737,6 +1915,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setColorProfile(String value) {
         this.colorProfile = value;
     }
@@ -1749,6 +1928,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStopColor() {
         return stopColor;
     }
@@ -1761,6 +1941,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStopColor(String value) {
         this.stopColor = value;
     }
@@ -1773,6 +1954,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getStopOpacity() {
         return stopOpacity;
     }
@@ -1785,6 +1967,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setStopOpacity(String value) {
         this.stopOpacity = value;
     }
@@ -1797,6 +1980,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getClipPath() {
         return clipPath;
     }
@@ -1809,6 +1993,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setClipPath(String value) {
         this.clipPath = value;
     }
@@ -1821,6 +2006,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getClipRule() {
         return clipRule;
     }
@@ -1833,6 +2019,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setClipRule(String value) {
         this.clipRule = value;
     }
@@ -1845,6 +2032,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getMask() {
         return mask;
     }
@@ -1857,6 +2045,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setMask(String value) {
         this.mask = value;
     }
@@ -1869,6 +2058,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFilter() {
         return filter;
     }
@@ -1881,6 +2071,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFilter(String value) {
         this.filter = value;
     }
@@ -1893,6 +2084,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getColorInterpolationFilters() {
         return colorInterpolationFilters;
     }
@@ -1905,6 +2097,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setColorInterpolationFilters(String value) {
         this.colorInterpolationFilters = value;
     }
@@ -1917,6 +2110,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getCursor() {
         return cursor;
     }
@@ -1929,6 +2123,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setCursor(String value) {
         this.cursor = value;
     }
@@ -1941,6 +2136,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFloodColor() {
         return floodColor;
     }
@@ -1953,6 +2149,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFloodColor(String value) {
         this.floodColor = value;
     }
@@ -1965,6 +2162,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getFloodOpacity() {
         return floodOpacity;
     }
@@ -1977,6 +2175,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setFloodOpacity(String value) {
         this.floodOpacity = value;
     }
@@ -1989,6 +2188,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getLightingColor() {
         return lightingColor;
     }
@@ -2001,6 +2201,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setLightingColor(String value) {
         this.lightingColor = value;
     }
@@ -2013,7 +2214,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnfocusin() {
+    @Override
+    public String getOnFocusIn() {
         return onfocusin;
     }
 
@@ -2025,7 +2227,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnfocusin(String value) {
+    @Override
+    public void setOnFocusIn(String value) {
         this.onfocusin = value;
     }
 
@@ -2037,7 +2240,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnfocusout() {
+    @Override
+    public String getOnFocusOut() {
         return onfocusout;
     }
 
@@ -2049,7 +2253,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnfocusout(String value) {
+    @Override
+    public void setOnFocusOut(String value) {
         this.onfocusout = value;
     }
 
@@ -2061,7 +2266,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnactivate() {
+    @Override
+    public String getOnActivate() {
         return onactivate;
     }
 
@@ -2073,7 +2279,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnactivate(String value) {
+    @Override
+    public void setOnActivate(String value) {
         this.onactivate = value;
     }
 
@@ -2085,7 +2292,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnclick() {
+    @Override
+    public String getOnClick() {
         return onclick;
     }
 
@@ -2097,7 +2305,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnclick(String value) {
+    @Override
+    public void setOnClick(String value) {
         this.onclick = value;
     }
 
@@ -2109,7 +2318,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnmousedown() {
+    @Override
+    public String getOnMouseDown() {
         return onmousedown;
     }
 
@@ -2121,7 +2331,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnmousedown(String value) {
+    @Override
+    public void setOnMouseDown(String value) {
         this.onmousedown = value;
     }
 
@@ -2133,7 +2344,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnmouseup() {
+    @Override
+    public String getOnMouseUp() {
         return onmouseup;
     }
 
@@ -2145,7 +2357,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnmouseup(String value) {
+    @Override
+    public void setOnMouseUp(String value) {
         this.onmouseup = value;
     }
 
@@ -2157,7 +2370,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnmouseover() {
+    @Override
+    public String getOnMouseOver() {
         return onmouseover;
     }
 
@@ -2169,7 +2383,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnmouseover(String value) {
+    @Override
+    public void setOnMouseOver(String value) {
         this.onmouseover = value;
     }
 
@@ -2181,7 +2396,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnmousemove() {
+    @Override
+    public String getOnMouseMove() {
         return onmousemove;
     }
 
@@ -2193,7 +2409,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnmousemove(String value) {
+    @Override
+    public void setOnMouseMove(String value) {
         this.onmousemove = value;
     }
 
@@ -2205,7 +2422,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnmouseout() {
+    @Override
+    public String getOnMouseOut() {
         return onmouseout;
     }
 
@@ -2217,7 +2435,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnmouseout(String value) {
+    @Override
+    public void setOnMouseOut(String value) {
         this.onmouseout = value;
     }
 
@@ -2229,7 +2448,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getOnload() {
+    @Override
+    public String getOnLoad() {
         return onload;
     }
 
@@ -2241,7 +2461,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setOnload(String value) {
+    @Override
+    public void setOnLoad(String value) {
         this.onload = value;
     }
 
@@ -2253,7 +2474,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public String getExternalResourcesRequired() {
+    @Override
+    public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -2265,7 +2487,8 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
-    public void setExternalResourcesRequired(String value) {
+    @Override
+    public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
 
@@ -2277,6 +2500,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public String getTransform() {
         return transform;
     }
@@ -2289,6 +2513,7 @@ public class AbstractFXVGShape {
      *     {@link String }
      *
      */
+    @Override
     public void setTransform(String value) {
         this.transform = value;
     }
@@ -2322,11 +2547,11 @@ public class AbstractFXVGShape {
      *
      *
      */
-    public List<Object> getElements() {
-        if (elements == null) {
-            elements = new ArrayList<>();
+    public List<Object> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
         }
-        return this.elements;
+        return this.content;
     }
 
     @Override
@@ -2345,7 +2570,7 @@ public class AbstractFXVGShape {
         builder.add("requiredExtensions", requiredExtensions);
         builder.add("systemLanguage", systemLanguage);
         builder.add("style", style);
-        builder.add("clazz", clazz);
+        builder.add("clazz", className);
         builder.add("enableBackground", enableBackground);
         builder.add("clip", clip);
         builder.add("overflow", overflow);
@@ -2417,10 +2642,38 @@ public class AbstractFXVGShape {
         builder.add("onload", onload);
         builder.add("externalResourcesRequired", externalResourcesRequired);
         builder.add("transform", transform);
-        if (elements != null) {
-            builder.add("elements", elements.subList(0, Math.min(elements.size(), maxLen)));
+        if (content != null) {
+            builder.add("elements", content.subList(0, Math.min(content.size(), maxLen)));
         }
     }
 
+    @Override
+    public FXVGRootElement getOwnerSVGElement() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public FXVGElement getViewportElement() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public CSSValue getPresentationAttribute(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Transform> getTransformList() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public CSSStyleDeclaration getStyleDeclaration() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

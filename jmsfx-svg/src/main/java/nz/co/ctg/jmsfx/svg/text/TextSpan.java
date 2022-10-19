@@ -8,26 +8,16 @@
 
 package nz.co.ctg.jmsfx.svg.text;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import nz.co.ctg.jmsfx.svg.animate.Animate;
-import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
-import nz.co.ctg.jmsfx.svg.animate.Set;
-import nz.co.ctg.jmsfx.svg.document.Desc;
-import nz.co.ctg.jmsfx.svg.document.Metadata;
-import nz.co.ctg.jmsfx.svg.document.Title;
 
 
 /**
@@ -35,10 +25,10 @@ import nz.co.ctg.jmsfx.svg.document.Title;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "animateOrSetOrAnimateColorOrDescOrTitleOrMetadata"
+    "value"
 })
-@XmlRootElement(name = "tref")
-public class Tref {
+@XmlRootElement(name = "tspan")
+public class TextSpan {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -275,30 +265,6 @@ public class Tref {
     @XmlAttribute(name = "onload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
-    @XmlAttribute(name = "xmlns:xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlnsXlink;
-    @XmlAttribute(name = "xlink:type")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkType;
-    @XmlAttribute(name = "xlink:href", required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkHref;
-    @XmlAttribute(name = "xlink:role")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkRole;
-    @XmlAttribute(name = "xlink:arcrole")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkArcrole;
-    @XmlAttribute(name = "xlink:title")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkTitle;
-    @XmlAttribute(name = "xlink:show")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkShow;
-    @XmlAttribute(name = "xlink:actuate")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkActuate;
     @XmlAttribute(name = "externalResourcesRequired")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String externalResourcesRequired;
@@ -323,15 +289,8 @@ public class Tref {
     @XmlAttribute(name = "lengthAdjust")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String lengthAdjust;
-    @XmlElements({
-        @XmlElement(name = "animate", type = Animate.class),
-        @XmlElement(name = "set", type = Set.class),
-        @XmlElement(name = "animateColor", type = AnimateColor.class),
-        @XmlElement(name = "desc", type = Desc.class),
-        @XmlElement(name = "title", type = Title.class),
-        @XmlElement(name = "metadata", type = Metadata.class)
-    })
-    protected List<Object> animateOrSetOrAnimateColorOrDescOrTitleOrMetadata;
+    @XmlValue
+    protected String value;
 
     /**
      * Gets the value of the id property.
@@ -2206,214 +2165,6 @@ public class Tref {
     }
 
     /**
-     * Gets the value of the xmlnsXlink property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getXmlnsXlink() {
-        if (xmlnsXlink == null) {
-            return "http://www.w3.org/1999/xlink";
-        } else {
-            return xmlnsXlink;
-        }
-    }
-
-    /**
-     * Sets the value of the xmlnsXlink property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setXmlnsXlink(String value) {
-        this.xmlnsXlink = value;
-    }
-
-    /**
-     * Gets the value of the xlinkType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getXlinkType() {
-        if (xlinkType == null) {
-            return "simple";
-        } else {
-            return xlinkType;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setXlinkType(String value) {
-        this.xlinkType = value;
-    }
-
-    /**
-     * Gets the value of the xlinkHref property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getXlinkHref() {
-        return xlinkHref;
-    }
-
-    /**
-     * Sets the value of the xlinkHref property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setXlinkHref(String value) {
-        this.xlinkHref = value;
-    }
-
-    /**
-     * Gets the value of the xlinkRole property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getXlinkRole() {
-        return xlinkRole;
-    }
-
-    /**
-     * Sets the value of the xlinkRole property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setXlinkRole(String value) {
-        this.xlinkRole = value;
-    }
-
-    /**
-     * Gets the value of the xlinkArcrole property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getXlinkArcrole() {
-        return xlinkArcrole;
-    }
-
-    /**
-     * Sets the value of the xlinkArcrole property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setXlinkArcrole(String value) {
-        this.xlinkArcrole = value;
-    }
-
-    /**
-     * Gets the value of the xlinkTitle property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getXlinkTitle() {
-        return xlinkTitle;
-    }
-
-    /**
-     * Sets the value of the xlinkTitle property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setXlinkTitle(String value) {
-        this.xlinkTitle = value;
-    }
-
-    /**
-     * Gets the value of the xlinkShow property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getXlinkShow() {
-        if (xlinkShow == null) {
-            return "other";
-        } else {
-            return xlinkShow;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkShow property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setXlinkShow(String value) {
-        this.xlinkShow = value;
-    }
-
-    /**
-     * Gets the value of the xlinkActuate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getXlinkActuate() {
-        if (xlinkActuate == null) {
-            return "onLoad";
-        } else {
-            return xlinkActuate;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkActuate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setXlinkActuate(String value) {
-        this.xlinkActuate = value;
-    }
-
-    /**
      * Gets the value of the externalResourcesRequired property.
      * 
      * @return
@@ -2606,37 +2357,27 @@ public class Tref {
     }
 
     /**
-     * Gets the value of the animateOrSetOrAnimateColorOrDescOrTitleOrMetadata property.
+     * Gets the value of the value property.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animateOrSetOrAnimateColorOrDescOrTitleOrMetadata property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAnimateOrSetOrAnimateColorOrDescOrTitleOrMetadata().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Animate }
-     * {@link Set }
-     * {@link AnimateColor }
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public List<Object> getAnimateOrSetOrAnimateColorOrDescOrTitleOrMetadata() {
-        if (animateOrSetOrAnimateColorOrDescOrTitleOrMetadata == null) {
-            animateOrSetOrAnimateColorOrDescOrTitleOrMetadata = new ArrayList<Object>();
-        }
-        return this.animateOrSetOrAnimateColorOrDescOrTitleOrMetadata;
+    public String getvalue() {
+        return value;
+    }
+
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setvalue(String value) {
+        this.value = value;
     }
 
 }

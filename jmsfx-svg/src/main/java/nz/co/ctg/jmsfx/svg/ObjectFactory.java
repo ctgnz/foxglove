@@ -64,10 +64,10 @@ import nz.co.ctg.jmsfx.svg.paint.LinearGradient;
 import nz.co.ctg.jmsfx.svg.paint.Pattern;
 import nz.co.ctg.jmsfx.svg.paint.RadialGradient;
 import nz.co.ctg.jmsfx.svg.paint.Stop;
-import nz.co.ctg.jmsfx.svg.path.FXVGPath;
 import nz.co.ctg.jmsfx.svg.shape.FXVGCircle;
 import nz.co.ctg.jmsfx.svg.shape.FXVGEllipse;
 import nz.co.ctg.jmsfx.svg.shape.FXVGLine;
+import nz.co.ctg.jmsfx.svg.shape.FXVGPath;
 import nz.co.ctg.jmsfx.svg.shape.FXVGPolygon;
 import nz.co.ctg.jmsfx.svg.shape.FXVGPolyline;
 import nz.co.ctg.jmsfx.svg.shape.FXVGRectangle;
@@ -83,13 +83,13 @@ import nz.co.ctg.jmsfx.svg.text.FontFaceSrc;
 import nz.co.ctg.jmsfx.svg.text.FontFaceUri;
 import nz.co.ctg.jmsfx.svg.text.Glyph;
 import nz.co.ctg.jmsfx.svg.text.GlyphRef;
-import nz.co.ctg.jmsfx.svg.text.Hkern;
+import nz.co.ctg.jmsfx.svg.text.HorizontalKerning;
 import nz.co.ctg.jmsfx.svg.text.MissingGlyph;
 import nz.co.ctg.jmsfx.svg.text.FXVGText;
 import nz.co.ctg.jmsfx.svg.text.TextPath;
-import nz.co.ctg.jmsfx.svg.text.Tref;
-import nz.co.ctg.jmsfx.svg.text.Tspan;
-import nz.co.ctg.jmsfx.svg.text.Vkern;
+import nz.co.ctg.jmsfx.svg.text.TextReference;
+import nz.co.ctg.jmsfx.svg.text.TextSpan;
+import nz.co.ctg.jmsfx.svg.text.VerticalKerning;
 
 
 /**
@@ -486,11 +486,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Hkern }
+     * Create an instance of {@link HorizontalKerning }
      * 
      */
-    public Hkern createHkern() {
-        return new Hkern();
+    public HorizontalKerning createHkern() {
+        return new HorizontalKerning();
     }
 
     /**
@@ -518,11 +518,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Tspan }
+     * Create an instance of {@link TextSpan }
      * 
      */
-    public Tspan createTspan() {
-        return new Tspan();
+    public TextSpan createTspan() {
+        return new TextSpan();
     }
 
     /**
@@ -542,11 +542,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Tref }
+     * Create an instance of {@link TextReference }
      * 
      */
-    public Tref createTref() {
-        return new Tref();
+    public TextReference createTref() {
+        return new TextReference();
     }
 
     /**
@@ -662,11 +662,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Vkern }
+     * Create an instance of {@link VerticalKerning }
      * 
      */
-    public Vkern createVkern() {
-        return new Vkern();
+    public VerticalKerning createVkern() {
+        return new VerticalKerning();
     }
 
     /**

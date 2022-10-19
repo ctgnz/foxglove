@@ -6,7 +6,7 @@
 //
 
 
-package nz.co.ctg.jmsfx.svg.path;
+package nz.co.ctg.jmsfx.svg.shape;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,8 +17,6 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
-
-import nz.co.ctg.jmsfx.svg.shape.AbstractFXVGShape;
 
 
 /**

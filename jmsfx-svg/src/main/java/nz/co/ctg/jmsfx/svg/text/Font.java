@@ -261,8 +261,8 @@ public class Font {
         @XmlElement(name = "font-face", type = FontFace.class),
         @XmlElement(name = "missing-glyph", type = MissingGlyph.class),
         @XmlElement(name = "glyph", type = Glyph.class),
-        @XmlElement(name = "hkern", type = Hkern.class),
-        @XmlElement(name = "vkern", type = Vkern.class)
+        @XmlElement(name = "hkern", type = HorizontalKerning.class),
+        @XmlElement(name = "vkern", type = VerticalKerning.class)
     })
     protected List<Object> descOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern;
 
@@ -2018,8 +2018,8 @@ public class Font {
      * {@link FontFace }
      * {@link MissingGlyph }
      * {@link Glyph }
-     * {@link Hkern }
-     * {@link Vkern }
+     * {@link HorizontalKerning }
+     * {@link VerticalKerning }
      * 
      * 
      */
