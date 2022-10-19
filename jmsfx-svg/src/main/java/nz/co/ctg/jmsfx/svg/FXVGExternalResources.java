@@ -12,7 +12,7 @@
 
 package nz.co.ctg.jmsfx.svg;
 
-public interface FXVGExternalResourcesRequired {
+public interface FXVGExternalResources {
 
     boolean getExternalResourcesRequired();
 

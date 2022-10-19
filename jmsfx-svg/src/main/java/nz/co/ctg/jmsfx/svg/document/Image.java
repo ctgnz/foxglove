@@ -27,6 +27,9 @@ import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
 import nz.co.ctg.jmsfx.svg.animate.AnimateMotion;
 import nz.co.ctg.jmsfx.svg.animate.AnimateTransform;
 import nz.co.ctg.jmsfx.svg.animate.Set;
+import nz.co.ctg.jmsfx.svg.description.Desc;
+import nz.co.ctg.jmsfx.svg.description.Metadata;
+import nz.co.ctg.jmsfx.svg.description.Title;
 
 
 /**

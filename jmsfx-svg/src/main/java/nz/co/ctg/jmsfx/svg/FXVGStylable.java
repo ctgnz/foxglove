@@ -18,6 +18,14 @@ import org.w3c.dom.css.CSSValue;
 import javafx.scene.paint.Paint;
 
 public interface FXVGStylable {
+    default CSSStyleDeclaration getStyleDeclaration() {
+        return null;
+    }
+
+    default CSSValue getPresentationAttribute(String name) {
+        return null;
+    }
+
     String getClassName();
 
     void setClassName(String className);
@@ -25,10 +33,6 @@ public interface FXVGStylable {
     String getStyle();
 
     void setStyle(String style);
-
-    CSSStyleDeclaration getStyleDeclaration();
-
-    CSSValue getPresentationAttribute(String name);
 
     void setCursor(String value);
 

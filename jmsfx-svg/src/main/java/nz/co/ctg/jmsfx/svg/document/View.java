@@ -22,6 +22,10 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.jmsfx.svg.description.Desc;
+import nz.co.ctg.jmsfx.svg.description.Metadata;
+import nz.co.ctg.jmsfx.svg.description.Title;
+
 
 /**
  * 

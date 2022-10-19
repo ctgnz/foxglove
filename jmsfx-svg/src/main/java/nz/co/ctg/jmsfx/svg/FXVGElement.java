@@ -31,8 +31,12 @@ public interface FXVGElement {
 
     void setXmlSpace(String xmlSpace);
 
-    FXVGRootElement getOwnerSVGElement();
+    default FXVGRootElement getOwnerSVGElement() {
+        return null;
+    }
 
-    FXVGElement getViewportElement();
+    default FXVGElement getViewportElement() {
+        return null;
+    }
 
 }
