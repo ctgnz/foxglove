@@ -24,6 +24,7 @@ import nz.co.ctg.jmsfx.svg.FXVGConditionalFeatures;
 import nz.co.ctg.jmsfx.svg.FXVGElement;
 import nz.co.ctg.jmsfx.svg.FXVGEventListener;
 import nz.co.ctg.jmsfx.svg.FXVGExternalResources;
+import nz.co.ctg.jmsfx.svg.FXVGSvgElement;
 import nz.co.ctg.jmsfx.svg.FXVGTransformable;
 import nz.co.ctg.jmsfx.svg.animate.Animate;
 import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
@@ -33,7 +34,6 @@ import nz.co.ctg.jmsfx.svg.animate.Set;
 import nz.co.ctg.jmsfx.svg.description.Desc;
 import nz.co.ctg.jmsfx.svg.description.Metadata;
 import nz.co.ctg.jmsfx.svg.description.Title;
-import nz.co.ctg.jmsfx.svg.document.FXVGRootElement;
 
 import javafx.scene.transform.Transform;
 
@@ -649,7 +649,7 @@ public abstract class AbstractFXVGShape extends AbstractFXVGStylable implements 
     }
 
     @Override
-    public FXVGRootElement getOwnerSVGElement() {
+    public FXVGSvgElement getOwnerSVGElement() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -12,8 +12,6 @@
 
 package nz.co.ctg.jmsfx.svg;
 
-import nz.co.ctg.jmsfx.svg.document.FXVGRootElement;
-
 public interface FXVGElement {
     String getId();
 
@@ -31,7 +29,7 @@ public interface FXVGElement {
 
     void setXmlSpace(String xmlSpace);
 
-    default FXVGRootElement getOwnerSVGElement() {
+    default FXVGSvgElement getOwnerSVGElement() {
         return null;
     }
 

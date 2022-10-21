@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.jmsfx.svg.FXVGSvgElement;
 import nz.co.ctg.jmsfx.svg.animate.Animate;
 import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
 import nz.co.ctg.jmsfx.svg.animate.AnimateMotion;
@@ -395,7 +396,7 @@ public class FXVGGroup {
         @XmlElement(name = "animateMotion", type = AnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateColor", type = AnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = AnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "svg", type = FXVGRootElement.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "svg", type = FXVGSvgElement.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "g", type = FXVGGroup.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "defs", type = Defs.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "symbol", type = Symbol.class, namespace = "http://www.w3.org/2000/svg"),
@@ -2376,7 +2377,7 @@ public class FXVGGroup {
      * {@link AnimateMotion }
      * {@link AnimateColor }
      * {@link AnimateTransform }
-     * {@link FXVGRootElement }
+     * {@link FXVGSvgElement }
      * {@link FXVGGroup }
      * {@link Defs }
      * {@link Symbol }

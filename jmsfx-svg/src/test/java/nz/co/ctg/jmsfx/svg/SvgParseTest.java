@@ -12,7 +12,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import nz.co.ctg.jmsfx.svg.document.FXVGGroup;
-import nz.co.ctg.jmsfx.svg.document.FXVGRootElement;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,9 +25,9 @@ public class SvgParseTest {
 
     @Test
     public void testParse() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(FXVGRootElement.class);
+        JAXBContext context = JAXBContext.newInstance(FXVGSvgElement.class);
         Unmarshaller u = context.createUnmarshaller();
-        JAXBElement<FXVGRootElement> element = u.unmarshal(new StreamSource(FXVGRootElement.class.getResourceAsStream("/test.svg")), FXVGRootElement.class);
+        JAXBElement<FXVGSvgElement> element = u.unmarshal(new StreamSource(FXVGSvgElement.class.getResourceAsStream("/test.svg")), FXVGSvgElement.class);
         assertThat(element.getValue(), notNullValue());
         element.getValue().getElements().forEach(el -> {
             printElement(el);
@@ -44,12 +43,12 @@ public class SvgParseTest {
 
     @Test
     public void testWrite() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(FXVGRootElement.class);
+        JAXBContext context = JAXBContext.newInstance(FXVGSvgElement.class);
         Marshaller m = context.createMarshaller();
         StringWriter out = new StringWriter();
-        FXVGRootElement fXVGRootElement = new FXVGRootElement();
-        fXVGRootElement.getElements().add(new FXVGGroup());
-        m.marshal(fXVGRootElement, out);
+        FXVGSvgElement fXVGSvgElement = new FXVGSvgElement();
+        fXVGSvgElement.getElements().add(new FXVGGroup());
+        m.marshal(fXVGSvgElement, out);
         System.out.println(out);
     }
 

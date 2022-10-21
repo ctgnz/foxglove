@@ -6,7 +6,7 @@
 //
 
 
-package nz.co.ctg.jmsfx.svg.document;
+package nz.co.ctg.jmsfx.svg;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,18 @@ import nz.co.ctg.jmsfx.svg.clip.Mask;
 import nz.co.ctg.jmsfx.svg.description.Desc;
 import nz.co.ctg.jmsfx.svg.description.Metadata;
 import nz.co.ctg.jmsfx.svg.description.Title;
+import nz.co.ctg.jmsfx.svg.document.Anchor;
+import nz.co.ctg.jmsfx.svg.document.Cursor;
+import nz.co.ctg.jmsfx.svg.document.Defs;
+import nz.co.ctg.jmsfx.svg.document.FXVGGroup;
+import nz.co.ctg.jmsfx.svg.document.ForeignObject;
+import nz.co.ctg.jmsfx.svg.document.Image;
+import nz.co.ctg.jmsfx.svg.document.Marker;
+import nz.co.ctg.jmsfx.svg.document.Script;
+import nz.co.ctg.jmsfx.svg.document.Switch;
+import nz.co.ctg.jmsfx.svg.document.Symbol;
+import nz.co.ctg.jmsfx.svg.document.Use;
+import nz.co.ctg.jmsfx.svg.document.View;
 import nz.co.ctg.jmsfx.svg.filter.Filter;
 import nz.co.ctg.jmsfx.svg.paint.ColorProfile;
 import nz.co.ctg.jmsfx.svg.paint.LinearGradient;
@@ -60,7 +72,7 @@ import nz.co.ctg.jmsfx.svg.text.FXVGText;
     "elements"
 })
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
-public class FXVGRootElement {
+public class FXVGSvgElement {
 
     @XmlAttribute(name = "xmlns")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -366,7 +378,7 @@ public class FXVGRootElement {
         @XmlElement(name = "animateMotion", type = AnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateColor", type = AnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = AnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "svg", type = FXVGRootElement.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "svg", type = FXVGSvgElement.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "g", type = FXVGGroup.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "defs", type = Defs.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "symbol", type = Symbol.class, namespace = "http://www.w3.org/2000/svg"),
@@ -2807,7 +2819,7 @@ public class FXVGRootElement {
      * {@link AnimateMotion }
      * {@link AnimateColor }
      * {@link AnimateTransform }
-     * {@link FXVGRootElement }
+     * {@link FXVGSvgElement }
      * {@link FXVGGroup }
      * {@link Defs }
      * {@link Symbol }

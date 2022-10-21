@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.jmsfx.svg.FXVGSvgElement;
 import nz.co.ctg.jmsfx.svg.animate.Animate;
 import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
 import nz.co.ctg.jmsfx.svg.animate.AnimateMotion;
@@ -293,7 +294,7 @@ public class Marker {
         @XmlElement(name = "animateMotion", type = AnimateMotion.class),
         @XmlElement(name = "animateColor", type = AnimateColor.class),
         @XmlElement(name = "animateTransform", type = AnimateTransform.class),
-        @XmlElement(name = "svg", type = FXVGRootElement.class),
+        @XmlElement(name = "svg", type = FXVGSvgElement.class),
         @XmlElement(name = "g", type = FXVGGroup.class),
         @XmlElement(name = "defs", type = Defs.class),
         @XmlElement(name = "symbol", type = Symbol.class),
@@ -2134,7 +2135,7 @@ public class Marker {
      * {@link AnimateMotion }
      * {@link AnimateColor }
      * {@link AnimateTransform }
-     * {@link FXVGRootElement }
+     * {@link FXVGSvgElement }
      * {@link FXVGGroup }
      * {@link Defs }
      * {@link Symbol }

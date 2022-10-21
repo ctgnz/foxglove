@@ -29,7 +29,6 @@ import nz.co.ctg.jmsfx.svg.document.Image;
 import nz.co.ctg.jmsfx.svg.document.Marker;
 import nz.co.ctg.jmsfx.svg.document.Script;
 import nz.co.ctg.jmsfx.svg.document.FXVGGroup;
-import nz.co.ctg.jmsfx.svg.document.FXVGRootElement;
 import nz.co.ctg.jmsfx.svg.document.Switch;
 import nz.co.ctg.jmsfx.svg.document.Symbol;
 import nz.co.ctg.jmsfx.svg.document.Use;
@@ -190,11 +189,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FXVGRootElement }
+     * Create an instance of {@link FXVGSvgElement }
      * 
      */
-    public FXVGRootElement createSvgRootElement() {
-        return new FXVGRootElement();
+    public FXVGSvgElement createSvgRootElement() {
+        return new FXVGSvgElement();
     }
 
     /**
