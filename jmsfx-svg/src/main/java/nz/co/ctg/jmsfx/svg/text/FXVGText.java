@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.jmsfx.svg.FXVGEventListener;
+
 
 /**
  *
@@ -28,7 +30,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "value"
 })
 @XmlRootElement(name = "text")
-public class FXVGText {
+public class FXVGText implements FXVGEventListener {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -1935,7 +1937,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnfocusin() {
+    @Override
+    public String getOnFocusIn() {
         return onfocusin;
     }
 
@@ -1947,7 +1950,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnfocusin(String value) {
+    @Override
+    public void setOnFocusIn(String value) {
         this.onfocusin = value;
     }
 
@@ -1959,7 +1963,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnfocusout() {
+    @Override
+    public String getOnFocusOut() {
         return onfocusout;
     }
 
@@ -1971,7 +1976,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnfocusout(String value) {
+    @Override
+    public void setOnFocusOut(String value) {
         this.onfocusout = value;
     }
 
@@ -1983,7 +1989,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnactivate() {
+    @Override
+    public String getOnActivate() {
         return onactivate;
     }
 
@@ -1995,7 +2002,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnactivate(String value) {
+    @Override
+    public void setOnActivate(String value) {
         this.onactivate = value;
     }
 
@@ -2007,7 +2015,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnclick() {
+    @Override
+    public String getOnClick() {
         return onclick;
     }
 
@@ -2019,7 +2028,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnclick(String value) {
+    @Override
+    public void setOnClick(String value) {
         this.onclick = value;
     }
 
@@ -2031,7 +2041,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnmousedown() {
+    @Override
+    public String getOnMouseDown() {
         return onmousedown;
     }
 
@@ -2043,7 +2054,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnmousedown(String value) {
+    @Override
+    public void setOnMouseDown(String value) {
         this.onmousedown = value;
     }
 
@@ -2055,7 +2067,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnmouseup() {
+    @Override
+    public String getOnMouseUp() {
         return onmouseup;
     }
 
@@ -2067,7 +2080,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnmouseup(String value) {
+    @Override
+    public void setOnMouseUp(String value) {
         this.onmouseup = value;
     }
 
@@ -2079,7 +2093,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnmouseover() {
+    @Override
+    public String getOnMouseOver() {
         return onmouseover;
     }
 
@@ -2091,7 +2106,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnmouseover(String value) {
+    @Override
+    public void setOnMouseOver(String value) {
         this.onmouseover = value;
     }
 
@@ -2103,7 +2119,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnmousemove() {
+    @Override
+    public String getOnMouseMove() {
         return onmousemove;
     }
 
@@ -2115,7 +2132,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnmousemove(String value) {
+    @Override
+    public void setOnMouseMove(String value) {
         this.onmousemove = value;
     }
 
@@ -2127,7 +2145,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnmouseout() {
+    @Override
+    public String getOnMouseOut() {
         return onmouseout;
     }
 
@@ -2139,7 +2158,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnmouseout(String value) {
+    @Override
+    public void setOnMouseOut(String value) {
         this.onmouseout = value;
     }
 
@@ -2151,7 +2171,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public String getOnload() {
+    @Override
+    public String getOnLoad() {
         return onload;
     }
 
@@ -2163,7 +2184,8 @@ public class FXVGText {
      *     {@link String }
      *
      */
-    public void setOnload(String value) {
+    @Override
+    public void setOnLoad(String value) {
         this.onload = value;
     }
 

@@ -59,9 +59,9 @@ import nz.co.ctg.jmsfx.svg.shape.FXVGPolyline;
 import nz.co.ctg.jmsfx.svg.shape.FXVGRectangle;
 import nz.co.ctg.jmsfx.svg.style.Style;
 import nz.co.ctg.jmsfx.svg.text.AltGlyphDef;
+import nz.co.ctg.jmsfx.svg.text.FXVGText;
 import nz.co.ctg.jmsfx.svg.text.Font;
 import nz.co.ctg.jmsfx.svg.text.FontFace;
-import nz.co.ctg.jmsfx.svg.text.FXVGText;
 
 
 /**
@@ -72,7 +72,7 @@ import nz.co.ctg.jmsfx.svg.text.FXVGText;
     "elements"
 })
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
-public class FXVGSvgElement {
+public class FXVGSvgElement implements FXVGEventListener {
 
     @XmlAttribute(name = "xmlns")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -2253,7 +2253,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnfocusin() {
+    @Override
+    public String getOnFocusIn() {
         return onfocusin;
     }
 
@@ -2265,7 +2266,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnfocusin(String value) {
+    @Override
+    public void setOnFocusIn(String value) {
         this.onfocusin = value;
     }
 
@@ -2277,7 +2279,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnfocusout() {
+    @Override
+    public String getOnFocusOut() {
         return onfocusout;
     }
 
@@ -2289,7 +2292,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnfocusout(String value) {
+    @Override
+    public void setOnFocusOut(String value) {
         this.onfocusout = value;
     }
 
@@ -2301,7 +2305,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnactivate() {
+    @Override
+    public String getOnActivate() {
         return onactivate;
     }
 
@@ -2313,7 +2318,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnactivate(String value) {
+    @Override
+    public void setOnActivate(String value) {
         this.onactivate = value;
     }
 
@@ -2325,7 +2331,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnclick() {
+    @Override
+    public String getOnClick() {
         return onclick;
     }
 
@@ -2337,7 +2344,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnclick(String value) {
+    @Override
+    public void setOnClick(String value) {
         this.onclick = value;
     }
 
@@ -2349,7 +2357,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnmousedown() {
+    @Override
+    public String getOnMouseDown() {
         return onmousedown;
     }
 
@@ -2361,7 +2370,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnmousedown(String value) {
+    @Override
+    public void setOnMouseDown(String value) {
         this.onmousedown = value;
     }
 
@@ -2373,7 +2383,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnmouseup() {
+    @Override
+    public String getOnMouseUp() {
         return onmouseup;
     }
 
@@ -2385,7 +2396,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnmouseup(String value) {
+    @Override
+    public void setOnMouseUp(String value) {
         this.onmouseup = value;
     }
 
@@ -2397,7 +2409,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnmouseover() {
+    @Override
+    public String getOnMouseOver() {
         return onmouseover;
     }
 
@@ -2409,7 +2422,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnmouseover(String value) {
+    @Override
+    public void setOnMouseOver(String value) {
         this.onmouseover = value;
     }
 
@@ -2421,7 +2435,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnmousemove() {
+    @Override
+    public String getOnMouseMove() {
         return onmousemove;
     }
 
@@ -2433,7 +2448,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnmousemove(String value) {
+    @Override
+    public void setOnMouseMove(String value) {
         this.onmousemove = value;
     }
 
@@ -2445,7 +2461,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnmouseout() {
+    @Override
+    public String getOnMouseOut() {
         return onmouseout;
     }
 
@@ -2457,7 +2474,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnmouseout(String value) {
+    @Override
+    public void setOnMouseOut(String value) {
         this.onmouseout = value;
     }
 
@@ -2469,7 +2487,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public String getOnload() {
+    @Override
+    public String getOnLoad() {
         return onload;
     }
 
@@ -2481,7 +2500,8 @@ public class FXVGSvgElement {
      *     {@link String }
      *
      */
-    public void setOnload(String value) {
+    @Override
+    public void setOnLoad(String value) {
         this.onload = value;
     }
 
