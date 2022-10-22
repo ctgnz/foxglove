@@ -302,8 +302,7 @@ public class TextReference implements FXVGEventListener {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
     @XmlAttribute(name = "externalResourcesRequired")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String externalResourcesRequired;
+    protected boolean externalResourcesRequired;
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
@@ -2443,7 +2442,7 @@ public class TextReference implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public String getExternalResourcesRequired() {
+    public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -2455,7 +2454,7 @@ public class TextReference implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public void setExternalResourcesRequired(String value) {
+    public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
 

@@ -291,8 +291,7 @@ public class Symbol implements FXVGEventListener {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
     @XmlAttribute(name = "externalResourcesRequired")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String externalResourcesRequired;
+    protected boolean externalResourcesRequired;
     @XmlAttribute(name = "viewBox")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String viewBox;
@@ -2171,7 +2170,7 @@ public class Symbol implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public String getExternalResourcesRequired() {
+    public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -2183,7 +2182,7 @@ public class Symbol implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public void setExternalResourcesRequired(String value) {
+    public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
 

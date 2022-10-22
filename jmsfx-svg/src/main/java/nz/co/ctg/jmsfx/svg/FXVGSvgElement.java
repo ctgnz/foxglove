@@ -334,8 +334,7 @@ public class FXVGSvgElement implements FXVGEventListener {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
     @XmlAttribute(name = "externalResourcesRequired")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String externalResourcesRequired;
+    protected boolean externalResourcesRequired;
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
@@ -2513,7 +2512,7 @@ public class FXVGSvgElement implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public String getExternalResourcesRequired() {
+    public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -2525,7 +2524,7 @@ public class FXVGSvgElement implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public void setExternalResourcesRequired(String value) {
+    public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
 

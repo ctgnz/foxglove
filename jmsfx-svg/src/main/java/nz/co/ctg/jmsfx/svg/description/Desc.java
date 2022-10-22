@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.jmsfx.svg.FXVGElement;
 import nz.co.ctg.jmsfx.svg.FXVGStylable;
 import nz.co.ctg.jmsfx.svg.adapter.FXVGPaintAdapter;
 
@@ -37,7 +36,7 @@ import javafx.scene.paint.Paint;
     "value"
 })
 @XmlRootElement(name = "desc")
-public class Desc implements FXVGElement, FXVGStylable {
+public class Desc implements FXVGDescriptiveElement, FXVGStylable {
 
     @XmlValue
     protected String value;

@@ -16,13 +16,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.jmsfx.svg.AbstractFXVGElement;
+import nz.co.ctg.jmsfx.svg.FXVGExternalResources;
 import nz.co.ctg.jmsfx.svg.description.Desc;
 import nz.co.ctg.jmsfx.svg.description.Metadata;
 import nz.co.ctg.jmsfx.svg.description.Title;
@@ -33,162 +34,54 @@ import nz.co.ctg.jmsfx.svg.description.Title;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "descOrTitleOrMetadata"
+    "contents"
 })
 @XmlRootElement(name = "mpath")
-public class Mpath {
+public class Mpath extends AbstractFXVGElement implements FXVGExternalResources, FXVGLinkable {
 
-    @XmlAttribute(name = "id")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    protected String id;
-    @XmlAttribute(name = "xml:base")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlBase;
-    @XmlAttribute(name = "xml:lang")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlLang;
-    @XmlAttribute(name = "xml:space")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlSpace;
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
+
     @XmlAttribute(name = "xlink:type")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkType;
+
     @XmlAttribute(name = "xlink:href", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkHref;
+
     @XmlAttribute(name = "xlink:role")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkRole;
+
     @XmlAttribute(name = "xlink:arcrole")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkArcrole;
+
     @XmlAttribute(name = "xlink:title")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkTitle;
+
     @XmlAttribute(name = "xlink:show")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkShow;
+
     @XmlAttribute(name = "xlink:actuate")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
+
     @XmlAttribute(name = "externalResourcesRequired")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String externalResourcesRequired;
+    protected boolean externalResourcesRequired;
+
     @XmlElements({
         @XmlElement(name = "desc", type = Desc.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = Title.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = Metadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> descOrTitleOrMetadata;
+    protected List<Object> contents;
 
-    /**
-     * Gets the value of the id property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
-     * Gets the value of the xmlBase property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlBase() {
-        return xmlBase;
-    }
-
-    /**
-     * Sets the value of the xmlBase property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlBase(String value) {
-        this.xmlBase = value;
-    }
-
-    /**
-     * Gets the value of the xmlLang property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlLang() {
-        return xmlLang;
-    }
-
-    /**
-     * Sets the value of the xmlLang property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlLang(String value) {
-        this.xmlLang = value;
-    }
-
-    /**
-     * Gets the value of the xmlSpace property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlSpace() {
-        return xmlSpace;
-    }
-
-    /**
-     * Sets the value of the xmlSpace property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlSpace(String value) {
-        this.xmlSpace = value;
-    }
-
-    /**
-     * Gets the value of the xmlnsXlink property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Override
     public String getXmlnsXlink() {
         if (xmlnsXlink == null) {
             return "http://www.w3.org/1999/xlink";
@@ -197,26 +90,12 @@ public class Mpath {
         }
     }
 
-    /**
-     * Sets the value of the xmlnsXlink property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
+    @Override
     public void setXmlnsXlink(String value) {
         this.xmlnsXlink = value;
     }
 
-    /**
-     * Gets the value of the xlinkType property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Override
     public String getXlinkType() {
         if (xlinkType == null) {
             return "simple";
@@ -225,122 +104,52 @@ public class Mpath {
         }
     }
 
-    /**
-     * Sets the value of the xlinkType property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
+    @Override
     public void setXlinkType(String value) {
         this.xlinkType = value;
     }
 
-    /**
-     * Gets the value of the xlinkHref property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Override
     public String getXlinkHref() {
         return xlinkHref;
     }
 
-    /**
-     * Sets the value of the xlinkHref property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
+    @Override
     public void setXlinkHref(String value) {
         this.xlinkHref = value;
     }
 
-    /**
-     * Gets the value of the xlinkRole property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Override
     public String getXlinkRole() {
         return xlinkRole;
     }
 
-    /**
-     * Sets the value of the xlinkRole property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
+    @Override
     public void setXlinkRole(String value) {
         this.xlinkRole = value;
     }
 
-    /**
-     * Gets the value of the xlinkArcrole property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Override
     public String getXlinkArcrole() {
         return xlinkArcrole;
     }
 
-    /**
-     * Sets the value of the xlinkArcrole property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
+    @Override
     public void setXlinkArcrole(String value) {
         this.xlinkArcrole = value;
     }
 
-    /**
-     * Gets the value of the xlinkTitle property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Override
     public String getXlinkTitle() {
         return xlinkTitle;
     }
 
-    /**
-     * Sets the value of the xlinkTitle property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
+    @Override
     public void setXlinkTitle(String value) {
         this.xlinkTitle = value;
     }
 
-    /**
-     * Gets the value of the xlinkShow property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Override
     public String getXlinkShow() {
         if (xlinkShow == null) {
             return "other";
@@ -349,26 +158,12 @@ public class Mpath {
         }
     }
 
-    /**
-     * Sets the value of the xlinkShow property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
+    @Override
     public void setXlinkShow(String value) {
         this.xlinkShow = value;
     }
 
-    /**
-     * Gets the value of the xlinkActuate property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Override
     public String getXlinkActuate() {
         if (xlinkActuate == null) {
             return "onLoad";
@@ -377,39 +172,18 @@ public class Mpath {
         }
     }
 
-    /**
-     * Sets the value of the xlinkActuate property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
+    @Override
     public void setXlinkActuate(String value) {
         this.xlinkActuate = value;
     }
 
-    /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getExternalResourcesRequired() {
+    @Override
+    public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setExternalResourcesRequired(String value) {
+    @Override
+    public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
 
@@ -437,11 +211,11 @@ public class Mpath {
      *
      *
      */
-    public List<Object> getDescOrTitleOrMetadata() {
-        if (descOrTitleOrMetadata == null) {
-            descOrTitleOrMetadata = new ArrayList<>();
+    public List<Object> getContents() {
+        if (contents == null) {
+            contents = new ArrayList<>();
         }
-        return this.descOrTitleOrMetadata;
+        return this.contents;
     }
 
 }

@@ -292,8 +292,7 @@ public class Anchor implements FXVGEventListener {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
     @XmlAttribute(name = "externalResourcesRequired")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String externalResourcesRequired;
+    protected boolean externalResourcesRequired;
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String transform;
@@ -1943,6 +1942,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnFocusIn() {
         return onfocusin;
     }
@@ -1955,6 +1955,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnFocusIn(String value) {
         this.onfocusin = value;
     }
@@ -1967,6 +1968,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnFocusOut() {
         return onfocusout;
     }
@@ -1979,6 +1981,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnFocusOut(String value) {
         this.onfocusout = value;
     }
@@ -1991,6 +1994,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnActivate() {
         return onactivate;
     }
@@ -2003,6 +2007,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnActivate(String value) {
         this.onactivate = value;
     }
@@ -2015,6 +2020,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnClick() {
         return onclick;
     }
@@ -2027,6 +2033,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnClick(String value) {
         this.onclick = value;
     }
@@ -2039,6 +2046,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnMouseDown() {
         return onmousedown;
     }
@@ -2051,6 +2059,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnMouseDown(String value) {
         this.onmousedown = value;
     }
@@ -2063,6 +2072,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnMouseUp() {
         return onmouseup;
     }
@@ -2075,6 +2085,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnMouseUp(String value) {
         this.onmouseup = value;
     }
@@ -2087,6 +2098,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnMouseOver() {
         return onmouseover;
     }
@@ -2099,6 +2111,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnMouseOver(String value) {
         this.onmouseover = value;
     }
@@ -2111,6 +2124,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnMouseMove() {
         return onmousemove;
     }
@@ -2123,6 +2137,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnMouseMove(String value) {
         this.onmousemove = value;
     }
@@ -2135,6 +2150,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnMouseOut() {
         return onmouseout;
     }
@@ -2147,6 +2163,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnMouseOut(String value) {
         this.onmouseout = value;
     }
@@ -2159,6 +2176,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOnLoad() {
         return onload;
     }
@@ -2171,6 +2189,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOnLoad(String value) {
         this.onload = value;
     }
@@ -2391,7 +2410,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public String getExternalResourcesRequired() {
+    public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -2403,7 +2422,7 @@ public class Anchor implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public void setExternalResourcesRequired(String value) {
+    public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
 

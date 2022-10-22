@@ -300,8 +300,7 @@ public class Defs implements FXVGEventListener {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
     @XmlAttribute(name = "externalResourcesRequired")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String externalResourcesRequired;
+    protected boolean externalResourcesRequired;
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String transform;
@@ -2249,7 +2248,7 @@ public class Defs implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public String getExternalResourcesRequired() {
+    public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -2261,7 +2260,7 @@ public class Defs implements FXVGEventListener {
      *     {@link String }
      *
      */
-    public void setExternalResourcesRequired(String value) {
+    public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
 

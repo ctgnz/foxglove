@@ -22,8 +22,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.jmsfx.svg.FXVGElement;
-
 
 /**
  *
@@ -33,7 +31,7 @@ import nz.co.ctg.jmsfx.svg.FXVGElement;
     "value"
 })
 @XmlRootElement(name = "metadata")
-public class Metadata implements FXVGElement {
+public class Metadata implements FXVGDescriptiveElement {
 
     @XmlValue
     protected String value;
