@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.jmsfx.svg.AbstractFXVGElement;
 import nz.co.ctg.jmsfx.svg.FXVGExternalResources;
+import nz.co.ctg.jmsfx.svg.FXVGLinkable;
 import nz.co.ctg.jmsfx.svg.description.Desc;
 import nz.co.ctg.jmsfx.svg.description.Metadata;
 import nz.co.ctg.jmsfx.svg.description.Title;

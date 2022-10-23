@@ -8,8 +8,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import nz.co.ctg.jmsfx.svg.AbstractFXVGElement;
 import nz.co.ctg.jmsfx.svg.FXVGConditionalFeatures;
 import nz.co.ctg.jmsfx.svg.FXVGExternalResources;
+import nz.co.ctg.jmsfx.svg.FXVGLinkable;
 
-public abstract class FXVGAnimationElement extends AbstractFXVGElement implements FXVGExternalResources, FXVGConditionalFeatures {
+public abstract class FXVGAnimationElement extends AbstractFXVGElement implements FXVGExternalResources, FXVGConditionalFeatures, FXVGLinkable {
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -186,6 +187,7 @@ public abstract class FXVGAnimationElement extends AbstractFXVGElement implement
         this.onload = value;
     }
 
+    @Override
     public String getXmlnsXlink() {
         if (xmlnsXlink == null) {
             return "http://www.w3.org/1999/xlink";
@@ -194,10 +196,12 @@ public abstract class FXVGAnimationElement extends AbstractFXVGElement implement
         }
     }
 
+    @Override
     public void setXmlnsXlink(String value) {
         this.xmlnsXlink = value;
     }
 
+    @Override
     public String getXlinkType() {
         if (xlinkType == null) {
             return "simple";
@@ -206,42 +210,52 @@ public abstract class FXVGAnimationElement extends AbstractFXVGElement implement
         }
     }
 
+    @Override
     public void setXlinkType(String value) {
         this.xlinkType = value;
     }
 
+    @Override
     public String getXlinkHref() {
         return xlinkHref;
     }
 
+    @Override
     public void setXlinkHref(String value) {
         this.xlinkHref = value;
     }
 
+    @Override
     public String getXlinkRole() {
         return xlinkRole;
     }
 
+    @Override
     public void setXlinkRole(String value) {
         this.xlinkRole = value;
     }
 
+    @Override
     public String getXlinkArcrole() {
         return xlinkArcrole;
     }
 
+    @Override
     public void setXlinkArcrole(String value) {
         this.xlinkArcrole = value;
     }
 
+    @Override
     public String getXlinkTitle() {
         return xlinkTitle;
     }
 
+    @Override
     public void setXlinkTitle(String value) {
         this.xlinkTitle = value;
     }
 
+    @Override
     public String getXlinkShow() {
         if (xlinkShow == null) {
             return "other";
@@ -250,10 +264,12 @@ public abstract class FXVGAnimationElement extends AbstractFXVGElement implement
         }
     }
 
+    @Override
     public void setXlinkShow(String value) {
         this.xlinkShow = value;
     }
 
+    @Override
     public String getXlinkActuate() {
         if (xlinkActuate == null) {
             return "onLoad";
@@ -262,6 +278,7 @@ public abstract class FXVGAnimationElement extends AbstractFXVGElement implement
         }
     }
 
+    @Override
     public void setXlinkActuate(String value) {
         this.xlinkActuate = value;
     }

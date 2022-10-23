@@ -1,4 +1,4 @@
-package nz.co.ctg.jmsfx.svg.animate;
+package nz.co.ctg.jmsfx.svg;
 
 public interface FXVGLinkable {
 
