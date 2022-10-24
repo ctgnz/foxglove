@@ -12,11 +12,10 @@
 
 package org.w3c.dom.svg;
 
-import org.w3c.dom.css.DocumentCSS;
-import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.css.DocumentCSS;
+import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.DocumentEvent;
 
 public interface SVGSVGElement extends SVGElement, SVGTests, SVGLangSpace, SVGExternalResourcesRequired, SVGStylable, SVGLocatable, SVGFitToViewBox, SVGZoomAndPan, DocumentEvent, ViewCSS, DocumentCSS {

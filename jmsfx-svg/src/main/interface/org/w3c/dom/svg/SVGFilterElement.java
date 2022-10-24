@@ -12,8 +12,6 @@
 
 package org.w3c.dom.svg;
 
-import org.w3c.dom.DOMException;
-
 public interface SVGFilterElement extends SVGElement, SVGURIReference, SVGLangSpace, SVGExternalResourcesRequired, SVGStylable, SVGUnitTypes {
     SVGAnimatedEnumeration getFilterUnits();
     SVGAnimatedEnumeration getPrimitiveUnits();

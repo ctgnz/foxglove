@@ -12,8 +12,6 @@
 
 package org.w3c.dom.svg;
 
-import org.w3c.dom.DOMException;
-
 public interface SVGTextContentElement extends SVGElement, SVGTests, SVGLangSpace, SVGExternalResourcesRequired, SVGStylable {
     SVGAnimatedLength getTextLength();
     SVGAnimatedEnumeration getLengthAdjust();

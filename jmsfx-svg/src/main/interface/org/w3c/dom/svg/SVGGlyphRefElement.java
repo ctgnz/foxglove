@@ -12,8 +12,6 @@
 
 package org.w3c.dom.svg;
 
-import org.w3c.dom.DOMException;
-
 public interface SVGGlyphRefElement extends SVGElement, SVGURIReference, SVGStylable {
     String getGlyphRef();
     void setGlyphRef(String glyphRef);

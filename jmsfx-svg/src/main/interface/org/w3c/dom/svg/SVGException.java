@@ -14,6 +14,7 @@ package org.w3c.dom.svg;
 
 public class SVGException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
     public SVGException(short code, String message) {
         super(message);
         this.code = code;

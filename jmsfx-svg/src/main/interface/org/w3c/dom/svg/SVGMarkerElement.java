@@ -12,8 +12,6 @@
 
 package org.w3c.dom.svg;
 
-import org.w3c.dom.DOMException;
-
 public interface SVGMarkerElement extends SVGElement, SVGLangSpace, SVGExternalResourcesRequired, SVGStylable, SVGFitToViewBox {
     SVGAnimatedLength getRefX();
     SVGAnimatedLength getRefY();
