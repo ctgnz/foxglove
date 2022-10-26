@@ -3,11 +3,10 @@ package nz.co.ctg.jmsfx.svg;
 import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,18 +26,26 @@ import javafx.scene.shape.StrokeLineJoin;
 
 public class SvgParseTest {
 
+    private FXVGParser parser;
+
     @BeforeClass
     public static void prep() {
         System.setProperty("javax.xml.accessExternalDTD", "all");
     }
 
+    @Before
+    public void setup() throws JAXBException {
+        parser = new FXVGParser();
+    }
+
     @Test
     public void testParse() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(FXVGSvgElement.class);
-        Unmarshaller u = context.createUnmarshaller();
-        JAXBElement<FXVGSvgElement> element = u.unmarshal(new StreamSource(FXVGSvgElement.class.getResourceAsStream("/test.svg")), FXVGSvgElement.class);
-        assertThat(element.getValue(), notNullValue());
-        FXVGGroup group = (FXVGGroup) element.getValue().getContent().get(2);
+        FXVGSvgElement svg = parser.parse(FXVGSvgElement.class.getResourceAsStream("/test.svg"));
+        assertThat(svg, notNullValue());
+        svg.getContent().forEach(el -> {
+            printElement(el);
+        });
+        FXVGGroup group = (FXVGGroup) svg.getContent().get(2);
         FXVGLine line = (FXVGLine) group.getContent().get(1);
         printElement(line);
         Line fxLine = line.createShape();
@@ -52,14 +59,12 @@ public class SvgParseTest {
 
     @Test
     public void testParseEnums() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(FXVGSvgElement.class);
-        Unmarshaller u = context.createUnmarshaller();
-        JAXBElement<FXVGSvgElement> element = u.unmarshal(new StreamSource(FXVGSvgElement.class.getResourceAsStream("/131.svg")), FXVGSvgElement.class);
-        assertThat(element.getValue(), notNullValue());
-        element.getValue().getContent().forEach(el -> {
+        FXVGSvgElement svg = parser.parse(FXVGSvgElement.class.getResourceAsStream("/131.svg"));
+        assertThat(svg, notNullValue());
+        svg.getContent().forEach(el -> {
             printElement(el);
         });
-        FXVGGroup group = (FXVGGroup) element.getValue().getContent().get(0);
+        FXVGGroup group = (FXVGGroup) svg.getContent().get(0);
         group = (FXVGGroup) group.getContent().get(0);
         FXVGLine line = (FXVGLine) group.getContent().get(0);
         printElement(line);
