@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import javafx.scene.shape.Polyline;
+
 
 /**
  *
@@ -25,11 +27,17 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "polyline")
 @XmlRootElement(name = "polyline")
-public class FXVGPolyline extends AbstractFXVGShape {
+public class FXVGPolyline extends AbstractFXVGShape implements FXVGShape<Polyline> {
 
     @XmlAttribute(name = "points", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String points;
+
+    @Override
+    public Polyline createShape() {
+        Polyline polyline = new Polyline();
+        return polyline;
+    }
 
     /**
      * Gets the value of the points property.

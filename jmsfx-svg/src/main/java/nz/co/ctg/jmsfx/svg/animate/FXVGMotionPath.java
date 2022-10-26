@@ -38,7 +38,7 @@ import nz.co.ctg.jmsfx.svg.description.Title;
     "contents"
 })
 @XmlRootElement(name = "mpath")
-public class Mpath extends AbstractFXVGElement implements FXVGExternalResources, FXVGLinkable {
+public class FXVGMotionPath extends AbstractFXVGElement implements FXVGExternalResources, FXVGLinkable {
 
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

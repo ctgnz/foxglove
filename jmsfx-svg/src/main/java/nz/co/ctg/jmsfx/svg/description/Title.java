@@ -24,8 +24,12 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.jmsfx.svg.FXVGStylable;
 import nz.co.ctg.jmsfx.svg.adapter.FXVGPaintAdapter;
+import nz.co.ctg.jmsfx.svg.adapter.StrokeLineCapAdapter;
+import nz.co.ctg.jmsfx.svg.adapter.StrokeLineJoinAdapter;
 
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 
 /**
@@ -150,20 +154,17 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeDasharray;
     @XmlAttribute(name = "stroke-dashoffset")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDashoffset;
+    protected double strokeDashoffset;
     @XmlAttribute(name = "stroke-linecap")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinecap;
+    @XmlJavaTypeAdapter(StrokeLineCapAdapter.class)
+    protected StrokeLineCap strokeLinecap;
     @XmlAttribute(name = "stroke-linejoin")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinejoin;
+    @XmlJavaTypeAdapter(StrokeLineJoinAdapter.class)
+    protected StrokeLineJoin strokeLinejoin;
     @XmlAttribute(name = "stroke-miterlimit")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeMiterlimit;
+    protected double strokeMiterlimit;
     @XmlAttribute(name = "stroke-width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeWidth;
+    protected double strokeWidth;
     @XmlAttribute(name = "color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String color;
@@ -1102,7 +1103,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public String getStrokeDasharray() {
+    public String getStrokeDashArray() {
         return strokeDasharray;
     }
 
@@ -1115,7 +1116,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public void setStrokeDasharray(String value) {
+    public void setStrokeDashArray(String value) {
         this.strokeDasharray = value;
     }
 
@@ -1128,7 +1129,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public String getStrokeDashoffset() {
+    public double getStrokeDashOffset() {
         return strokeDashoffset;
     }
 
@@ -1141,7 +1142,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public void setStrokeDashoffset(String value) {
+    public void setStrokeDashOffset(double value) {
         this.strokeDashoffset = value;
     }
 
@@ -1154,7 +1155,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public String getStrokeLinecap() {
+    public StrokeLineCap getStrokeLineCap() {
         return strokeLinecap;
     }
 
@@ -1167,7 +1168,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public void setStrokeLinecap(String value) {
+    public void setStrokeLineCap(StrokeLineCap value) {
         this.strokeLinecap = value;
     }
 
@@ -1180,7 +1181,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public String getStrokeLinejoin() {
+    public StrokeLineJoin getStrokeLineJoin() {
         return strokeLinejoin;
     }
 
@@ -1193,7 +1194,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public void setStrokeLinejoin(String value) {
+    public void setStrokeLineJoin(StrokeLineJoin value) {
         this.strokeLinejoin = value;
     }
 
@@ -1206,7 +1207,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public String getStrokeMiterlimit() {
+    public double getStrokeMiterLimit() {
         return strokeMiterlimit;
     }
 
@@ -1219,7 +1220,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public void setStrokeMiterlimit(String value) {
+    public void setStrokeMiterLimit(double value) {
         this.strokeMiterlimit = value;
     }
 
@@ -1232,7 +1233,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public String getStrokeWidth() {
+    public double getStrokeWidth() {
         return strokeWidth;
     }
 
@@ -1245,7 +1246,7 @@ public class Title implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public void setStrokeWidth(String value) {
+    public void setStrokeWidth(double value) {
         this.strokeWidth = value;
     }
 

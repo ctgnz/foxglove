@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import javafx.scene.shape.Circle;
+
 
 /**
  *
@@ -23,7 +25,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "circle")
 @XmlRootElement(name = "circle")
-public class FXVGCircle extends AbstractFXVGShape {
+public class FXVGCircle extends AbstractFXVGShape implements FXVGShape<Circle> {
 
     @XmlAttribute(name = "cx")
     protected double centreX;
@@ -33,6 +35,12 @@ public class FXVGCircle extends AbstractFXVGShape {
 
     @XmlAttribute(name = "r", required = true)
     protected double radius;
+
+    @Override
+    public Circle createShape() {
+        Circle circle = new Circle(centreY, centreX, radius);
+        return circle;
+    }
 
     /**
      * Gets the value of the cx property.
@@ -44,18 +52,6 @@ public class FXVGCircle extends AbstractFXVGShape {
      */
     public double getCentreX() {
         return centreX;
-    }
-
-    /**
-     * Sets the value of the cx property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
-    public void setCentreX(double value) {
-        this.centreX = value;
     }
 
     /**
@@ -71,18 +67,6 @@ public class FXVGCircle extends AbstractFXVGShape {
     }
 
     /**
-     * Sets the value of the cy property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
-    public void setCentreY(double value) {
-        this.centreY = value;
-    }
-
-    /**
      * Gets the value of the r property.
      *
      * @return
@@ -92,6 +76,30 @@ public class FXVGCircle extends AbstractFXVGShape {
      */
     public double getRadius() {
         return radius;
+    }
+
+    /**
+     * Sets the value of the cx property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link double }
+     *
+     */
+    public void setCentreX(double value) {
+        this.centreX = value;
+    }
+
+    /**
+     * Sets the value of the cy property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link double }
+     *
+     */
+    public void setCentreY(double value) {
+        this.centreY = value;
     }
 
     /**

@@ -16,6 +16,8 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 public interface FXVGStylable {
     default CSSStyleDeclaration getStyleDeclaration() {
@@ -130,29 +132,29 @@ public interface FXVGStylable {
 
     String getColor();
 
-    void setStrokeWidth(String value);
+    void setStrokeWidth(double value);
 
-    String getStrokeWidth();
+    double getStrokeWidth();
 
-    void setStrokeMiterlimit(String value);
+    void setStrokeMiterLimit(double value);
 
-    String getStrokeMiterlimit();
+    double getStrokeMiterLimit();
 
-    void setStrokeLinejoin(String value);
+    void setStrokeLineJoin(StrokeLineJoin value);
 
-    String getStrokeLinejoin();
+    StrokeLineJoin getStrokeLineJoin();
 
-    void setStrokeLinecap(String value);
+    void setStrokeLineCap(StrokeLineCap value);
 
-    String getStrokeLinecap();
+    StrokeLineCap getStrokeLineCap();
 
-    void setStrokeDashoffset(String value);
+    void setStrokeDashOffset(double value);
 
-    String getStrokeDashoffset();
+    double getStrokeDashOffset();
 
-    void setStrokeDasharray(String value);
+    void setStrokeDashArray(String value);
 
-    String getStrokeDasharray();
+    String getStrokeDashArray();
 
     void setStroke(Paint value);
 

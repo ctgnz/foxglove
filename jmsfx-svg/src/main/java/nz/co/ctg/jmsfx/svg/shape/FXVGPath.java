@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import javafx.scene.shape.SVGPath;
+
 
 /**
  *
@@ -25,15 +27,22 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "path")
 @XmlRootElement(name = "path")
-public class FXVGPath extends AbstractFXVGShape {
+public class FXVGPath extends AbstractFXVGShape implements FXVGShape<SVGPath> {
 
     @XmlAttribute(name = "d", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String d;
+    protected String pathData;
 
     @XmlAttribute(name = "pathLength")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String pathLength;
+
+    @Override
+    public SVGPath createShape() {
+        SVGPath svgPath = new SVGPath();
+        svgPath.setContent(pathData);
+        return svgPath;
+    }
 
     /**
      * Gets the value of the d property.
@@ -44,19 +53,7 @@ public class FXVGPath extends AbstractFXVGShape {
      *
      */
     public String getD() {
-        return d;
-    }
-
-    /**
-     * Sets the value of the d property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setD(String value) {
-        this.d = value;
+        return pathData;
     }
 
     /**
@@ -69,6 +66,18 @@ public class FXVGPath extends AbstractFXVGShape {
      */
     public String getPathLength() {
         return pathLength;
+    }
+
+    /**
+     * Sets the value of the d property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setD(String value) {
+        this.pathData = value;
     }
 
     /**
@@ -87,7 +96,7 @@ public class FXVGPath extends AbstractFXVGShape {
     protected void toStringDetail(ToStringHelper builder) {
         builder.add("pathLength", pathLength);
         super.toStringDetail(builder);
-        builder.add("d", d);
+        builder.add("d", pathData);
     }
 
 }

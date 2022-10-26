@@ -86,7 +86,7 @@ public class AnimateMotion extends FXVGAnimationElement {
     protected String origin;
 
     @XmlElements({
-        @XmlElement(name = "mpath", required = true, type = Mpath.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "mpath", required = true, type = FXVGMotionPath.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "desc", required = true, type = Desc.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", required = true, type = Title.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", required = true, type = Metadata.class, namespace = "http://www.w3.org/2000/svg")
@@ -219,7 +219,7 @@ public class AnimateMotion extends FXVGAnimationElement {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Mpath }
+     * {@link FXVGMotionPath }
      * {@link Desc }
      * {@link Title }
      * {@link Metadata }

@@ -10,8 +10,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.jmsfx.svg.adapter.FXVGPaintAdapter;
+import nz.co.ctg.jmsfx.svg.adapter.StrokeLineCapAdapter;
+import nz.co.ctg.jmsfx.svg.adapter.StrokeLineJoinAdapter;
 
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Shape;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractFXVGStylable extends AbstractFXVGElement implements FXVGStylable {
@@ -142,27 +147,24 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
 
     @XmlAttribute(name = "stroke-dasharray")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDasharray;
+    protected String strokeDashArray;
 
     @XmlAttribute(name = "stroke-dashoffset")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDashoffset;
+    protected double strokeDashOffset;
 
     @XmlAttribute(name = "stroke-linecap")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinecap;
+    @XmlJavaTypeAdapter(StrokeLineCapAdapter.class)
+    protected StrokeLineCap strokeLineCap;
 
     @XmlAttribute(name = "stroke-linejoin")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinejoin;
+    @XmlJavaTypeAdapter(StrokeLineJoinAdapter.class)
+    protected StrokeLineJoin strokeLineJoin;
 
     @XmlAttribute(name = "stroke-miterlimit")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeMiterlimit;
+    protected double strokeMiterLimit;
 
     @XmlAttribute(name = "stroke-width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeWidth;
+    protected double strokeWidth;
 
     @XmlAttribute(name = "color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -1000,8 +1002,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public String getStrokeDasharray() {
-        return strokeDasharray;
+    public String getStrokeDashArray() {
+        return strokeDashArray;
     }
 
     /**
@@ -1013,8 +1015,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public void setStrokeDasharray(String value) {
-        this.strokeDasharray = value;
+    public void setStrokeDashArray(String value) {
+        this.strokeDashArray = value;
     }
 
     /**
@@ -1026,8 +1028,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public String getStrokeDashoffset() {
-        return strokeDashoffset;
+    public double getStrokeDashOffset() {
+        return strokeDashOffset;
     }
 
     /**
@@ -1039,8 +1041,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public void setStrokeDashoffset(String value) {
-        this.strokeDashoffset = value;
+    public void setStrokeDashOffset(double value) {
+        this.strokeDashOffset = value;
     }
 
     /**
@@ -1052,8 +1054,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public String getStrokeLinecap() {
-        return strokeLinecap;
+    public StrokeLineCap getStrokeLineCap() {
+        return strokeLineCap;
     }
 
     /**
@@ -1065,8 +1067,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public void setStrokeLinecap(String value) {
-        this.strokeLinecap = value;
+    public void setStrokeLineCap(StrokeLineCap value) {
+        this.strokeLineCap = value;
     }
 
     /**
@@ -1078,8 +1080,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public String getStrokeLinejoin() {
-        return strokeLinejoin;
+    public StrokeLineJoin getStrokeLineJoin() {
+        return strokeLineJoin;
     }
 
     /**
@@ -1091,8 +1093,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public void setStrokeLinejoin(String value) {
-        this.strokeLinejoin = value;
+    public void setStrokeLineJoin(StrokeLineJoin value) {
+        this.strokeLineJoin = value;
     }
 
     /**
@@ -1104,8 +1106,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public String getStrokeMiterlimit() {
-        return strokeMiterlimit;
+    public double getStrokeMiterLimit() {
+        return strokeMiterLimit;
     }
 
     /**
@@ -1117,8 +1119,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public void setStrokeMiterlimit(String value) {
-        this.strokeMiterlimit = value;
+    public void setStrokeMiterLimit(double value) {
+        this.strokeMiterLimit = value;
     }
 
     /**
@@ -1130,7 +1132,7 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public String getStrokeWidth() {
+    public double getStrokeWidth() {
         return strokeWidth;
     }
 
@@ -1143,7 +1145,7 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public void setStrokeWidth(String value) {
+    public void setStrokeWidth(double value) {
         this.strokeWidth = value;
     }
 
@@ -1855,5 +1857,21 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
         builder.add("style", style);
         builder.add("className", className);
     }
+
+    protected void setColors(Shape shape) {
+        shape.setFill(fill);
+        shape.setStroke(stroke);
+    }
+
+    protected void setStrokeProperties(Shape shape) {
+        shape.setStrokeWidth(strokeWidth);
+        shape.setStrokeMiterLimit(strokeMiterLimit);
+        shape.setStrokeLineCap(strokeLineCap);
+        shape.setStrokeLineJoin(strokeLineJoin);
+        shape.setStrokeDashOffset(strokeDashOffset);
+    //        if (strokeDashArray != null) {
+    //            shape.getStrokeDashArray().addAll(strokeDashArray);
+    //        }
+        }
 
 }

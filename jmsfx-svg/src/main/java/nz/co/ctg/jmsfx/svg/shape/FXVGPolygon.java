@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import javafx.scene.shape.Polygon;
+
 
 /**
  *
@@ -25,11 +27,17 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "polygon")
 @XmlRootElement(name = "polygon")
-public class FXVGPolygon extends AbstractFXVGShape {
+public class FXVGPolygon extends AbstractFXVGShape implements FXVGShape<Polygon> {
 
     @XmlAttribute(name = "points", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String points;
+
+    @Override
+    public Polygon createShape() {
+        Polygon polygon = new Polygon(getPointList());
+        return polygon;
+    }
 
     /**
      * Gets the value of the points property.
@@ -59,6 +67,10 @@ public class FXVGPolygon extends AbstractFXVGShape {
     protected void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
         builder.add("points", points);
+    }
+
+    private double[] getPointList() {
+        return new double[] { 0, 0 };
     }
 
 }

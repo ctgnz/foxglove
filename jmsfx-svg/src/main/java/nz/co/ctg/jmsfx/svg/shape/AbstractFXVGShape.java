@@ -35,6 +35,7 @@ import nz.co.ctg.jmsfx.svg.description.Desc;
 import nz.co.ctg.jmsfx.svg.description.Metadata;
 import nz.co.ctg.jmsfx.svg.description.Title;
 
+import javafx.scene.shape.Shape;
 import javafx.scene.transform.Transform;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -598,11 +599,11 @@ public abstract class AbstractFXVGShape extends AbstractFXVGStylable implements 
         builder.add("fill", fill);
         builder.add("fillRule", fillRule);
         builder.add("stroke", stroke);
-        builder.add("strokeDasharray", strokeDasharray);
-        builder.add("strokeDashoffset", strokeDashoffset);
-        builder.add("strokeLinecap", strokeLinecap);
-        builder.add("strokeLinejoin", strokeLinejoin);
-        builder.add("strokeMiterlimit", strokeMiterlimit);
+        builder.add("strokeDasharray", strokeDashArray);
+        builder.add("strokeDashoffset", strokeDashOffset);
+        builder.add("strokeLinecap", strokeLineCap);
+        builder.add("strokeLinejoin", strokeLineJoin);
+        builder.add("strokeMiterlimit", strokeMiterLimit);
         builder.add("strokeWidth", strokeWidth);
         builder.add("color", color);
         builder.add("colorInterpolation", colorInterpolation);
@@ -644,7 +645,7 @@ public abstract class AbstractFXVGShape extends AbstractFXVGStylable implements 
         builder.add("externalResourcesRequired", externalResourcesRequired);
         builder.add("transform", transform);
         if (content != null) {
-            builder.add("elements", content.subList(0, Math.min(content.size(), maxLen)));
+            builder.add("content", content.subList(0, Math.min(content.size(), maxLen)));
         }
     }
 
@@ -675,6 +676,10 @@ public abstract class AbstractFXVGShape extends AbstractFXVGStylable implements 
     public CSSStyleDeclaration getStyleDeclaration() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    protected void setTransforms(Shape shape) {
+//        shape.getTransforms().addAll(transforms);
     }
 
 }

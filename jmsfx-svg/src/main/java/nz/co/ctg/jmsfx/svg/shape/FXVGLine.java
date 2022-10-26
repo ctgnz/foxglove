@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import javafx.scene.shape.Line;
+
 
 /**
  *
@@ -23,7 +25,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "line")
 @XmlRootElement(name = "line")
-public class FXVGLine extends AbstractFXVGShape {
+public class FXVGLine extends AbstractFXVGShape implements FXVGShape<Line> {
 
     @XmlAttribute(name = "x1")
     protected double startX;
@@ -37,52 +39,13 @@ public class FXVGLine extends AbstractFXVGShape {
     @XmlAttribute(name = "y2")
     protected double endY;
 
-    /**
-     * Gets the value of the x1 property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
-    public double getStartX() {
-        return startX;
-    }
-
-    /**
-     * Sets the value of the x1 property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
-    public void setStartX(double value) {
-        this.startX = value;
-    }
-
-    /**
-     * Gets the value of the y1 property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
-    public double getStartY() {
-        return startY;
-    }
-
-    /**
-     * Sets the value of the y1 property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
-    public void setStartY(double value) {
-        this.startY = value;
+    @Override
+    public Line createShape() {
+        Line line = new Line(startX, startY, endX, endY);
+        setColors(line);
+        setStrokeProperties(line);
+        setTransforms(line);
+        return line;
     }
 
     /**
@@ -98,18 +61,6 @@ public class FXVGLine extends AbstractFXVGShape {
     }
 
     /**
-     * Sets the value of the x2 property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
-    public void setEndX(double value) {
-        this.endX = value;
-    }
-
-    /**
      * Gets the value of the y2 property.
      *
      * @return
@@ -122,6 +73,42 @@ public class FXVGLine extends AbstractFXVGShape {
     }
 
     /**
+     * Gets the value of the x1 property.
+     *
+     * @return
+     *     possible object is
+     *     {@link double }
+     *
+     */
+    public double getStartX() {
+        return startX;
+    }
+
+    /**
+     * Gets the value of the y1 property.
+     *
+     * @return
+     *     possible object is
+     *     {@link double }
+     *
+     */
+    public double getStartY() {
+        return startY;
+    }
+
+    /**
+     * Sets the value of the x2 property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link double }
+     *
+     */
+    public void setEndX(double value) {
+        this.endX = value;
+    }
+
+    /**
      * Sets the value of the y2 property.
      *
      * @param value
@@ -131,6 +118,30 @@ public class FXVGLine extends AbstractFXVGShape {
      */
     public void setEndY(double value) {
         this.endY = value;
+    }
+
+    /**
+     * Sets the value of the x1 property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link double }
+     *
+     */
+    public void setStartX(double value) {
+        this.startX = value;
+    }
+
+    /**
+     * Sets the value of the y1 property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link double }
+     *
+     */
+    public void setStartY(double value) {
+        this.startY = value;
     }
 
     @Override

@@ -14,7 +14,7 @@ import nz.co.ctg.jmsfx.svg.animate.Animate;
 import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
 import nz.co.ctg.jmsfx.svg.animate.AnimateMotion;
 import nz.co.ctg.jmsfx.svg.animate.AnimateTransform;
-import nz.co.ctg.jmsfx.svg.animate.Mpath;
+import nz.co.ctg.jmsfx.svg.animate.FXVGMotionPath;
 import nz.co.ctg.jmsfx.svg.animate.Set;
 import nz.co.ctg.jmsfx.svg.clip.ClipPath;
 import nz.co.ctg.jmsfx.svg.clip.Mask;
@@ -525,11 +525,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Mpath }
+     * Create an instance of {@link FXVGMotionPath }
      * 
      */
-    public Mpath createMpath() {
-        return new Mpath();
+    public FXVGMotionPath createMpath() {
+        return new FXVGMotionPath();
     }
 
     /**

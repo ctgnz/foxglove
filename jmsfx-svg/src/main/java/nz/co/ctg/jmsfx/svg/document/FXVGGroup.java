@@ -62,7 +62,7 @@ import nz.co.ctg.jmsfx.svg.text.FontFace;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "g", propOrder = {
-    "elements"
+    "content"
 })
 @XmlRootElement(name = "g", namespace = "http://www.w3.org/2000/svg")
 public class FXVGGroup implements FXVGEventListener {
@@ -429,7 +429,7 @@ public class FXVGGroup implements FXVGEventListener {
         @XmlElement(name = "font-face", type = FontFace.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = ForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> elements;
+    protected List<Object> content;
 
     /**
      * Gets the value of the id property.
@@ -2432,11 +2432,11 @@ public class FXVGGroup implements FXVGEventListener {
      *
      *
      */
-    public List<Object> getElements() {
-        if (elements == null) {
-            elements = new ArrayList<>();
+    public List<Object> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
         }
-        return this.elements;
+        return this.content;
     }
 
     @Override

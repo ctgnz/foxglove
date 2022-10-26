@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import javafx.scene.shape.Ellipse;
+
 
 /**
  *
@@ -23,7 +25,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ellipse")
 @XmlRootElement(name = "ellipse")
-public class FXVGEllipse extends AbstractFXVGShape {
+public class FXVGEllipse extends AbstractFXVGShape implements FXVGShape<Ellipse> {
 
     @XmlAttribute(name = "cx")
     protected double centreX;
@@ -37,6 +39,12 @@ public class FXVGEllipse extends AbstractFXVGShape {
     @XmlAttribute(name = "ry", required = true)
     protected double radiusY;
 
+    @Override
+    public Ellipse createShape() {
+        Ellipse ellipse = new Ellipse(centreY, centreX, radiusX, radiusY);
+        return ellipse;
+    }
+
     /**
      * Gets the value of the cx property.
      *
@@ -47,18 +55,6 @@ public class FXVGEllipse extends AbstractFXVGShape {
      */
     public double getCentreX() {
         return centreX;
-    }
-
-    /**
-     * Sets the value of the cx property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
-    public void setCentreX(double value) {
-        this.centreX = value;
     }
 
     /**
@@ -74,18 +70,6 @@ public class FXVGEllipse extends AbstractFXVGShape {
     }
 
     /**
-     * Sets the value of the cy property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
-    public void setCentreY(double value) {
-        this.centreY = value;
-    }
-
-    /**
      * Gets the value of the rx property.
      *
      * @return
@@ -98,18 +82,6 @@ public class FXVGEllipse extends AbstractFXVGShape {
     }
 
     /**
-     * Sets the value of the rx property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
-    public void setRadiusX(double value) {
-        this.radiusX = value;
-    }
-
-    /**
      * Gets the value of the ry property.
      *
      * @return
@@ -119,6 +91,42 @@ public class FXVGEllipse extends AbstractFXVGShape {
      */
     public double getRadiusY() {
         return radiusY;
+    }
+
+    /**
+     * Sets the value of the cx property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link double }
+     *
+     */
+    public void setCentreX(double value) {
+        this.centreX = value;
+    }
+
+    /**
+     * Sets the value of the cy property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link double }
+     *
+     */
+    public void setCentreY(double value) {
+        this.centreY = value;
+    }
+
+    /**
+     * Sets the value of the rx property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link double }
+     *
+     */
+    public void setRadiusX(double value) {
+        this.radiusX = value;
     }
 
     /**
