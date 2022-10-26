@@ -13,14 +13,17 @@ import org.junit.Test;
 
 import nz.co.ctg.jmsfx.svg.document.FXVGGroup;
 import nz.co.ctg.jmsfx.svg.shape.FXVGLine;
+import nz.co.ctg.jmsfx.svg.shape.FXVGPolyline;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
@@ -42,9 +45,12 @@ public class SvgParseTest {
     public void testParse() throws Exception {
         FXVGSvgElement svg = parser.parse(FXVGSvgElement.class.getResourceAsStream("/test.svg"));
         assertThat(svg, notNullValue());
-        svg.getContent().forEach(el -> {
-            printElement(el);
-        });
+//        svg.getContent().forEach(this::printElement);
+    }
+
+    @Test
+    public void testParseLine() throws Exception {
+        FXVGSvgElement svg = parser.parse(FXVGSvgElement.class.getResourceAsStream("/test.svg"));
         FXVGGroup group = (FXVGGroup) svg.getContent().get(2);
         FXVGLine line = (FXVGLine) group.getContent().get(1);
         printElement(line);
@@ -58,12 +64,21 @@ public class SvgParseTest {
     }
 
     @Test
+    public void testParsePolys() throws Exception {
+        FXVGSvgElement svg = parser.parse(FXVGSvgElement.class.getResourceAsStream("/27110306.svg"));
+        assertThat(svg, notNullValue());
+        FXVGGroup group = (FXVGGroup) svg.getContent().get(1);
+        group = (FXVGGroup) group.getContent().get(0);
+        FXVGPolyline polyline = (FXVGPolyline) group.getContent().get(3);
+        printElement(polyline);
+        Polyline fxPolyline = polyline.createShape();
+        assertThat(fxPolyline.getPoints(), hasSize(6));
+    }
+
+    @Test
     public void testParseEnums() throws Exception {
         FXVGSvgElement svg = parser.parse(FXVGSvgElement.class.getResourceAsStream("/131.svg"));
         assertThat(svg, notNullValue());
-        svg.getContent().forEach(el -> {
-            printElement(el);
-        });
         FXVGGroup group = (FXVGGroup) svg.getContent().get(0);
         group = (FXVGGroup) group.getContent().get(0);
         FXVGLine line = (FXVGLine) group.getContent().get(0);

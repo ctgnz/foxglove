@@ -8,16 +8,21 @@
 
 package nz.co.ctg.jmsfx.svg.shape;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.jmsfx.svg.adapter.PointListAdapter;
+
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 
 
@@ -30,12 +35,15 @@ import javafx.scene.shape.Polygon;
 public class FXVGPolygon extends AbstractFXVGShape implements FXVGShape<Polygon> {
 
     @XmlAttribute(name = "points", required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String points;
+    @XmlJavaTypeAdapter(PointListAdapter.class)
+    protected List<Point2D> points;
 
     @Override
     public Polygon createShape() {
         Polygon polygon = new Polygon(getPointList());
+        setColors(polygon);
+        setStrokeProperties(polygon);
+        setTransforms(polygon);
         return polygon;
     }
 
@@ -47,7 +55,7 @@ public class FXVGPolygon extends AbstractFXVGShape implements FXVGShape<Polygon>
      *     {@link String }
      *
      */
-    public String getPoints() {
+    public List<Point2D> getPoints() {
         return points;
     }
 
@@ -59,7 +67,7 @@ public class FXVGPolygon extends AbstractFXVGShape implements FXVGShape<Polygon>
      *     {@link String }
      *
      */
-    public void setPoints(String value) {
+    public void setPoints(List<Point2D> value) {
         this.points = value;
     }
 
@@ -70,7 +78,7 @@ public class FXVGPolygon extends AbstractFXVGShape implements FXVGShape<Polygon>
     }
 
     private double[] getPointList() {
-        return new double[] { 0, 0 };
+        return points.stream().flatMap(pt -> Stream.of(pt.getX(), pt.getY())).mapToDouble(Double::doubleValue).toArray();
     }
 
 }
