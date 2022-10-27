@@ -38,7 +38,10 @@ public class FXVGCircle extends AbstractFXVGShape implements FXVGShape<Circle> {
 
     @Override
     public Circle createShape() {
-        Circle circle = new Circle(centreY, centreX, radius);
+        Circle circle = new Circle(centreX, centreY, radius);
+        setColors(circle);
+        setStrokeProperties(circle);
+        setTransforms(circle);
         return circle;
     }
 

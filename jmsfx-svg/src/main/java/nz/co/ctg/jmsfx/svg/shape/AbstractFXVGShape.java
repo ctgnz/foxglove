@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 
@@ -26,6 +27,7 @@ import nz.co.ctg.jmsfx.svg.FXVGEventListener;
 import nz.co.ctg.jmsfx.svg.FXVGExternalResources;
 import nz.co.ctg.jmsfx.svg.FXVGSvgElement;
 import nz.co.ctg.jmsfx.svg.FXVGTransformable;
+import nz.co.ctg.jmsfx.svg.adapter.FXTransformListHandler;
 import nz.co.ctg.jmsfx.svg.animate.Animate;
 import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
 import nz.co.ctg.jmsfx.svg.animate.AnimateMotion;
@@ -669,7 +671,10 @@ public abstract class AbstractFXVGShape extends AbstractFXVGStylable implements 
 
     @Override
     public List<Transform> getTransformList() {
-        return Collections.emptyList();
+        if (StringUtils.isBlank(transform)) {
+            return Collections.emptyList();
+        }
+        return new FXTransformListHandler().parse(transform);
     }
 
     @Override
@@ -679,7 +684,8 @@ public abstract class AbstractFXVGShape extends AbstractFXVGStylable implements 
     }
 
     protected void setTransforms(Shape shape) {
-//        shape.getTransforms().addAll(transforms);
+        List<Transform> transformList = getTransformList();
+        shape.getTransforms().addAll(transformList);
     }
 
 }

@@ -57,11 +57,14 @@ import nz.co.ctg.jmsfx.svg.shape.FXVGPath;
 import nz.co.ctg.jmsfx.svg.shape.FXVGPolygon;
 import nz.co.ctg.jmsfx.svg.shape.FXVGPolyline;
 import nz.co.ctg.jmsfx.svg.shape.FXVGRectangle;
+import nz.co.ctg.jmsfx.svg.shape.FXVGShape;
 import nz.co.ctg.jmsfx.svg.style.Style;
 import nz.co.ctg.jmsfx.svg.text.AltGlyphDef;
 import nz.co.ctg.jmsfx.svg.text.FXVGText;
 import nz.co.ctg.jmsfx.svg.text.Font;
 import nz.co.ctg.jmsfx.svg.text.FontFace;
+
+import javafx.scene.Group;
 
 
 /**
@@ -2878,6 +2881,21 @@ public class FXVGSvgElement implements FXVGEventListener {
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    public Group createGraphic() {
+        Group baseGroup = new Group();
+        content.forEach(child -> {
+            if (child instanceof FXVGGroup) {
+                FXVGGroup group = (FXVGGroup) child;
+                baseGroup.getChildren().add(group.createGroup());
+            }
+            if (child instanceof FXVGShape<?>) {
+                FXVGShape<?> shape = (FXVGShape<?>) child;
+                baseGroup.getChildren().add(shape.createShape());
+            }
+        });
+        return baseGroup;
     }
 
 }

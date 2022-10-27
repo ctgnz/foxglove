@@ -1,6 +1,7 @@
 package nz.co.ctg.jmsfx.svg;
 
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -21,11 +22,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.transform.Transform;
 
 public class SvgParseTest {
 
@@ -45,7 +48,15 @@ public class SvgParseTest {
     public void testParse() throws Exception {
         FXVGSvgElement svg = parser.parse(FXVGSvgElement.class.getResourceAsStream("/test.svg"));
         assertThat(svg, notNullValue());
-//        svg.getContent().forEach(this::printElement);
+        svg.getContent().forEach(this::printElement);
+    }
+
+    @Test
+    public void testParseTransform() throws Exception {
+        FXVGSvgElement svg = parser.parse(FXVGSvgElement.class.getResourceAsStream("/test.svg"));
+        FXVGGroup group = (FXVGGroup) svg.getContent().get(4);
+        List<Transform> transformList = group.getTransformList();
+        assertThat(transformList, hasSize(1));
     }
 
     @Test
@@ -94,7 +105,10 @@ public class SvgParseTest {
     private void printElement(Object el) {
         System.out.println(el);
         if (el instanceof FXVGGroup) {
-            ((FXVGGroup) el).getContent().forEach(this::printElement);
+            FXVGGroup group = (FXVGGroup) el;
+            Group svgGroup = group.createGroup();
+            System.out.println(svgGroup);
+            group.getContent().forEach(this::printElement);
         }
     }
 

@@ -41,6 +41,9 @@ public class FXVGPath extends AbstractFXVGShape implements FXVGShape<SVGPath> {
     public SVGPath createShape() {
         SVGPath svgPath = new SVGPath();
         svgPath.setContent(pathData);
+        setColors(svgPath);
+        setStrokeProperties(svgPath);
+        setTransforms(svgPath);
         return svgPath;
     }
 

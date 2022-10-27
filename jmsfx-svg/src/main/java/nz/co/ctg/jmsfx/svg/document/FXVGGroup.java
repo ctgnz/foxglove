@@ -28,6 +28,8 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.jmsfx.svg.FXVGEventListener;
 import nz.co.ctg.jmsfx.svg.FXVGSvgElement;
+import nz.co.ctg.jmsfx.svg.FXVGTransformable;
+import nz.co.ctg.jmsfx.svg.adapter.FXTransformListHandler;
 import nz.co.ctg.jmsfx.svg.animate.Animate;
 import nz.co.ctg.jmsfx.svg.animate.AnimateColor;
 import nz.co.ctg.jmsfx.svg.animate.AnimateMotion;
@@ -50,11 +52,15 @@ import nz.co.ctg.jmsfx.svg.shape.FXVGPath;
 import nz.co.ctg.jmsfx.svg.shape.FXVGPolygon;
 import nz.co.ctg.jmsfx.svg.shape.FXVGPolyline;
 import nz.co.ctg.jmsfx.svg.shape.FXVGRectangle;
+import nz.co.ctg.jmsfx.svg.shape.FXVGShape;
 import nz.co.ctg.jmsfx.svg.style.Style;
 import nz.co.ctg.jmsfx.svg.text.AltGlyphDef;
 import nz.co.ctg.jmsfx.svg.text.FXVGText;
 import nz.co.ctg.jmsfx.svg.text.Font;
 import nz.co.ctg.jmsfx.svg.text.FontFace;
+
+import javafx.scene.Group;
+import javafx.scene.transform.Transform;
 
 
 /**
@@ -65,7 +71,7 @@ import nz.co.ctg.jmsfx.svg.text.FontFace;
     "content"
 })
 @XmlRootElement(name = "g", namespace = "http://www.w3.org/2000/svg")
-public class FXVGGroup implements FXVGEventListener {
+public class FXVGGroup implements FXVGEventListener, FXVGTransformable {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -2355,6 +2361,7 @@ public class FXVGGroup implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getTransform() {
         return transform;
     }
@@ -2367,6 +2374,7 @@ public class FXVGGroup implements FXVGEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setTransform(String value) {
         this.transform = value;
     }
@@ -2523,6 +2531,31 @@ public class FXVGGroup implements FXVGEventListener {
         builder.add("externalResourcesRequired", externalResourcesRequired);
         builder.add("transform", transform);
         return builder.toString();
+    }
+
+    @Override
+    public List<Transform> getTransformList() {
+        return new FXTransformListHandler().parse(transform);
+    }
+
+    public Group createGroup() {
+        Group group = new Group();
+        group.getTransforms().addAll(getTransformList());
+        if (content != null) {
+            content.forEach(child -> {
+                if (child instanceof FXVGGroup) {
+                    FXVGGroup childGroup = (FXVGGroup) child;
+                    group.getChildren()
+                        .add(childGroup.createGroup());
+                }
+                if (child instanceof FXVGShape<?>) {
+                    FXVGShape<?> shape = (FXVGShape<?>) child;
+                    group.getChildren()
+                        .add(shape.createShape());
+                }
+            });
+        }
+        return group;
     }
 
 }
