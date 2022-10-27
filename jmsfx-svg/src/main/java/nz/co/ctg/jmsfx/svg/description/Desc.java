@@ -8,6 +8,8 @@
 
 package nz.co.ctg.jmsfx.svg.description;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -23,6 +25,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.jmsfx.svg.FXVGStylable;
+import nz.co.ctg.jmsfx.svg.adapter.DoubleListAdapter;
 import nz.co.ctg.jmsfx.svg.adapter.FXVGPaintAdapter;
 import nz.co.ctg.jmsfx.svg.adapter.StrokeLineCapAdapter;
 import nz.co.ctg.jmsfx.svg.adapter.StrokeLineJoinAdapter;
@@ -151,8 +154,8 @@ public class Desc implements FXVGDescriptiveElement, FXVGStylable {
     @XmlJavaTypeAdapter(FXVGPaintAdapter.class)
     protected Paint stroke;
     @XmlAttribute(name = "stroke-dasharray")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDasharray;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    protected List<Double> strokeDasharray;
     @XmlAttribute(name = "stroke-dashoffset")
     protected double strokeDashoffset;
     @XmlAttribute(name = "stroke-linecap")
@@ -1103,7 +1106,7 @@ public class Desc implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public String getStrokeDashArray() {
+    public List<Double> getStrokeDashArray() {
         return strokeDasharray;
     }
 
@@ -1116,7 +1119,7 @@ public class Desc implements FXVGDescriptiveElement, FXVGStylable {
      *
      */
     @Override
-    public void setStrokeDashArray(String value) {
+    public void setStrokeDashArray(List<Double> value) {
         this.strokeDasharray = value;
     }
 

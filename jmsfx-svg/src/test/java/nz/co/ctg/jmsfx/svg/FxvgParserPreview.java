@@ -34,7 +34,7 @@ public class FxvgParserPreview extends Application {
 
     private Node createGraphic() throws Exception {
         FXVGParser parser = new FXVGParser();
-        FXVGSvgElement svgElement = parser.parse(FXVGSvgElement.class.getResourceAsStream("/131.svg"));
+        FXVGSvgElement svgElement = parser.parse(FXVGSvgElement.class.getResourceAsStream("/test.svg"));
         return svgElement.createGraphic();
     }
 

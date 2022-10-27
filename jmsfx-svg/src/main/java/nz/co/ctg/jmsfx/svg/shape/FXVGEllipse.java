@@ -41,6 +41,7 @@ public class FXVGEllipse extends AbstractFXVGShape implements FXVGShape<Ellipse>
 
     @Override
     public Ellipse createShape() {
+        parseStyle();
         Ellipse ellipse = new Ellipse(centreY, centreX, radiusX, radiusY);
         setColors(ellipse);
         setStrokeProperties(ellipse);

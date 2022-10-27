@@ -41,6 +41,7 @@ public class FXVGLine extends AbstractFXVGShape implements FXVGShape<Line> {
 
     @Override
     public Line createShape() {
+        parseStyle();
         Line line = new Line(startX, startY, endX, endY);
         setColors(line);
         setStrokeProperties(line);

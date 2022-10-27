@@ -39,6 +39,7 @@ public class FXVGRectangle extends AbstractFXVGShape implements FXVGShape<Rectan
 
     @Override
     public Rectangle createShape() {
+        parseStyle();
         Rectangle rect = new Rectangle(x, y, width, height);
         rect.setArcWidth(radiusX);
         rect.setArcHeight(radiusY);

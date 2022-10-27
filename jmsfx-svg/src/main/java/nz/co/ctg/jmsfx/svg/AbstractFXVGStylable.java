@@ -1,5 +1,8 @@
 package nz.co.ctg.jmsfx.svg;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -7,8 +10,11 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.jmsfx.svg.adapter.DoubleListAdapter;
 import nz.co.ctg.jmsfx.svg.adapter.FXVGPaintAdapter;
 import nz.co.ctg.jmsfx.svg.adapter.StrokeLineCapAdapter;
 import nz.co.ctg.jmsfx.svg.adapter.StrokeLineJoinAdapter;
@@ -146,8 +152,8 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
     protected Paint stroke;
 
     @XmlAttribute(name = "stroke-dasharray")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDashArray;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    protected List<Double> strokeDashArray;
 
     @XmlAttribute(name = "stroke-dashoffset")
     protected double strokeDashOffset;
@@ -1002,7 +1008,7 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public String getStrokeDashArray() {
+    public List<Double> getStrokeDashArray() {
         return strokeDashArray;
     }
 
@@ -1015,7 +1021,7 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
      *
      */
     @Override
-    public void setStrokeDashArray(String value) {
+    public void setStrokeDashArray(List<Double> value) {
         this.strokeDashArray = value;
     }
 
@@ -1869,9 +1875,57 @@ public abstract class AbstractFXVGStylable extends AbstractFXVGElement implement
         shape.setStrokeLineCap(strokeLineCap);
         shape.setStrokeLineJoin(strokeLineJoin);
         shape.setStrokeDashOffset(strokeDashOffset);
-    //        if (strokeDashArray != null) {
-    //            shape.getStrokeDashArray().addAll(strokeDashArray);
-    //        }
+        if (strokeDashArray != null) {
+            shape.getStrokeDashArray().addAll(strokeDashArray);
         }
+    }
+
+    protected void parseStyle() {
+        if (StringUtils.isNotBlank(style)) {
+            FXVGPaintAdapter paintAdapter = new FXVGPaintAdapter();
+            StrokeLineCapAdapter strokeLineCapAdapter = new StrokeLineCapAdapter();
+            StrokeLineJoinAdapter strokeLineJoinAdapter = new StrokeLineJoinAdapter();
+            DoubleListAdapter doubleListAdapter = new DoubleListAdapter();
+            Arrays.stream(StringUtils.split(style, ';')).forEach(stylePair -> {
+                try {
+                    String[] values = StringUtils.split(stylePair, ':');
+                    String name = values[0].toLowerCase();
+                    String value = values[1].toLowerCase();
+                    switch (name) {
+                        case "fill":
+                            setFill(paintAdapter.unmarshal(value));
+                            break;
+                        case "fill-opacity":
+                            break;
+                        case "stroke":
+                            setStroke(paintAdapter.unmarshal(value));
+                            break;
+                        case "stroke-opacity":
+                            break;
+                        case "stroke-width":
+                            setStrokeWidth(Double.valueOf(value));
+                            break;
+                        case "stroke-linecap":
+                            setStrokeLineCap(strokeLineCapAdapter.unmarshal(value));
+                            break;
+                        case "stroke-linejoin":
+                            setStrokeLineJoin(strokeLineJoinAdapter.unmarshal(value));
+                            break;
+                        case "stroke-miterlimit":
+                            setStrokeMiterLimit(Double.valueOf(value));
+                            break;
+                        case "stroke-dashoffset":
+                            setStrokeDashOffset(Double.valueOf(value));
+                            break;
+                        case "stroke-dasharray":
+                            setStrokeDashArray(doubleListAdapter.unmarshal(value));
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
 
 }

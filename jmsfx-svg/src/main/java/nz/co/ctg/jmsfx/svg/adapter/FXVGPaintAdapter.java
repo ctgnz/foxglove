@@ -8,6 +8,9 @@ public class FXVGPaintAdapter extends XmlAdapter<String, Paint> {
 
     @Override
     public Paint unmarshal(String value) throws Exception {
+        if ("none".equals(value)) {
+            return null;
+        }
         return Paint.valueOf(value);
     }
 

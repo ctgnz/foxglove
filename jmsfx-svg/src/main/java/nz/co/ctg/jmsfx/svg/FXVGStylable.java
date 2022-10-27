@@ -12,6 +12,8 @@
 
 package nz.co.ctg.jmsfx.svg;
 
+import java.util.List;
+
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 
@@ -152,9 +154,9 @@ public interface FXVGStylable {
 
     double getStrokeDashOffset();
 
-    void setStrokeDashArray(String value);
+    void setStrokeDashArray(List<Double> value);
 
-    String getStrokeDashArray();
+    List<Double> getStrokeDashArray();
 
     void setStroke(Paint value);
 

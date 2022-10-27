@@ -40,6 +40,7 @@ public class FXVGPolyline extends AbstractFXVGShape implements FXVGShape<Polylin
 
     @Override
     public Polyline createShape() {
+        parseStyle();
         Polyline polyline = new Polyline(getPointList());
         setColors(polyline);
         setStrokeProperties(polyline);

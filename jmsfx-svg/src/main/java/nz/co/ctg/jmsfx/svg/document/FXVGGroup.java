@@ -2540,6 +2540,9 @@ public class FXVGGroup implements FXVGEventListener, FXVGTransformable {
 
     public Group createGroup() {
         Group group = new Group();
+        if ("none".equals(display)) {
+            group.setVisible(false);
+        }
         group.getTransforms().addAll(getTransformList());
         if (content != null) {
             content.forEach(child -> {

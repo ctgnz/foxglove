@@ -40,6 +40,7 @@ public class FXVGPolygon extends AbstractFXVGShape implements FXVGShape<Polygon>
 
     @Override
     public Polygon createShape() {
+        parseStyle();
         Polygon polygon = new Polygon(getPointList());
         setColors(polygon);
         setStrokeProperties(polygon);

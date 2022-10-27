@@ -64,7 +64,8 @@ import nz.co.ctg.jmsfx.svg.text.FXVGText;
 import nz.co.ctg.jmsfx.svg.text.Font;
 import nz.co.ctg.jmsfx.svg.text.FontFace;
 
-import javafx.scene.Group;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 
 
 /**
@@ -2883,8 +2884,10 @@ public class FXVGSvgElement implements FXVGEventListener {
         return this.content;
     }
 
-    public Group createGraphic() {
-        Group baseGroup = new Group();
+    public Region createGraphic() {
+        Pane baseGroup = new Pane();
+        baseGroup.setMaxWidth(Double.valueOf(width));
+        baseGroup.setMaxHeight(Double.valueOf(height));
         content.forEach(child -> {
             if (child instanceof FXVGGroup) {
                 FXVGGroup group = (FXVGGroup) child;
