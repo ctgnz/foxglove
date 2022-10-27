@@ -1,4 +1,14 @@
-# fxvg
+# Foxglove SVG/JavaFX
+
 Native support for SVG in JavaFX
 
-This library provides a JAXB binding of the SVG schema, and a binding to create JavaFX components from the parsed SVG objects.
+This library provides an XML binding of the SVG schema, and a binding to create JavaFX components from the parsed SVG objects.
+
+### Basic Usage
+
+```
+BorderPane parent = new BorderPane();
+FoxgloveParser parser = new FoxgloveParser();
+SvgGraphic graphic = parser.parse(Files.newInputStream("myfile.svg");
+parent.setCenter(graphic.createGraphic());
+```
