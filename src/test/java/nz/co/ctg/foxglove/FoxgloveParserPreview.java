@@ -1,6 +1,5 @@
-package nz.co.ctg.jmsfx.svg;
+package nz.co.ctg.foxglove;
 
-import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.parser.FoxgloveParser;
 
 import javafx.application.Application;

@@ -1,4 +1,4 @@
-package nz.co.ctg.jmsfx.svg;
+package nz.co.ctg.foxglove;
 
 import java.io.StringWriter;
 import java.util.List;
@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.document.SvgGroup;
 import nz.co.ctg.foxglove.parser.FoxgloveParser;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -31,7 +30,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Transform;
 
-public class SvgParseTest {
+public class FoxgloveParserTest {
 
     private FoxgloveParser parser;
 
