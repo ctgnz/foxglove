@@ -14,11 +14,11 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
-import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
@@ -36,7 +36,7 @@ import nz.co.ctg.foxglove.element.SvgSwitch;
 import nz.co.ctg.foxglove.element.SvgSymbol;
 import nz.co.ctg.foxglove.element.SvgUse;
 import nz.co.ctg.foxglove.element.SvgView;
-import nz.co.ctg.foxglove.filter.Filter;
+import nz.co.ctg.foxglove.filter.SvgFilter;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
@@ -204,8 +204,8 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animate", type = SvgAnimate.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "set", type = SvgSet.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
@@ -233,7 +233,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
         @XmlElement(name = "pattern", type = SvgPattern.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "clipPath", type = SvgClipPath.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "mask", type = SvgMask.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "filter", type = Filter.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "filter", type = SvgFilter.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "cursor", type = SvgCursor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "a", type = SvgAnchor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "view", type = SvgView.class, namespace = "http://www.w3.org/2000/svg"),
@@ -1113,8 +1113,8 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
      * {@link SvgDescription }
      * {@link SvgTitle }
      * {@link SvgMetadata }
-     * {@link SvgAnimate }
-     * {@link SvgSet }
+     * {@link SvgAnimateAttribute }
+     * {@link SvgSetAttribute }
      * {@link SvgAnimateMotion }
      * {@link SvgAnimateColor }
      * {@link SvgAnimateTransform }
@@ -1142,7 +1142,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
      * {@link SvgPattern }
      * {@link SvgClipPath }
      * {@link SvgMask }
-     * {@link Filter }
+     * {@link SvgFilter }
      * {@link SvgCursor }
      * {@link SvgAnchor }
      * {@link SvgView }

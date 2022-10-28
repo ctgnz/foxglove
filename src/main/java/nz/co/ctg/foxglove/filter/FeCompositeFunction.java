@@ -8,273 +8,254 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.animate.ISvgAttributeAnimation;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
-
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "animateOrSet"
+    "animations"
 })
-@XmlRootElement(name = "feBlend")
-public class FeBlend extends AbstractSvgFilterPrimitive {
+public abstract class FeCompositeFunction extends AbstractSvgElement implements ISvgFilterFunction {
 
-    @XmlAttribute(name = "x")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
-
-    @XmlAttribute(name = "y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
-
-    @XmlAttribute(name = "width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
-
-    @XmlAttribute(name = "height")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
-
-    @XmlAttribute(name = "result")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String result;
-
-    @XmlAttribute(name = "in")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String in;
-
-    @XmlAttribute(name = "in2", required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String in2;
-
-    @XmlAttribute(name = "mode")
+    @XmlAttribute(name = "type", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String mode;
+    protected String type;
+
+    @XmlAttribute(name = "tableValues")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String tableValues;
+
+    @XmlAttribute(name = "slope")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String slope;
+
+    @XmlAttribute(name = "intercept")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String intercept;
+
+    @XmlAttribute(name = "amplitude")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String amplitude;
+
+    @XmlAttribute(name = "exponent")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String exponent;
+
+    @XmlAttribute(name = "offset")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String offset;
 
     @XmlElements({
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class),
         @XmlElement(name = "set", type = SvgSetAttribute.class)
     })
-    protected List<Object> animateOrSet;
+    protected List<ISvgAttributeAnimation> animations;
+
+    public FeCompositeFunction() {
+    }
 
     /**
-     * Gets the value of the x property.
+     * Gets the value of the type property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getX() {
-        return x;
+    @Override
+    public String getType() {
+        return type;
     }
 
     /**
-     * Sets the value of the x property.
+     * Sets the value of the type property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setX(String value) {
-        this.x = value;
+    @Override
+    public void setType(String value) {
+        this.type = value;
     }
 
     /**
-     * Gets the value of the y property.
+     * Gets the value of the tableValues property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getY() {
-        return y;
+    @Override
+    public String getTableValues() {
+        return tableValues;
     }
 
     /**
-     * Sets the value of the y property.
+     * Sets the value of the tableValues property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setY(String value) {
-        this.y = value;
+    @Override
+    public void setTableValues(String value) {
+        this.tableValues = value;
     }
 
     /**
-     * Gets the value of the width property.
+     * Gets the value of the slope property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getWidth() {
-        return width;
+    @Override
+    public String getSlope() {
+        return slope;
     }
 
     /**
-     * Sets the value of the width property.
+     * Sets the value of the slope property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setWidth(String value) {
-        this.width = value;
+    @Override
+    public void setSlope(String value) {
+        this.slope = value;
     }
 
     /**
-     * Gets the value of the height property.
+     * Gets the value of the intercept property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getHeight() {
-        return height;
+    @Override
+    public String getIntercept() {
+        return intercept;
     }
 
     /**
-     * Sets the value of the height property.
+     * Sets the value of the intercept property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setHeight(String value) {
-        this.height = value;
+    @Override
+    public void setIntercept(String value) {
+        this.intercept = value;
     }
 
     /**
-     * Gets the value of the result property.
+     * Gets the value of the amplitude property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getResult() {
-        return result;
+    @Override
+    public String getAmplitude() {
+        return amplitude;
     }
 
     /**
-     * Sets the value of the result property.
+     * Sets the value of the amplitude property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setResult(String value) {
-        this.result = value;
+    @Override
+    public void setAmplitude(String value) {
+        this.amplitude = value;
     }
 
     /**
-     * Gets the value of the in property.
+     * Gets the value of the exponent property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getIn() {
-        return in;
+    @Override
+    public String getExponent() {
+        return exponent;
     }
 
     /**
-     * Sets the value of the in property.
+     * Sets the value of the exponent property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setIn(String value) {
-        this.in = value;
+    @Override
+    public void setExponent(String value) {
+        this.exponent = value;
     }
 
     /**
-     * Gets the value of the in2 property.
+     * Gets the value of the offset property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getIn2() {
-        return in2;
+    @Override
+    public String getOffset() {
+        return offset;
     }
 
     /**
-     * Sets the value of the in2 property.
+     * Sets the value of the offset property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setIn2(String value) {
-        this.in2 = value;
+    @Override
+    public void setOffset(String value) {
+        this.offset = value;
     }
 
     /**
-     * Gets the value of the mode property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getMode() {
-        if (mode == null) {
-            return "normal";
-        } else {
-            return mode;
-        }
-    }
-
-    /**
-     * Sets the value of the mode property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setMode(String value) {
-        this.mode = value;
-    }
-
-    /**
-     * Gets the value of the animateOrSet property.
+     * Gets the value of the animations property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animateOrSet property.
+     * This is why there is not a <CODE>set</CODE> method for the animations property.
      *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getAnimateOrSet().add(newItem);
+     *    getAnimations().add(newItem);
      * </pre>
      *
      *
@@ -285,11 +266,12 @@ public class FeBlend extends AbstractSvgFilterPrimitive {
      *
      *
      */
-    public List<Object> getAnimateOrSet() {
-        if (animateOrSet == null) {
-            animateOrSet = new ArrayList<Object>();
+    @Override
+    public List<ISvgAttributeAnimation> getAnimations() {
+        if (animations == null) {
+            animations = new ArrayList<ISvgAttributeAnimation>();
         }
-        return this.animateOrSet;
+        return this.animations;
     }
 
 }

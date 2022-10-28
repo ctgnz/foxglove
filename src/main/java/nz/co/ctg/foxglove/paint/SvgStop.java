@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
-import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
 
 /**
@@ -36,8 +36,8 @@ public class SvgStop extends AbstractSvgStylable {
     protected String offset;
 
     @XmlElements({
-        @XmlElement(name = "animate", type = SvgAnimate.class),
-        @XmlElement(name = "set", type = SvgSet.class),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class),
+        @XmlElement(name = "set", type = SvgSetAttribute.class),
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class)
     })
     protected List<Object> content;
@@ -84,8 +84,8 @@ public class SvgStop extends AbstractSvgStylable {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link SvgAnimate }
-     * {@link SvgSet }
+     * {@link SvgAnimateAttribute }
+     * {@link SvgSetAttribute }
      * {@link SvgAnimateColor }
      *
      *

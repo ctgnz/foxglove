@@ -17,17 +17,17 @@ import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.SvgGraphic;
-import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
-import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.filter.Filter;
+import nz.co.ctg.foxglove.filter.SvgFilter;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
@@ -111,8 +111,8 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgEventListener,
         @XmlElement(name = "desc", type = SvgDescription.class),
         @XmlElement(name = "title", type = SvgTitle.class),
         @XmlElement(name = "metadata", type = SvgMetadata.class),
-        @XmlElement(name = "animate", type = SvgAnimate.class),
-        @XmlElement(name = "set", type = SvgSet.class),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class),
+        @XmlElement(name = "set", type = SvgSetAttribute.class),
         @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class),
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class),
@@ -140,7 +140,7 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgEventListener,
         @XmlElement(name = "pattern", type = SvgPattern.class),
         @XmlElement(name = "clipPath", type = SvgClipPath.class),
         @XmlElement(name = "mask", type = SvgMask.class),
-        @XmlElement(name = "filter", type = Filter.class),
+        @XmlElement(name = "filter", type = SvgFilter.class),
         @XmlElement(name = "cursor", type = SvgCursor.class),
         @XmlElement(name = "a", type = SvgAnchor.class),
         @XmlElement(name = "view", type = SvgView.class),
@@ -510,8 +510,8 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgEventListener,
      * {@link SvgDescription }
      * {@link SvgTitle }
      * {@link SvgMetadata }
-     * {@link SvgAnimate }
-     * {@link SvgSet }
+     * {@link SvgAnimateAttribute }
+     * {@link SvgSetAttribute }
      * {@link SvgAnimateMotion }
      * {@link SvgAnimateColor }
      * {@link SvgAnimateTransform }
@@ -539,7 +539,7 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgEventListener,
      * {@link SvgPattern }
      * {@link SvgClipPath }
      * {@link SvgMask }
-     * {@link Filter }
+     * {@link SvgFilter }
      * {@link SvgCursor }
      * {@link SvgAnchor }
      * {@link SvgView }

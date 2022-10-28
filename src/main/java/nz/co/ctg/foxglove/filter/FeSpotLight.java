@@ -8,15 +8,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.animate.SvgAnimate;
-import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.animate.ISvgAttributeAnimation;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
 
 /**
@@ -24,149 +24,48 @@ import nz.co.ctg.foxglove.animate.SvgSet;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "animateOrSet"
+    "animations"
 })
 @XmlRootElement(name = "feSpotLight")
-public class FeSpotLight {
+public class FeSpotLight extends AbstractSvgElement implements ISvgFilterLightSource {
 
-    @XmlAttribute(name = "id")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    protected String id;
-    @XmlAttribute(name = "xml:base")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlBase;
-    @XmlAttribute(name = "xml:lang")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlLang;
-    @XmlAttribute(name = "xml:space")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlSpace;
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
+
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String y;
+
     @XmlAttribute(name = "z")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String z;
+
     @XmlAttribute(name = "pointsAtX")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String pointsAtX;
+
     @XmlAttribute(name = "pointsAtY")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String pointsAtY;
+
     @XmlAttribute(name = "pointsAtZ")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String pointsAtZ;
+
     @XmlAttribute(name = "specularExponent")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String specularExponent;
+
     @XmlAttribute(name = "limitingConeAngle")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String limitingConeAngle;
+
     @XmlElements({
-        @XmlElement(name = "animate", type = SvgAnimate.class),
-        @XmlElement(name = "set", type = SvgSet.class)
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class),
+        @XmlElement(name = "set", type = SvgSetAttribute.class)
     })
-    protected List<Object> animateOrSet;
-
-    /**
-     * Gets the value of the id property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
-     * Gets the value of the xmlBase property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlBase() {
-        return xmlBase;
-    }
-
-    /**
-     * Sets the value of the xmlBase property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlBase(String value) {
-        this.xmlBase = value;
-    }
-
-    /**
-     * Gets the value of the xmlLang property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlLang() {
-        return xmlLang;
-    }
-
-    /**
-     * Sets the value of the xmlLang property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlLang(String value) {
-        this.xmlLang = value;
-    }
-
-    /**
-     * Gets the value of the xmlSpace property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlSpace() {
-        return xmlSpace;
-    }
-
-    /**
-     * Sets the value of the xmlSpace property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlSpace(String value) {
-        this.xmlSpace = value;
-    }
+    protected List<ISvgAttributeAnimation> animations;
 
     /**
      * Gets the value of the x property.
@@ -361,33 +260,34 @@ public class FeSpotLight {
     }
 
     /**
-     * Gets the value of the animateOrSet property.
+     * Gets the value of the animations property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animateOrSet property.
+     * This is why there is not a <CODE>set</CODE> method for the animations property.
      *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getAnimateOrSet().add(newItem);
+     *    getAnimations().add(newItem);
      * </pre>
      *
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link SvgAnimate }
-     * {@link SvgSet }
+     * {@link SvgAnimateAttribute }
+     * {@link SvgSetAttribute }
      *
      *
      */
-    public List<Object> getAnimateOrSet() {
-        if (animateOrSet == null) {
-            animateOrSet = new ArrayList<Object>();
+    @Override
+    public List<ISvgAttributeAnimation> getAnimations() {
+        if (animations == null) {
+            animations = new ArrayList<ISvgAttributeAnimation>();
         }
-        return this.animateOrSet;
+        return this.animations;
     }
 
 }

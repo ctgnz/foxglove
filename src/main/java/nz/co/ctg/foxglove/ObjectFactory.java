@@ -2,12 +2,13 @@ package nz.co.ctg.foxglove;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
-import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.ISvgAttributeAnimation;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgMotionPath;
-import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.clip.SvgClipElement;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgMask;
@@ -30,6 +31,7 @@ import nz.co.ctg.foxglove.filter.FeBlend;
 import nz.co.ctg.foxglove.filter.FeColorMatrix;
 import nz.co.ctg.foxglove.filter.FeComponentTransfer;
 import nz.co.ctg.foxglove.filter.FeComposite;
+import nz.co.ctg.foxglove.filter.FeCompositeFunction;
 import nz.co.ctg.foxglove.filter.FeConvolveMatrix;
 import nz.co.ctg.foxglove.filter.FeDiffuseLighting;
 import nz.co.ctg.foxglove.filter.FeDisplacementMap;
@@ -50,7 +52,8 @@ import nz.co.ctg.foxglove.filter.FeSpecularLighting;
 import nz.co.ctg.foxglove.filter.FeSpotLight;
 import nz.co.ctg.foxglove.filter.FeTile;
 import nz.co.ctg.foxglove.filter.FeTurbulence;
-import nz.co.ctg.foxglove.filter.Filter;
+import nz.co.ctg.foxglove.filter.ISvgFilterLightSource;
+import nz.co.ctg.foxglove.filter.SvgFilter;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
@@ -142,19 +145,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SvgAnimate }
+     * Create an instance of {@link SvgAnimateAttribute }
      *
      */
-    public SvgAnimate createAnimate() {
-        return new SvgAnimate();
+    public ISvgAttributeAnimation createAnimate() {
+        return new SvgAnimateAttribute();
     }
 
     /**
-     * Create an instance of {@link SvgSet }
+     * Create an instance of {@link SvgSetAttribute }
      *
      */
-    public SvgSet createSet() {
-        return new SvgSet();
+    public SvgSetAttribute createSet() {
+        return new SvgSetAttribute();
     }
 
     /**
@@ -366,11 +369,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Filter }
+     * Create an instance of {@link SvgFilter }
      *
      */
-    public Filter createFilter() {
-        return new Filter();
+    public SvgFilter createFilter() {
+        return new SvgFilter();
     }
 
     /**
@@ -545,7 +548,7 @@ public class ObjectFactory {
      * Create an instance of {@link FeFuncR }
      *
      */
-    public FeFuncR createFeFuncR() {
+    public FeCompositeFunction createFeFuncR() {
         return new FeFuncR();
     }
 
@@ -633,7 +636,7 @@ public class ObjectFactory {
      * Create an instance of {@link FeDistantLight }
      *
      */
-    public FeDistantLight createFeDistantLight() {
+    public ISvgFilterLightSource createFeDistantLight() {
         return new FeDistantLight();
     }
 

@@ -15,8 +15,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.animate.SvgAnimate;
-import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
 
 /**
@@ -33,246 +33,326 @@ public class FeConvolveMatrix {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     protected String id;
+
     @XmlAttribute(name = "xml:base")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlBase;
+
     @XmlAttribute(name = "xml:lang")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlLang;
+
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
+
     @XmlAttribute(name = "style")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String style;
+
     @XmlAttribute(name = "class")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clazz;
+
     @XmlAttribute(name = "enable-background")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String enableBackground;
+
     @XmlAttribute(name = "clip")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clip;
+
     @XmlAttribute(name = "overflow")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String overflow;
+
     @XmlAttribute(name = "writing-mode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String writingMode;
+
     @XmlAttribute(name = "alignment-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String alignmentBaseline;
+
     @XmlAttribute(name = "baseline-shift")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String baselineShift;
+
     @XmlAttribute(name = "direction")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String direction;
+
     @XmlAttribute(name = "dominant-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String dominantBaseline;
+
     @XmlAttribute(name = "glyph-orientation-horizontal")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationHorizontal;
+
     @XmlAttribute(name = "glyph-orientation-vertical")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationVertical;
+
     @XmlAttribute(name = "kerning")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String kerning;
+
     @XmlAttribute(name = "letter-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String letterSpacing;
+
     @XmlAttribute(name = "text-anchor")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textAnchor;
+
     @XmlAttribute(name = "text-decoration")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String textDecoration;
+
     @XmlAttribute(name = "unicode-bidi")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String unicodeBidi;
+
     @XmlAttribute(name = "word-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String wordSpacing;
+
     @XmlAttribute(name = "font-family")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontFamily;
+
     @XmlAttribute(name = "font-size")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSize;
+
     @XmlAttribute(name = "font-size-adjust")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSizeAdjust;
+
     @XmlAttribute(name = "font-stretch")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStretch;
+
     @XmlAttribute(name = "font-style")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStyle;
+
     @XmlAttribute(name = "font-variant")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontVariant;
+
     @XmlAttribute(name = "font-weight")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontWeight;
+
     @XmlAttribute(name = "fill")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fill;
+
     @XmlAttribute(name = "fill-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fillRule;
+
     @XmlAttribute(name = "stroke")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stroke;
+
     @XmlAttribute(name = "stroke-dasharray")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeDasharray;
+
     @XmlAttribute(name = "stroke-dashoffset")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeDashoffset;
+
     @XmlAttribute(name = "stroke-linecap")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String strokeLinecap;
+
     @XmlAttribute(name = "stroke-linejoin")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String strokeLinejoin;
+
     @XmlAttribute(name = "stroke-miterlimit")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeMiterlimit;
+
     @XmlAttribute(name = "stroke-width")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeWidth;
+
     @XmlAttribute(name = "color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String color;
+
     @XmlAttribute(name = "color-interpolation")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolation;
+
     @XmlAttribute(name = "color-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorRendering;
+
     @XmlAttribute(name = "opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String opacity;
+
     @XmlAttribute(name = "fill-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fillOpacity;
+
     @XmlAttribute(name = "stroke-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeOpacity;
+
     @XmlAttribute(name = "display")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String display;
+
     @XmlAttribute(name = "image-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String imageRendering;
+
     @XmlAttribute(name = "pointer-events")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String pointerEvents;
+
     @XmlAttribute(name = "shape-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String shapeRendering;
+
     @XmlAttribute(name = "text-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textRendering;
+
     @XmlAttribute(name = "visibility")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String visibility;
+
     @XmlAttribute(name = "marker-start")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerStart;
+
     @XmlAttribute(name = "marker-mid")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerMid;
+
     @XmlAttribute(name = "marker-end")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerEnd;
+
     @XmlAttribute(name = "color-profile")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String colorProfile;
+
     @XmlAttribute(name = "stop-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopColor;
+
     @XmlAttribute(name = "stop-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopOpacity;
+
     @XmlAttribute(name = "clip-path")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clipPath;
+
     @XmlAttribute(name = "clip-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String clipRule;
+
     @XmlAttribute(name = "mask")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String mask;
+
     @XmlAttribute(name = "filter")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String filter;
+
     @XmlAttribute(name = "color-interpolation-filters")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolationFilters;
+
     @XmlAttribute(name = "cursor")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String cursor;
+
     @XmlAttribute(name = "flood-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodColor;
+
     @XmlAttribute(name = "flood-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodOpacity;
+
     @XmlAttribute(name = "lighting-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String lightingColor;
+
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
+
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String y;
+
     @XmlAttribute(name = "width")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String width;
+
     @XmlAttribute(name = "height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String height;
+
     @XmlAttribute(name = "result")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String result;
+
     @XmlAttribute(name = "in")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String in;
+
     @XmlAttribute(name = "order")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String order;
+
     @XmlAttribute(name = "kernelMatrix", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String kernelMatrix;
+
     @XmlAttribute(name = "divisor")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String divisor;
+
     @XmlAttribute(name = "bias")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String bias;
+
     @XmlAttribute(name = "targetX")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String targetX;
+
     @XmlAttribute(name = "targetY")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String targetY;
+
     @XmlAttribute(name = "edgeMode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String edgeMode;
+
     @XmlAttribute(name = "kernelUnitLength")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String kernelUnitLength;
+
     @XmlAttribute(name = "preserveAlpha")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String preserveAlpha;
+
     @XmlElements({
-        @XmlElement(name = "animate", type = SvgAnimate.class),
-        @XmlElement(name = "set", type = SvgSet.class)
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class),
+        @XmlElement(name = "set", type = SvgSetAttribute.class)
     })
     protected List<Object> animateOrSet;
 
@@ -2218,8 +2298,8 @@ public class FeConvolveMatrix {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link SvgAnimate }
-     * {@link SvgSet }
+     * {@link SvgAnimateAttribute }
+     * {@link SvgSetAttribute }
      *
      *
      */

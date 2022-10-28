@@ -19,9 +19,9 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
-import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
-import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -109,8 +109,8 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgLinkab
         @XmlElement(name = "title", type = SvgTitle.class),
         @XmlElement(name = "metadata", type = SvgMetadata.class),
         @XmlElement(name = "stop", type = SvgStop.class),
-        @XmlElement(name = "animate", type = SvgAnimate.class),
-        @XmlElement(name = "set", type = SvgSet.class),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class),
+        @XmlElement(name = "set", type = SvgSetAttribute.class),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class)
     })
     protected List<Object> content;
@@ -579,8 +579,8 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgLinkab
      * {@link SvgTitle }
      * {@link SvgMetadata }
      * {@link SvgStop }
-     * {@link SvgAnimate }
-     * {@link SvgSet }
+     * {@link SvgAnimateAttribute }
+     * {@link SvgSetAttribute }
      * {@link SvgAnimateTransform }
      *
      *
