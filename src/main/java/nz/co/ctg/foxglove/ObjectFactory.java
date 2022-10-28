@@ -64,24 +64,24 @@ import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.style.SvgStyle;
-import nz.co.ctg.foxglove.text.AltGlyph;
-import nz.co.ctg.foxglove.text.AltGlyphDef;
-import nz.co.ctg.foxglove.text.AltGlyphItem;
-import nz.co.ctg.foxglove.text.Font;
-import nz.co.ctg.foxglove.text.FontFace;
-import nz.co.ctg.foxglove.text.FontFaceFormat;
-import nz.co.ctg.foxglove.text.FontFaceName;
-import nz.co.ctg.foxglove.text.FontFaceSrc;
-import nz.co.ctg.foxglove.text.FontFaceUri;
-import nz.co.ctg.foxglove.text.Glyph;
-import nz.co.ctg.foxglove.text.GlyphRef;
-import nz.co.ctg.foxglove.text.HorizontalKerning;
-import nz.co.ctg.foxglove.text.MissingGlyph;
+import nz.co.ctg.foxglove.text.SvgAltGlyph;
+import nz.co.ctg.foxglove.text.SvgAltGlyphDef;
+import nz.co.ctg.foxglove.text.SvgAltGlyphItem;
+import nz.co.ctg.foxglove.text.SvgFont;
+import nz.co.ctg.foxglove.text.SvgFontFace;
+import nz.co.ctg.foxglove.text.SvgFontFaceFormat;
+import nz.co.ctg.foxglove.text.SvgFontFaceName;
+import nz.co.ctg.foxglove.text.SvgFontFaceSrc;
+import nz.co.ctg.foxglove.text.SvgFontFaceUri;
+import nz.co.ctg.foxglove.text.SvgGlyph;
+import nz.co.ctg.foxglove.text.SvgGlyphRef;
+import nz.co.ctg.foxglove.text.SvgHorizontalKerning;
+import nz.co.ctg.foxglove.text.SvgMissingGlyph;
 import nz.co.ctg.foxglove.text.SvgText;
-import nz.co.ctg.foxglove.text.TextPath;
-import nz.co.ctg.foxglove.text.TextReference;
-import nz.co.ctg.foxglove.text.TextSpan;
-import nz.co.ctg.foxglove.text.VerticalKerning;
+import nz.co.ctg.foxglove.text.SvgTextPath;
+import nz.co.ctg.foxglove.text.SvgTextReference;
+import nz.co.ctg.foxglove.text.SvgTextSpan;
+import nz.co.ctg.foxglove.text.SvgVerticalKerning;
 
 
 /**
@@ -302,11 +302,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AltGlyphDef }
+     * Create an instance of {@link SvgAltGlyphDef }
      *
      */
-    public AltGlyphDef createAltGlyphDef() {
-        return new AltGlyphDef();
+    public SvgAltGlyphDef createAltGlyphDef() {
+        return new SvgAltGlyphDef();
     }
 
     /**
@@ -406,19 +406,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Font }
+     * Create an instance of {@link SvgFont }
      *
      */
-    public Font createFont() {
-        return new Font();
+    public SvgFont createFont() {
+        return new SvgFont();
     }
 
     /**
-     * Create an instance of {@link FontFace }
+     * Create an instance of {@link SvgFontFace }
      *
      */
-    public FontFace createFontFace() {
-        return new FontFace();
+    public SvgFontFace createFontFace() {
+        return new SvgFontFace();
     }
 
     /**
@@ -430,27 +430,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AltGlyph }
+     * Create an instance of {@link SvgAltGlyph }
      *
      */
-    public AltGlyph createAltGlyph() {
-        return new AltGlyph();
+    public SvgAltGlyph createAltGlyph() {
+        return new SvgAltGlyph();
     }
 
     /**
-     * Create an instance of {@link GlyphRef }
+     * Create an instance of {@link SvgGlyphRef }
      *
      */
-    public GlyphRef createGlyphRef() {
-        return new GlyphRef();
+    public SvgGlyphRef createGlyphRef() {
+        return new SvgGlyphRef();
     }
 
     /**
-     * Create an instance of {@link AltGlyphItem }
+     * Create an instance of {@link SvgAltGlyphItem }
      *
      */
-    public AltGlyphItem createAltGlyphItem() {
-        return new AltGlyphItem();
+    public SvgAltGlyphItem createAltGlyphItem() {
+        return new SvgAltGlyphItem();
     }
 
     /**
@@ -478,11 +478,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link HorizontalKerning }
+     * Create an instance of {@link SvgHorizontalKerning }
      *
      */
-    public HorizontalKerning createHkern() {
-        return new HorizontalKerning();
+    public SvgHorizontalKerning createHkern() {
+        return new SvgHorizontalKerning();
     }
 
     /**
@@ -510,11 +510,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link TextSpan }
+     * Create an instance of {@link SvgTextSpan }
      *
      */
-    public TextSpan createTspan() {
-        return new TextSpan();
+    public SvgTextSpan createTspan() {
+        return new SvgTextSpan();
     }
 
     /**
@@ -534,11 +534,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link TextReference }
+     * Create an instance of {@link SvgTextReference }
      *
      */
-    public TextReference createTref() {
-        return new TextReference();
+    public SvgTextReference createTref() {
+        return new SvgTextReference();
     }
 
     /**
@@ -550,11 +550,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FontFaceFormat }
+     * Create an instance of {@link SvgFontFaceFormat }
      *
      */
-    public FontFaceFormat createFontFaceFormat() {
-        return new FontFaceFormat();
+    public SvgFontFaceFormat createFontFaceFormat() {
+        return new SvgFontFaceFormat();
     }
 
     /**
@@ -654,11 +654,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VerticalKerning }
+     * Create an instance of {@link SvgVerticalKerning }
      *
      */
-    public VerticalKerning createVkern() {
-        return new VerticalKerning();
+    public SvgVerticalKerning createVkern() {
+        return new SvgVerticalKerning();
     }
 
     /**
@@ -678,11 +678,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FontFaceName }
+     * Create an instance of {@link SvgFontFaceName }
      *
      */
-    public FontFaceName createFontFaceName() {
-        return new FontFaceName();
+    public SvgFontFaceName createFontFaceName() {
+        return new SvgFontFaceName();
     }
 
     /**
@@ -694,11 +694,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link TextPath }
+     * Create an instance of {@link SvgTextPath }
      *
      */
-    public TextPath createTextPath() {
-        return new TextPath();
+    public SvgTextPath createTextPath() {
+        return new SvgTextPath();
     }
 
     /**
@@ -710,19 +710,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FontFaceUri }
+     * Create an instance of {@link SvgFontFaceUri }
      *
      */
-    public FontFaceUri createFontFaceUri() {
-        return new FontFaceUri();
+    public SvgFontFaceUri createFontFaceUri() {
+        return new SvgFontFaceUri();
     }
 
     /**
-     * Create an instance of {@link FontFaceSrc }
+     * Create an instance of {@link SvgFontFaceSrc }
      *
      */
-    public FontFaceSrc createFontFaceSrc() {
-        return new FontFaceSrc();
+    public SvgFontFaceSrc createFontFaceSrc() {
+        return new SvgFontFaceSrc();
     }
 
     /**
@@ -734,19 +734,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Glyph }
+     * Create an instance of {@link SvgGlyph }
      *
      */
-    public Glyph createGlyph() {
-        return new Glyph();
+    public SvgGlyph createGlyph() {
+        return new SvgGlyph();
     }
 
     /**
-     * Create an instance of {@link MissingGlyph }
+     * Create an instance of {@link SvgMissingGlyph }
      *
      */
-    public MissingGlyph createMissingGlyph() {
-        return new MissingGlyph();
+    public SvgMissingGlyph createMissingGlyph() {
+        return new SvgMissingGlyph();
     }
 
 }

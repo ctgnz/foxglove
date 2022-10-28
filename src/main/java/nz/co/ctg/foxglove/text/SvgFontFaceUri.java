@@ -7,12 +7,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgLinkable;
 
 
 /**
@@ -23,143 +25,42 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "fontFaceFormat"
 })
 @XmlRootElement(name = "font-face-uri")
-public class FontFaceUri {
+public class SvgFontFaceUri extends AbstractSvgElement implements ISvgLinkable {
 
-    @XmlAttribute(name = "id")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    protected String id;
-    @XmlAttribute(name = "xml:base")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlBase;
-    @XmlAttribute(name = "xml:lang")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlLang;
-    @XmlAttribute(name = "xml:space")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlSpace;
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
+
     @XmlAttribute(name = "xlink:type")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkType;
+
     @XmlAttribute(name = "xlink:href", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkHref;
+
     @XmlAttribute(name = "xlink:role")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkRole;
+
     @XmlAttribute(name = "xlink:arcrole")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkArcrole;
+
     @XmlAttribute(name = "xlink:title")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkTitle;
+
     @XmlAttribute(name = "xlink:show")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkShow;
+
     @XmlAttribute(name = "xlink:actuate")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
+
     @XmlElement(name = "font-face-format")
-    protected List<FontFaceFormat> fontFaceFormat;
-
-    /**
-     * Gets the value of the id property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
-     * Gets the value of the xmlBase property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlBase() {
-        return xmlBase;
-    }
-
-    /**
-     * Sets the value of the xmlBase property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlBase(String value) {
-        this.xmlBase = value;
-    }
-
-    /**
-     * Gets the value of the xmlLang property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlLang() {
-        return xmlLang;
-    }
-
-    /**
-     * Sets the value of the xmlLang property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlLang(String value) {
-        this.xmlLang = value;
-    }
-
-    /**
-     * Gets the value of the xmlSpace property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlSpace() {
-        return xmlSpace;
-    }
-
-    /**
-     * Sets the value of the xmlSpace property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlSpace(String value) {
-        this.xmlSpace = value;
-    }
+    protected List<SvgFontFaceFormat> fontFaceFormat;
 
     /**
      * Gets the value of the xmlnsXlink property.
@@ -169,6 +70,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlnsXlink() {
         if (xmlnsXlink == null) {
             return "http://www.w3.org/1999/xlink";
@@ -185,6 +87,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlnsXlink(String value) {
         this.xmlnsXlink = value;
     }
@@ -197,6 +100,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkType() {
         if (xlinkType == null) {
             return "simple";
@@ -213,6 +117,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkType(String value) {
         this.xlinkType = value;
     }
@@ -225,6 +130,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkHref() {
         return xlinkHref;
     }
@@ -237,6 +143,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkHref(String value) {
         this.xlinkHref = value;
     }
@@ -249,6 +156,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkRole() {
         return xlinkRole;
     }
@@ -261,6 +169,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkRole(String value) {
         this.xlinkRole = value;
     }
@@ -273,6 +182,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkArcrole() {
         return xlinkArcrole;
     }
@@ -285,6 +195,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkArcrole(String value) {
         this.xlinkArcrole = value;
     }
@@ -297,6 +208,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkTitle() {
         return xlinkTitle;
     }
@@ -309,6 +221,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkTitle(String value) {
         this.xlinkTitle = value;
     }
@@ -321,6 +234,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkShow() {
         if (xlinkShow == null) {
             return "other";
@@ -337,6 +251,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkShow(String value) {
         this.xlinkShow = value;
     }
@@ -349,6 +264,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkActuate() {
         if (xlinkActuate == null) {
             return "onLoad";
@@ -365,6 +281,7 @@ public class FontFaceUri {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkActuate(String value) {
         this.xlinkActuate = value;
     }
@@ -387,13 +304,13 @@ public class FontFaceUri {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link FontFaceFormat }
+     * {@link SvgFontFaceFormat }
      *
      *
      */
-    public List<FontFaceFormat> getFontFaceFormat() {
+    public List<SvgFontFaceFormat> getFontFaceFormat() {
         if (fontFaceFormat == null) {
-            fontFaceFormat = new ArrayList<FontFaceFormat>();
+            fontFaceFormat = new ArrayList<SvgFontFaceFormat>();
         }
         return this.fontFaceFormat;
     }

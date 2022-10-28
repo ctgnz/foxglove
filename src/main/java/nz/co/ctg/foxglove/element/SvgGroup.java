@@ -46,9 +46,9 @@ import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.style.SvgStyle;
-import nz.co.ctg.foxglove.text.AltGlyphDef;
-import nz.co.ctg.foxglove.text.Font;
-import nz.co.ctg.foxglove.text.FontFace;
+import nz.co.ctg.foxglove.text.SvgAltGlyphDef;
+import nz.co.ctg.foxglove.text.SvgFont;
+import nz.co.ctg.foxglove.text.SvgFontFace;
 import nz.co.ctg.foxglove.text.SvgText;
 
 import javafx.scene.Group;
@@ -149,7 +149,7 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgEventListener, 
         @XmlElement(name = "polyline", type = SvgPolyline.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "polygon", type = SvgPolygon.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "text", type = SvgText.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "altGlyphDef", type = AltGlyphDef.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "altGlyphDef", type = SvgAltGlyphDef.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "marker", type = SvgMarker.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "color-profile", type = SvgColorProfile.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "linearGradient", type = SvgLinearGradient.class, namespace = "http://www.w3.org/2000/svg"),
@@ -162,8 +162,8 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgEventListener, 
         @XmlElement(name = "a", type = SvgAnchor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "view", type = SvgView.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "script", type = SvgScript.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "font", type = Font.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "font-face", type = FontFace.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "font", type = SvgFont.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<Object> content;
@@ -600,7 +600,7 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgEventListener, 
      * {@link SvgPolyline }
      * {@link SvgPolygon }
      * {@link SvgText }
-     * {@link AltGlyphDef }
+     * {@link SvgAltGlyphDef }
      * {@link SvgMarker }
      * {@link SvgColorProfile }
      * {@link SvgLinearGradient }
@@ -613,8 +613,8 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgEventListener, 
      * {@link SvgAnchor }
      * {@link SvgView }
      * {@link SvgScript }
-     * {@link Font }
-     * {@link FontFace }
+     * {@link SvgFont }
+     * {@link SvgFontFace }
      * {@link SvgForeignObject }
      *
      *

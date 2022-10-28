@@ -1,4 +1,4 @@
-package nz.co.ctg.foxglove.element;
+package nz.co.ctg.foxglove.text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +14,6 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimate;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -29,6 +25,18 @@ import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.element.SvgAnchor;
+import nz.co.ctg.foxglove.element.SvgCursor;
+import nz.co.ctg.foxglove.element.SvgDefs;
+import nz.co.ctg.foxglove.element.SvgForeignObject;
+import nz.co.ctg.foxglove.element.SvgGroup;
+import nz.co.ctg.foxglove.element.SvgImage;
+import nz.co.ctg.foxglove.element.SvgMarker;
+import nz.co.ctg.foxglove.element.SvgScript;
+import nz.co.ctg.foxglove.element.SvgSwitch;
+import nz.co.ctg.foxglove.element.SvgSymbol;
+import nz.co.ctg.foxglove.element.SvgUse;
+import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.Filter;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
@@ -42,10 +50,6 @@ import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.style.SvgStyle;
-import nz.co.ctg.foxglove.text.SvgAltGlyphDef;
-import nz.co.ctg.foxglove.text.SvgFont;
-import nz.co.ctg.foxglove.text.SvgFontFace;
-import nz.co.ctg.foxglove.text.SvgText;
 
 
 /**
@@ -55,67 +59,48 @@ import nz.co.ctg.foxglove.text.SvgText;
 @XmlType(name = "", propOrder = {
     "content"
 })
-@XmlRootElement(name = "defs")
-public class SvgDefs extends AbstractSvgStylable implements ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
+@XmlRootElement(name = "glyph")
+public class SvgGlyph extends AbstractSvgStylable {
 
-    @XmlAttribute(name = "requiredFeatures")
+    @XmlAttribute(name = "unicode")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
+    protected String unicode;
 
-    @XmlAttribute(name = "requiredExtensions")
+    @XmlAttribute(name = "glyph-name")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
+    protected String glyphName;
 
-    @XmlAttribute(name = "systemLanguage")
+    @XmlAttribute(name = "d")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
+    protected String d;
 
-    @XmlAttribute(name = "onfocusin")
+    @XmlAttribute(name = "orientation")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onfocusin;
+    protected String orientation;
 
-    @XmlAttribute(name = "onfocusout")
+    @XmlAttribute(name = "arabic-form")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onfocusout;
+    protected String arabicForm;
 
-    @XmlAttribute(name = "onactivate")
+    @XmlAttribute(name = "lang")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onactivate;
+    protected String lang;
 
-    @XmlAttribute(name = "onclick")
+    @XmlAttribute(name = "horiz-adv-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onclick;
+    protected String horizAdvX;
 
-    @XmlAttribute(name = "onmousedown")
+    @XmlAttribute(name = "vert-origin-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmousedown;
+    protected String vertOriginX;
 
-    @XmlAttribute(name = "onmouseup")
+    @XmlAttribute(name = "vert-origin-y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmouseup;
+    protected String vertOriginY;
 
-    @XmlAttribute(name = "onmouseover")
+    @XmlAttribute(name = "vert-adv-y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmouseover;
-
-    @XmlAttribute(name = "onmousemove")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmousemove;
-
-    @XmlAttribute(name = "onmouseout")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmouseout;
-
-    @XmlAttribute(name = "onload")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onload;
-
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
-
-    @XmlAttribute(name = "transform")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String transform;
+    protected String vertAdvY;
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class),
@@ -162,393 +147,243 @@ public class SvgDefs extends AbstractSvgStylable implements ISvgEventListener, I
     protected List<Object> content;
 
     /**
-     * Gets the value of the requiredFeatures property.
+     * Gets the value of the unicode property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getRequiredFeatures() {
-        return requiredFeatures;
+    public String getUnicode() {
+        return unicode;
     }
 
     /**
-     * Sets the value of the requiredFeatures property.
+     * Sets the value of the unicode property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setRequiredFeatures(String value) {
-        this.requiredFeatures = value;
+    public void setUnicode(String value) {
+        this.unicode = value;
     }
 
     /**
-     * Gets the value of the requiredExtensions property.
+     * Gets the value of the glyphName property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getRequiredExtensions() {
-        return requiredExtensions;
+    public String getGlyphName() {
+        return glyphName;
     }
 
     /**
-     * Sets the value of the requiredExtensions property.
+     * Sets the value of the glyphName property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setRequiredExtensions(String value) {
-        this.requiredExtensions = value;
+    public void setGlyphName(String value) {
+        this.glyphName = value;
     }
 
     /**
-     * Gets the value of the systemLanguage property.
+     * Gets the value of the d property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getSystemLanguage() {
-        return systemLanguage;
+    public String getD() {
+        return d;
     }
 
     /**
-     * Sets the value of the systemLanguage property.
+     * Sets the value of the d property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setSystemLanguage(String value) {
-        this.systemLanguage = value;
+    public void setD(String value) {
+        this.d = value;
     }
 
     /**
-     * Gets the value of the onfocusin property.
+     * Gets the value of the orientation property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getOnFocusIn() {
-        return onfocusin;
+    public String getOrientation() {
+        return orientation;
     }
 
     /**
-     * Sets the value of the onfocusin property.
+     * Sets the value of the orientation property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setOnFocusIn(String value) {
-        this.onfocusin = value;
+    public void setOrientation(String value) {
+        this.orientation = value;
     }
 
     /**
-     * Gets the value of the onfocusout property.
+     * Gets the value of the arabicForm property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getOnFocusOut() {
-        return onfocusout;
+    public String getArabicForm() {
+        return arabicForm;
     }
 
     /**
-     * Sets the value of the onfocusout property.
+     * Sets the value of the arabicForm property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setOnFocusOut(String value) {
-        this.onfocusout = value;
+    public void setArabicForm(String value) {
+        this.arabicForm = value;
     }
 
     /**
-     * Gets the value of the onactivate property.
+     * Gets the value of the lang property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getOnActivate() {
-        return onactivate;
+    public String getLang() {
+        return lang;
     }
 
     /**
-     * Sets the value of the onactivate property.
+     * Sets the value of the lang property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setOnActivate(String value) {
-        this.onactivate = value;
+    public void setLang(String value) {
+        this.lang = value;
     }
 
     /**
-     * Gets the value of the onclick property.
+     * Gets the value of the horizAdvX property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getOnClick() {
-        return onclick;
+    public String getHorizAdvX() {
+        return horizAdvX;
     }
 
     /**
-     * Sets the value of the onclick property.
+     * Sets the value of the horizAdvX property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setOnClick(String value) {
-        this.onclick = value;
+    public void setHorizAdvX(String value) {
+        this.horizAdvX = value;
     }
 
     /**
-     * Gets the value of the onmousedown property.
+     * Gets the value of the vertOriginX property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getOnMouseDown() {
-        return onmousedown;
+    public String getVertOriginX() {
+        return vertOriginX;
     }
 
     /**
-     * Sets the value of the onmousedown property.
+     * Sets the value of the vertOriginX property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setOnMouseDown(String value) {
-        this.onmousedown = value;
+    public void setVertOriginX(String value) {
+        this.vertOriginX = value;
     }
 
     /**
-     * Gets the value of the onmouseup property.
+     * Gets the value of the vertOriginY property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getOnMouseUp() {
-        return onmouseup;
+    public String getVertOriginY() {
+        return vertOriginY;
     }
 
     /**
-     * Sets the value of the onmouseup property.
+     * Sets the value of the vertOriginY property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setOnMouseUp(String value) {
-        this.onmouseup = value;
+    public void setVertOriginY(String value) {
+        this.vertOriginY = value;
     }
 
     /**
-     * Gets the value of the onmouseover property.
+     * Gets the value of the vertAdvY property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getOnMouseOver() {
-        return onmouseover;
+    public String getVertAdvY() {
+        return vertAdvY;
     }
 
     /**
-     * Sets the value of the onmouseover property.
+     * Sets the value of the vertAdvY property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setOnMouseOver(String value) {
-        this.onmouseover = value;
-    }
-
-    /**
-     * Gets the value of the onmousemove property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnMouseMove() {
-        return onmousemove;
-    }
-
-    /**
-     * Sets the value of the onmousemove property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnMouseMove(String value) {
-        this.onmousemove = value;
-    }
-
-    /**
-     * Gets the value of the onmouseout property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnMouseOut() {
-        return onmouseout;
-    }
-
-    /**
-     * Sets the value of the onmouseout property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnMouseOut(String value) {
-        this.onmouseout = value;
-    }
-
-    /**
-     * Gets the value of the onload property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnLoad() {
-        return onload;
-    }
-
-    /**
-     * Sets the value of the onload property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnLoad(String value) {
-        this.onload = value;
-    }
-
-    /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
-     * Gets the value of the transform property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getTransform() {
-        return transform;
-    }
-
-    /**
-     * Sets the value of the transform property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setTransform(String value) {
-        this.transform = value;
+    public void setVertAdvY(String value) {
+        this.vertAdvY = value;
     }
 
     /**
@@ -614,7 +449,7 @@ public class SvgDefs extends AbstractSvgStylable implements ISvgEventListener, I
      */
     public List<Object> getContent() {
         if (content == null) {
-            content = new ArrayList<>();
+            content = new ArrayList<Object>();
         }
         return this.content;
     }

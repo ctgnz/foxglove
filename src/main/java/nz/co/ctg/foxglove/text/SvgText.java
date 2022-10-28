@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove.text;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -11,7 +13,19 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.foxglove.ISvgConditionalFeatures;
+import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
+import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgStylable;
+import nz.co.ctg.foxglove.parser.DoubleListAdapter;
+import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
+import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
+import nz.co.ctg.foxglove.parser.SvgPaintAdapter;
+
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 
 /**
@@ -22,269 +36,353 @@ import nz.co.ctg.foxglove.ISvgEventListener;
     "value"
 })
 @XmlRootElement(name = "text")
-public class SvgText implements ISvgEventListener {
+public class SvgText implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     protected String id;
+
     @XmlAttribute(name = "xml:base")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlBase;
+
     @XmlAttribute(name = "xml:lang")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlLang;
+
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
+
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String requiredFeatures;
+
     @XmlAttribute(name = "requiredExtensions")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String requiredExtensions;
+
     @XmlAttribute(name = "systemLanguage")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String systemLanguage;
+
     @XmlAttribute(name = "style")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String style;
+
     @XmlAttribute(name = "class")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String clazz;
+    protected String className;
+
     @XmlAttribute(name = "enable-background")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String enableBackground;
+
     @XmlAttribute(name = "clip")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clip;
+
     @XmlAttribute(name = "overflow")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String overflow;
+
     @XmlAttribute(name = "writing-mode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String writingMode;
+
     @XmlAttribute(name = "alignment-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String alignmentBaseline;
+
     @XmlAttribute(name = "baseline-shift")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String baselineShift;
+
     @XmlAttribute(name = "direction")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String direction;
+
     @XmlAttribute(name = "dominant-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String dominantBaseline;
+
     @XmlAttribute(name = "glyph-orientation-horizontal")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationHorizontal;
+
     @XmlAttribute(name = "glyph-orientation-vertical")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationVertical;
+
     @XmlAttribute(name = "kerning")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String kerning;
+
     @XmlAttribute(name = "letter-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String letterSpacing;
+
     @XmlAttribute(name = "text-anchor")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textAnchor;
+
     @XmlAttribute(name = "text-decoration")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String textDecoration;
+
     @XmlAttribute(name = "unicode-bidi")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String unicodeBidi;
+
     @XmlAttribute(name = "word-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String wordSpacing;
+
     @XmlAttribute(name = "font-family")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontFamily;
+
     @XmlAttribute(name = "font-size")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSize;
+
     @XmlAttribute(name = "font-size-adjust")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSizeAdjust;
+
     @XmlAttribute(name = "font-stretch")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStretch;
+
     @XmlAttribute(name = "font-style")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStyle;
+
     @XmlAttribute(name = "font-variant")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontVariant;
+
     @XmlAttribute(name = "font-weight")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontWeight;
+
     @XmlAttribute(name = "fill")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fill;
+    @XmlJavaTypeAdapter(SvgPaintAdapter.class)
+    protected Paint fill;
+
     @XmlAttribute(name = "fill-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fillRule;
+
     @XmlAttribute(name = "stroke")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String stroke;
+    @XmlJavaTypeAdapter(SvgPaintAdapter.class)
+    protected Paint stroke;
+
     @XmlAttribute(name = "stroke-dasharray")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDasharray;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    protected List<Double> strokeDashArray;
+
     @XmlAttribute(name = "stroke-dashoffset")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDashoffset;
+    protected double strokeDashOffset;
+
     @XmlAttribute(name = "stroke-linecap")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinecap;
+    @XmlJavaTypeAdapter(StrokeLineCapAdapter.class)
+    protected StrokeLineCap strokeLineCap;
+
     @XmlAttribute(name = "stroke-linejoin")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinejoin;
+    @XmlJavaTypeAdapter(StrokeLineJoinAdapter.class)
+    protected StrokeLineJoin strokeLineJoin;
+
     @XmlAttribute(name = "stroke-miterlimit")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeMiterlimit;
+    protected double strokeMiterLimit;
+
     @XmlAttribute(name = "stroke-width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeWidth;
+    protected double strokeWidth;
+
     @XmlAttribute(name = "color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String color;
+
     @XmlAttribute(name = "color-interpolation")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolation;
+
     @XmlAttribute(name = "color-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorRendering;
+
     @XmlAttribute(name = "opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String opacity;
+
     @XmlAttribute(name = "fill-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fillOpacity;
+
     @XmlAttribute(name = "stroke-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeOpacity;
+
     @XmlAttribute(name = "display")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String display;
+
     @XmlAttribute(name = "image-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String imageRendering;
+
     @XmlAttribute(name = "pointer-events")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String pointerEvents;
+
     @XmlAttribute(name = "shape-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String shapeRendering;
+
     @XmlAttribute(name = "text-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textRendering;
+
     @XmlAttribute(name = "visibility")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String visibility;
+
     @XmlAttribute(name = "marker-start")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerStart;
+
     @XmlAttribute(name = "marker-mid")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerMid;
+
     @XmlAttribute(name = "marker-end")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerEnd;
+
     @XmlAttribute(name = "color-profile")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String colorProfile;
+
     @XmlAttribute(name = "stop-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopColor;
+
     @XmlAttribute(name = "stop-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopOpacity;
+
     @XmlAttribute(name = "clip-path")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clipPath;
+
     @XmlAttribute(name = "clip-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String clipRule;
+
     @XmlAttribute(name = "mask")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String mask;
+
     @XmlAttribute(name = "filter")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String filter;
+
     @XmlAttribute(name = "color-interpolation-filters")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolationFilters;
+
     @XmlAttribute(name = "cursor")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String cursor;
+
     @XmlAttribute(name = "flood-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodColor;
+
     @XmlAttribute(name = "flood-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodOpacity;
+
     @XmlAttribute(name = "lighting-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String lightingColor;
+
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onfocusin;
+
     @XmlAttribute(name = "onfocusout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onfocusout;
+
     @XmlAttribute(name = "onactivate")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onactivate;
+
     @XmlAttribute(name = "onclick")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onclick;
+
     @XmlAttribute(name = "onmousedown")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmousedown;
+
     @XmlAttribute(name = "onmouseup")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmouseup;
+
     @XmlAttribute(name = "onmouseover")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmouseover;
+
     @XmlAttribute(name = "onmousemove")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmousemove;
+
     @XmlAttribute(name = "onmouseout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmouseout;
+
     @XmlAttribute(name = "onload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
+
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
+
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
+
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String y;
+
     @XmlAttribute(name = "dx")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String dx;
+
     @XmlAttribute(name = "dy")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String dy;
+
     @XmlAttribute(name = "rotate")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String rotate;
+
     @XmlAttribute(name = "textLength")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String textLength;
+
     @XmlAttribute(name = "lengthAdjust")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String lengthAdjust;
+
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String transform;
+
     @XmlValue
     protected String value;
 
@@ -296,6 +394,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -308,6 +407,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setId(String value) {
         this.id = value;
     }
@@ -320,6 +420,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlBase() {
         return xmlBase;
     }
@@ -332,6 +433,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlBase(String value) {
         this.xmlBase = value;
     }
@@ -344,6 +446,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlLang() {
         return xmlLang;
     }
@@ -356,6 +459,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlLang(String value) {
         this.xmlLang = value;
     }
@@ -368,6 +472,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlSpace() {
         return xmlSpace;
     }
@@ -380,6 +485,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlSpace(String value) {
         this.xmlSpace = value;
     }
@@ -392,6 +498,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getRequiredFeatures() {
         return requiredFeatures;
     }
@@ -404,6 +511,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setRequiredFeatures(String value) {
         this.requiredFeatures = value;
     }
@@ -416,6 +524,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getRequiredExtensions() {
         return requiredExtensions;
     }
@@ -428,6 +537,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setRequiredExtensions(String value) {
         this.requiredExtensions = value;
     }
@@ -440,6 +550,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getSystemLanguage() {
         return systemLanguage;
     }
@@ -452,6 +563,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setSystemLanguage(String value) {
         this.systemLanguage = value;
     }
@@ -464,6 +576,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getStyle() {
         return style;
     }
@@ -476,6 +589,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setStyle(String value) {
         this.style = value;
     }
@@ -488,8 +602,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public String getClazz() {
-        return clazz;
+    @Override
+    public String getClassName() {
+        return className;
     }
 
     /**
@@ -500,8 +615,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public void setClazz(String value) {
-        this.clazz = value;
+    @Override
+    public void setClassName(String value) {
+        this.className = value;
     }
 
     /**
@@ -512,6 +628,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getEnableBackground() {
         return enableBackground;
     }
@@ -524,6 +641,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setEnableBackground(String value) {
         this.enableBackground = value;
     }
@@ -536,6 +654,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getClip() {
         return clip;
     }
@@ -548,6 +667,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setClip(String value) {
         this.clip = value;
     }
@@ -560,6 +680,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOverflow() {
         return overflow;
     }
@@ -572,6 +693,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOverflow(String value) {
         this.overflow = value;
     }
@@ -584,6 +706,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getWritingMode() {
         return writingMode;
     }
@@ -596,6 +719,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setWritingMode(String value) {
         this.writingMode = value;
     }
@@ -608,6 +732,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getAlignmentBaseline() {
         return alignmentBaseline;
     }
@@ -620,6 +745,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setAlignmentBaseline(String value) {
         this.alignmentBaseline = value;
     }
@@ -632,6 +758,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getBaselineShift() {
         return baselineShift;
     }
@@ -644,6 +771,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setBaselineShift(String value) {
         this.baselineShift = value;
     }
@@ -656,6 +784,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getDirection() {
         return direction;
     }
@@ -668,6 +797,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setDirection(String value) {
         this.direction = value;
     }
@@ -680,6 +810,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getDominantBaseline() {
         return dominantBaseline;
     }
@@ -692,6 +823,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setDominantBaseline(String value) {
         this.dominantBaseline = value;
     }
@@ -704,6 +836,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getGlyphOrientationHorizontal() {
         return glyphOrientationHorizontal;
     }
@@ -716,6 +849,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setGlyphOrientationHorizontal(String value) {
         this.glyphOrientationHorizontal = value;
     }
@@ -728,6 +862,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getGlyphOrientationVertical() {
         return glyphOrientationVertical;
     }
@@ -740,6 +875,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setGlyphOrientationVertical(String value) {
         this.glyphOrientationVertical = value;
     }
@@ -752,6 +888,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getKerning() {
         return kerning;
     }
@@ -764,6 +901,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setKerning(String value) {
         this.kerning = value;
     }
@@ -776,6 +914,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getLetterSpacing() {
         return letterSpacing;
     }
@@ -788,6 +927,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setLetterSpacing(String value) {
         this.letterSpacing = value;
     }
@@ -800,6 +940,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getTextAnchor() {
         return textAnchor;
     }
@@ -812,6 +953,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setTextAnchor(String value) {
         this.textAnchor = value;
     }
@@ -824,6 +966,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getTextDecoration() {
         return textDecoration;
     }
@@ -836,6 +979,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setTextDecoration(String value) {
         this.textDecoration = value;
     }
@@ -848,6 +992,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getUnicodeBidi() {
         return unicodeBidi;
     }
@@ -860,6 +1005,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setUnicodeBidi(String value) {
         this.unicodeBidi = value;
     }
@@ -872,6 +1018,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getWordSpacing() {
         return wordSpacing;
     }
@@ -884,6 +1031,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setWordSpacing(String value) {
         this.wordSpacing = value;
     }
@@ -896,6 +1044,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFontFamily() {
         return fontFamily;
     }
@@ -908,6 +1057,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFontFamily(String value) {
         this.fontFamily = value;
     }
@@ -920,6 +1070,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFontSize() {
         return fontSize;
     }
@@ -932,6 +1083,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFontSize(String value) {
         this.fontSize = value;
     }
@@ -944,6 +1096,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFontSizeAdjust() {
         return fontSizeAdjust;
     }
@@ -956,6 +1109,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFontSizeAdjust(String value) {
         this.fontSizeAdjust = value;
     }
@@ -968,6 +1122,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFontStretch() {
         return fontStretch;
     }
@@ -980,6 +1135,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFontStretch(String value) {
         this.fontStretch = value;
     }
@@ -992,6 +1148,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFontStyle() {
         return fontStyle;
     }
@@ -1004,6 +1161,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFontStyle(String value) {
         this.fontStyle = value;
     }
@@ -1016,6 +1174,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFontVariant() {
         return fontVariant;
     }
@@ -1028,6 +1187,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFontVariant(String value) {
         this.fontVariant = value;
     }
@@ -1040,6 +1200,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFontWeight() {
         return fontWeight;
     }
@@ -1052,6 +1213,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFontWeight(String value) {
         this.fontWeight = value;
     }
@@ -1061,10 +1223,11 @@ public class SvgText implements ISvgEventListener {
      *
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public String getFill() {
+    @Override
+    public Paint getFill() {
         return fill;
     }
 
@@ -1073,10 +1236,11 @@ public class SvgText implements ISvgEventListener {
      *
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public void setFill(String value) {
+    @Override
+    public void setFill(Paint value) {
         this.fill = value;
     }
 
@@ -1088,6 +1252,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFillRule() {
         return fillRule;
     }
@@ -1100,6 +1265,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFillRule(String value) {
         this.fillRule = value;
     }
@@ -1109,10 +1275,11 @@ public class SvgText implements ISvgEventListener {
      *
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public String getStroke() {
+    @Override
+    public Paint getStroke() {
         return stroke;
     }
 
@@ -1121,10 +1288,11 @@ public class SvgText implements ISvgEventListener {
      *
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public void setStroke(String value) {
+    @Override
+    public void setStroke(Paint value) {
         this.stroke = value;
     }
 
@@ -1136,8 +1304,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public String getStrokeDasharray() {
-        return strokeDasharray;
+    @Override
+    public List<Double> getStrokeDashArray() {
+        return strokeDashArray;
     }
 
     /**
@@ -1148,8 +1317,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public void setStrokeDasharray(String value) {
-        this.strokeDasharray = value;
+    @Override
+    public void setStrokeDashArray(List<Double> value) {
+        this.strokeDashArray = value;
     }
 
     /**
@@ -1160,8 +1330,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public String getStrokeDashoffset() {
-        return strokeDashoffset;
+    @Override
+    public double getStrokeDashOffset() {
+        return strokeDashOffset;
     }
 
     /**
@@ -1172,8 +1343,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public void setStrokeDashoffset(String value) {
-        this.strokeDashoffset = value;
+    @Override
+    public void setStrokeDashOffset(double value) {
+        this.strokeDashOffset = value;
     }
 
     /**
@@ -1184,8 +1356,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public String getStrokeLinecap() {
-        return strokeLinecap;
+    @Override
+    public StrokeLineCap getStrokeLineCap() {
+        return strokeLineCap;
     }
 
     /**
@@ -1196,8 +1369,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public void setStrokeLinecap(String value) {
-        this.strokeLinecap = value;
+    @Override
+    public void setStrokeLineCap(StrokeLineCap value) {
+        this.strokeLineCap = value;
     }
 
     /**
@@ -1208,8 +1382,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public String getStrokeLinejoin() {
-        return strokeLinejoin;
+    @Override
+    public StrokeLineJoin getStrokeLineJoin() {
+        return strokeLineJoin;
     }
 
     /**
@@ -1220,8 +1395,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public void setStrokeLinejoin(String value) {
-        this.strokeLinejoin = value;
+    @Override
+    public void setStrokeLineJoin(StrokeLineJoin value) {
+        this.strokeLineJoin = value;
     }
 
     /**
@@ -1232,8 +1408,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public String getStrokeMiterlimit() {
-        return strokeMiterlimit;
+    @Override
+    public double getStrokeMiterLimit() {
+        return strokeMiterLimit;
     }
 
     /**
@@ -1244,8 +1421,9 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public void setStrokeMiterlimit(String value) {
-        this.strokeMiterlimit = value;
+    @Override
+    public void setStrokeMiterLimit(double value) {
+        this.strokeMiterLimit = value;
     }
 
     /**
@@ -1256,7 +1434,8 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public String getStrokeWidth() {
+    @Override
+    public double getStrokeWidth() {
         return strokeWidth;
     }
 
@@ -1268,7 +1447,8 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public void setStrokeWidth(String value) {
+    @Override
+    public void setStrokeWidth(double value) {
         this.strokeWidth = value;
     }
 
@@ -1280,6 +1460,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getColor() {
         return color;
     }
@@ -1292,6 +1473,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setColor(String value) {
         this.color = value;
     }
@@ -1304,6 +1486,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getColorInterpolation() {
         return colorInterpolation;
     }
@@ -1316,6 +1499,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setColorInterpolation(String value) {
         this.colorInterpolation = value;
     }
@@ -1328,6 +1512,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getColorRendering() {
         return colorRendering;
     }
@@ -1340,6 +1525,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setColorRendering(String value) {
         this.colorRendering = value;
     }
@@ -1352,6 +1538,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getOpacity() {
         return opacity;
     }
@@ -1364,6 +1551,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setOpacity(String value) {
         this.opacity = value;
     }
@@ -1376,6 +1564,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFillOpacity() {
         return fillOpacity;
     }
@@ -1388,6 +1577,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFillOpacity(String value) {
         this.fillOpacity = value;
     }
@@ -1400,6 +1590,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeOpacity() {
         return strokeOpacity;
     }
@@ -1412,6 +1603,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeOpacity(String value) {
         this.strokeOpacity = value;
     }
@@ -1424,6 +1616,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getDisplay() {
         return display;
     }
@@ -1436,6 +1629,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setDisplay(String value) {
         this.display = value;
     }
@@ -1448,6 +1642,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getImageRendering() {
         return imageRendering;
     }
@@ -1460,6 +1655,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setImageRendering(String value) {
         this.imageRendering = value;
     }
@@ -1472,6 +1668,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getPointerEvents() {
         return pointerEvents;
     }
@@ -1484,6 +1681,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setPointerEvents(String value) {
         this.pointerEvents = value;
     }
@@ -1496,6 +1694,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getShapeRendering() {
         return shapeRendering;
     }
@@ -1508,6 +1707,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setShapeRendering(String value) {
         this.shapeRendering = value;
     }
@@ -1520,6 +1720,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getTextRendering() {
         return textRendering;
     }
@@ -1532,6 +1733,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setTextRendering(String value) {
         this.textRendering = value;
     }
@@ -1544,6 +1746,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getVisibility() {
         return visibility;
     }
@@ -1556,6 +1759,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setVisibility(String value) {
         this.visibility = value;
     }
@@ -1568,6 +1772,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerStart() {
         return markerStart;
     }
@@ -1580,6 +1785,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerStart(String value) {
         this.markerStart = value;
     }
@@ -1592,6 +1798,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerMid() {
         return markerMid;
     }
@@ -1604,6 +1811,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerMid(String value) {
         this.markerMid = value;
     }
@@ -1616,6 +1824,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerEnd() {
         return markerEnd;
     }
@@ -1628,6 +1837,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerEnd(String value) {
         this.markerEnd = value;
     }
@@ -1640,6 +1850,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getColorProfile() {
         return colorProfile;
     }
@@ -1652,6 +1863,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setColorProfile(String value) {
         this.colorProfile = value;
     }
@@ -1664,6 +1876,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getStopColor() {
         return stopColor;
     }
@@ -1676,6 +1889,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setStopColor(String value) {
         this.stopColor = value;
     }
@@ -1688,6 +1902,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getStopOpacity() {
         return stopOpacity;
     }
@@ -1700,6 +1915,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setStopOpacity(String value) {
         this.stopOpacity = value;
     }
@@ -1712,6 +1928,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getClipPath() {
         return clipPath;
     }
@@ -1724,6 +1941,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setClipPath(String value) {
         this.clipPath = value;
     }
@@ -1736,6 +1954,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getClipRule() {
         return clipRule;
     }
@@ -1748,6 +1967,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setClipRule(String value) {
         this.clipRule = value;
     }
@@ -1760,6 +1980,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getMask() {
         return mask;
     }
@@ -1772,6 +1993,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setMask(String value) {
         this.mask = value;
     }
@@ -1784,6 +2006,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFilter() {
         return filter;
     }
@@ -1796,6 +2019,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFilter(String value) {
         this.filter = value;
     }
@@ -1808,6 +2032,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getColorInterpolationFilters() {
         return colorInterpolationFilters;
     }
@@ -1820,6 +2045,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setColorInterpolationFilters(String value) {
         this.colorInterpolationFilters = value;
     }
@@ -1832,6 +2058,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getCursor() {
         return cursor;
     }
@@ -1844,6 +2071,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setCursor(String value) {
         this.cursor = value;
     }
@@ -1856,6 +2084,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFloodColor() {
         return floodColor;
     }
@@ -1868,6 +2097,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFloodColor(String value) {
         this.floodColor = value;
     }
@@ -1880,6 +2110,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getFloodOpacity() {
         return floodOpacity;
     }
@@ -1892,6 +2123,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setFloodOpacity(String value) {
         this.floodOpacity = value;
     }
@@ -1904,6 +2136,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public String getLightingColor() {
         return lightingColor;
     }
@@ -1916,6 +2149,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setLightingColor(String value) {
         this.lightingColor = value;
     }
@@ -2188,6 +2422,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
@@ -2200,6 +2435,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
+    @Override
     public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
@@ -2404,7 +2640,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public String getvalue() {
+    public String getValue() {
         return value;
     }
 
@@ -2416,7 +2652,7 @@ public class SvgText implements ISvgEventListener {
      *     {@link String }
      *
      */
-    public void setvalue(String value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

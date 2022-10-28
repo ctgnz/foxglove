@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "glyphRefOrAltGlyphItem"
 })
 @XmlRootElement(name = "altGlyphDef")
-public class AltGlyphDef {
+public class SvgAltGlyphDef {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -40,8 +40,8 @@ public class AltGlyphDef {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
     @XmlElements({
-        @XmlElement(name = "glyphRef", required = true, type = GlyphRef.class),
-        @XmlElement(name = "altGlyphItem", required = true, type = AltGlyphItem.class)
+        @XmlElement(name = "glyphRef", required = true, type = SvgGlyphRef.class),
+        @XmlElement(name = "altGlyphItem", required = true, type = SvgAltGlyphItem.class)
     })
     protected List<Object> glyphRefOrAltGlyphItem;
 
@@ -159,8 +159,8 @@ public class AltGlyphDef {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link GlyphRef }
-     * {@link AltGlyphItem }
+     * {@link SvgGlyphRef }
+     * {@link SvgAltGlyphItem }
      *
      *
      */

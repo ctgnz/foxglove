@@ -40,9 +40,9 @@ import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.style.SvgStyle;
-import nz.co.ctg.foxglove.text.AltGlyphDef;
-import nz.co.ctg.foxglove.text.Font;
-import nz.co.ctg.foxglove.text.FontFace;
+import nz.co.ctg.foxglove.text.SvgAltGlyphDef;
+import nz.co.ctg.foxglove.text.SvgFont;
+import nz.co.ctg.foxglove.text.SvgFontFace;
 import nz.co.ctg.foxglove.text.SvgText;
 
 
@@ -116,7 +116,7 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgExternalResour
         @XmlElement(name = "polyline", type = SvgPolyline.class),
         @XmlElement(name = "polygon", type = SvgPolygon.class),
         @XmlElement(name = "text", type = SvgText.class),
-        @XmlElement(name = "altGlyphDef", type = AltGlyphDef.class),
+        @XmlElement(name = "altGlyphDef", type = SvgAltGlyphDef.class),
         @XmlElement(name = "marker", type = SvgMarker.class),
         @XmlElement(name = "color-profile", type = SvgColorProfile.class),
         @XmlElement(name = "linearGradient", type = SvgLinearGradient.class),
@@ -129,8 +129,8 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgExternalResour
         @XmlElement(name = "a", type = SvgAnchor.class),
         @XmlElement(name = "view", type = SvgView.class),
         @XmlElement(name = "script", type = SvgScript.class),
-        @XmlElement(name = "font", type = Font.class),
-        @XmlElement(name = "font-face", type = FontFace.class),
+        @XmlElement(name = "font", type = SvgFont.class),
+        @XmlElement(name = "font-face", type = SvgFontFace.class),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class)
     })
     protected List<Object> content;
@@ -399,7 +399,7 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgExternalResour
      * {@link SvgPolyline }
      * {@link SvgPolygon }
      * {@link SvgText }
-     * {@link AltGlyphDef }
+     * {@link SvgAltGlyphDef }
      * {@link SvgMarker }
      * {@link SvgColorProfile }
      * {@link SvgLinearGradient }
@@ -412,8 +412,8 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgExternalResour
      * {@link SvgAnchor }
      * {@link SvgView }
      * {@link SvgScript }
-     * {@link Font }
-     * {@link FontFace }
+     * {@link SvgFont }
+     * {@link SvgFontFace }
      * {@link SvgForeignObject }
      *
      *

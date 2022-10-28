@@ -8,13 +8,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -25,226 +24,150 @@ import nz.co.ctg.foxglove.description.SvgTitle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "fontFaceSrcOrDescOrTitleOrMetadata"
+    "content"
 })
 @XmlRootElement(name = "font-face")
-public class FontFace {
+public class SvgFontFace extends AbstractSvgElement {
 
-    @XmlAttribute(name = "id")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    protected String id;
-    @XmlAttribute(name = "xml:base")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlBase;
-    @XmlAttribute(name = "xml:lang")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlLang;
-    @XmlAttribute(name = "xml:space")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlSpace;
     @XmlAttribute(name = "font-family")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontFamily;
+
     @XmlAttribute(name = "font-style")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontStyle;
+
     @XmlAttribute(name = "font-variant")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontVariant;
+
     @XmlAttribute(name = "font-weight")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontWeight;
+
     @XmlAttribute(name = "font-stretch")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontStretch;
+
     @XmlAttribute(name = "font-size")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSize;
+
     @XmlAttribute(name = "unicode-range")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String unicodeRange;
+
     @XmlAttribute(name = "units-per-em")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String unitsPerEm;
+
     @XmlAttribute(name = "panose-1")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String panose1;
+
     @XmlAttribute(name = "stemv")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String stemv;
+    protected String stemWidthVertical;
+
     @XmlAttribute(name = "stemh")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String stemh;
+    protected String stemWidthHorizontal;
+
     @XmlAttribute(name = "slope")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String slope;
+
     @XmlAttribute(name = "cap-height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String capHeight;
+
     @XmlAttribute(name = "x-height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xHeight;
+
     @XmlAttribute(name = "accent-height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String accentHeight;
+
     @XmlAttribute(name = "ascent")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String ascent;
+
     @XmlAttribute(name = "descent")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String descent;
+
     @XmlAttribute(name = "widths")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String widths;
+
     @XmlAttribute(name = "bbox")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String bbox;
+    protected String boundingBox;
+
     @XmlAttribute(name = "ideographic")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String ideographic;
+
     @XmlAttribute(name = "alphabetic")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String alphabetic;
+
     @XmlAttribute(name = "mathematical")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String mathematical;
+
     @XmlAttribute(name = "hanging")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String hanging;
+
     @XmlAttribute(name = "v-ideographic")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String vIdeographic;
+
     @XmlAttribute(name = "v-alphabetic")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String vAlphabetic;
+
     @XmlAttribute(name = "v-mathematical")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String vMathematical;
+
     @XmlAttribute(name = "v-hanging")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String vHanging;
+
     @XmlAttribute(name = "underline-position")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String underlinePosition;
+
     @XmlAttribute(name = "underline-thickness")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String underlineThickness;
+
     @XmlAttribute(name = "strikethrough-position")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strikethroughPosition;
+
     @XmlAttribute(name = "strikethrough-thickness")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strikethroughThickness;
+
     @XmlAttribute(name = "overline-position")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String overlinePosition;
+
     @XmlAttribute(name = "overline-thickness")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String overlineThickness;
+
     @XmlElements({
-        @XmlElement(name = "font-face-src", required = true, type = FontFaceSrc.class),
+        @XmlElement(name = "font-face-src", required = true, type = SvgFontFaceSrc.class),
         @XmlElement(name = "desc", required = true, type = SvgDescription.class),
         @XmlElement(name = "title", required = true, type = SvgTitle.class),
         @XmlElement(name = "metadata", required = true, type = SvgMetadata.class)
     })
-    protected List<Object> fontFaceSrcOrDescOrTitleOrMetadata;
-
-    /**
-     * Gets the value of the id property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
-     * Gets the value of the xmlBase property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlBase() {
-        return xmlBase;
-    }
-
-    /**
-     * Sets the value of the xmlBase property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlBase(String value) {
-        this.xmlBase = value;
-    }
-
-    /**
-     * Gets the value of the xmlLang property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlLang() {
-        return xmlLang;
-    }
-
-    /**
-     * Sets the value of the xmlLang property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlLang(String value) {
-        this.xmlLang = value;
-    }
-
-    /**
-     * Gets the value of the xmlSpace property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlSpace() {
-        return xmlSpace;
-    }
-
-    /**
-     * Sets the value of the xmlSpace property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlSpace(String value) {
-        this.xmlSpace = value;
-    }
+    protected List<Object> content;
 
     /**
      * Gets the value of the fontFamily property.
@@ -470,8 +393,8 @@ public class FontFace {
      *     {@link String }
      *
      */
-    public String getStemv() {
-        return stemv;
+    public String getStemWidthVertical() {
+        return stemWidthVertical;
     }
 
     /**
@@ -482,8 +405,8 @@ public class FontFace {
      *     {@link String }
      *
      */
-    public void setStemv(String value) {
-        this.stemv = value;
+    public void setStemWidthVertical(String value) {
+        this.stemWidthVertical = value;
     }
 
     /**
@@ -494,8 +417,8 @@ public class FontFace {
      *     {@link String }
      *
      */
-    public String getStemh() {
-        return stemh;
+    public String getStemWidthHorizontal() {
+        return stemWidthHorizontal;
     }
 
     /**
@@ -506,8 +429,8 @@ public class FontFace {
      *     {@link String }
      *
      */
-    public void setStemh(String value) {
-        this.stemh = value;
+    public void setStemWidthHorizontal(String value) {
+        this.stemWidthHorizontal = value;
     }
 
     /**
@@ -686,8 +609,8 @@ public class FontFace {
      *     {@link String }
      *
      */
-    public String getBbox() {
-        return bbox;
+    public String getBoundingBox() {
+        return boundingBox;
     }
 
     /**
@@ -698,8 +621,8 @@ public class FontFace {
      *     {@link String }
      *
      */
-    public void setBbox(String value) {
-        this.bbox = value;
+    public void setBoundingBox(String value) {
+        this.boundingBox = value;
     }
 
     /**
@@ -1039,35 +962,35 @@ public class FontFace {
     }
 
     /**
-     * Gets the value of the fontFaceSrcOrDescOrTitleOrMetadata property.
+     * Gets the value of the content property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the fontFaceSrcOrDescOrTitleOrMetadata property.
+     * This is why there is not a <CODE>set</CODE> method for the content property.
      *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getFontFaceSrcOrDescOrTitleOrMetadata().add(newItem);
+     *    getContent().add(newItem);
      * </pre>
      *
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link FontFaceSrc }
+     * {@link SvgFontFaceSrc }
      * {@link SvgDescription }
      * {@link SvgTitle }
      * {@link SvgMetadata }
      *
      *
      */
-    public List<Object> getFontFaceSrcOrDescOrTitleOrMetadata() {
-        if (fontFaceSrcOrDescOrTitleOrMetadata == null) {
-            fontFaceSrcOrDescOrTitleOrMetadata = new ArrayList<Object>();
+    public List<Object> getContent() {
+        if (content == null) {
+            content = new ArrayList<Object>();
         }
-        return this.fontFaceSrcOrDescOrTitleOrMetadata;
+        return this.content;
     }
 
 }

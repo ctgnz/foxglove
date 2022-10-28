@@ -1,4 +1,4 @@
-package nz.co.ctg.foxglove.element;
+package nz.co.ctg.foxglove.text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -17,35 +18,13 @@ import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgTransformable;
-import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.animate.SvgAnimate;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
-import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
-import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSet;
-import nz.co.ctg.foxglove.clip.SvgClipPath;
-import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.filter.Filter;
-import nz.co.ctg.foxglove.paint.SvgColorProfile;
-import nz.co.ctg.foxglove.paint.SvgLinearGradient;
-import nz.co.ctg.foxglove.paint.SvgPattern;
-import nz.co.ctg.foxglove.paint.SvgRadialGradient;
-import nz.co.ctg.foxglove.shape.SvgCircle;
-import nz.co.ctg.foxglove.shape.SvgEllipse;
-import nz.co.ctg.foxglove.shape.SvgLine;
-import nz.co.ctg.foxglove.shape.SvgPath;
-import nz.co.ctg.foxglove.shape.SvgPolygon;
-import nz.co.ctg.foxglove.shape.SvgPolyline;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.style.SvgStyle;
-import nz.co.ctg.foxglove.text.SvgAltGlyphDef;
-import nz.co.ctg.foxglove.text.SvgFont;
-import nz.co.ctg.foxglove.text.SvgFontFace;
-import nz.co.ctg.foxglove.text.SvgText;
 
 
 /**
@@ -55,8 +34,8 @@ import nz.co.ctg.foxglove.text.SvgText;
 @XmlType(name = "", propOrder = {
     "content"
 })
-@XmlRootElement(name = "defs")
-public class SvgDefs extends AbstractSvgStylable implements ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
+@XmlRootElement(name = "tref")
+public class SvgTextReference extends AbstractSvgStylable implements ISvgConditionalFeatures, ISvgEventListener, ISvgExternalResources, ISvgLinkable {
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -110,54 +89,76 @@ public class SvgDefs extends AbstractSvgStylable implements ISvgEventListener, I
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
 
+    @XmlAttribute(name = "xmlns:xlink")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xmlnsXlink;
+
+    @XmlAttribute(name = "xlink:type")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String xlinkType;
+
+    @XmlAttribute(name = "xlink:href", required = true)
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xlinkHref;
+
+    @XmlAttribute(name = "xlink:role")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xlinkRole;
+
+    @XmlAttribute(name = "xlink:arcrole")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xlinkArcrole;
+
+    @XmlAttribute(name = "xlink:title")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xlinkTitle;
+
+    @XmlAttribute(name = "xlink:show")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String xlinkShow;
+
+    @XmlAttribute(name = "xlink:actuate")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String xlinkActuate;
+
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
 
-    @XmlAttribute(name = "transform")
+    @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String transform;
+    protected String x;
+
+    @XmlAttribute(name = "y")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String y;
+
+    @XmlAttribute(name = "dx")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String dx;
+
+    @XmlAttribute(name = "dy")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String dy;
+
+    @XmlAttribute(name = "rotate")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String rotate;
+
+    @XmlAttribute(name = "textLength")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String textLength;
+
+    @XmlAttribute(name = "lengthAdjust")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String lengthAdjust;
 
     @XmlElements({
-        @XmlElement(name = "desc", type = SvgDescription.class),
-        @XmlElement(name = "title", type = SvgTitle.class),
-        @XmlElement(name = "metadata", type = SvgMetadata.class),
         @XmlElement(name = "animate", type = SvgAnimate.class),
         @XmlElement(name = "set", type = SvgSet.class),
-        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class),
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class),
-        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class),
-        @XmlElement(name = "svg", type = SvgGraphic.class),
-        @XmlElement(name = "g", type = SvgGroup.class),
-        @XmlElement(name = "defs", type = SvgDefs.class),
-        @XmlElement(name = "symbol", type = SvgSymbol.class),
-        @XmlElement(name = "use", type = SvgUse.class),
-        @XmlElement(name = "switch", type = SvgSwitch.class),
-        @XmlElement(name = "image", type = SvgImage.class),
-        @XmlElement(name = "style", type = SvgStyle.class),
-        @XmlElement(name = "path", type = SvgPath.class),
-        @XmlElement(name = "rect", type = SvgRectangle.class),
-        @XmlElement(name = "circle", type = SvgCircle.class),
-        @XmlElement(name = "line", type = SvgLine.class),
-        @XmlElement(name = "ellipse", type = SvgEllipse.class),
-        @XmlElement(name = "polyline", type = SvgPolyline.class),
-        @XmlElement(name = "polygon", type = SvgPolygon.class),
-        @XmlElement(name = "text", type = SvgText.class),
-        @XmlElement(name = "altGlyphDef", type = SvgAltGlyphDef.class),
-        @XmlElement(name = "marker", type = SvgMarker.class),
-        @XmlElement(name = "color-profile", type = SvgColorProfile.class),
-        @XmlElement(name = "linearGradient", type = SvgLinearGradient.class),
-        @XmlElement(name = "radialGradient", type = SvgRadialGradient.class),
-        @XmlElement(name = "pattern", type = SvgPattern.class),
-        @XmlElement(name = "clipPath", type = SvgClipPath.class),
-        @XmlElement(name = "mask", type = SvgMask.class),
-        @XmlElement(name = "filter", type = Filter.class),
-        @XmlElement(name = "cursor", type = SvgCursor.class),
-        @XmlElement(name = "a", type = SvgAnchor.class),
-        @XmlElement(name = "view", type = SvgView.class),
-        @XmlElement(name = "script", type = SvgScript.class),
-        @XmlElement(name = "font", type = SvgFont.class),
-        @XmlElement(name = "font-face", type = SvgFontFace.class),
-        @XmlElement(name = "foreignObject", type = SvgForeignObject.class)
+        @XmlElement(name = "desc", type = SvgDescription.class),
+        @XmlElement(name = "title", type = SvgTitle.class),
+        @XmlElement(name = "metadata", type = SvgMetadata.class)
     })
     protected List<Object> content;
 
@@ -500,6 +501,230 @@ public class SvgDefs extends AbstractSvgStylable implements ISvgEventListener, I
     }
 
     /**
+     * Gets the value of the xmlnsXlink property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXmlnsXlink() {
+        if (xmlnsXlink == null) {
+            return "http://www.w3.org/1999/xlink";
+        } else {
+            return xmlnsXlink;
+        }
+    }
+
+    /**
+     * Sets the value of the xmlnsXlink property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXmlnsXlink(String value) {
+        this.xmlnsXlink = value;
+    }
+
+    /**
+     * Gets the value of the xlinkType property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkType() {
+        if (xlinkType == null) {
+            return "simple";
+        } else {
+            return xlinkType;
+        }
+    }
+
+    /**
+     * Sets the value of the xlinkType property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkType(String value) {
+        this.xlinkType = value;
+    }
+
+    /**
+     * Gets the value of the xlinkHref property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkHref() {
+        return xlinkHref;
+    }
+
+    /**
+     * Sets the value of the xlinkHref property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkHref(String value) {
+        this.xlinkHref = value;
+    }
+
+    /**
+     * Gets the value of the xlinkRole property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkRole() {
+        return xlinkRole;
+    }
+
+    /**
+     * Sets the value of the xlinkRole property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkRole(String value) {
+        this.xlinkRole = value;
+    }
+
+    /**
+     * Gets the value of the xlinkArcrole property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkArcrole() {
+        return xlinkArcrole;
+    }
+
+    /**
+     * Sets the value of the xlinkArcrole property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkArcrole(String value) {
+        this.xlinkArcrole = value;
+    }
+
+    /**
+     * Gets the value of the xlinkTitle property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkTitle() {
+        return xlinkTitle;
+    }
+
+    /**
+     * Sets the value of the xlinkTitle property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkTitle(String value) {
+        this.xlinkTitle = value;
+    }
+
+    /**
+     * Gets the value of the xlinkShow property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkShow() {
+        if (xlinkShow == null) {
+            return "other";
+        } else {
+            return xlinkShow;
+        }
+    }
+
+    /**
+     * Sets the value of the xlinkShow property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkShow(String value) {
+        this.xlinkShow = value;
+    }
+
+    /**
+     * Gets the value of the xlinkActuate property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkActuate() {
+        if (xlinkActuate == null) {
+            return "onLoad";
+        } else {
+            return xlinkActuate;
+        }
+    }
+
+    /**
+     * Sets the value of the xlinkActuate property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkActuate(String value) {
+        this.xlinkActuate = value;
+    }
+
+    /**
      * Gets the value of the externalResourcesRequired property.
      *
      * @return
@@ -526,29 +751,171 @@ public class SvgDefs extends AbstractSvgStylable implements ISvgEventListener, I
     }
 
     /**
-     * Gets the value of the transform property.
+     * Gets the value of the x property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    @Override
-    public String getTransform() {
-        return transform;
+    public String getX() {
+        return x;
     }
 
     /**
-     * Sets the value of the transform property.
+     * Sets the value of the x property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    @Override
-    public void setTransform(String value) {
-        this.transform = value;
+    public void setX(String value) {
+        this.x = value;
+    }
+
+    /**
+     * Gets the value of the y property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getY() {
+        return y;
+    }
+
+    /**
+     * Sets the value of the y property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setY(String value) {
+        this.y = value;
+    }
+
+    /**
+     * Gets the value of the dx property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getDx() {
+        return dx;
+    }
+
+    /**
+     * Sets the value of the dx property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setDx(String value) {
+        this.dx = value;
+    }
+
+    /**
+     * Gets the value of the dy property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getDy() {
+        return dy;
+    }
+
+    /**
+     * Sets the value of the dy property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setDy(String value) {
+        this.dy = value;
+    }
+
+    /**
+     * Gets the value of the rotate property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getRotate() {
+        return rotate;
+    }
+
+    /**
+     * Sets the value of the rotate property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setRotate(String value) {
+        this.rotate = value;
+    }
+
+    /**
+     * Gets the value of the textLength property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getTextLength() {
+        return textLength;
+    }
+
+    /**
+     * Sets the value of the textLength property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setTextLength(String value) {
+        this.textLength = value;
+    }
+
+    /**
+     * Gets the value of the lengthAdjust property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getLengthAdjust() {
+        return lengthAdjust;
+    }
+
+    /**
+     * Sets the value of the lengthAdjust property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setLengthAdjust(String value) {
+        this.lengthAdjust = value;
     }
 
     /**
@@ -569,46 +936,12 @@ public class SvgDefs extends AbstractSvgStylable implements ISvgEventListener, I
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
+     * {@link SvgAnimate }
+     * {@link SvgSet }
+     * {@link SvgAnimateColor }
      * {@link SvgDescription }
      * {@link SvgTitle }
      * {@link SvgMetadata }
-     * {@link SvgAnimate }
-     * {@link SvgSet }
-     * {@link SvgAnimateMotion }
-     * {@link SvgAnimateColor }
-     * {@link SvgAnimateTransform }
-     * {@link SvgGraphic }
-     * {@link SvgGroup }
-     * {@link SvgDefs }
-     * {@link SvgSymbol }
-     * {@link SvgUse }
-     * {@link SvgSwitch }
-     * {@link SvgImage }
-     * {@link SvgStyle }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
-     * {@link SvgText }
-     * {@link SvgAltGlyphDef }
-     * {@link SvgMarker }
-     * {@link SvgColorProfile }
-     * {@link SvgLinearGradient }
-     * {@link SvgRadialGradient }
-     * {@link SvgPattern }
-     * {@link SvgClipPath }
-     * {@link SvgMask }
-     * {@link Filter }
-     * {@link SvgCursor }
-     * {@link SvgAnchor }
-     * {@link SvgView }
-     * {@link SvgScript }
-     * {@link SvgFont }
-     * {@link SvgFontFace }
-     * {@link SvgForeignObject }
      *
      *
      */

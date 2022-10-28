@@ -1,23 +1,32 @@
 package nz.co.ctg.foxglove.text;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.description.SvgDescription;
-import nz.co.ctg.foxglove.description.SvgMetadata;
-import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.ISvgConditionalFeatures;
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.ISvgEventListener;
+import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.ISvgStylable;
+import nz.co.ctg.foxglove.parser.DoubleListAdapter;
+import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
+import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
+import nz.co.ctg.foxglove.parser.SvgPaintAdapter;
+
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 
 /**
@@ -25,238 +34,378 @@ import nz.co.ctg.foxglove.description.SvgTitle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "descOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern"
+    "value"
 })
-@XmlRootElement(name = "font")
-public class Font {
+@XmlRootElement(name = "textPath")
+public class SvgTextPath implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgLinkable {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     protected String id;
+
     @XmlAttribute(name = "xml:base")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlBase;
+
     @XmlAttribute(name = "xml:lang")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlLang;
+
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
+
+    @XmlAttribute(name = "requiredFeatures")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String requiredFeatures;
+
+    @XmlAttribute(name = "requiredExtensions")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String requiredExtensions;
+
+    @XmlAttribute(name = "systemLanguage")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String systemLanguage;
+
     @XmlAttribute(name = "style")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String style;
+
     @XmlAttribute(name = "class")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String clazz;
+    protected String className;
+
     @XmlAttribute(name = "enable-background")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String enableBackground;
+
     @XmlAttribute(name = "clip")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clip;
+
     @XmlAttribute(name = "overflow")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String overflow;
+
     @XmlAttribute(name = "writing-mode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String writingMode;
+
     @XmlAttribute(name = "alignment-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String alignmentBaseline;
+
     @XmlAttribute(name = "baseline-shift")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String baselineShift;
+
     @XmlAttribute(name = "direction")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String direction;
+
     @XmlAttribute(name = "dominant-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String dominantBaseline;
+
     @XmlAttribute(name = "glyph-orientation-horizontal")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationHorizontal;
+
     @XmlAttribute(name = "glyph-orientation-vertical")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationVertical;
+
     @XmlAttribute(name = "kerning")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String kerning;
+
     @XmlAttribute(name = "letter-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String letterSpacing;
+
     @XmlAttribute(name = "text-anchor")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textAnchor;
+
     @XmlAttribute(name = "text-decoration")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String textDecoration;
+
     @XmlAttribute(name = "unicode-bidi")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String unicodeBidi;
+
     @XmlAttribute(name = "word-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String wordSpacing;
+
     @XmlAttribute(name = "font-family")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontFamily;
+
     @XmlAttribute(name = "font-size")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSize;
+
     @XmlAttribute(name = "font-size-adjust")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSizeAdjust;
+
     @XmlAttribute(name = "font-stretch")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStretch;
+
     @XmlAttribute(name = "font-style")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStyle;
+
     @XmlAttribute(name = "font-variant")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontVariant;
+
     @XmlAttribute(name = "font-weight")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontWeight;
+
     @XmlAttribute(name = "fill")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fill;
+    @XmlJavaTypeAdapter(SvgPaintAdapter.class)
+    protected Paint fill;
+
     @XmlAttribute(name = "fill-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fillRule;
+
     @XmlAttribute(name = "stroke")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String stroke;
+    @XmlJavaTypeAdapter(SvgPaintAdapter.class)
+    protected Paint stroke;
+
     @XmlAttribute(name = "stroke-dasharray")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDasharray;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    protected List<Double> strokeDashArray;
+
     @XmlAttribute(name = "stroke-dashoffset")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDashoffset;
+    protected double strokeDashOffset;
+
     @XmlAttribute(name = "stroke-linecap")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinecap;
+    @XmlJavaTypeAdapter(StrokeLineCapAdapter.class)
+    protected StrokeLineCap strokeLineCap;
+
     @XmlAttribute(name = "stroke-linejoin")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinejoin;
+    @XmlJavaTypeAdapter(StrokeLineJoinAdapter.class)
+    protected StrokeLineJoin strokeLineJoin;
+
     @XmlAttribute(name = "stroke-miterlimit")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeMiterlimit;
+    protected double strokeMiterLimit;
+
     @XmlAttribute(name = "stroke-width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeWidth;
+    protected double strokeWidth;
+
     @XmlAttribute(name = "color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String color;
+
     @XmlAttribute(name = "color-interpolation")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolation;
+
     @XmlAttribute(name = "color-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorRendering;
+
     @XmlAttribute(name = "opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String opacity;
+
     @XmlAttribute(name = "fill-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fillOpacity;
+
     @XmlAttribute(name = "stroke-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeOpacity;
+
     @XmlAttribute(name = "display")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String display;
+
     @XmlAttribute(name = "image-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String imageRendering;
+
     @XmlAttribute(name = "pointer-events")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String pointerEvents;
+
     @XmlAttribute(name = "shape-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String shapeRendering;
+
     @XmlAttribute(name = "text-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textRendering;
+
     @XmlAttribute(name = "visibility")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String visibility;
+
     @XmlAttribute(name = "marker-start")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerStart;
+
     @XmlAttribute(name = "marker-mid")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerMid;
+
     @XmlAttribute(name = "marker-end")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerEnd;
+
     @XmlAttribute(name = "color-profile")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String colorProfile;
+
     @XmlAttribute(name = "stop-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopColor;
+
     @XmlAttribute(name = "stop-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopOpacity;
+
     @XmlAttribute(name = "clip-path")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clipPath;
+
     @XmlAttribute(name = "clip-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String clipRule;
+
     @XmlAttribute(name = "mask")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String mask;
+
     @XmlAttribute(name = "filter")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String filter;
+
     @XmlAttribute(name = "color-interpolation-filters")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolationFilters;
+
     @XmlAttribute(name = "cursor")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String cursor;
+
     @XmlAttribute(name = "flood-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodColor;
+
     @XmlAttribute(name = "flood-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodOpacity;
+
     @XmlAttribute(name = "lighting-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String lightingColor;
+
+    @XmlAttribute(name = "onfocusin")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onfocusin;
+
+    @XmlAttribute(name = "onfocusout")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onfocusout;
+
+    @XmlAttribute(name = "onactivate")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onactivate;
+
+    @XmlAttribute(name = "onclick")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onclick;
+
+    @XmlAttribute(name = "onmousedown")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmousedown;
+
+    @XmlAttribute(name = "onmouseup")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmouseup;
+
+    @XmlAttribute(name = "onmouseover")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmouseover;
+
+    @XmlAttribute(name = "onmousemove")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmousemove;
+
+    @XmlAttribute(name = "onmouseout")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmouseout;
+
+    @XmlAttribute(name = "onload")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onload;
+
+    @XmlAttribute(name = "xmlns:xlink")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xmlnsXlink;
+
+    @XmlAttribute(name = "xlink:type")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String xlinkType;
+
+    @XmlAttribute(name = "xlink:href", required = true)
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xlinkHref;
+
+    @XmlAttribute(name = "xlink:role")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xlinkRole;
+
+    @XmlAttribute(name = "xlink:arcrole")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xlinkArcrole;
+
+    @XmlAttribute(name = "xlink:title")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String xlinkTitle;
+
+    @XmlAttribute(name = "xlink:show")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String xlinkShow;
+
+    @XmlAttribute(name = "xlink:actuate")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String xlinkActuate;
+
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
-    @XmlAttribute(name = "horiz-origin-x")
+
+    @XmlAttribute(name = "startOffset")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String horizOriginX;
-    @XmlAttribute(name = "horiz-origin-y")
+    protected String startOffset;
+
+    @XmlAttribute(name = "textLength")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String horizOriginY;
-    @XmlAttribute(name = "horiz-adv-x", required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String horizAdvX;
-    @XmlAttribute(name = "vert-origin-x")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertOriginX;
-    @XmlAttribute(name = "vert-origin-y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertOriginY;
-    @XmlAttribute(name = "vert-adv-y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertAdvY;
-    @XmlElements({
-        @XmlElement(name = "desc", type = SvgDescription.class),
-        @XmlElement(name = "title", type = SvgTitle.class),
-        @XmlElement(name = "metadata", type = SvgMetadata.class),
-        @XmlElement(name = "font-face", type = FontFace.class),
-        @XmlElement(name = "missing-glyph", type = MissingGlyph.class),
-        @XmlElement(name = "glyph", type = Glyph.class),
-        @XmlElement(name = "hkern", type = HorizontalKerning.class),
-        @XmlElement(name = "vkern", type = VerticalKerning.class)
-    })
-    protected List<Object> descOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern;
+    protected String textLength;
+
+    @XmlAttribute(name = "lengthAdjust")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String lengthAdjust;
+
+    @XmlAttribute(name = "method")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String method;
+
+    @XmlAttribute(name = "spacing")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String spacing;
+
+    @XmlValue
+    protected String value;
 
     /**
      * Gets the value of the id property.
@@ -266,6 +415,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -278,6 +428,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setId(String value) {
         this.id = value;
     }
@@ -290,6 +441,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlBase() {
         return xmlBase;
     }
@@ -302,6 +454,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlBase(String value) {
         this.xmlBase = value;
     }
@@ -314,6 +467,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlLang() {
         return xmlLang;
     }
@@ -326,6 +480,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlLang(String value) {
         this.xmlLang = value;
     }
@@ -338,6 +493,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlSpace() {
         return xmlSpace;
     }
@@ -350,8 +506,87 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlSpace(String value) {
         this.xmlSpace = value;
+    }
+
+    /**
+     * Gets the value of the requiredFeatures property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getRequiredFeatures() {
+        return requiredFeatures;
+    }
+
+    /**
+     * Sets the value of the requiredFeatures property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setRequiredFeatures(String value) {
+        this.requiredFeatures = value;
+    }
+
+    /**
+     * Gets the value of the requiredExtensions property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getRequiredExtensions() {
+        return requiredExtensions;
+    }
+
+    /**
+     * Sets the value of the requiredExtensions property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setRequiredExtensions(String value) {
+        this.requiredExtensions = value;
+    }
+
+    /**
+     * Gets the value of the systemLanguage property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getSystemLanguage() {
+        return systemLanguage;
+    }
+
+    /**
+     * Sets the value of the systemLanguage property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setSystemLanguage(String value) {
+        this.systemLanguage = value;
     }
 
     /**
@@ -362,6 +597,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getStyle() {
         return style;
     }
@@ -374,6 +610,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setStyle(String value) {
         this.style = value;
     }
@@ -386,8 +623,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public String getClazz() {
-        return clazz;
+    @Override
+    public String getClassName() {
+        return className;
     }
 
     /**
@@ -398,8 +636,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public void setClazz(String value) {
-        this.clazz = value;
+    @Override
+    public void setClassName(String value) {
+        this.className = value;
     }
 
     /**
@@ -410,6 +649,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getEnableBackground() {
         return enableBackground;
     }
@@ -422,6 +662,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setEnableBackground(String value) {
         this.enableBackground = value;
     }
@@ -434,6 +675,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getClip() {
         return clip;
     }
@@ -446,6 +688,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setClip(String value) {
         this.clip = value;
     }
@@ -458,6 +701,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getOverflow() {
         return overflow;
     }
@@ -470,6 +714,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setOverflow(String value) {
         this.overflow = value;
     }
@@ -482,6 +727,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getWritingMode() {
         return writingMode;
     }
@@ -494,6 +740,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setWritingMode(String value) {
         this.writingMode = value;
     }
@@ -506,6 +753,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getAlignmentBaseline() {
         return alignmentBaseline;
     }
@@ -518,6 +766,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setAlignmentBaseline(String value) {
         this.alignmentBaseline = value;
     }
@@ -530,6 +779,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getBaselineShift() {
         return baselineShift;
     }
@@ -542,6 +792,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setBaselineShift(String value) {
         this.baselineShift = value;
     }
@@ -554,6 +805,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getDirection() {
         return direction;
     }
@@ -566,6 +818,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setDirection(String value) {
         this.direction = value;
     }
@@ -578,6 +831,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getDominantBaseline() {
         return dominantBaseline;
     }
@@ -590,6 +844,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setDominantBaseline(String value) {
         this.dominantBaseline = value;
     }
@@ -602,6 +857,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getGlyphOrientationHorizontal() {
         return glyphOrientationHorizontal;
     }
@@ -614,6 +870,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setGlyphOrientationHorizontal(String value) {
         this.glyphOrientationHorizontal = value;
     }
@@ -626,6 +883,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getGlyphOrientationVertical() {
         return glyphOrientationVertical;
     }
@@ -638,6 +896,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setGlyphOrientationVertical(String value) {
         this.glyphOrientationVertical = value;
     }
@@ -650,6 +909,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getKerning() {
         return kerning;
     }
@@ -662,6 +922,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setKerning(String value) {
         this.kerning = value;
     }
@@ -674,6 +935,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getLetterSpacing() {
         return letterSpacing;
     }
@@ -686,6 +948,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setLetterSpacing(String value) {
         this.letterSpacing = value;
     }
@@ -698,6 +961,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getTextAnchor() {
         return textAnchor;
     }
@@ -710,6 +974,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setTextAnchor(String value) {
         this.textAnchor = value;
     }
@@ -722,6 +987,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getTextDecoration() {
         return textDecoration;
     }
@@ -734,6 +1000,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setTextDecoration(String value) {
         this.textDecoration = value;
     }
@@ -746,6 +1013,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getUnicodeBidi() {
         return unicodeBidi;
     }
@@ -758,6 +1026,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setUnicodeBidi(String value) {
         this.unicodeBidi = value;
     }
@@ -770,6 +1039,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getWordSpacing() {
         return wordSpacing;
     }
@@ -782,6 +1052,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setWordSpacing(String value) {
         this.wordSpacing = value;
     }
@@ -794,6 +1065,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFontFamily() {
         return fontFamily;
     }
@@ -806,6 +1078,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFontFamily(String value) {
         this.fontFamily = value;
     }
@@ -818,6 +1091,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFontSize() {
         return fontSize;
     }
@@ -830,6 +1104,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFontSize(String value) {
         this.fontSize = value;
     }
@@ -842,6 +1117,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFontSizeAdjust() {
         return fontSizeAdjust;
     }
@@ -854,6 +1130,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFontSizeAdjust(String value) {
         this.fontSizeAdjust = value;
     }
@@ -866,6 +1143,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFontStretch() {
         return fontStretch;
     }
@@ -878,6 +1156,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFontStretch(String value) {
         this.fontStretch = value;
     }
@@ -890,6 +1169,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFontStyle() {
         return fontStyle;
     }
@@ -902,6 +1182,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFontStyle(String value) {
         this.fontStyle = value;
     }
@@ -914,6 +1195,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFontVariant() {
         return fontVariant;
     }
@@ -926,6 +1208,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFontVariant(String value) {
         this.fontVariant = value;
     }
@@ -938,6 +1221,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFontWeight() {
         return fontWeight;
     }
@@ -950,6 +1234,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFontWeight(String value) {
         this.fontWeight = value;
     }
@@ -959,10 +1244,11 @@ public class Font {
      *
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public String getFill() {
+    @Override
+    public Paint getFill() {
         return fill;
     }
 
@@ -971,10 +1257,11 @@ public class Font {
      *
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public void setFill(String value) {
+    @Override
+    public void setFill(Paint value) {
         this.fill = value;
     }
 
@@ -986,6 +1273,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFillRule() {
         return fillRule;
     }
@@ -998,6 +1286,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFillRule(String value) {
         this.fillRule = value;
     }
@@ -1007,10 +1296,11 @@ public class Font {
      *
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public String getStroke() {
+    @Override
+    public Paint getStroke() {
         return stroke;
     }
 
@@ -1019,10 +1309,11 @@ public class Font {
      *
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public void setStroke(String value) {
+    @Override
+    public void setStroke(Paint value) {
         this.stroke = value;
     }
 
@@ -1034,8 +1325,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public String getStrokeDasharray() {
-        return strokeDasharray;
+    @Override
+    public List<Double> getStrokeDashArray() {
+        return strokeDashArray;
     }
 
     /**
@@ -1046,8 +1338,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public void setStrokeDasharray(String value) {
-        this.strokeDasharray = value;
+    @Override
+    public void setStrokeDashArray(List<Double> value) {
+        this.strokeDashArray = value;
     }
 
     /**
@@ -1058,8 +1351,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public String getStrokeDashoffset() {
-        return strokeDashoffset;
+    @Override
+    public double getStrokeDashOffset() {
+        return strokeDashOffset;
     }
 
     /**
@@ -1070,8 +1364,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public void setStrokeDashoffset(String value) {
-        this.strokeDashoffset = value;
+    @Override
+    public void setStrokeDashOffset(double value) {
+        this.strokeDashOffset = value;
     }
 
     /**
@@ -1082,8 +1377,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public String getStrokeLinecap() {
-        return strokeLinecap;
+    @Override
+    public StrokeLineCap getStrokeLineCap() {
+        return strokeLineCap;
     }
 
     /**
@@ -1094,8 +1390,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public void setStrokeLinecap(String value) {
-        this.strokeLinecap = value;
+    @Override
+    public void setStrokeLineCap(StrokeLineCap value) {
+        this.strokeLineCap = value;
     }
 
     /**
@@ -1106,8 +1403,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public String getStrokeLinejoin() {
-        return strokeLinejoin;
+    @Override
+    public StrokeLineJoin getStrokeLineJoin() {
+        return strokeLineJoin;
     }
 
     /**
@@ -1118,8 +1416,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public void setStrokeLinejoin(String value) {
-        this.strokeLinejoin = value;
+    @Override
+    public void setStrokeLineJoin(StrokeLineJoin value) {
+        this.strokeLineJoin = value;
     }
 
     /**
@@ -1130,8 +1429,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public String getStrokeMiterlimit() {
-        return strokeMiterlimit;
+    @Override
+    public double getStrokeMiterLimit() {
+        return strokeMiterLimit;
     }
 
     /**
@@ -1142,8 +1442,9 @@ public class Font {
      *     {@link String }
      *
      */
-    public void setStrokeMiterlimit(String value) {
-        this.strokeMiterlimit = value;
+    @Override
+    public void setStrokeMiterLimit(double value) {
+        this.strokeMiterLimit = value;
     }
 
     /**
@@ -1154,7 +1455,8 @@ public class Font {
      *     {@link String }
      *
      */
-    public String getStrokeWidth() {
+    @Override
+    public double getStrokeWidth() {
         return strokeWidth;
     }
 
@@ -1166,7 +1468,8 @@ public class Font {
      *     {@link String }
      *
      */
-    public void setStrokeWidth(String value) {
+    @Override
+    public void setStrokeWidth(double value) {
         this.strokeWidth = value;
     }
 
@@ -1178,6 +1481,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getColor() {
         return color;
     }
@@ -1190,6 +1494,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setColor(String value) {
         this.color = value;
     }
@@ -1202,6 +1507,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getColorInterpolation() {
         return colorInterpolation;
     }
@@ -1214,6 +1520,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setColorInterpolation(String value) {
         this.colorInterpolation = value;
     }
@@ -1226,6 +1533,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getColorRendering() {
         return colorRendering;
     }
@@ -1238,6 +1546,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setColorRendering(String value) {
         this.colorRendering = value;
     }
@@ -1250,6 +1559,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getOpacity() {
         return opacity;
     }
@@ -1262,6 +1572,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setOpacity(String value) {
         this.opacity = value;
     }
@@ -1274,6 +1585,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFillOpacity() {
         return fillOpacity;
     }
@@ -1286,6 +1598,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFillOpacity(String value) {
         this.fillOpacity = value;
     }
@@ -1298,6 +1611,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeOpacity() {
         return strokeOpacity;
     }
@@ -1310,6 +1624,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeOpacity(String value) {
         this.strokeOpacity = value;
     }
@@ -1322,6 +1637,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getDisplay() {
         return display;
     }
@@ -1334,6 +1650,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setDisplay(String value) {
         this.display = value;
     }
@@ -1346,6 +1663,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getImageRendering() {
         return imageRendering;
     }
@@ -1358,6 +1676,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setImageRendering(String value) {
         this.imageRendering = value;
     }
@@ -1370,6 +1689,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getPointerEvents() {
         return pointerEvents;
     }
@@ -1382,6 +1702,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setPointerEvents(String value) {
         this.pointerEvents = value;
     }
@@ -1394,6 +1715,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getShapeRendering() {
         return shapeRendering;
     }
@@ -1406,6 +1728,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setShapeRendering(String value) {
         this.shapeRendering = value;
     }
@@ -1418,6 +1741,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getTextRendering() {
         return textRendering;
     }
@@ -1430,6 +1754,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setTextRendering(String value) {
         this.textRendering = value;
     }
@@ -1442,6 +1767,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getVisibility() {
         return visibility;
     }
@@ -1454,6 +1780,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setVisibility(String value) {
         this.visibility = value;
     }
@@ -1466,6 +1793,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerStart() {
         return markerStart;
     }
@@ -1478,6 +1806,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerStart(String value) {
         this.markerStart = value;
     }
@@ -1490,6 +1819,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerMid() {
         return markerMid;
     }
@@ -1502,6 +1832,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerMid(String value) {
         this.markerMid = value;
     }
@@ -1514,6 +1845,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerEnd() {
         return markerEnd;
     }
@@ -1526,6 +1858,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerEnd(String value) {
         this.markerEnd = value;
     }
@@ -1538,6 +1871,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getColorProfile() {
         return colorProfile;
     }
@@ -1550,6 +1884,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setColorProfile(String value) {
         this.colorProfile = value;
     }
@@ -1562,6 +1897,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getStopColor() {
         return stopColor;
     }
@@ -1574,6 +1910,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setStopColor(String value) {
         this.stopColor = value;
     }
@@ -1586,6 +1923,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getStopOpacity() {
         return stopOpacity;
     }
@@ -1598,6 +1936,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setStopOpacity(String value) {
         this.stopOpacity = value;
     }
@@ -1610,6 +1949,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getClipPath() {
         return clipPath;
     }
@@ -1622,6 +1962,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setClipPath(String value) {
         this.clipPath = value;
     }
@@ -1634,6 +1975,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getClipRule() {
         return clipRule;
     }
@@ -1646,6 +1988,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setClipRule(String value) {
         this.clipRule = value;
     }
@@ -1658,6 +2001,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getMask() {
         return mask;
     }
@@ -1670,6 +2014,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setMask(String value) {
         this.mask = value;
     }
@@ -1682,6 +2027,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFilter() {
         return filter;
     }
@@ -1694,6 +2040,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFilter(String value) {
         this.filter = value;
     }
@@ -1706,6 +2053,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getColorInterpolationFilters() {
         return colorInterpolationFilters;
     }
@@ -1718,6 +2066,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setColorInterpolationFilters(String value) {
         this.colorInterpolationFilters = value;
     }
@@ -1730,6 +2079,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getCursor() {
         return cursor;
     }
@@ -1742,6 +2092,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setCursor(String value) {
         this.cursor = value;
     }
@@ -1754,6 +2105,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFloodColor() {
         return floodColor;
     }
@@ -1766,6 +2118,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFloodColor(String value) {
         this.floodColor = value;
     }
@@ -1778,6 +2131,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getFloodOpacity() {
         return floodOpacity;
     }
@@ -1790,6 +2144,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setFloodOpacity(String value) {
         this.floodOpacity = value;
     }
@@ -1802,6 +2157,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public String getLightingColor() {
         return lightingColor;
     }
@@ -1814,8 +2170,493 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setLightingColor(String value) {
         this.lightingColor = value;
+    }
+
+    /**
+     * Gets the value of the onfocusin property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnFocusIn() {
+        return onfocusin;
+    }
+
+    /**
+     * Sets the value of the onfocusin property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnFocusIn(String value) {
+        this.onfocusin = value;
+    }
+
+    /**
+     * Gets the value of the onfocusout property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnFocusOut() {
+        return onfocusout;
+    }
+
+    /**
+     * Sets the value of the onfocusout property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnFocusOut(String value) {
+        this.onfocusout = value;
+    }
+
+    /**
+     * Gets the value of the onactivate property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnActivate() {
+        return onactivate;
+    }
+
+    /**
+     * Sets the value of the onactivate property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnActivate(String value) {
+        this.onactivate = value;
+    }
+
+    /**
+     * Gets the value of the onclick property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnClick() {
+        return onclick;
+    }
+
+    /**
+     * Sets the value of the onclick property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnClick(String value) {
+        this.onclick = value;
+    }
+
+    /**
+     * Gets the value of the onmousedown property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnMouseDown() {
+        return onmousedown;
+    }
+
+    /**
+     * Sets the value of the onmousedown property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnMouseDown(String value) {
+        this.onmousedown = value;
+    }
+
+    /**
+     * Gets the value of the onmouseup property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnMouseUp() {
+        return onmouseup;
+    }
+
+    /**
+     * Sets the value of the onmouseup property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnMouseUp(String value) {
+        this.onmouseup = value;
+    }
+
+    /**
+     * Gets the value of the onmouseover property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnMouseOver() {
+        return onmouseover;
+    }
+
+    /**
+     * Sets the value of the onmouseover property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnMouseOver(String value) {
+        this.onmouseover = value;
+    }
+
+    /**
+     * Gets the value of the onmousemove property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnMouseMove() {
+        return onmousemove;
+    }
+
+    /**
+     * Sets the value of the onmousemove property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnMouseMove(String value) {
+        this.onmousemove = value;
+    }
+
+    /**
+     * Gets the value of the onmouseout property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnMouseOut() {
+        return onmouseout;
+    }
+
+    /**
+     * Sets the value of the onmouseout property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnMouseOut(String value) {
+        this.onmouseout = value;
+    }
+
+    /**
+     * Gets the value of the onload property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnLoad() {
+        return onload;
+    }
+
+    /**
+     * Sets the value of the onload property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnLoad(String value) {
+        this.onload = value;
+    }
+
+    /**
+     * Gets the value of the xmlnsXlink property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXmlnsXlink() {
+        if (xmlnsXlink == null) {
+            return "http://www.w3.org/1999/xlink";
+        } else {
+            return xmlnsXlink;
+        }
+    }
+
+    /**
+     * Sets the value of the xmlnsXlink property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXmlnsXlink(String value) {
+        this.xmlnsXlink = value;
+    }
+
+    /**
+     * Gets the value of the xlinkType property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkType() {
+        if (xlinkType == null) {
+            return "simple";
+        } else {
+            return xlinkType;
+        }
+    }
+
+    /**
+     * Sets the value of the xlinkType property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkType(String value) {
+        this.xlinkType = value;
+    }
+
+    /**
+     * Gets the value of the xlinkHref property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkHref() {
+        return xlinkHref;
+    }
+
+    /**
+     * Sets the value of the xlinkHref property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkHref(String value) {
+        this.xlinkHref = value;
+    }
+
+    /**
+     * Gets the value of the xlinkRole property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkRole() {
+        return xlinkRole;
+    }
+
+    /**
+     * Sets the value of the xlinkRole property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkRole(String value) {
+        this.xlinkRole = value;
+    }
+
+    /**
+     * Gets the value of the xlinkArcrole property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkArcrole() {
+        return xlinkArcrole;
+    }
+
+    /**
+     * Sets the value of the xlinkArcrole property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkArcrole(String value) {
+        this.xlinkArcrole = value;
+    }
+
+    /**
+     * Gets the value of the xlinkTitle property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkTitle() {
+        return xlinkTitle;
+    }
+
+    /**
+     * Sets the value of the xlinkTitle property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkTitle(String value) {
+        this.xlinkTitle = value;
+    }
+
+    /**
+     * Gets the value of the xlinkShow property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkShow() {
+        if (xlinkShow == null) {
+            return "other";
+        } else {
+            return xlinkShow;
+        }
+    }
+
+    /**
+     * Sets the value of the xlinkShow property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkShow(String value) {
+        this.xlinkShow = value;
+    }
+
+    /**
+     * Gets the value of the xlinkActuate property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getXlinkActuate() {
+        if (xlinkActuate == null) {
+            return "onLoad";
+        } else {
+            return xlinkActuate;
+        }
+    }
+
+    /**
+     * Sets the value of the xlinkActuate property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setXlinkActuate(String value) {
+        this.xlinkActuate = value;
     }
 
     /**
@@ -1826,6 +2667,7 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
@@ -1838,188 +2680,153 @@ public class Font {
      *     {@link String }
      *
      */
+    @Override
     public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
 
     /**
-     * Gets the value of the horizOriginX property.
+     * Gets the value of the startOffset property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getHorizOriginX() {
-        return horizOriginX;
+    public String getStartOffset() {
+        return startOffset;
     }
 
     /**
-     * Sets the value of the horizOriginX property.
+     * Sets the value of the startOffset property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setHorizOriginX(String value) {
-        this.horizOriginX = value;
+    public void setStartOffset(String value) {
+        this.startOffset = value;
     }
 
     /**
-     * Gets the value of the horizOriginY property.
+     * Gets the value of the textLength property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getHorizOriginY() {
-        return horizOriginY;
+    public String getTextLength() {
+        return textLength;
     }
 
     /**
-     * Sets the value of the horizOriginY property.
+     * Sets the value of the textLength property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setHorizOriginY(String value) {
-        this.horizOriginY = value;
+    public void setTextLength(String value) {
+        this.textLength = value;
     }
 
     /**
-     * Gets the value of the horizAdvX property.
+     * Gets the value of the lengthAdjust property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getHorizAdvX() {
-        return horizAdvX;
+    public String getLengthAdjust() {
+        return lengthAdjust;
     }
 
     /**
-     * Sets the value of the horizAdvX property.
+     * Sets the value of the lengthAdjust property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setHorizAdvX(String value) {
-        this.horizAdvX = value;
+    public void setLengthAdjust(String value) {
+        this.lengthAdjust = value;
     }
 
     /**
-     * Gets the value of the vertOriginX property.
+     * Gets the value of the method property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getVertOriginX() {
-        return vertOriginX;
+    public String getMethod() {
+        return method;
     }
 
     /**
-     * Sets the value of the vertOriginX property.
+     * Sets the value of the method property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setVertOriginX(String value) {
-        this.vertOriginX = value;
+    public void setMethod(String value) {
+        this.method = value;
     }
 
     /**
-     * Gets the value of the vertOriginY property.
+     * Gets the value of the spacing property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getVertOriginY() {
-        return vertOriginY;
+    public String getSpacing() {
+        return spacing;
     }
 
     /**
-     * Sets the value of the vertOriginY property.
+     * Sets the value of the spacing property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setVertOriginY(String value) {
-        this.vertOriginY = value;
+    public void setSpacing(String value) {
+        this.spacing = value;
     }
 
     /**
-     * Gets the value of the vertAdvY property.
+     * Gets the value of the value property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getVertAdvY() {
-        return vertAdvY;
+    public String getValue() {
+        return value;
     }
 
     /**
-     * Sets the value of the vertAdvY property.
+     * Sets the value of the value property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setVertAdvY(String value) {
-        this.vertAdvY = value;
-    }
-
-    /**
-     * Gets the value of the descOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDescOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     * {@link FontFace }
-     * {@link MissingGlyph }
-     * {@link Glyph }
-     * {@link HorizontalKerning }
-     * {@link VerticalKerning }
-     *
-     *
-     */
-    public List<Object> getDescOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern() {
-        if (descOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern == null) {
-            descOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern = new ArrayList<>();
-        }
-        return this.descOrTitleOrMetadataOrFontFaceOrMissingGlyphOrGlyphOrHkernOrVkern;
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }
