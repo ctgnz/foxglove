@@ -23,6 +23,10 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgConditionalFeatures;
+import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -33,71 +37,89 @@ import nz.co.ctg.foxglove.description.SvgTitle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "descOrTitleOrMetadata"
+    "content"
 })
 @XmlRootElement(name = "cursor")
-public class SvgCursor {
+public class SvgCursor extends AbstractSvgElement implements ISvgExternalResources, ISvgConditionalFeatures, ISvgLinkable {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     protected String id;
+
     @XmlAttribute(name = "xml:base")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlBase;
+
     @XmlAttribute(name = "xml:lang")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlLang;
+
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
+
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String requiredFeatures;
+
     @XmlAttribute(name = "requiredExtensions")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String requiredExtensions;
+
     @XmlAttribute(name = "systemLanguage")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String systemLanguage;
+
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
+
     @XmlAttribute(name = "xlink:type")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkType;
+
     @XmlAttribute(name = "xlink:href", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkHref;
+
     @XmlAttribute(name = "xlink:role")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkRole;
+
     @XmlAttribute(name = "xlink:arcrole")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkArcrole;
+
     @XmlAttribute(name = "xlink:title")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkTitle;
+
     @XmlAttribute(name = "xlink:show")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkShow;
+
     @XmlAttribute(name = "xlink:actuate")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
+
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
+
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
+
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String y;
+
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class),
         @XmlElement(name = "title", type = SvgTitle.class),
         @XmlElement(name = "metadata", type = SvgMetadata.class)
     })
-    protected List<Object> descOrTitleOrMetadata;
+    protected List<Object> content;
 
     /**
      * Gets the value of the id property.
@@ -107,6 +129,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -119,6 +142,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setId(String value) {
         this.id = value;
     }
@@ -131,6 +155,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlBase() {
         return xmlBase;
     }
@@ -143,6 +168,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlBase(String value) {
         this.xmlBase = value;
     }
@@ -155,6 +181,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlLang() {
         return xmlLang;
     }
@@ -167,6 +194,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlLang(String value) {
         this.xmlLang = value;
     }
@@ -179,6 +207,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlSpace() {
         return xmlSpace;
     }
@@ -191,6 +220,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlSpace(String value) {
         this.xmlSpace = value;
     }
@@ -203,6 +233,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getRequiredFeatures() {
         return requiredFeatures;
     }
@@ -215,6 +246,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setRequiredFeatures(String value) {
         this.requiredFeatures = value;
     }
@@ -227,6 +259,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getRequiredExtensions() {
         return requiredExtensions;
     }
@@ -239,6 +272,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setRequiredExtensions(String value) {
         this.requiredExtensions = value;
     }
@@ -251,6 +285,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getSystemLanguage() {
         return systemLanguage;
     }
@@ -263,6 +298,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setSystemLanguage(String value) {
         this.systemLanguage = value;
     }
@@ -275,6 +311,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlnsXlink() {
         if (xmlnsXlink == null) {
             return "http://www.w3.org/1999/xlink";
@@ -291,6 +328,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlnsXlink(String value) {
         this.xmlnsXlink = value;
     }
@@ -303,6 +341,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkType() {
         if (xlinkType == null) {
             return "simple";
@@ -319,6 +358,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkType(String value) {
         this.xlinkType = value;
     }
@@ -331,6 +371,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkHref() {
         return xlinkHref;
     }
@@ -343,6 +384,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkHref(String value) {
         this.xlinkHref = value;
     }
@@ -355,6 +397,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkRole() {
         return xlinkRole;
     }
@@ -367,6 +410,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkRole(String value) {
         this.xlinkRole = value;
     }
@@ -379,6 +423,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkArcrole() {
         return xlinkArcrole;
     }
@@ -391,6 +436,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkArcrole(String value) {
         this.xlinkArcrole = value;
     }
@@ -403,6 +449,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkTitle() {
         return xlinkTitle;
     }
@@ -415,6 +462,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkTitle(String value) {
         this.xlinkTitle = value;
     }
@@ -427,6 +475,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkShow() {
         if (xlinkShow == null) {
             return "other";
@@ -443,6 +492,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkShow(String value) {
         this.xlinkShow = value;
     }
@@ -455,6 +505,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkActuate() {
         if (xlinkActuate == null) {
             return "onLoad";
@@ -471,6 +522,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkActuate(String value) {
         this.xlinkActuate = value;
     }
@@ -483,6 +535,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
@@ -495,6 +548,7 @@ public class SvgCursor {
      *     {@link String }
      *
      */
+    @Override
     public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
@@ -548,18 +602,18 @@ public class SvgCursor {
     }
 
     /**
-     * Gets the value of the descOrTitleOrMetadata property.
+     * Gets the value of the content property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadata property.
+     * This is why there is not a <CODE>set</CODE> method for the content property.
      *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDescOrTitleOrMetadata().add(newItem);
+     *    getContent().add(newItem);
      * </pre>
      *
      *
@@ -571,11 +625,11 @@ public class SvgCursor {
      *
      *
      */
-    public List<Object> getDescOrTitleOrMetadata() {
-        if (descOrTitleOrMetadata == null) {
-            descOrTitleOrMetadata = new ArrayList<>();
+    public List<Object> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
         }
-        return this.descOrTitleOrMetadata;
+        return this.content;
     }
 
 }

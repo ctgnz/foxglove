@@ -16,13 +16,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -33,140 +34,36 @@ import nz.co.ctg.foxglove.description.SvgTitle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "descOrTitleOrMetadata"
+    "content"
 })
 @XmlRootElement(name = "view")
-public class SvgView {
+public class SvgView extends AbstractSvgElement implements ISvgExternalResources {
 
-    @XmlAttribute(name = "id")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    protected String id;
-    @XmlAttribute(name = "xml:base")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlBase;
-    @XmlAttribute(name = "xml:lang")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlLang;
-    @XmlAttribute(name = "xml:space")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlSpace;
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
+
     @XmlAttribute(name = "viewBox")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String viewBox;
+
     @XmlAttribute(name = "preserveAspectRatio")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String preserveAspectRatio;
+
     @XmlAttribute(name = "zoomAndPan")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String zoomAndPan;
+
     @XmlAttribute(name = "viewTarget")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String viewTarget;
+
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class),
         @XmlElement(name = "title", type = SvgTitle.class),
         @XmlElement(name = "metadata", type = SvgMetadata.class)
     })
-    protected List<Object> descOrTitleOrMetadata;
-
-    /**
-     * Gets the value of the id property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
-     * Gets the value of the xmlBase property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlBase() {
-        return xmlBase;
-    }
-
-    /**
-     * Sets the value of the xmlBase property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlBase(String value) {
-        this.xmlBase = value;
-    }
-
-    /**
-     * Gets the value of the xmlLang property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlLang() {
-        return xmlLang;
-    }
-
-    /**
-     * Sets the value of the xmlLang property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlLang(String value) {
-        this.xmlLang = value;
-    }
-
-    /**
-     * Gets the value of the xmlSpace property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlSpace() {
-        return xmlSpace;
-    }
-
-    /**
-     * Sets the value of the xmlSpace property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlSpace(String value) {
-        this.xmlSpace = value;
-    }
+    protected List<Object> content;
 
     /**
      * Gets the value of the externalResourcesRequired property.
@@ -176,6 +73,7 @@ public class SvgView {
      *     {@link String }
      *
      */
+    @Override
     public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
@@ -188,6 +86,7 @@ public class SvgView {
      *     {@link String }
      *
      */
+    @Override
     public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
@@ -297,18 +196,18 @@ public class SvgView {
     }
 
     /**
-     * Gets the value of the descOrTitleOrMetadata property.
+     * Gets the value of the content property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadata property.
+     * This is why there is not a <CODE>set</CODE> method for the content property.
      *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDescOrTitleOrMetadata().add(newItem);
+     *    getContent().add(newItem);
      * </pre>
      *
      *
@@ -320,11 +219,11 @@ public class SvgView {
      *
      *
      */
-    public List<Object> getDescOrTitleOrMetadata() {
-        if (descOrTitleOrMetadata == null) {
-            descOrTitleOrMetadata = new ArrayList<>();
+    public List<Object> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
         }
-        return this.descOrTitleOrMetadata;
+        return this.content;
     }
 
 }

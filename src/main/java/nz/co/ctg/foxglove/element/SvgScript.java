@@ -19,6 +19,10 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgLinkable;
+
 
 /**
  *
@@ -28,7 +32,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "value"
 })
 @XmlRootElement(name = "script")
-public class SvgScript {
+public class SvgScript implements ISvgElement, ISvgExternalResources, ISvgLinkable {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -83,6 +87,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -95,6 +100,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setId(String value) {
         this.id = value;
     }
@@ -107,6 +113,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlBase() {
         return xmlBase;
     }
@@ -119,6 +126,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlBase(String value) {
         this.xmlBase = value;
     }
@@ -131,6 +139,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlLang() {
         return xmlLang;
     }
@@ -143,6 +152,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlLang(String value) {
         this.xmlLang = value;
     }
@@ -155,6 +165,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlSpace() {
         return xmlSpace;
     }
@@ -167,6 +178,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlSpace(String value) {
         this.xmlSpace = value;
     }
@@ -179,6 +191,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlnsXlink() {
         if (xmlnsXlink == null) {
             return "http://www.w3.org/1999/xlink";
@@ -195,6 +208,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlnsXlink(String value) {
         this.xmlnsXlink = value;
     }
@@ -207,6 +221,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkType() {
         if (xlinkType == null) {
             return "simple";
@@ -223,6 +238,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkType(String value) {
         this.xlinkType = value;
     }
@@ -235,6 +251,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkHref() {
         return xlinkHref;
     }
@@ -247,6 +264,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkHref(String value) {
         this.xlinkHref = value;
     }
@@ -259,6 +277,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkRole() {
         return xlinkRole;
     }
@@ -271,6 +290,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkRole(String value) {
         this.xlinkRole = value;
     }
@@ -283,6 +303,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkArcrole() {
         return xlinkArcrole;
     }
@@ -295,6 +316,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkArcrole(String value) {
         this.xlinkArcrole = value;
     }
@@ -307,6 +329,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkTitle() {
         return xlinkTitle;
     }
@@ -319,6 +342,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkTitle(String value) {
         this.xlinkTitle = value;
     }
@@ -331,6 +355,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkShow() {
         if (xlinkShow == null) {
             return "other";
@@ -347,6 +372,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkShow(String value) {
         this.xlinkShow = value;
     }
@@ -359,6 +385,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkActuate() {
         if (xlinkActuate == null) {
             return "onLoad";
@@ -375,6 +402,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkActuate(String value) {
         this.xlinkActuate = value;
     }
@@ -387,6 +415,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
@@ -399,6 +428,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
+    @Override
     public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
@@ -435,7 +465,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
-    public String getvalue() {
+    public String getValue() {
         return value;
     }
 
@@ -447,7 +477,7 @@ public class SvgScript {
      *     {@link String }
      *
      */
-    public void setvalue(String value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

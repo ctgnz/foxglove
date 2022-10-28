@@ -11,6 +11,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.foxglove.ISvgElement;
+
 
 /**
  *
@@ -20,30 +22,37 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "value"
 })
 @XmlRootElement(name = "style")
-public class SvgStyle {
+public class SvgStyle implements ISvgElement {
 
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
+
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     protected String id;
+
     @XmlAttribute(name = "xml:base")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlBase;
+
     @XmlAttribute(name = "xml:lang")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlLang;
+
     @XmlAttribute(name = "type", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String type;
+
     @XmlAttribute(name = "media")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String media;
+
     @XmlAttribute(name = "title")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String title;
+
     @XmlValue
     protected String value;
 
@@ -55,6 +64,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlSpace() {
         if (xmlSpace == null) {
             return "preserve";
@@ -71,6 +81,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlSpace(String value) {
         this.xmlSpace = value;
     }
@@ -83,6 +94,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -95,6 +107,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
+    @Override
     public void setId(String value) {
         this.id = value;
     }
@@ -107,6 +120,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlBase() {
         return xmlBase;
     }
@@ -119,6 +133,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlBase(String value) {
         this.xmlBase = value;
     }
@@ -131,6 +146,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlLang() {
         return xmlLang;
     }
@@ -143,6 +159,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlLang(String value) {
         this.xmlLang = value;
     }
@@ -227,7 +244,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
-    public String getvalue() {
+    public String getValue() {
         return value;
     }
 
@@ -239,7 +256,7 @@ public class SvgStyle {
      *     {@link String }
      *
      */
-    public void setvalue(String value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
