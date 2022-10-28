@@ -1,4 +1,4 @@
-package nz.co.ctg.foxglove.clip;
+package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,33 +10,23 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.google.common.base.MoreObjects.ToStringHelper;
-
+import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgEventListener;
+import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimate;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.clip.SvgClipPath;
+import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.element.SvgAnchor;
-import nz.co.ctg.foxglove.element.SvgCursor;
-import nz.co.ctg.foxglove.element.SvgDefs;
-import nz.co.ctg.foxglove.element.SvgForeignObject;
-import nz.co.ctg.foxglove.element.SvgGroup;
-import nz.co.ctg.foxglove.element.SvgImage;
-import nz.co.ctg.foxglove.element.SvgMarker;
-import nz.co.ctg.foxglove.element.SvgScript;
-import nz.co.ctg.foxglove.element.SvgSwitch;
-import nz.co.ctg.foxglove.element.SvgSymbol;
-import nz.co.ctg.foxglove.element.SvgUse;
-import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.Filter;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
@@ -63,32 +53,59 @@ import nz.co.ctg.foxglove.text.SvgText;
 @XmlType(name = "", propOrder = {
     "content"
 })
-@XmlRootElement(name = "mask")
-public class SvgMask extends SvgClipElement {
+@XmlRootElement(name = "symbol")
+public class SvgSymbol extends AbstractSvgStylable implements ISvgEventListener, ISvgExternalResources {
 
-    @XmlAttribute(name = "x")
+    @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    protected String onfocusin;
 
-    @XmlAttribute(name = "y")
+    @XmlAttribute(name = "onfocusout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    protected String onfocusout;
 
-    @XmlAttribute(name = "width")
+    @XmlAttribute(name = "onactivate")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
+    protected String onactivate;
 
-    @XmlAttribute(name = "height")
+    @XmlAttribute(name = "onclick")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
+    protected String onclick;
 
-    @XmlAttribute(name = "maskUnits")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String maskUnits;
+    @XmlAttribute(name = "onmousedown")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmousedown;
 
-    @XmlAttribute(name = "maskContentUnits")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String maskContentUnits;
+    @XmlAttribute(name = "onmouseup")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmouseup;
+
+    @XmlAttribute(name = "onmouseover")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmouseover;
+
+    @XmlAttribute(name = "onmousemove")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmousemove;
+
+    @XmlAttribute(name = "onmouseout")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmouseout;
+
+    @XmlAttribute(name = "onload")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onload;
+
+    @XmlAttribute(name = "externalResourcesRequired")
+    protected boolean externalResourcesRequired;
+
+    @XmlAttribute(name = "viewBox")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String viewBox;
+
+    @XmlAttribute(name = "preserveAspectRatio")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String preserveAspectRatio;
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class),
@@ -135,147 +152,341 @@ public class SvgMask extends SvgClipElement {
     protected List<Object> content;
 
     /**
-     * Gets the value of the x property.
+     * Gets the value of the onfocusin property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getX() {
-        return x;
+    @Override
+    public String getOnFocusIn() {
+        return onfocusin;
     }
 
     /**
-     * Sets the value of the x property.
+     * Sets the value of the onfocusin property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setX(String value) {
-        this.x = value;
+    @Override
+    public void setOnFocusIn(String value) {
+        this.onfocusin = value;
     }
 
     /**
-     * Gets the value of the y property.
+     * Gets the value of the onfocusout property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getY() {
-        return y;
+    @Override
+    public String getOnFocusOut() {
+        return onfocusout;
     }
 
     /**
-     * Sets the value of the y property.
+     * Sets the value of the onfocusout property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setY(String value) {
-        this.y = value;
+    @Override
+    public void setOnFocusOut(String value) {
+        this.onfocusout = value;
     }
 
     /**
-     * Gets the value of the width property.
+     * Gets the value of the onactivate property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getWidth() {
-        return width;
+    @Override
+    public String getOnActivate() {
+        return onactivate;
     }
 
     /**
-     * Sets the value of the width property.
+     * Sets the value of the onactivate property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setWidth(String value) {
-        this.width = value;
+    @Override
+    public void setOnActivate(String value) {
+        this.onactivate = value;
     }
 
     /**
-     * Gets the value of the height property.
+     * Gets the value of the onclick property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getHeight() {
-        return height;
+    @Override
+    public String getOnClick() {
+        return onclick;
     }
 
     /**
-     * Sets the value of the height property.
+     * Sets the value of the onclick property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setHeight(String value) {
-        this.height = value;
+    @Override
+    public void setOnClick(String value) {
+        this.onclick = value;
     }
 
     /**
-     * Gets the value of the maskUnits property.
+     * Gets the value of the onmousedown property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getMaskUnits() {
-        return maskUnits;
+    @Override
+    public String getOnMouseDown() {
+        return onmousedown;
     }
 
     /**
-     * Sets the value of the maskUnits property.
+     * Sets the value of the onmousedown property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setMaskUnits(String value) {
-        this.maskUnits = value;
+    @Override
+    public void setOnMouseDown(String value) {
+        this.onmousedown = value;
     }
 
     /**
-     * Gets the value of the maskContentUnits property.
+     * Gets the value of the onmouseup property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getMaskContentUnits() {
-        return maskContentUnits;
+    @Override
+    public String getOnMouseUp() {
+        return onmouseup;
     }
 
     /**
-     * Sets the value of the maskContentUnits property.
+     * Sets the value of the onmouseup property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setMaskContentUnits(String value) {
-        this.maskContentUnits = value;
+    @Override
+    public void setOnMouseUp(String value) {
+        this.onmouseup = value;
+    }
+
+    /**
+     * Gets the value of the onmouseover property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnMouseOver() {
+        return onmouseover;
+    }
+
+    /**
+     * Sets the value of the onmouseover property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnMouseOver(String value) {
+        this.onmouseover = value;
+    }
+
+    /**
+     * Gets the value of the onmousemove property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnMouseMove() {
+        return onmousemove;
+    }
+
+    /**
+     * Sets the value of the onmousemove property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnMouseMove(String value) {
+        this.onmousemove = value;
+    }
+
+    /**
+     * Gets the value of the onmouseout property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnMouseOut() {
+        return onmouseout;
+    }
+
+    /**
+     * Sets the value of the onmouseout property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnMouseOut(String value) {
+        this.onmouseout = value;
+    }
+
+    /**
+     * Gets the value of the onload property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnLoad() {
+        return onload;
+    }
+
+    /**
+     * Sets the value of the onload property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnLoad(String value) {
+        this.onload = value;
+    }
+
+    /**
+     * Gets the value of the externalResourcesRequired property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public boolean getExternalResourcesRequired() {
+        return externalResourcesRequired;
+    }
+
+    /**
+     * Sets the value of the externalResourcesRequired property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setExternalResourcesRequired(boolean value) {
+        this.externalResourcesRequired = value;
+    }
+
+    /**
+     * Gets the value of the viewBox property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getViewBox() {
+        return viewBox;
+    }
+
+    /**
+     * Sets the value of the viewBox property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setViewBox(String value) {
+        this.viewBox = value;
+    }
+
+    /**
+     * Gets the value of the preserveAspectRatio property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getPreserveAspectRatio() {
+        if (preserveAspectRatio == null) {
+            return "xMidYMid meet";
+        } else {
+            return preserveAspectRatio;
+        }
+    }
+
+    /**
+     * Sets the value of the preserveAspectRatio property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setPreserveAspectRatio(String value) {
+        this.preserveAspectRatio = value;
     }
 
     /**
@@ -290,7 +501,7 @@ public class SvgMask extends SvgClipElement {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    content().add(newItem);
+     *    getContent().add(newItem);
      * </pre>
      *
      *
@@ -344,12 +555,6 @@ public class SvgMask extends SvgClipElement {
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    @Override
-    protected void toStringDetail(ToStringHelper builder) {
-        // TODO Auto-generated method stub
-
     }
 
 }

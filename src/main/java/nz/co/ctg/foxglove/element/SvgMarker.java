@@ -1,4 +1,4 @@
-package nz.co.ctg.foxglove.clip;
+package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,29 +14,19 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.google.common.base.MoreObjects.ToStringHelper;
-
+import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimate;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.clip.SvgClipPath;
+import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.element.SvgAnchor;
-import nz.co.ctg.foxglove.element.SvgCursor;
-import nz.co.ctg.foxglove.element.SvgDefs;
-import nz.co.ctg.foxglove.element.SvgForeignObject;
-import nz.co.ctg.foxglove.element.SvgGroup;
-import nz.co.ctg.foxglove.element.SvgImage;
-import nz.co.ctg.foxglove.element.SvgMarker;
-import nz.co.ctg.foxglove.element.SvgScript;
-import nz.co.ctg.foxglove.element.SvgSwitch;
-import nz.co.ctg.foxglove.element.SvgSymbol;
-import nz.co.ctg.foxglove.element.SvgUse;
-import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.Filter;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
@@ -63,32 +53,43 @@ import nz.co.ctg.foxglove.text.SvgText;
 @XmlType(name = "", propOrder = {
     "content"
 })
-@XmlRootElement(name = "mask")
-public class SvgMask extends SvgClipElement {
+@XmlRootElement(name = "marker")
+public class SvgMarker extends AbstractSvgStylable implements ISvgExternalResources {
 
-    @XmlAttribute(name = "x")
+    @XmlAttribute(name = "externalResourcesRequired")
+    protected boolean externalResourcesRequired;
+
+    @XmlAttribute(name = "refX")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    protected String refX;
 
-    @XmlAttribute(name = "y")
+    @XmlAttribute(name = "refY")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    protected String refY;
 
-    @XmlAttribute(name = "width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
-
-    @XmlAttribute(name = "height")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
-
-    @XmlAttribute(name = "maskUnits")
+    @XmlAttribute(name = "markerUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String maskUnits;
+    protected String markerUnits;
 
-    @XmlAttribute(name = "maskContentUnits")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String maskContentUnits;
+    @XmlAttribute(name = "markerWidth")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String markerWidth;
+
+    @XmlAttribute(name = "markerHeight")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String markerHeight;
+
+    @XmlAttribute(name = "orient")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String orient;
+
+    @XmlAttribute(name = "viewBox")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String viewBox;
+
+    @XmlAttribute(name = "preserveAspectRatio")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String preserveAspectRatio;
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class),
@@ -135,147 +136,225 @@ public class SvgMask extends SvgClipElement {
     protected List<Object> content;
 
     /**
-     * Gets the value of the x property.
+     * Gets the value of the externalResourcesRequired property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getX() {
-        return x;
+    @Override
+    public boolean getExternalResourcesRequired() {
+        return externalResourcesRequired;
     }
 
     /**
-     * Sets the value of the x property.
+     * Sets the value of the externalResourcesRequired property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setX(String value) {
-        this.x = value;
+    @Override
+    public void setExternalResourcesRequired(boolean value) {
+        this.externalResourcesRequired = value;
     }
 
     /**
-     * Gets the value of the y property.
+     * Gets the value of the refX property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getY() {
-        return y;
+    public String getRefX() {
+        return refX;
     }
 
     /**
-     * Sets the value of the y property.
+     * Sets the value of the refX property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setY(String value) {
-        this.y = value;
+    public void setRefX(String value) {
+        this.refX = value;
     }
 
     /**
-     * Gets the value of the width property.
+     * Gets the value of the refY property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getWidth() {
-        return width;
+    public String getRefY() {
+        return refY;
     }
 
     /**
-     * Sets the value of the width property.
+     * Sets the value of the refY property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setWidth(String value) {
-        this.width = value;
+    public void setRefY(String value) {
+        this.refY = value;
     }
 
     /**
-     * Gets the value of the height property.
+     * Gets the value of the markerUnits property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getHeight() {
-        return height;
+    public String getMarkerUnits() {
+        return markerUnits;
     }
 
     /**
-     * Sets the value of the height property.
+     * Sets the value of the markerUnits property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setHeight(String value) {
-        this.height = value;
+    public void setMarkerUnits(String value) {
+        this.markerUnits = value;
     }
 
     /**
-     * Gets the value of the maskUnits property.
+     * Gets the value of the markerWidth property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getMaskUnits() {
-        return maskUnits;
+    public String getMarkerWidth() {
+        return markerWidth;
     }
 
     /**
-     * Sets the value of the maskUnits property.
+     * Sets the value of the markerWidth property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setMaskUnits(String value) {
-        this.maskUnits = value;
+    public void setMarkerWidth(String value) {
+        this.markerWidth = value;
     }
 
     /**
-     * Gets the value of the maskContentUnits property.
+     * Gets the value of the markerHeight property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getMaskContentUnits() {
-        return maskContentUnits;
+    public String getMarkerHeight() {
+        return markerHeight;
     }
 
     /**
-     * Sets the value of the maskContentUnits property.
+     * Sets the value of the markerHeight property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setMaskContentUnits(String value) {
-        this.maskContentUnits = value;
+    public void setMarkerHeight(String value) {
+        this.markerHeight = value;
+    }
+
+    /**
+     * Gets the value of the orient property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getOrient() {
+        return orient;
+    }
+
+    /**
+     * Sets the value of the orient property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setOrient(String value) {
+        this.orient = value;
+    }
+
+    /**
+     * Gets the value of the viewBox property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getViewBox() {
+        return viewBox;
+    }
+
+    /**
+     * Sets the value of the viewBox property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setViewBox(String value) {
+        this.viewBox = value;
+    }
+
+    /**
+     * Gets the value of the preserveAspectRatio property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getPreserveAspectRatio() {
+        if (preserveAspectRatio == null) {
+            return "xMidYMid meet";
+        } else {
+            return preserveAspectRatio;
+        }
+    }
+
+    /**
+     * Sets the value of the preserveAspectRatio property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setPreserveAspectRatio(String value) {
+        this.preserveAspectRatio = value;
     }
 
     /**
@@ -290,7 +369,7 @@ public class SvgMask extends SvgClipElement {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    content().add(newItem);
+     *    getContent().add(newItem);
      * </pre>
      *
      *
@@ -344,12 +423,6 @@ public class SvgMask extends SvgClipElement {
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    @Override
-    protected void toStringDetail(ToStringHelper builder) {
-        // TODO Auto-generated method stub
-
     }
 
 }

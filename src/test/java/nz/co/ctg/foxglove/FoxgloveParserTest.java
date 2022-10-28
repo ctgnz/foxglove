@@ -7,7 +7,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.Before;
 import org.junit.Test;
 
-import nz.co.ctg.foxglove.document.SvgGroup;
+import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.parser.FoxgloveParser;
 import nz.co.ctg.foxglove.shape.SvgLine;
 import nz.co.ctg.foxglove.shape.SvgPolyline;

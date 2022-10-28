@@ -1,4 +1,4 @@
-package nz.co.ctg.foxglove.paint;
+package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.google.common.base.MoreObjects.ToStringHelper;
-
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
+import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimate;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -31,19 +29,11 @@ import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.element.SvgAnchor;
-import nz.co.ctg.foxglove.element.SvgCursor;
-import nz.co.ctg.foxglove.element.SvgDefs;
-import nz.co.ctg.foxglove.element.SvgForeignObject;
-import nz.co.ctg.foxglove.element.SvgGroup;
-import nz.co.ctg.foxglove.element.SvgImage;
-import nz.co.ctg.foxglove.element.SvgMarker;
-import nz.co.ctg.foxglove.element.SvgScript;
-import nz.co.ctg.foxglove.element.SvgSwitch;
-import nz.co.ctg.foxglove.element.SvgSymbol;
-import nz.co.ctg.foxglove.element.SvgUse;
-import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.Filter;
+import nz.co.ctg.foxglove.paint.SvgColorProfile;
+import nz.co.ctg.foxglove.paint.SvgLinearGradient;
+import nz.co.ctg.foxglove.paint.SvgPattern;
+import nz.co.ctg.foxglove.paint.SvgRadialGradient;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -65,8 +55,8 @@ import nz.co.ctg.foxglove.text.SvgText;
 @XmlType(name = "", propOrder = {
     "content"
 })
-@XmlRootElement(name = "pattern")
-public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISvgExternalResources, ISvgConditionalFeatures {
+@XmlRootElement(name = "defs")
+public class SvgDefs extends AbstractSvgStylable implements ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -80,76 +70,52 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String systemLanguage;
 
-    @XmlAttribute(name = "xmlns:xlink")
+    @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlnsXlink;
+    protected String onfocusin;
 
-    @XmlAttribute(name = "xlink:type")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkType;
-
-    @XmlAttribute(name = "xlink:href")
+    @XmlAttribute(name = "onfocusout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkHref;
+    protected String onfocusout;
 
-    @XmlAttribute(name = "xlink:role")
+    @XmlAttribute(name = "onactivate")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkRole;
+    protected String onactivate;
 
-    @XmlAttribute(name = "xlink:arcrole")
+    @XmlAttribute(name = "onclick")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkArcrole;
+    protected String onclick;
 
-    @XmlAttribute(name = "xlink:title")
+    @XmlAttribute(name = "onmousedown")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkTitle;
+    protected String onmousedown;
 
-    @XmlAttribute(name = "xlink:show")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkShow;
+    @XmlAttribute(name = "onmouseup")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmouseup;
 
-    @XmlAttribute(name = "xlink:actuate")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkActuate;
+    @XmlAttribute(name = "onmouseover")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmouseover;
+
+    @XmlAttribute(name = "onmousemove")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmousemove;
+
+    @XmlAttribute(name = "onmouseout")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onmouseout;
+
+    @XmlAttribute(name = "onload")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String onload;
 
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
 
-    @XmlAttribute(name = "x")
+    @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
-
-    @XmlAttribute(name = "y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
-
-    @XmlAttribute(name = "width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
-
-    @XmlAttribute(name = "height")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
-
-    @XmlAttribute(name = "patternUnits")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String patternUnits;
-
-    @XmlAttribute(name = "patternContentUnits")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String patternContentUnits;
-
-    @XmlAttribute(name = "patternTransform")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String patternTransform;
-
-    @XmlAttribute(name = "viewBox")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String viewBox;
-
-    @XmlAttribute(name = "preserveAspectRatio")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String preserveAspectRatio;
+    protected String transform;
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class),
@@ -274,7 +240,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
     }
 
     /**
-     * Gets the value of the xmlnsXlink property.
+     * Gets the value of the onfocusin property.
      *
      * @return
      *     possible object is
@@ -282,16 +248,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public String getXmlnsXlink() {
-        if (xmlnsXlink == null) {
-            return "http://www.w3.org/1999/xlink";
-        } else {
-            return xmlnsXlink;
-        }
+    public String getOnFocusIn() {
+        return onfocusin;
     }
 
     /**
-     * Sets the value of the xmlnsXlink property.
+     * Sets the value of the onfocusin property.
      *
      * @param value
      *     allowed object is
@@ -299,12 +261,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public void setXmlnsXlink(String value) {
-        this.xmlnsXlink = value;
+    public void setOnFocusIn(String value) {
+        this.onfocusin = value;
     }
 
     /**
-     * Gets the value of the xlinkType property.
+     * Gets the value of the onfocusout property.
      *
      * @return
      *     possible object is
@@ -312,16 +274,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public String getXlinkType() {
-        if (xlinkType == null) {
-            return "simple";
-        } else {
-            return xlinkType;
-        }
+    public String getOnFocusOut() {
+        return onfocusout;
     }
 
     /**
-     * Sets the value of the xlinkType property.
+     * Sets the value of the onfocusout property.
      *
      * @param value
      *     allowed object is
@@ -329,12 +287,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public void setXlinkType(String value) {
-        this.xlinkType = value;
+    public void setOnFocusOut(String value) {
+        this.onfocusout = value;
     }
 
     /**
-     * Gets the value of the xlinkHref property.
+     * Gets the value of the onactivate property.
      *
      * @return
      *     possible object is
@@ -342,12 +300,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public String getXlinkHref() {
-        return xlinkHref;
+    public String getOnActivate() {
+        return onactivate;
     }
 
     /**
-     * Sets the value of the xlinkHref property.
+     * Sets the value of the onactivate property.
      *
      * @param value
      *     allowed object is
@@ -355,12 +313,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public void setXlinkHref(String value) {
-        this.xlinkHref = value;
+    public void setOnActivate(String value) {
+        this.onactivate = value;
     }
 
     /**
-     * Gets the value of the xlinkRole property.
+     * Gets the value of the onclick property.
      *
      * @return
      *     possible object is
@@ -368,12 +326,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public String getXlinkRole() {
-        return xlinkRole;
+    public String getOnClick() {
+        return onclick;
     }
 
     /**
-     * Sets the value of the xlinkRole property.
+     * Sets the value of the onclick property.
      *
      * @param value
      *     allowed object is
@@ -381,12 +339,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public void setXlinkRole(String value) {
-        this.xlinkRole = value;
+    public void setOnClick(String value) {
+        this.onclick = value;
     }
 
     /**
-     * Gets the value of the xlinkArcrole property.
+     * Gets the value of the onmousedown property.
      *
      * @return
      *     possible object is
@@ -394,12 +352,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public String getXlinkArcrole() {
-        return xlinkArcrole;
+    public String getOnMouseDown() {
+        return onmousedown;
     }
 
     /**
-     * Sets the value of the xlinkArcrole property.
+     * Sets the value of the onmousedown property.
      *
      * @param value
      *     allowed object is
@@ -407,12 +365,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public void setXlinkArcrole(String value) {
-        this.xlinkArcrole = value;
+    public void setOnMouseDown(String value) {
+        this.onmousedown = value;
     }
 
     /**
-     * Gets the value of the xlinkTitle property.
+     * Gets the value of the onmouseup property.
      *
      * @return
      *     possible object is
@@ -420,12 +378,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public String getXlinkTitle() {
-        return xlinkTitle;
+    public String getOnMouseUp() {
+        return onmouseup;
     }
 
     /**
-     * Sets the value of the xlinkTitle property.
+     * Sets the value of the onmouseup property.
      *
      * @param value
      *     allowed object is
@@ -433,12 +391,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public void setXlinkTitle(String value) {
-        this.xlinkTitle = value;
+    public void setOnMouseUp(String value) {
+        this.onmouseup = value;
     }
 
     /**
-     * Gets the value of the xlinkShow property.
+     * Gets the value of the onmouseover property.
      *
      * @return
      *     possible object is
@@ -446,16 +404,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public String getXlinkShow() {
-        if (xlinkShow == null) {
-            return "other";
-        } else {
-            return xlinkShow;
-        }
+    public String getOnMouseOver() {
+        return onmouseover;
     }
 
     /**
-     * Sets the value of the xlinkShow property.
+     * Sets the value of the onmouseover property.
      *
      * @param value
      *     allowed object is
@@ -463,12 +417,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public void setXlinkShow(String value) {
-        this.xlinkShow = value;
+    public void setOnMouseOver(String value) {
+        this.onmouseover = value;
     }
 
     /**
-     * Gets the value of the xlinkActuate property.
+     * Gets the value of the onmousemove property.
      *
      * @return
      *     possible object is
@@ -476,16 +430,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public String getXlinkActuate() {
-        if (xlinkActuate == null) {
-            return "onLoad";
-        } else {
-            return xlinkActuate;
-        }
+    public String getOnMouseMove() {
+        return onmousemove;
     }
 
     /**
-     * Sets the value of the xlinkActuate property.
+     * Sets the value of the onmousemove property.
      *
      * @param value
      *     allowed object is
@@ -493,8 +443,60 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      *
      */
     @Override
-    public void setXlinkActuate(String value) {
-        this.xlinkActuate = value;
+    public void setOnMouseMove(String value) {
+        this.onmousemove = value;
+    }
+
+    /**
+     * Gets the value of the onmouseout property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnMouseOut() {
+        return onmouseout;
+    }
+
+    /**
+     * Sets the value of the onmouseout property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnMouseOut(String value) {
+        this.onmouseout = value;
+    }
+
+    /**
+     * Gets the value of the onload property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public String getOnLoad() {
+        return onload;
+    }
+
+    /**
+     * Sets the value of the onload property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    @Override
+    public void setOnLoad(String value) {
+        this.onload = value;
     }
 
     /**
@@ -524,223 +526,29 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
     }
 
     /**
-     * Gets the value of the x property.
+     * Gets the value of the transform property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getX() {
-        return x;
+    @Override
+    public String getTransform() {
+        return transform;
     }
 
     /**
-     * Sets the value of the x property.
+     * Sets the value of the transform property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setX(String value) {
-        this.x = value;
-    }
-
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getY() {
-        return y;
-    }
-
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setY(String value) {
-        this.y = value;
-    }
-
-    /**
-     * Gets the value of the width property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getWidth() {
-        return width;
-    }
-
-    /**
-     * Sets the value of the width property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setWidth(String value) {
-        this.width = value;
-    }
-
-    /**
-     * Gets the value of the height property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getHeight() {
-        return height;
-    }
-
-    /**
-     * Sets the value of the height property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setHeight(String value) {
-        this.height = value;
-    }
-
-    /**
-     * Gets the value of the patternUnits property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPatternUnits() {
-        return patternUnits;
-    }
-
-    /**
-     * Sets the value of the patternUnits property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPatternUnits(String value) {
-        this.patternUnits = value;
-    }
-
-    /**
-     * Gets the value of the patternContentUnits property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPatternContentUnits() {
-        return patternContentUnits;
-    }
-
-    /**
-     * Sets the value of the patternContentUnits property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPatternContentUnits(String value) {
-        this.patternContentUnits = value;
-    }
-
-    /**
-     * Gets the value of the patternTransform property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPatternTransform() {
-        return patternTransform;
-    }
-
-    /**
-     * Sets the value of the patternTransform property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPatternTransform(String value) {
-        this.patternTransform = value;
-    }
-
-    /**
-     * Gets the value of the viewBox property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getViewBox() {
-        return viewBox;
-    }
-
-    /**
-     * Sets the value of the viewBox property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setViewBox(String value) {
-        this.viewBox = value;
-    }
-
-    /**
-     * Gets the value of the preserveAspectRatio property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPreserveAspectRatio() {
-        if (preserveAspectRatio == null) {
-            return "xMidYMid meet";
-        } else {
-            return preserveAspectRatio;
-        }
-    }
-
-    /**
-     * Sets the value of the preserveAspectRatio property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPreserveAspectRatio(String value) {
-        this.preserveAspectRatio = value;
+    @Override
+    public void setTransform(String value) {
+        this.transform = value;
     }
 
     /**
@@ -809,12 +617,6 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    @Override
-    protected void toStringDetail(ToStringHelper builder) {
-        // TODO Auto-generated method stub
-
     }
 
 }

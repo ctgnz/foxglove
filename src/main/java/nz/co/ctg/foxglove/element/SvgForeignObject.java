@@ -6,9 +6,7 @@
 //
 
 
-package nz.co.ctg.foxglove.document;
-
-import java.util.List;
+package nz.co.ctg.foxglove.element;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,24 +19,7 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
-import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgLinkable;
-import nz.co.ctg.foxglove.ISvgStylable;
-import nz.co.ctg.foxglove.ISvgTransformable;
-import nz.co.ctg.foxglove.parser.DoubleListAdapter;
-import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
-import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
-import nz.co.ctg.foxglove.parser.SvgPaintAdapter;
-
-import static com.google.common.base.MoreObjects.toStringHelper;
-
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.transform.Transform;
 
 
 /**
@@ -48,362 +29,261 @@ import javafx.scene.transform.Transform;
 @XmlType(name = "", propOrder = {
     "value"
 })
-@XmlRootElement(name = "a")
-public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable {
+@XmlRootElement(name = "foreignObject")
+public class SvgForeignObject implements ISvgEventListener {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     protected String id;
-
     @XmlAttribute(name = "xml:base")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlBase;
-
     @XmlAttribute(name = "xml:lang")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlLang;
-
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
-
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String requiredFeatures;
-
     @XmlAttribute(name = "requiredExtensions")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String requiredExtensions;
-
     @XmlAttribute(name = "systemLanguage")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String systemLanguage;
-
     @XmlAttribute(name = "style")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String style;
-
     @XmlAttribute(name = "class")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
-
+    protected String clazz;
     @XmlAttribute(name = "enable-background")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String enableBackground;
-
     @XmlAttribute(name = "clip")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clip;
-
     @XmlAttribute(name = "overflow")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String overflow;
-
     @XmlAttribute(name = "writing-mode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String writingMode;
-
     @XmlAttribute(name = "alignment-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String alignmentBaseline;
-
     @XmlAttribute(name = "baseline-shift")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String baselineShift;
-
     @XmlAttribute(name = "direction")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String direction;
-
     @XmlAttribute(name = "dominant-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String dominantBaseline;
-
     @XmlAttribute(name = "glyph-orientation-horizontal")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationHorizontal;
-
     @XmlAttribute(name = "glyph-orientation-vertical")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationVertical;
-
     @XmlAttribute(name = "kerning")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String kerning;
-
     @XmlAttribute(name = "letter-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String letterSpacing;
-
     @XmlAttribute(name = "text-anchor")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textAnchor;
-
     @XmlAttribute(name = "text-decoration")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String textDecoration;
-
     @XmlAttribute(name = "unicode-bidi")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String unicodeBidi;
-
     @XmlAttribute(name = "word-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String wordSpacing;
-
     @XmlAttribute(name = "font-family")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontFamily;
-
     @XmlAttribute(name = "font-size")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSize;
-
     @XmlAttribute(name = "font-size-adjust")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSizeAdjust;
-
     @XmlAttribute(name = "font-stretch")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStretch;
-
     @XmlAttribute(name = "font-style")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStyle;
-
     @XmlAttribute(name = "font-variant")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontVariant;
-
     @XmlAttribute(name = "font-weight")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontWeight;
-
     @XmlAttribute(name = "fill")
-    @XmlJavaTypeAdapter(SvgPaintAdapter.class)
-    protected Paint fill;
-
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String fill;
     @XmlAttribute(name = "fill-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fillRule;
-
     @XmlAttribute(name = "stroke")
-    @XmlJavaTypeAdapter(SvgPaintAdapter.class)
-    protected Paint stroke;
-
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String stroke;
     @XmlAttribute(name = "stroke-dasharray")
-    @XmlJavaTypeAdapter(DoubleListAdapter.class)
-    protected List<Double> strokeDashArray;
-
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String strokeDasharray;
     @XmlAttribute(name = "stroke-dashoffset")
-    protected double strokeDashOffset;
-
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String strokeDashoffset;
     @XmlAttribute(name = "stroke-linecap")
-    @XmlJavaTypeAdapter(StrokeLineCapAdapter.class)
-    protected StrokeLineCap strokeLineCap;
-
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String strokeLinecap;
     @XmlAttribute(name = "stroke-linejoin")
-    @XmlJavaTypeAdapter(StrokeLineJoinAdapter.class)
-    protected StrokeLineJoin strokeLineJoin;
-
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String strokeLinejoin;
     @XmlAttribute(name = "stroke-miterlimit")
-    protected double strokeMiterLimit;
-
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String strokeMiterlimit;
     @XmlAttribute(name = "stroke-width")
-    protected double strokeWidth;
-
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String strokeWidth;
     @XmlAttribute(name = "color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String color;
-
     @XmlAttribute(name = "color-interpolation")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolation;
-
     @XmlAttribute(name = "color-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorRendering;
-
     @XmlAttribute(name = "opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String opacity;
-
     @XmlAttribute(name = "fill-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fillOpacity;
-
     @XmlAttribute(name = "stroke-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeOpacity;
-
     @XmlAttribute(name = "display")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String display;
-
     @XmlAttribute(name = "image-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String imageRendering;
-
     @XmlAttribute(name = "pointer-events")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String pointerEvents;
-
     @XmlAttribute(name = "shape-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String shapeRendering;
-
     @XmlAttribute(name = "text-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textRendering;
-
     @XmlAttribute(name = "visibility")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String visibility;
-
     @XmlAttribute(name = "marker-start")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerStart;
-
     @XmlAttribute(name = "marker-mid")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerMid;
-
     @XmlAttribute(name = "marker-end")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerEnd;
-
     @XmlAttribute(name = "color-profile")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String colorProfile;
-
     @XmlAttribute(name = "stop-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopColor;
-
     @XmlAttribute(name = "stop-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopOpacity;
-
     @XmlAttribute(name = "clip-path")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clipPath;
-
     @XmlAttribute(name = "clip-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String clipRule;
-
     @XmlAttribute(name = "mask")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String mask;
-
     @XmlAttribute(name = "filter")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String filter;
-
     @XmlAttribute(name = "color-interpolation-filters")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolationFilters;
-
     @XmlAttribute(name = "cursor")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String cursor;
-
     @XmlAttribute(name = "flood-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodColor;
-
     @XmlAttribute(name = "flood-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodOpacity;
-
     @XmlAttribute(name = "lighting-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String lightingColor;
-
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onfocusin;
-
     @XmlAttribute(name = "onfocusout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onfocusout;
-
     @XmlAttribute(name = "onactivate")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onactivate;
-
     @XmlAttribute(name = "onclick")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onclick;
-
     @XmlAttribute(name = "onmousedown")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmousedown;
-
     @XmlAttribute(name = "onmouseup")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmouseup;
-
     @XmlAttribute(name = "onmouseover")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmouseover;
-
     @XmlAttribute(name = "onmousemove")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmousemove;
-
     @XmlAttribute(name = "onmouseout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onmouseout;
-
     @XmlAttribute(name = "onload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
-
-    @XmlAttribute(name = "xmlns:xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlnsXlink;
-
-    @XmlAttribute(name = "xlink:type")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkType;
-
-    @XmlAttribute(name = "xlink:href", required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkHref;
-
-    @XmlAttribute(name = "xlink:role")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkRole;
-
-    @XmlAttribute(name = "xlink:arcrole")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkArcrole;
-
-    @XmlAttribute(name = "xlink:title")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkTitle;
-
-    @XmlAttribute(name = "xlink:show")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkShow;
-
-    @XmlAttribute(name = "xlink:actuate")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkActuate;
-
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
-
+    @XmlAttribute(name = "x")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String x;
+    @XmlAttribute(name = "y")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String y;
+    @XmlAttribute(name = "width", required = true)
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String width;
+    @XmlAttribute(name = "height", required = true)
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String height;
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String transform;
-
-    @XmlAttribute(name = "target")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String target;
-
     @XmlValue
     protected String value;
 
@@ -415,7 +295,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getId() {
         return id;
     }
@@ -428,7 +307,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setId(String value) {
         this.id = value;
     }
@@ -441,7 +319,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getXmlBase() {
         return xmlBase;
     }
@@ -454,7 +331,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setXmlBase(String value) {
         this.xmlBase = value;
     }
@@ -467,7 +343,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getXmlLang() {
         return xmlLang;
     }
@@ -480,7 +355,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setXmlLang(String value) {
         this.xmlLang = value;
     }
@@ -493,7 +367,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getXmlSpace() {
         return xmlSpace;
     }
@@ -506,7 +379,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setXmlSpace(String value) {
         this.xmlSpace = value;
     }
@@ -519,7 +391,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getRequiredFeatures() {
         return requiredFeatures;
     }
@@ -532,7 +403,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setRequiredFeatures(String value) {
         this.requiredFeatures = value;
     }
@@ -545,7 +415,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getRequiredExtensions() {
         return requiredExtensions;
     }
@@ -558,7 +427,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setRequiredExtensions(String value) {
         this.requiredExtensions = value;
     }
@@ -571,7 +439,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getSystemLanguage() {
         return systemLanguage;
     }
@@ -584,7 +451,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setSystemLanguage(String value) {
         this.systemLanguage = value;
     }
@@ -597,7 +463,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getStyle() {
         return style;
     }
@@ -610,7 +475,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setStyle(String value) {
         this.style = value;
     }
@@ -623,9 +487,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public String getClassName() {
-        return className;
+    public String getClazz() {
+        return clazz;
     }
 
     /**
@@ -636,9 +499,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
+    public void setClazz(String value) {
+        this.clazz = value;
     }
 
     /**
@@ -649,7 +511,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getEnableBackground() {
         return enableBackground;
     }
@@ -662,7 +523,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setEnableBackground(String value) {
         this.enableBackground = value;
     }
@@ -675,7 +535,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getClip() {
         return clip;
     }
@@ -688,7 +547,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setClip(String value) {
         this.clip = value;
     }
@@ -701,7 +559,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getOverflow() {
         return overflow;
     }
@@ -714,7 +571,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setOverflow(String value) {
         this.overflow = value;
     }
@@ -727,7 +583,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getWritingMode() {
         return writingMode;
     }
@@ -740,7 +595,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setWritingMode(String value) {
         this.writingMode = value;
     }
@@ -753,7 +607,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getAlignmentBaseline() {
         return alignmentBaseline;
     }
@@ -766,7 +619,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setAlignmentBaseline(String value) {
         this.alignmentBaseline = value;
     }
@@ -779,7 +631,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getBaselineShift() {
         return baselineShift;
     }
@@ -792,7 +643,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setBaselineShift(String value) {
         this.baselineShift = value;
     }
@@ -805,7 +655,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getDirection() {
         return direction;
     }
@@ -818,7 +667,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setDirection(String value) {
         this.direction = value;
     }
@@ -831,7 +679,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getDominantBaseline() {
         return dominantBaseline;
     }
@@ -844,7 +691,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setDominantBaseline(String value) {
         this.dominantBaseline = value;
     }
@@ -857,7 +703,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getGlyphOrientationHorizontal() {
         return glyphOrientationHorizontal;
     }
@@ -870,7 +715,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setGlyphOrientationHorizontal(String value) {
         this.glyphOrientationHorizontal = value;
     }
@@ -883,7 +727,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getGlyphOrientationVertical() {
         return glyphOrientationVertical;
     }
@@ -896,7 +739,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setGlyphOrientationVertical(String value) {
         this.glyphOrientationVertical = value;
     }
@@ -909,7 +751,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getKerning() {
         return kerning;
     }
@@ -922,7 +763,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setKerning(String value) {
         this.kerning = value;
     }
@@ -935,7 +775,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getLetterSpacing() {
         return letterSpacing;
     }
@@ -948,7 +787,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setLetterSpacing(String value) {
         this.letterSpacing = value;
     }
@@ -961,7 +799,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getTextAnchor() {
         return textAnchor;
     }
@@ -974,7 +811,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setTextAnchor(String value) {
         this.textAnchor = value;
     }
@@ -987,7 +823,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getTextDecoration() {
         return textDecoration;
     }
@@ -1000,7 +835,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setTextDecoration(String value) {
         this.textDecoration = value;
     }
@@ -1013,7 +847,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getUnicodeBidi() {
         return unicodeBidi;
     }
@@ -1026,7 +859,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setUnicodeBidi(String value) {
         this.unicodeBidi = value;
     }
@@ -1039,7 +871,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getWordSpacing() {
         return wordSpacing;
     }
@@ -1052,7 +883,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setWordSpacing(String value) {
         this.wordSpacing = value;
     }
@@ -1065,7 +895,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFontFamily() {
         return fontFamily;
     }
@@ -1078,7 +907,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFontFamily(String value) {
         this.fontFamily = value;
     }
@@ -1091,7 +919,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFontSize() {
         return fontSize;
     }
@@ -1104,7 +931,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFontSize(String value) {
         this.fontSize = value;
     }
@@ -1117,7 +943,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFontSizeAdjust() {
         return fontSizeAdjust;
     }
@@ -1130,7 +955,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFontSizeAdjust(String value) {
         this.fontSizeAdjust = value;
     }
@@ -1143,7 +967,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFontStretch() {
         return fontStretch;
     }
@@ -1156,7 +979,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFontStretch(String value) {
         this.fontStretch = value;
     }
@@ -1169,7 +991,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFontStyle() {
         return fontStyle;
     }
@@ -1182,7 +1003,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFontStyle(String value) {
         this.fontStyle = value;
     }
@@ -1195,7 +1015,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFontVariant() {
         return fontVariant;
     }
@@ -1208,7 +1027,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFontVariant(String value) {
         this.fontVariant = value;
     }
@@ -1221,7 +1039,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFontWeight() {
         return fontWeight;
     }
@@ -1234,7 +1051,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFontWeight(String value) {
         this.fontWeight = value;
     }
@@ -1247,8 +1063,7 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public Paint getFill() {
+    public String getFill() {
         return fill;
     }
 
@@ -1260,8 +1075,7 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public void setFill(Paint value) {
+    public void setFill(String value) {
         this.fill = value;
     }
 
@@ -1273,7 +1087,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFillRule() {
         return fillRule;
     }
@@ -1286,7 +1099,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFillRule(String value) {
         this.fillRule = value;
     }
@@ -1299,8 +1111,7 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public Paint getStroke() {
+    public String getStroke() {
         return stroke;
     }
 
@@ -1312,8 +1123,7 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public void setStroke(Paint value) {
+    public void setStroke(String value) {
         this.stroke = value;
     }
 
@@ -1325,9 +1135,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public List<Double> getStrokeDashArray() {
-        return strokeDashArray;
+    public String getStrokeDasharray() {
+        return strokeDasharray;
     }
 
     /**
@@ -1338,9 +1147,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public void setStrokeDashArray(List<Double> value) {
-        this.strokeDashArray = value;
+    public void setStrokeDasharray(String value) {
+        this.strokeDasharray = value;
     }
 
     /**
@@ -1351,9 +1159,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public double getStrokeDashOffset() {
-        return strokeDashOffset;
+    public String getStrokeDashoffset() {
+        return strokeDashoffset;
     }
 
     /**
@@ -1364,9 +1171,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public void setStrokeDashOffset(double value) {
-        this.strokeDashOffset = value;
+    public void setStrokeDashoffset(String value) {
+        this.strokeDashoffset = value;
     }
 
     /**
@@ -1377,9 +1183,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public StrokeLineCap getStrokeLineCap() {
-        return strokeLineCap;
+    public String getStrokeLinecap() {
+        return strokeLinecap;
     }
 
     /**
@@ -1390,9 +1195,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public void setStrokeLineCap(StrokeLineCap value) {
-        this.strokeLineCap = value;
+    public void setStrokeLinecap(String value) {
+        this.strokeLinecap = value;
     }
 
     /**
@@ -1403,9 +1207,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public StrokeLineJoin getStrokeLineJoin() {
-        return strokeLineJoin;
+    public String getStrokeLinejoin() {
+        return strokeLinejoin;
     }
 
     /**
@@ -1416,9 +1219,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public void setStrokeLineJoin(StrokeLineJoin value) {
-        this.strokeLineJoin = value;
+    public void setStrokeLinejoin(String value) {
+        this.strokeLinejoin = value;
     }
 
     /**
@@ -1429,9 +1231,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public double getStrokeMiterLimit() {
-        return strokeMiterLimit;
+    public String getStrokeMiterlimit() {
+        return strokeMiterlimit;
     }
 
     /**
@@ -1442,9 +1243,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public void setStrokeMiterLimit(double value) {
-        this.strokeMiterLimit = value;
+    public void setStrokeMiterlimit(String value) {
+        this.strokeMiterlimit = value;
     }
 
     /**
@@ -1455,8 +1255,7 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public double getStrokeWidth() {
+    public String getStrokeWidth() {
         return strokeWidth;
     }
 
@@ -1468,8 +1267,7 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
-    public void setStrokeWidth(double value) {
+    public void setStrokeWidth(String value) {
         this.strokeWidth = value;
     }
 
@@ -1481,7 +1279,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getColor() {
         return color;
     }
@@ -1494,7 +1291,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setColor(String value) {
         this.color = value;
     }
@@ -1507,7 +1303,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getColorInterpolation() {
         return colorInterpolation;
     }
@@ -1520,7 +1315,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setColorInterpolation(String value) {
         this.colorInterpolation = value;
     }
@@ -1533,7 +1327,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getColorRendering() {
         return colorRendering;
     }
@@ -1546,7 +1339,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setColorRendering(String value) {
         this.colorRendering = value;
     }
@@ -1559,7 +1351,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getOpacity() {
         return opacity;
     }
@@ -1572,7 +1363,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setOpacity(String value) {
         this.opacity = value;
     }
@@ -1585,7 +1375,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFillOpacity() {
         return fillOpacity;
     }
@@ -1598,7 +1387,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFillOpacity(String value) {
         this.fillOpacity = value;
     }
@@ -1611,7 +1399,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getStrokeOpacity() {
         return strokeOpacity;
     }
@@ -1624,7 +1411,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setStrokeOpacity(String value) {
         this.strokeOpacity = value;
     }
@@ -1637,7 +1423,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getDisplay() {
         return display;
     }
@@ -1650,7 +1435,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setDisplay(String value) {
         this.display = value;
     }
@@ -1663,7 +1447,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getImageRendering() {
         return imageRendering;
     }
@@ -1676,7 +1459,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setImageRendering(String value) {
         this.imageRendering = value;
     }
@@ -1689,7 +1471,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getPointerEvents() {
         return pointerEvents;
     }
@@ -1702,7 +1483,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setPointerEvents(String value) {
         this.pointerEvents = value;
     }
@@ -1715,7 +1495,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getShapeRendering() {
         return shapeRendering;
     }
@@ -1728,7 +1507,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setShapeRendering(String value) {
         this.shapeRendering = value;
     }
@@ -1741,7 +1519,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getTextRendering() {
         return textRendering;
     }
@@ -1754,7 +1531,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setTextRendering(String value) {
         this.textRendering = value;
     }
@@ -1767,7 +1543,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getVisibility() {
         return visibility;
     }
@@ -1780,7 +1555,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setVisibility(String value) {
         this.visibility = value;
     }
@@ -1793,7 +1567,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getMarkerStart() {
         return markerStart;
     }
@@ -1806,7 +1579,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setMarkerStart(String value) {
         this.markerStart = value;
     }
@@ -1819,7 +1591,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getMarkerMid() {
         return markerMid;
     }
@@ -1832,7 +1603,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setMarkerMid(String value) {
         this.markerMid = value;
     }
@@ -1845,7 +1615,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getMarkerEnd() {
         return markerEnd;
     }
@@ -1858,7 +1627,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setMarkerEnd(String value) {
         this.markerEnd = value;
     }
@@ -1871,7 +1639,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getColorProfile() {
         return colorProfile;
     }
@@ -1884,7 +1651,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setColorProfile(String value) {
         this.colorProfile = value;
     }
@@ -1897,7 +1663,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getStopColor() {
         return stopColor;
     }
@@ -1910,7 +1675,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setStopColor(String value) {
         this.stopColor = value;
     }
@@ -1923,7 +1687,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getStopOpacity() {
         return stopOpacity;
     }
@@ -1936,7 +1699,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setStopOpacity(String value) {
         this.stopOpacity = value;
     }
@@ -1949,7 +1711,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getClipPath() {
         return clipPath;
     }
@@ -1962,7 +1723,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setClipPath(String value) {
         this.clipPath = value;
     }
@@ -1975,7 +1735,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getClipRule() {
         return clipRule;
     }
@@ -1988,7 +1747,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setClipRule(String value) {
         this.clipRule = value;
     }
@@ -2001,7 +1759,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getMask() {
         return mask;
     }
@@ -2014,7 +1771,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setMask(String value) {
         this.mask = value;
     }
@@ -2027,7 +1783,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFilter() {
         return filter;
     }
@@ -2040,7 +1795,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFilter(String value) {
         this.filter = value;
     }
@@ -2053,7 +1807,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getColorInterpolationFilters() {
         return colorInterpolationFilters;
     }
@@ -2066,7 +1819,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setColorInterpolationFilters(String value) {
         this.colorInterpolationFilters = value;
     }
@@ -2079,7 +1831,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getCursor() {
         return cursor;
     }
@@ -2092,7 +1843,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setCursor(String value) {
         this.cursor = value;
     }
@@ -2105,7 +1855,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFloodColor() {
         return floodColor;
     }
@@ -2118,7 +1867,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFloodColor(String value) {
         this.floodColor = value;
     }
@@ -2131,7 +1879,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getFloodOpacity() {
         return floodOpacity;
     }
@@ -2144,7 +1891,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setFloodOpacity(String value) {
         this.floodOpacity = value;
     }
@@ -2157,7 +1903,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getLightingColor() {
         return lightingColor;
     }
@@ -2170,7 +1915,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setLightingColor(String value) {
         this.lightingColor = value;
     }
@@ -2436,230 +2180,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
     }
 
     /**
-     * Gets the value of the xmlnsXlink property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXmlnsXlink() {
-        if (xmlnsXlink == null) {
-            return "http://www.w3.org/1999/xlink";
-        } else {
-            return xmlnsXlink;
-        }
-    }
-
-    /**
-     * Sets the value of the xmlnsXlink property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXmlnsXlink(String value) {
-        this.xmlnsXlink = value;
-    }
-
-    /**
-     * Gets the value of the xlinkType property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkType() {
-        if (xlinkType == null) {
-            return "simple";
-        } else {
-            return xlinkType;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkType property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkType(String value) {
-        this.xlinkType = value;
-    }
-
-    /**
-     * Gets the value of the xlinkHref property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkHref() {
-        return xlinkHref;
-    }
-
-    /**
-     * Sets the value of the xlinkHref property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkHref(String value) {
-        this.xlinkHref = value;
-    }
-
-    /**
-     * Gets the value of the xlinkRole property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkRole() {
-        return xlinkRole;
-    }
-
-    /**
-     * Sets the value of the xlinkRole property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkRole(String value) {
-        this.xlinkRole = value;
-    }
-
-    /**
-     * Gets the value of the xlinkArcrole property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkArcrole() {
-        return xlinkArcrole;
-    }
-
-    /**
-     * Sets the value of the xlinkArcrole property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkArcrole(String value) {
-        this.xlinkArcrole = value;
-    }
-
-    /**
-     * Gets the value of the xlinkTitle property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkTitle() {
-        return xlinkTitle;
-    }
-
-    /**
-     * Sets the value of the xlinkTitle property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkTitle(String value) {
-        this.xlinkTitle = value;
-    }
-
-    /**
-     * Gets the value of the xlinkShow property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkShow() {
-        if (xlinkShow == null) {
-            return "replace";
-        } else {
-            return xlinkShow;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkShow property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkShow(String value) {
-        this.xlinkShow = value;
-    }
-
-    /**
-     * Gets the value of the xlinkActuate property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkActuate() {
-        if (xlinkActuate == null) {
-            return "onRequest";
-        } else {
-            return xlinkActuate;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkActuate property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkActuate(String value) {
-        this.xlinkActuate = value;
-    }
-
-    /**
      * Gets the value of the externalResourcesRequired property.
      *
      * @return
@@ -2667,7 +2187,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
@@ -2680,9 +2199,104 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
+    }
+
+    /**
+     * Gets the value of the x property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getX() {
+        return x;
+    }
+
+    /**
+     * Sets the value of the x property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setX(String value) {
+        this.x = value;
+    }
+
+    /**
+     * Gets the value of the y property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getY() {
+        return y;
+    }
+
+    /**
+     * Sets the value of the y property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setY(String value) {
+        this.y = value;
+    }
+
+    /**
+     * Gets the value of the width property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getWidth() {
+        return width;
+    }
+
+    /**
+     * Sets the value of the width property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setWidth(String value) {
+        this.width = value;
+    }
+
+    /**
+     * Gets the value of the height property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getHeight() {
+        return height;
+    }
+
+    /**
+     * Sets the value of the height property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setHeight(String value) {
+        this.height = value;
     }
 
     /**
@@ -2693,7 +2307,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public String getTransform() {
         return transform;
     }
@@ -2706,33 +2319,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    @Override
     public void setTransform(String value) {
         this.transform = value;
-    }
-
-    /**
-     * Gets the value of the target property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getTarget() {
-        return target;
-    }
-
-    /**
-     * Sets the value of the target property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setTarget(String value) {
-        this.target = value;
     }
 
     /**
@@ -2743,7 +2331,7 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    public String getValue() {
+    public String getvalue() {
         return value;
     }
 
@@ -2755,19 +2343,8 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      *     {@link String }
      *
      */
-    public void setValue(String value) {
+    public void setvalue(String value) {
         this.value = value;
-    }
-
-    @Override
-    public List<Transform> getTransformList() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return toStringHelper("a").omitNullValues().toString();
     }
 
 }

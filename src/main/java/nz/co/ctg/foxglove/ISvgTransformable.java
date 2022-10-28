@@ -14,6 +14,8 @@ package nz.co.ctg.foxglove;
 
 import java.util.List;
 
+import nz.co.ctg.foxglove.parser.SvgTransformListHandler;
+
 import javafx.scene.transform.Transform;
 
 public interface ISvgTransformable {
@@ -22,6 +24,8 @@ public interface ISvgTransformable {
 
     void setTransform(String value);
 
-    List<Transform> getTransformList();
+    default List<Transform> getTransformList() {
+        return new SvgTransformListHandler().parse(getTransform());
+    }
 
 }

@@ -6,18 +6,26 @@
 //
 
 
-package nz.co.ctg.foxglove.document;
+package nz.co.ctg.foxglove.element;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 
 
 /**
@@ -25,10 +33,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "value"
+    "descOrTitleOrMetadata"
 })
-@XmlRootElement(name = "script")
-public class Script {
+@XmlRootElement(name = "cursor")
+public class SvgCursor {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -43,13 +51,22 @@ public class Script {
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
+    @XmlAttribute(name = "requiredFeatures")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String requiredFeatures;
+    @XmlAttribute(name = "requiredExtensions")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String requiredExtensions;
+    @XmlAttribute(name = "systemLanguage")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String systemLanguage;
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
     @XmlAttribute(name = "xlink:type")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkType;
-    @XmlAttribute(name = "xlink:href")
+    @XmlAttribute(name = "xlink:href", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkHref;
     @XmlAttribute(name = "xlink:role")
@@ -69,11 +86,18 @@ public class Script {
     protected String xlinkActuate;
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
-    @XmlAttribute(name = "type", required = true)
+    @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String type;
-    @XmlValue
-    protected String value;
+    protected String x;
+    @XmlAttribute(name = "y")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String y;
+    @XmlElements({
+        @XmlElement(name = "desc", type = SvgDescription.class),
+        @XmlElement(name = "title", type = SvgTitle.class),
+        @XmlElement(name = "metadata", type = SvgMetadata.class)
+    })
+    protected List<Object> descOrTitleOrMetadata;
 
     /**
      * Gets the value of the id property.
@@ -169,6 +193,78 @@ public class Script {
      */
     public void setXmlSpace(String value) {
         this.xmlSpace = value;
+    }
+
+    /**
+     * Gets the value of the requiredFeatures property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getRequiredFeatures() {
+        return requiredFeatures;
+    }
+
+    /**
+     * Sets the value of the requiredFeatures property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setRequiredFeatures(String value) {
+        this.requiredFeatures = value;
+    }
+
+    /**
+     * Gets the value of the requiredExtensions property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getRequiredExtensions() {
+        return requiredExtensions;
+    }
+
+    /**
+     * Sets the value of the requiredExtensions property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setRequiredExtensions(String value) {
+        this.requiredExtensions = value;
+    }
+
+    /**
+     * Gets the value of the systemLanguage property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getSystemLanguage() {
+        return systemLanguage;
+    }
+
+    /**
+     * Sets the value of the systemLanguage property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setSystemLanguage(String value) {
+        this.systemLanguage = value;
     }
 
     /**
@@ -404,51 +500,82 @@ public class Script {
     }
 
     /**
-     * Gets the value of the type property.
+     * Gets the value of the x property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getType() {
-        return type;
+    public String getX() {
+        return x;
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the x property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setType(String value) {
-        this.type = value;
+    public void setX(String value) {
+        this.x = value;
     }
 
     /**
-     * Gets the value of the value property.
+     * Gets the value of the y property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getvalue() {
-        return value;
+    public String getY() {
+        return y;
     }
 
     /**
-     * Sets the value of the value property.
+     * Sets the value of the y property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setvalue(String value) {
-        this.value = value;
+    public void setY(String value) {
+        this.y = value;
+    }
+
+    /**
+     * Gets the value of the descOrTitleOrMetadata property.
+     *
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadata property.
+     *
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getDescOrTitleOrMetadata().add(newItem);
+     * </pre>
+     *
+     *
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
+     *
+     *
+     */
+    public List<Object> getDescOrTitleOrMetadata() {
+        if (descOrTitleOrMetadata == null) {
+            descOrTitleOrMetadata = new ArrayList<>();
+        }
+        return this.descOrTitleOrMetadata;
     }
 
 }

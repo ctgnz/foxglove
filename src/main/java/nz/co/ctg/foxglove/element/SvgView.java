@@ -6,7 +6,7 @@
 //
 
 
-package nz.co.ctg.foxglove.document;
+package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import nz.co.ctg.foxglove.description.SvgTitle;
     "descOrTitleOrMetadata"
 })
 @XmlRootElement(name = "view")
-public class View {
+public class SvgView {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
