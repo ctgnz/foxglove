@@ -12,6 +12,8 @@
 
 package nz.co.ctg.foxglove;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 public interface ISvgElement {
     String getId();
 
@@ -35,6 +37,11 @@ public interface ISvgElement {
 
     default ISvgElement getViewportElement() {
         return null;
+    }
+
+    default String getElementName() {
+        XmlRootElement annotation = getClass().getAnnotation(XmlRootElement.class);
+        return annotation != null ? annotation.name() : getClass().getSimpleName();
     }
 
 }

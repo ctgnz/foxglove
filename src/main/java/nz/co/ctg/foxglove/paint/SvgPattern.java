@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgExternalResources;
@@ -37,7 +39,7 @@ import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.document.Anchor;
+import nz.co.ctg.foxglove.document.SvgAnchor;
 import nz.co.ctg.foxglove.document.Cursor;
 import nz.co.ctg.foxglove.document.Defs;
 import nz.co.ctg.foxglove.document.ForeignObject;
@@ -57,7 +59,7 @@ import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.style.Style;
+import nz.co.ctg.foxglove.style.SvgStyle;
 import nz.co.ctg.foxglove.text.AltGlyphDef;
 import nz.co.ctg.foxglove.text.Font;
 import nz.co.ctg.foxglove.text.FontFace;
@@ -173,7 +175,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
         @XmlElement(name = "use", type = Use.class),
         @XmlElement(name = "switch", type = Switch.class),
         @XmlElement(name = "image", type = Image.class),
-        @XmlElement(name = "style", type = Style.class),
+        @XmlElement(name = "style", type = SvgStyle.class),
         @XmlElement(name = "path", type = SvgPath.class),
         @XmlElement(name = "rect", type = SvgRectangle.class),
         @XmlElement(name = "circle", type = SvgCircle.class),
@@ -192,7 +194,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
         @XmlElement(name = "mask", type = SvgMask.class),
         @XmlElement(name = "filter", type = Filter.class),
         @XmlElement(name = "cursor", type = Cursor.class),
-        @XmlElement(name = "a", type = Anchor.class),
+        @XmlElement(name = "a", type = SvgAnchor.class),
         @XmlElement(name = "view", type = View.class),
         @XmlElement(name = "script", type = Script.class),
         @XmlElement(name = "font", type = Font.class),
@@ -782,7 +784,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      * {@link Use }
      * {@link Switch }
      * {@link Image }
-     * {@link Style }
+     * {@link SvgStyle }
      * {@link SvgPath }
      * {@link SvgRectangle }
      * {@link SvgCircle }
@@ -801,7 +803,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
      * {@link SvgMask }
      * {@link Filter }
      * {@link Cursor }
-     * {@link Anchor }
+     * {@link SvgAnchor }
      * {@link View }
      * {@link Script }
      * {@link Font }
@@ -815,6 +817,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgLinkable, ISv
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

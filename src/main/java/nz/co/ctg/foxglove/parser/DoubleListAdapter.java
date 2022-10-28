@@ -25,7 +25,7 @@ public class DoubleListAdapter extends XmlAdapter<String, List<Double>> {
 
     @Override
     public String marshal(List<Double> values) throws Exception {
-        return values.stream().map(val -> val.toString()).collect(joining(","));
+        return values != null ? values.stream().map(val -> val.toString()).collect(joining(",")) : null;
     }
 
 }

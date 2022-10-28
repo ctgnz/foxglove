@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
@@ -217,6 +219,12 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgExternalRes
             contents = new ArrayList<>();
         }
         return this.contents;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

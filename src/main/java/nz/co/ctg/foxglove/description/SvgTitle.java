@@ -26,9 +26,9 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.parser.DoubleListAdapter;
-import nz.co.ctg.foxglove.parser.SvgPaintAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
+import nz.co.ctg.foxglove.parser.SvgPaintAdapter;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.StrokeLineCap;
@@ -47,196 +47,261 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
 
     @XmlValue
     protected String value;
+
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     protected String id;
+
     @XmlAttribute(name = "xml:base")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlBase;
+
     @XmlAttribute(name = "xml:lang")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlLang;
+
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
+
     @XmlAttribute(name = "style")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String style;
+
     @XmlAttribute(name = "class")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String className;
+
     @XmlAttribute(name = "flood-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodColor;
+
     @XmlAttribute(name = "flood-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String floodOpacity;
+
     @XmlAttribute(name = "lighting-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String lightingColor;
+
     @XmlAttribute(name = "enable-background")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String enableBackground;
+
     @XmlAttribute(name = "clip")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clip;
+
     @XmlAttribute(name = "overflow")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String overflow;
+
     @XmlAttribute(name = "writing-mode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String writingMode;
+
     @XmlAttribute(name = "alignment-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String alignmentBaseline;
+
     @XmlAttribute(name = "baseline-shift")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String baselineShift;
+
     @XmlAttribute(name = "direction")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String direction;
+
     @XmlAttribute(name = "dominant-baseline")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String dominantBaseline;
+
     @XmlAttribute(name = "glyph-orientation-horizontal")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationHorizontal;
+
     @XmlAttribute(name = "glyph-orientation-vertical")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String glyphOrientationVertical;
+
     @XmlAttribute(name = "kerning")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String kerning;
+
     @XmlAttribute(name = "letter-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String letterSpacing;
+
     @XmlAttribute(name = "text-anchor")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textAnchor;
+
     @XmlAttribute(name = "text-decoration")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String textDecoration;
+
     @XmlAttribute(name = "unicode-bidi")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String unicodeBidi;
+
     @XmlAttribute(name = "word-spacing")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String wordSpacing;
+
     @XmlAttribute(name = "font-family")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontFamily;
+
     @XmlAttribute(name = "font-size")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSize;
+
     @XmlAttribute(name = "font-size-adjust")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fontSizeAdjust;
+
     @XmlAttribute(name = "font-stretch")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStretch;
+
     @XmlAttribute(name = "font-style")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontStyle;
+
     @XmlAttribute(name = "font-variant")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontVariant;
+
     @XmlAttribute(name = "font-weight")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontWeight;
+
     @XmlAttribute(name = "fill")
     @XmlJavaTypeAdapter(SvgPaintAdapter.class)
     protected Paint fill;
+
     @XmlAttribute(name = "fill-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fillRule;
+
     @XmlAttribute(name = "stroke")
     @XmlJavaTypeAdapter(SvgPaintAdapter.class)
     protected Paint stroke;
+
     @XmlAttribute(name = "stroke-dasharray")
     @XmlJavaTypeAdapter(DoubleListAdapter.class)
-    protected List<Double> strokeDasharray;
+    protected List<Double> strokeDashArray;
+
     @XmlAttribute(name = "stroke-dashoffset")
-    protected double strokeDashoffset;
+    protected double strokeDashOffset;
+
     @XmlAttribute(name = "stroke-linecap")
     @XmlJavaTypeAdapter(StrokeLineCapAdapter.class)
-    protected StrokeLineCap strokeLinecap;
+    protected StrokeLineCap strokeLineCap;
+
     @XmlAttribute(name = "stroke-linejoin")
     @XmlJavaTypeAdapter(StrokeLineJoinAdapter.class)
-    protected StrokeLineJoin strokeLinejoin;
+    protected StrokeLineJoin strokeLineJoin;
+
     @XmlAttribute(name = "stroke-miterlimit")
-    protected double strokeMiterlimit;
+    protected double strokeMiterLimit;
+
     @XmlAttribute(name = "stroke-width")
     protected double strokeWidth;
+
     @XmlAttribute(name = "color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String color;
+
     @XmlAttribute(name = "color-interpolation")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolation;
+
     @XmlAttribute(name = "color-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorRendering;
+
     @XmlAttribute(name = "opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String opacity;
+
     @XmlAttribute(name = "fill-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String fillOpacity;
+
     @XmlAttribute(name = "stroke-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String strokeOpacity;
+
     @XmlAttribute(name = "display")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String display;
+
     @XmlAttribute(name = "image-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String imageRendering;
+
     @XmlAttribute(name = "pointer-events")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String pointerEvents;
+
     @XmlAttribute(name = "shape-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String shapeRendering;
+
     @XmlAttribute(name = "text-rendering")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String textRendering;
+
     @XmlAttribute(name = "visibility")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String visibility;
+
     @XmlAttribute(name = "marker-start")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerStart;
+
     @XmlAttribute(name = "marker-mid")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerMid;
+
     @XmlAttribute(name = "marker-end")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String markerEnd;
+
     @XmlAttribute(name = "color-profile")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String colorProfile;
+
     @XmlAttribute(name = "stop-color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopColor;
+
     @XmlAttribute(name = "stop-opacity")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String stopOpacity;
+
     @XmlAttribute(name = "clip-path")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String clipPath;
+
     @XmlAttribute(name = "clip-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String clipRule;
+
     @XmlAttribute(name = "mask")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String mask;
+
     @XmlAttribute(name = "filter")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String filter;
+
     @XmlAttribute(name = "color-interpolation-filters")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String colorInterpolationFilters;
+
     @XmlAttribute(name = "cursor")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String cursor;
@@ -1107,7 +1172,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public List<Double> getStrokeDashArray() {
-        return strokeDasharray;
+        return strokeDashArray;
     }
 
     /**
@@ -1120,7 +1185,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public void setStrokeDashArray(List<Double> value) {
-        this.strokeDasharray = value;
+        this.strokeDashArray = value;
     }
 
     /**
@@ -1133,7 +1198,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public double getStrokeDashOffset() {
-        return strokeDashoffset;
+        return strokeDashOffset;
     }
 
     /**
@@ -1146,7 +1211,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public void setStrokeDashOffset(double value) {
-        this.strokeDashoffset = value;
+        this.strokeDashOffset = value;
     }
 
     /**
@@ -1159,7 +1224,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public StrokeLineCap getStrokeLineCap() {
-        return strokeLinecap;
+        return strokeLineCap;
     }
 
     /**
@@ -1172,7 +1237,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public void setStrokeLineCap(StrokeLineCap value) {
-        this.strokeLinecap = value;
+        this.strokeLineCap = value;
     }
 
     /**
@@ -1185,7 +1250,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public StrokeLineJoin getStrokeLineJoin() {
-        return strokeLinejoin;
+        return strokeLineJoin;
     }
 
     /**
@@ -1198,7 +1263,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public void setStrokeLineJoin(StrokeLineJoin value) {
-        this.strokeLinejoin = value;
+        this.strokeLineJoin = value;
     }
 
     /**
@@ -1211,7 +1276,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public double getStrokeMiterLimit() {
-        return strokeMiterlimit;
+        return strokeMiterLimit;
     }
 
     /**
@@ -1224,7 +1289,7 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
      */
     @Override
     public void setStrokeMiterLimit(double value) {
-        this.strokeMiterlimit = value;
+        this.strokeMiterLimit = value;
     }
 
     /**
@@ -1957,11 +2022,72 @@ public class SvgTitle implements ISvgDescriptiveElement, ISvgStylable {
 
     @Override
     public String toString() {
-        ToStringHelper builder = MoreObjects.toStringHelper(this).omitNullValues();
+        ToStringHelper builder = MoreObjects.toStringHelper(getElementName()).omitNullValues();
         builder.add("id", id);
         builder.add("xmlBase", xmlBase);
         builder.add("xmlLang", xmlLang);
         builder.add("xmlSpace", xmlSpace);
+        builder.add("style", style);
+        builder.add("clazz", className);
+        builder.add("enableBackground", enableBackground);
+        builder.add("clip", clip);
+        builder.add("overflow", overflow);
+        builder.add("writingMode", writingMode);
+        builder.add("alignmentBaseline", alignmentBaseline);
+        builder.add("baselineShift", baselineShift);
+        builder.add("direction", direction);
+        builder.add("dominantBaseline", dominantBaseline);
+        builder.add("glyphOrientationHorizontal", glyphOrientationHorizontal);
+        builder.add("glyphOrientationVertical", glyphOrientationVertical);
+        builder.add("kerning", kerning);
+        builder.add("letterSpacing", letterSpacing);
+        builder.add("textAnchor", textAnchor);
+        builder.add("textDecoration", textDecoration);
+        builder.add("unicodeBidi", unicodeBidi);
+        builder.add("wordSpacing", wordSpacing);
+        builder.add("fontFamily", fontFamily);
+        builder.add("fontSize", fontSize);
+        builder.add("fontSizeAdjust", fontSizeAdjust);
+        builder.add("fontStretch", fontStretch);
+        builder.add("fontStyle", fontStyle);
+        builder.add("fontVariant", fontVariant);
+        builder.add("fontWeight", fontWeight);
+        builder.add("fill", fill);
+        builder.add("fillRule", fillRule);
+        builder.add("stroke", stroke);
+        builder.add("strokeDasharray", strokeDashArray);
+        builder.add("strokeDashoffset", strokeDashOffset);
+        builder.add("strokeLinecap", strokeLineCap);
+        builder.add("strokeLinejoin", strokeLineJoin);
+        builder.add("strokeMiterlimit", strokeMiterLimit);
+        builder.add("strokeWidth", strokeWidth);
+        builder.add("color", color);
+        builder.add("colorInterpolation", colorInterpolation);
+        builder.add("colorRendering", colorRendering);
+        builder.add("opacity", opacity);
+        builder.add("fillOpacity", fillOpacity);
+        builder.add("strokeOpacity", strokeOpacity);
+        builder.add("display", display);
+        builder.add("imageRendering", imageRendering);
+        builder.add("pointerEvents", pointerEvents);
+        builder.add("shapeRendering", shapeRendering);
+        builder.add("textRendering", textRendering);
+        builder.add("visibility", visibility);
+        builder.add("markerStart", markerStart);
+        builder.add("markerMid", markerMid);
+        builder.add("markerEnd", markerEnd);
+        builder.add("colorProfile", colorProfile);
+        builder.add("stopColor", stopColor);
+        builder.add("stopOpacity", stopOpacity);
+        builder.add("clipPath", clipPath);
+        builder.add("clipRule", clipRule);
+        builder.add("mask", mask);
+        builder.add("filter", filter);
+        builder.add("colorInterpolationFilters", colorInterpolationFilters);
+        builder.add("cursor", cursor);
+        builder.add("floodColor", floodColor);
+        builder.add("floodOpacity", floodOpacity);
+        builder.add("lightingColor", lightingColor);
         builder.add("value", value);
         return builder.toString();
     }

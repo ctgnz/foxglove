@@ -22,7 +22,7 @@ import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.document.Anchor;
+import nz.co.ctg.foxglove.document.SvgAnchor;
 import nz.co.ctg.foxglove.document.Cursor;
 import nz.co.ctg.foxglove.document.Defs;
 import nz.co.ctg.foxglove.document.SvgGroup;
@@ -71,7 +71,7 @@ import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.style.Style;
+import nz.co.ctg.foxglove.style.SvgStyle;
 import nz.co.ctg.foxglove.text.AltGlyph;
 import nz.co.ctg.foxglove.text.AltGlyphDef;
 import nz.co.ctg.foxglove.text.AltGlyphItem;
@@ -238,11 +238,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Style }
+     * Create an instance of {@link SvgStyle }
      * 
      */
-    public Style createStyle() {
-        return new Style();
+    public SvgStyle createStyle() {
+        return new SvgStyle();
     }
 
     /**
@@ -390,11 +390,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Anchor }
+     * Create an instance of {@link SvgAnchor }
      * 
      */
-    public Anchor createAnchor() {
-        return new Anchor();
+    public SvgAnchor createAnchor() {
+        return new SvgAnchor();
     }
 
     /**

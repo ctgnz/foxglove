@@ -1,14 +1,10 @@
 package nz.co.ctg.foxglove;
 
-import java.io.StringWriter;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import nz.co.ctg.foxglove.document.SvgGroup;
@@ -22,7 +18,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
-import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
@@ -43,6 +38,7 @@ public class FoxgloveParserTest {
     public void testParse() throws Exception {
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
         assertThat(svg, notNullValue());
+        printElement(svg);
         svg.getContent().forEach(this::printElement);
     }
 
@@ -97,25 +93,19 @@ public class FoxgloveParserTest {
         assertThat(fxLine.getStrokeMiterLimit(), is(10.0));
     }
 
+    @Test
+    public void testWrite() throws Exception {
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(new SvgGroup());
+        System.out.println(parser.write(svg));
+    }
+
     private void printElement(Object el) {
         System.out.println(el);
         if (el instanceof SvgGroup) {
             SvgGroup group = (SvgGroup) el;
-            Group svgGroup = group.createGroup();
-            System.out.println(svgGroup);
             group.getContent().forEach(this::printElement);
         }
-    }
-
-    @Test @Ignore
-    public void testWrite() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(SvgGraphic.class);
-        Marshaller m = context.createMarshaller();
-        StringWriter out = new StringWriter();
-        SvgGraphic fXVGSvgElement = new SvgGraphic();
-        fXVGSvgElement.getContent().add(new SvgGroup());
-        m.marshal(fXVGSvgElement, out);
-        System.out.println(out);
     }
 
 }

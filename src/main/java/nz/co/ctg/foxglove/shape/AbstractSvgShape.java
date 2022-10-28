@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
@@ -25,8 +24,8 @@ import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.ISvgTransformable;
+import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimate;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -46,74 +45,74 @@ import javafx.scene.transform.Transform;
 })
 public abstract class AbstractSvgShape extends AbstractSvgStylable implements ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
 
-    protected static final int maxLen = 10;
+    public static final int maxLen = 10;
 
     /* FXVGConditionalFeatures */
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
+    public String requiredFeatures;
 
     @XmlAttribute(name = "requiredExtensions")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
+    public String requiredExtensions;
 
     @XmlAttribute(name = "systemLanguage")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
+    public String systemLanguage;
 
     /* Graphical Events */
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onfocusin;
+    public String onFocusIn;
 
     @XmlAttribute(name = "onfocusout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onfocusout;
+    public String onFocusOut;
 
     @XmlAttribute(name = "onactivate")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onactivate;
+    public String onActivate;
 
     @XmlAttribute(name = "onclick")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onclick;
+    public String onClick;
 
     @XmlAttribute(name = "onmousedown")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmousedown;
+    public String onMouseDown;
 
     @XmlAttribute(name = "onmouseup")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmouseup;
+    public String onMouseUp;
 
     @XmlAttribute(name = "onmouseover")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmouseover;
+    public String onMouseOver;
 
     @XmlAttribute(name = "onmousemove")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmousemove;
+    public String onMouseMove;
 
     @XmlAttribute(name = "onmouseout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmouseout;
+    public String onMouseOut;
 
     @XmlAttribute(name = "onload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onload;
+    public String onLoad;
 
     /* SVGExternalResourcesRequired */
 
     @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
+    public boolean externalResourcesRequired;
 
     /* SVGTransformable */
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String transform;
+    public String transform;
 
     /* Content */
 
@@ -127,7 +126,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> content;
+    public List<Object> content;
 
     public AbstractSvgShape() {
     }
@@ -220,7 +219,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnFocusIn() {
-        return onfocusin;
+        return onFocusIn;
     }
 
     /**
@@ -233,7 +232,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnFocusIn(String value) {
-        this.onfocusin = value;
+        this.onFocusIn = value;
     }
 
     /**
@@ -246,7 +245,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnFocusOut() {
-        return onfocusout;
+        return onFocusOut;
     }
 
     /**
@@ -259,7 +258,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnFocusOut(String value) {
-        this.onfocusout = value;
+        this.onFocusOut = value;
     }
 
     /**
@@ -272,7 +271,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnActivate() {
-        return onactivate;
+        return onActivate;
     }
 
     /**
@@ -285,7 +284,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnActivate(String value) {
-        this.onactivate = value;
+        this.onActivate = value;
     }
 
     /**
@@ -298,7 +297,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnClick() {
-        return onclick;
+        return onClick;
     }
 
     /**
@@ -311,7 +310,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnClick(String value) {
-        this.onclick = value;
+        this.onClick = value;
     }
 
     /**
@@ -324,7 +323,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnMouseDown() {
-        return onmousedown;
+        return onMouseDown;
     }
 
     /**
@@ -337,7 +336,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnMouseDown(String value) {
-        this.onmousedown = value;
+        this.onMouseDown = value;
     }
 
     /**
@@ -350,7 +349,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnMouseUp() {
-        return onmouseup;
+        return onMouseUp;
     }
 
     /**
@@ -363,7 +362,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnMouseUp(String value) {
-        this.onmouseup = value;
+        this.onMouseUp = value;
     }
 
     /**
@@ -376,7 +375,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnMouseOver() {
-        return onmouseover;
+        return onMouseOver;
     }
 
     /**
@@ -389,7 +388,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnMouseOver(String value) {
-        this.onmouseover = value;
+        this.onMouseOver = value;
     }
 
     /**
@@ -402,7 +401,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnMouseMove() {
-        return onmousemove;
+        return onMouseMove;
     }
 
     /**
@@ -415,7 +414,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnMouseMove(String value) {
-        this.onmousemove = value;
+        this.onMouseMove = value;
     }
 
     /**
@@ -428,7 +427,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnMouseOut() {
-        return onmouseout;
+        return onMouseOut;
     }
 
     /**
@@ -441,7 +440,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnMouseOut(String value) {
-        this.onmouseout = value;
+        this.onMouseOut = value;
     }
 
     /**
@@ -454,7 +453,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public String getOnLoad() {
-        return onload;
+        return onLoad;
     }
 
     /**
@@ -467,7 +466,7 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      */
     @Override
     public void setOnLoad(String value) {
-        this.onload = value;
+        this.onLoad = value;
     }
 
     /**
@@ -559,99 +558,6 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
     }
 
     @Override
-    public String toString() {
-        ToStringHelper builder = MoreObjects.toStringHelper(this).omitNullValues();
-        toStringDetail(builder);
-        return builder.toString();
-    }
-
-    protected void toStringDetail(ToStringHelper builder) {
-        builder.add("id", id);
-        builder.add("xmlBase", xmlBase);
-        builder.add("xmlLang", xmlLang);
-        builder.add("xmlSpace", xmlSpace);
-        builder.add("requiredFeatures", requiredFeatures);
-        builder.add("requiredExtensions", requiredExtensions);
-        builder.add("systemLanguage", systemLanguage);
-        builder.add("style", style);
-        builder.add("clazz", className);
-        builder.add("enableBackground", enableBackground);
-        builder.add("clip", clip);
-        builder.add("overflow", overflow);
-        builder.add("writingMode", writingMode);
-        builder.add("alignmentBaseline", alignmentBaseline);
-        builder.add("baselineShift", baselineShift);
-        builder.add("direction", direction);
-        builder.add("dominantBaseline", dominantBaseline);
-        builder.add("glyphOrientationHorizontal", glyphOrientationHorizontal);
-        builder.add("glyphOrientationVertical", glyphOrientationVertical);
-        builder.add("kerning", kerning);
-        builder.add("letterSpacing", letterSpacing);
-        builder.add("textAnchor", textAnchor);
-        builder.add("textDecoration", textDecoration);
-        builder.add("unicodeBidi", unicodeBidi);
-        builder.add("wordSpacing", wordSpacing);
-        builder.add("fontFamily", fontFamily);
-        builder.add("fontSize", fontSize);
-        builder.add("fontSizeAdjust", fontSizeAdjust);
-        builder.add("fontStretch", fontStretch);
-        builder.add("fontStyle", fontStyle);
-        builder.add("fontVariant", fontVariant);
-        builder.add("fontWeight", fontWeight);
-        builder.add("fill", fill);
-        builder.add("fillRule", fillRule);
-        builder.add("stroke", stroke);
-        builder.add("strokeDasharray", strokeDashArray);
-        builder.add("strokeDashoffset", strokeDashOffset);
-        builder.add("strokeLinecap", strokeLineCap);
-        builder.add("strokeLinejoin", strokeLineJoin);
-        builder.add("strokeMiterlimit", strokeMiterLimit);
-        builder.add("strokeWidth", strokeWidth);
-        builder.add("color", color);
-        builder.add("colorInterpolation", colorInterpolation);
-        builder.add("colorRendering", colorRendering);
-        builder.add("opacity", opacity);
-        builder.add("fillOpacity", fillOpacity);
-        builder.add("strokeOpacity", strokeOpacity);
-        builder.add("display", display);
-        builder.add("imageRendering", imageRendering);
-        builder.add("pointerEvents", pointerEvents);
-        builder.add("shapeRendering", shapeRendering);
-        builder.add("textRendering", textRendering);
-        builder.add("visibility", visibility);
-        builder.add("markerStart", markerStart);
-        builder.add("markerMid", markerMid);
-        builder.add("markerEnd", markerEnd);
-        builder.add("colorProfile", colorProfile);
-        builder.add("stopColor", stopColor);
-        builder.add("stopOpacity", stopOpacity);
-        builder.add("clipPath", clipPath);
-        builder.add("clipRule", clipRule);
-        builder.add("mask", mask);
-        builder.add("filter", filter);
-        builder.add("colorInterpolationFilters", colorInterpolationFilters);
-        builder.add("cursor", cursor);
-        builder.add("floodColor", floodColor);
-        builder.add("floodOpacity", floodOpacity);
-        builder.add("lightingColor", lightingColor);
-        builder.add("onfocusin", onfocusin);
-        builder.add("onfocusout", onfocusout);
-        builder.add("onactivate", onactivate);
-        builder.add("onclick", onclick);
-        builder.add("onmousedown", onmousedown);
-        builder.add("onmouseup", onmouseup);
-        builder.add("onmouseover", onmouseover);
-        builder.add("onmousemove", onmousemove);
-        builder.add("onmouseout", onmouseout);
-        builder.add("onload", onload);
-        builder.add("externalResourcesRequired", externalResourcesRequired);
-        builder.add("transform", transform);
-        if (content != null) {
-            builder.add("content", content.subList(0, Math.min(content.size(), maxLen)));
-        }
-    }
-
-    @Override
     public SvgGraphic getOwnerSVGElement() {
         // TODO Auto-generated method stub
         return null;
@@ -688,4 +594,26 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
         shape.getTransforms().addAll(transformList);
     }
 
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        super.toStringDetail(builder);
+        builder.add("requiredFeatures", requiredFeatures);
+        builder.add("requiredExtensions", requiredExtensions);
+        builder.add("systemLanguage", systemLanguage);
+        builder.add("onfocusin", onFocusIn);
+        builder.add("onfocusout", onFocusOut);
+        builder.add("onactivate", onActivate);
+        builder.add("onclick", onClick);
+        builder.add("onmousedown", onMouseDown);
+        builder.add("onmouseup", onMouseUp);
+        builder.add("onmouseover", onMouseOver);
+        builder.add("onmousemove", onMouseMove);
+        builder.add("onmouseout", onMouseOut);
+        builder.add("onload", onLoad);
+        builder.add("externalResourcesRequired", externalResourcesRequired);
+        builder.add("transform", transform);
+        if (content != null) {
+            builder.add("content", content.subList(0, Math.min(content.size(), maxLen)));
+        }
+    }
 }

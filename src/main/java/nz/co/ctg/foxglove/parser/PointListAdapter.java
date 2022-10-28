@@ -34,7 +34,7 @@ public class PointListAdapter extends XmlAdapter<String, List<Point2D>> {
     @Override
     public String marshal(List<Point2D> value) throws Exception {
         if (value == null || value.isEmpty()) {
-            return "";
+            return null;
         }
         return value.stream().map(pt -> String.format("%f,%f", pt.getX(), pt.getY())).collect(Collectors.joining(" "));
     }

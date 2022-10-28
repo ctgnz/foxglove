@@ -186,7 +186,7 @@ public class SvgMetadata implements ISvgDescriptiveElement {
 
     @Override
     public String toString() {
-        ToStringHelper builder = MoreObjects.toStringHelper(this).omitNullValues();
+        ToStringHelper builder = MoreObjects.toStringHelper(getElementName()).omitNullValues();
         builder.add("id", id);
         builder.add("xmlBase", xmlBase);
         builder.add("xmlLang", xmlLang);

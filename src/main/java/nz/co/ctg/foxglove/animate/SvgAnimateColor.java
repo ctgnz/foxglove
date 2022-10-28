@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -205,6 +207,12 @@ public class SvgAnimateColor extends SvgAnimationElement {
             contents = new ArrayList<>();
         }
         return this.contents;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

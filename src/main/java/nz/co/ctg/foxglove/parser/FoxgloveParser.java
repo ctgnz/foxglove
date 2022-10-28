@@ -1,10 +1,12 @@
 package nz.co.ctg.foxglove.parser;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -29,6 +31,13 @@ public class FoxgloveParser {
         XMLStreamReader xsr = xmlInputFactory.createXMLStreamReader(new StreamSource(input));
         JAXBElement<SvgGraphic> element = u.unmarshal(xsr, SvgGraphic.class);
         return element.getValue();
+    }
+
+    public String write(SvgGraphic svg) throws Exception {
+        Marshaller m = context.createMarshaller();
+        StringWriter out = new StringWriter();
+        m.marshal(svg, out);
+        return out.toString();
     }
 
 }

@@ -46,7 +46,7 @@ import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.style.Style;
+import nz.co.ctg.foxglove.style.SvgStyle;
 import nz.co.ctg.foxglove.text.AltGlyphDef;
 import nz.co.ctg.foxglove.text.SvgText;
 import nz.co.ctg.foxglove.text.Font;
@@ -301,7 +301,7 @@ public class Marker {
         @XmlElement(name = "use", type = Use.class),
         @XmlElement(name = "switch", type = Switch.class),
         @XmlElement(name = "image", type = Image.class),
-        @XmlElement(name = "style", type = Style.class),
+        @XmlElement(name = "style", type = SvgStyle.class),
         @XmlElement(name = "path", type = SvgPath.class),
         @XmlElement(name = "rect", type = SvgRectangle.class),
         @XmlElement(name = "circle", type = SvgCircle.class),
@@ -320,7 +320,7 @@ public class Marker {
         @XmlElement(name = "mask", type = SvgMask.class),
         @XmlElement(name = "filter", type = Filter.class),
         @XmlElement(name = "cursor", type = Cursor.class),
-        @XmlElement(name = "a", type = Anchor.class),
+        @XmlElement(name = "a", type = SvgAnchor.class),
         @XmlElement(name = "view", type = View.class),
         @XmlElement(name = "script", type = Script.class),
         @XmlElement(name = "font", type = Font.class),
@@ -2142,7 +2142,7 @@ public class Marker {
      * {@link Use }
      * {@link Switch }
      * {@link Image }
-     * {@link Style }
+     * {@link SvgStyle }
      * {@link SvgPath }
      * {@link SvgRectangle }
      * {@link SvgCircle }
@@ -2161,7 +2161,7 @@ public class Marker {
      * {@link SvgMask }
      * {@link Filter }
      * {@link Cursor }
-     * {@link Anchor }
+     * {@link SvgAnchor }
      * {@link View }
      * {@link Script }
      * {@link Font }

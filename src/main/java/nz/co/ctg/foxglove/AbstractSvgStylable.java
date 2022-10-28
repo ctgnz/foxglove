@@ -15,9 +15,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.parser.DoubleListAdapter;
-import nz.co.ctg.foxglove.parser.SvgPaintAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
+import nz.co.ctg.foxglove.parser.SvgPaintAdapter;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
@@ -1857,13 +1857,6 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
         this.lightingColor = value;
     }
 
-    @Override
-    protected void buildToString(ToStringHelper builder) {
-        super.buildToString(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-    }
-
     protected void setColors(Shape shape) {
         shape.setFill(fill);
         shape.setStroke(stroke);
@@ -1926,6 +1919,72 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
                 }
             });
         }
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        super.toStringDetail(builder);
+        builder.add("style", style);
+        builder.add("clazz", className);
+        builder.add("enableBackground", enableBackground);
+        builder.add("clip", clip);
+        builder.add("overflow", overflow);
+        builder.add("writingMode", writingMode);
+        builder.add("alignmentBaseline", alignmentBaseline);
+        builder.add("baselineShift", baselineShift);
+        builder.add("direction", direction);
+        builder.add("dominantBaseline", dominantBaseline);
+        builder.add("glyphOrientationHorizontal", glyphOrientationHorizontal);
+        builder.add("glyphOrientationVertical", glyphOrientationVertical);
+        builder.add("kerning", kerning);
+        builder.add("letterSpacing", letterSpacing);
+        builder.add("textAnchor", textAnchor);
+        builder.add("textDecoration", textDecoration);
+        builder.add("unicodeBidi", unicodeBidi);
+        builder.add("wordSpacing", wordSpacing);
+        builder.add("fontFamily", fontFamily);
+        builder.add("fontSize", fontSize);
+        builder.add("fontSizeAdjust", fontSizeAdjust);
+        builder.add("fontStretch", fontStretch);
+        builder.add("fontStyle", fontStyle);
+        builder.add("fontVariant", fontVariant);
+        builder.add("fontWeight", fontWeight);
+        builder.add("fill", fill);
+        builder.add("fillRule", fillRule);
+        builder.add("stroke", stroke);
+        builder.add("strokeDasharray", strokeDashArray);
+        builder.add("strokeDashoffset", strokeDashOffset);
+        builder.add("strokeLinecap", strokeLineCap);
+        builder.add("strokeLinejoin", strokeLineJoin);
+        builder.add("strokeMiterlimit", strokeMiterLimit);
+        builder.add("strokeWidth", strokeWidth);
+        builder.add("color", color);
+        builder.add("colorInterpolation", colorInterpolation);
+        builder.add("colorRendering", colorRendering);
+        builder.add("opacity", opacity);
+        builder.add("fillOpacity", fillOpacity);
+        builder.add("strokeOpacity", strokeOpacity);
+        builder.add("display", display);
+        builder.add("imageRendering", imageRendering);
+        builder.add("pointerEvents", pointerEvents);
+        builder.add("shapeRendering", shapeRendering);
+        builder.add("textRendering", textRendering);
+        builder.add("visibility", visibility);
+        builder.add("markerStart", markerStart);
+        builder.add("markerMid", markerMid);
+        builder.add("markerEnd", markerEnd);
+        builder.add("colorProfile", colorProfile);
+        builder.add("stopColor", stopColor);
+        builder.add("stopOpacity", stopOpacity);
+        builder.add("clipPath", clipPath);
+        builder.add("clipRule", clipRule);
+        builder.add("mask", mask);
+        builder.add("filter", filter);
+        builder.add("colorInterpolationFilters", colorInterpolationFilters);
+        builder.add("cursor", cursor);
+        builder.add("floodColor", floodColor);
+        builder.add("floodOpacity", floodOpacity);
+        builder.add("lightingColor", lightingColor);
     }
 
 }

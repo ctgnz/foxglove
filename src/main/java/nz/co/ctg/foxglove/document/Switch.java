@@ -315,7 +315,7 @@ public class Switch implements ISvgEventListener {
         @XmlElement(name = "ellipse", type = SvgEllipse.class),
         @XmlElement(name = "polyline", type = SvgPolyline.class),
         @XmlElement(name = "polygon", type = SvgPolygon.class),
-        @XmlElement(name = "a", type = Anchor.class),
+        @XmlElement(name = "a", type = SvgAnchor.class),
         @XmlElement(name = "foreignObject", type = ForeignObject.class)
     })
     protected List<Object> descOrTitleOrMetadataOrSvgOrGOrUseOrTextOrAnimateOrSetOrAnimateMotionOrAnimateColorOrAnimateTransformOrSwitchOrImageOrPathOrRectOrCircleOrLineOrEllipseOrPolylineOrPolygonOrAOrForeignObject;
@@ -2299,7 +2299,7 @@ public class Switch implements ISvgEventListener {
      * {@link SvgEllipse }
      * {@link SvgPolyline }
      * {@link SvgPolygon }
-     * {@link Anchor }
+     * {@link SvgAnchor }
      * {@link ForeignObject }
      *
      *
