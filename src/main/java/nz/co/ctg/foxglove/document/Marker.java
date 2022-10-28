@@ -24,21 +24,21 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.SvgGraphic;
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.AnimateColor;
-import nz.co.ctg.foxglove.animate.AnimateMotion;
-import nz.co.ctg.foxglove.animate.AnimateTransform;
-import nz.co.ctg.foxglove.animate.Set;
-import nz.co.ctg.foxglove.clip.ClipPath;
-import nz.co.ctg.foxglove.clip.Mask;
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.clip.SvgClipPath;
+import nz.co.ctg.foxglove.clip.SvgMask;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.filter.Filter;
-import nz.co.ctg.foxglove.paint.ColorProfile;
-import nz.co.ctg.foxglove.paint.LinearGradient;
-import nz.co.ctg.foxglove.paint.Pattern;
-import nz.co.ctg.foxglove.paint.RadialGradient;
+import nz.co.ctg.foxglove.paint.SvgColorProfile;
+import nz.co.ctg.foxglove.paint.SvgLinearGradient;
+import nz.co.ctg.foxglove.paint.SvgPattern;
+import nz.co.ctg.foxglove.paint.SvgRadialGradient;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -286,14 +286,14 @@ public class Marker {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String preserveAspectRatio;
     @XmlElements({
-        @XmlElement(name = "desc", type = Desc.class),
-        @XmlElement(name = "title", type = Title.class),
-        @XmlElement(name = "metadata", type = Metadata.class),
-        @XmlElement(name = "animate", type = Animate.class),
-        @XmlElement(name = "set", type = Set.class),
-        @XmlElement(name = "animateMotion", type = AnimateMotion.class),
-        @XmlElement(name = "animateColor", type = AnimateColor.class),
-        @XmlElement(name = "animateTransform", type = AnimateTransform.class),
+        @XmlElement(name = "desc", type = SvgDescription.class),
+        @XmlElement(name = "title", type = SvgTitle.class),
+        @XmlElement(name = "metadata", type = SvgMetadata.class),
+        @XmlElement(name = "animate", type = SvgAnimate.class),
+        @XmlElement(name = "set", type = SvgSet.class),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class),
         @XmlElement(name = "svg", type = SvgGraphic.class),
         @XmlElement(name = "g", type = SvgGroup.class),
         @XmlElement(name = "defs", type = Defs.class),
@@ -312,12 +312,12 @@ public class Marker {
         @XmlElement(name = "text", type = SvgText.class),
         @XmlElement(name = "altGlyphDef", type = AltGlyphDef.class),
         @XmlElement(name = "marker", type = Marker.class),
-        @XmlElement(name = "color-profile", type = ColorProfile.class),
-        @XmlElement(name = "linearGradient", type = LinearGradient.class),
-        @XmlElement(name = "radialGradient", type = RadialGradient.class),
-        @XmlElement(name = "pattern", type = Pattern.class),
-        @XmlElement(name = "clipPath", type = ClipPath.class),
-        @XmlElement(name = "mask", type = Mask.class),
+        @XmlElement(name = "color-profile", type = SvgColorProfile.class),
+        @XmlElement(name = "linearGradient", type = SvgLinearGradient.class),
+        @XmlElement(name = "radialGradient", type = SvgRadialGradient.class),
+        @XmlElement(name = "pattern", type = SvgPattern.class),
+        @XmlElement(name = "clipPath", type = SvgClipPath.class),
+        @XmlElement(name = "mask", type = SvgMask.class),
         @XmlElement(name = "filter", type = Filter.class),
         @XmlElement(name = "cursor", type = Cursor.class),
         @XmlElement(name = "a", type = Anchor.class),
@@ -2127,14 +2127,14 @@ public class Marker {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
-     * {@link Animate }
-     * {@link Set }
-     * {@link AnimateMotion }
-     * {@link AnimateColor }
-     * {@link AnimateTransform }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
+     * {@link SvgAnimateMotion }
+     * {@link SvgAnimateColor }
+     * {@link SvgAnimateTransform }
      * {@link SvgGraphic }
      * {@link SvgGroup }
      * {@link Defs }
@@ -2153,12 +2153,12 @@ public class Marker {
      * {@link SvgText }
      * {@link AltGlyphDef }
      * {@link Marker }
-     * {@link ColorProfile }
-     * {@link LinearGradient }
-     * {@link RadialGradient }
-     * {@link Pattern }
-     * {@link ClipPath }
-     * {@link Mask }
+     * {@link SvgColorProfile }
+     * {@link SvgLinearGradient }
+     * {@link SvgRadialGradient }
+     * {@link SvgPattern }
+     * {@link SvgClipPath }
+     * {@link SvgMask }
      * {@link Filter }
      * {@link Cursor }
      * {@link Anchor }

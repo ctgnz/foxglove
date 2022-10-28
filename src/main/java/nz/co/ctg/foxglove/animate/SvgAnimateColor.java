@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 
 
 /**
@@ -34,8 +34,8 @@ import nz.co.ctg.foxglove.description.Title;
 @XmlType(name = "", propOrder = {
     "contents"
 })
-@XmlRootElement(name = "animate")
-public class Animate extends SvgAnimationElement {
+@XmlRootElement(name = "animateColor")
+public class SvgAnimateColor extends SvgAnimationElement {
 
     @XmlAttribute(name = "attributeName", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -78,9 +78,9 @@ public class Animate extends SvgAnimationElement {
     protected String accumulate;
 
     @XmlElements({
-        @XmlElement(name = "desc", type = Desc.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "title", type = Title.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "metadata", type = Metadata.class, namespace = "http://www.w3.org/2000/svg")
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<Object> contents;
 
@@ -194,9 +194,9 @@ public class Animate extends SvgAnimationElement {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
      *
      *
      */

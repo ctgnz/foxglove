@@ -31,7 +31,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
     "value"
 })
 @XmlRootElement(name = "metadata")
-public class Metadata implements ISvgDescriptiveElement {
+public class SvgMetadata implements ISvgDescriptiveElement {
 
     @XmlValue
     protected String value;
@@ -53,7 +53,7 @@ public class Metadata implements ISvgDescriptiveElement {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
 
-    public Metadata() {
+    public SvgMetadata() {
     }
 
     /**

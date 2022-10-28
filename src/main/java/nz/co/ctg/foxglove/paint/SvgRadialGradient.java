@@ -6,7 +6,7 @@
 //
 
 
-package nz.co.ctg.foxglove.document;
+package nz.co.ctg.foxglove.paint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +16,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSet;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -33,239 +38,88 @@ import nz.co.ctg.foxglove.description.SvgTitle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "descOrTitleOrMetadata"
+    "content"
 })
-@XmlRootElement(name = "cursor")
-public class Cursor {
+@XmlRootElement(name = "radialGradient")
+public class SvgRadialGradient extends AbstractSvgStylable implements ISvgLinkable, ISvgExternalResources {
 
-    @XmlAttribute(name = "id")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    protected String id;
-    @XmlAttribute(name = "xml:base")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlBase;
-    @XmlAttribute(name = "xml:lang")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlLang;
-    @XmlAttribute(name = "xml:space")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlSpace;
-    @XmlAttribute(name = "requiredFeatures")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
-    @XmlAttribute(name = "requiredExtensions")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
-    @XmlAttribute(name = "systemLanguage")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
+
     @XmlAttribute(name = "xlink:type")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkType;
-    @XmlAttribute(name = "xlink:href", required = true)
+
+    @XmlAttribute(name = "xlink:href")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkHref;
+
     @XmlAttribute(name = "xlink:role")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkRole;
+
     @XmlAttribute(name = "xlink:arcrole")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkArcrole;
+
     @XmlAttribute(name = "xlink:title")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkTitle;
+
     @XmlAttribute(name = "xlink:show")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkShow;
+
     @XmlAttribute(name = "xlink:actuate")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
+
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
-    @XmlAttribute(name = "x")
+
+    @XmlAttribute(name = "cx")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
-    @XmlAttribute(name = "y")
+    protected String cx;
+
+    @XmlAttribute(name = "cy")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    protected String cy;
+
+    @XmlAttribute(name = "r")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String r;
+
+    @XmlAttribute(name = "fx")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String fx;
+
+    @XmlAttribute(name = "fy")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String fy;
+
+    @XmlAttribute(name = "gradientUnits")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String gradientUnits;
+
+    @XmlAttribute(name = "gradientTransform")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String gradientTransform;
+
+    @XmlAttribute(name = "spreadMethod")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String spreadMethod;
+
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class),
         @XmlElement(name = "title", type = SvgTitle.class),
-        @XmlElement(name = "metadata", type = SvgMetadata.class)
+        @XmlElement(name = "metadata", type = SvgMetadata.class),
+        @XmlElement(name = "stop", type = SvgStop.class),
+        @XmlElement(name = "animate", type = SvgAnimate.class),
+        @XmlElement(name = "set", type = SvgSet.class),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class)
     })
-    protected List<Object> descOrTitleOrMetadata;
-
-    /**
-     * Gets the value of the id property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
-     * Gets the value of the xmlBase property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlBase() {
-        return xmlBase;
-    }
-
-    /**
-     * Sets the value of the xmlBase property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlBase(String value) {
-        this.xmlBase = value;
-    }
-
-    /**
-     * Gets the value of the xmlLang property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlLang() {
-        return xmlLang;
-    }
-
-    /**
-     * Sets the value of the xmlLang property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlLang(String value) {
-        this.xmlLang = value;
-    }
-
-    /**
-     * Gets the value of the xmlSpace property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlSpace() {
-        return xmlSpace;
-    }
-
-    /**
-     * Sets the value of the xmlSpace property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlSpace(String value) {
-        this.xmlSpace = value;
-    }
-
-    /**
-     * Gets the value of the requiredFeatures property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getRequiredFeatures() {
-        return requiredFeatures;
-    }
-
-    /**
-     * Sets the value of the requiredFeatures property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setRequiredFeatures(String value) {
-        this.requiredFeatures = value;
-    }
-
-    /**
-     * Gets the value of the requiredExtensions property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getRequiredExtensions() {
-        return requiredExtensions;
-    }
-
-    /**
-     * Sets the value of the requiredExtensions property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setRequiredExtensions(String value) {
-        this.requiredExtensions = value;
-    }
-
-    /**
-     * Gets the value of the systemLanguage property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getSystemLanguage() {
-        return systemLanguage;
-    }
-
-    /**
-     * Sets the value of the systemLanguage property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setSystemLanguage(String value) {
-        this.systemLanguage = value;
-    }
+    protected List<Object> content;
 
     /**
      * Gets the value of the xmlnsXlink property.
@@ -275,6 +129,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlnsXlink() {
         if (xmlnsXlink == null) {
             return "http://www.w3.org/1999/xlink";
@@ -291,6 +146,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlnsXlink(String value) {
         this.xmlnsXlink = value;
     }
@@ -303,6 +159,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkType() {
         if (xlinkType == null) {
             return "simple";
@@ -319,6 +176,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkType(String value) {
         this.xlinkType = value;
     }
@@ -331,6 +189,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkHref() {
         return xlinkHref;
     }
@@ -343,6 +202,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkHref(String value) {
         this.xlinkHref = value;
     }
@@ -355,6 +215,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkRole() {
         return xlinkRole;
     }
@@ -367,6 +228,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkRole(String value) {
         this.xlinkRole = value;
     }
@@ -379,6 +241,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkArcrole() {
         return xlinkArcrole;
     }
@@ -391,6 +254,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkArcrole(String value) {
         this.xlinkArcrole = value;
     }
@@ -403,6 +267,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkTitle() {
         return xlinkTitle;
     }
@@ -415,6 +280,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkTitle(String value) {
         this.xlinkTitle = value;
     }
@@ -427,6 +293,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkShow() {
         if (xlinkShow == null) {
             return "other";
@@ -443,6 +310,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkShow(String value) {
         this.xlinkShow = value;
     }
@@ -455,6 +323,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkActuate() {
         if (xlinkActuate == null) {
             return "onLoad";
@@ -471,6 +340,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkActuate(String value) {
         this.xlinkActuate = value;
     }
@@ -483,6 +353,7 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public boolean getExternalResourcesRequired() {
         return externalResourcesRequired;
     }
@@ -495,71 +366,216 @@ public class Cursor {
      *     {@link String }
      *
      */
+    @Override
     public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
     }
 
     /**
-     * Gets the value of the x property.
+     * Gets the value of the cx property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getX() {
-        return x;
+    public String getCx() {
+        return cx;
     }
 
     /**
-     * Sets the value of the x property.
+     * Sets the value of the cx property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setX(String value) {
-        this.x = value;
+    public void setCx(String value) {
+        this.cx = value;
     }
 
     /**
-     * Gets the value of the y property.
+     * Gets the value of the cy property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getY() {
-        return y;
+    public String getCy() {
+        return cy;
     }
 
     /**
-     * Sets the value of the y property.
+     * Sets the value of the cy property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setY(String value) {
-        this.y = value;
+    public void setCy(String value) {
+        this.cy = value;
     }
 
     /**
-     * Gets the value of the descOrTitleOrMetadata property.
+     * Gets the value of the r property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getR() {
+        return r;
+    }
+
+    /**
+     * Sets the value of the r property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setR(String value) {
+        this.r = value;
+    }
+
+    /**
+     * Gets the value of the fx property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getFx() {
+        return fx;
+    }
+
+    /**
+     * Sets the value of the fx property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setFx(String value) {
+        this.fx = value;
+    }
+
+    /**
+     * Gets the value of the fy property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getFy() {
+        return fy;
+    }
+
+    /**
+     * Sets the value of the fy property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setFy(String value) {
+        this.fy = value;
+    }
+
+    /**
+     * Gets the value of the gradientUnits property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getGradientUnits() {
+        return gradientUnits;
+    }
+
+    /**
+     * Sets the value of the gradientUnits property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setGradientUnits(String value) {
+        this.gradientUnits = value;
+    }
+
+    /**
+     * Gets the value of the gradientTransform property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getGradientTransform() {
+        return gradientTransform;
+    }
+
+    /**
+     * Sets the value of the gradientTransform property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setGradientTransform(String value) {
+        this.gradientTransform = value;
+    }
+
+    /**
+     * Gets the value of the spreadMethod property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getSpreadMethod() {
+        return spreadMethod;
+    }
+
+    /**
+     * Sets the value of the spreadMethod property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setSpreadMethod(String value) {
+        this.spreadMethod = value;
+    }
+
+    /**
+     * Gets the value of the content property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadata property.
+     * This is why there is not a <CODE>set</CODE> method for the content property.
      *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDescOrTitleOrMetadata().add(newItem);
+     *    getcontent().add(newItem);
      * </pre>
      *
      *
@@ -568,14 +584,18 @@ public class Cursor {
      * {@link SvgDescription }
      * {@link SvgTitle }
      * {@link SvgMetadata }
+     * {@link SvgStop }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
+     * {@link SvgAnimateTransform }
      *
      *
      */
-    public List<Object> getDescOrTitleOrMetadata() {
-        if (descOrTitleOrMetadata == null) {
-            descOrTitleOrMetadata = new ArrayList<>();
+    public List<Object> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
         }
-        return this.descOrTitleOrMetadata;
+        return this.content;
     }
 
 }

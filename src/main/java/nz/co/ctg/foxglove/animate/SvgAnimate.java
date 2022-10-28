@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 
 
 /**
@@ -34,16 +34,16 @@ import nz.co.ctg.foxglove.description.Title;
 @XmlType(name = "", propOrder = {
     "contents"
 })
-@XmlRootElement(name = "animateMotion")
-public class AnimateMotion extends SvgAnimationElement {
+@XmlRootElement(name = "animate")
+public class SvgAnimate extends SvgAnimationElement {
 
-    @XmlAttribute(name = "additive")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String additive;
+    @XmlAttribute(name = "attributeName", required = true)
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String attributeName;
 
-    @XmlAttribute(name = "accumulate")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String accumulate;
+    @XmlAttribute(name = "attributeType")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String attributeType;
 
     @XmlAttribute(name = "calcMode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -69,57 +69,40 @@ public class AnimateMotion extends SvgAnimationElement {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String by;
 
-    @XmlAttribute(name = "path")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String path;
+    @XmlAttribute(name = "additive")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String additive;
 
-    @XmlAttribute(name = "keyPoints")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String keyPoints;
-
-    @XmlAttribute(name = "rotate")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String rotate;
-
-    @XmlAttribute(name = "origin")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String origin;
+    @XmlAttribute(name = "accumulate")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String accumulate;
 
     @XmlElements({
-        @XmlElement(name = "mpath", required = true, type = SvgMotionPath.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "desc", required = true, type = Desc.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "title", required = true, type = Title.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "metadata", required = true, type = Metadata.class, namespace = "http://www.w3.org/2000/svg")
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<Object> contents;
 
-    public String getAdditive() {
-        if (additive == null) {
-            return "replace";
-        } else {
-            return additive;
-        }
+    public String getAttributeName() {
+        return attributeName;
     }
 
-    public void setAdditive(String value) {
-        this.additive = value;
+    public void setAttributeName(String value) {
+        this.attributeName = value;
     }
 
-    public String getAccumulate() {
-        if (accumulate == null) {
-            return "none";
-        } else {
-            return accumulate;
-        }
+    public String getAttributeType() {
+        return attributeType;
     }
 
-    public void setAccumulate(String value) {
-        this.accumulate = value;
+    public void setAttributeType(String value) {
+        this.attributeType = value;
     }
 
     public String getCalcMode() {
         if (calcMode == null) {
-            return "paced";
+            return "linear";
         } else {
             return calcMode;
         }
@@ -169,60 +152,51 @@ public class AnimateMotion extends SvgAnimationElement {
         this.by = value;
     }
 
-    public String getPath() {
-        return path;
+    public String getAdditive() {
+        if (additive == null) {
+            return "replace";
+        } else {
+            return additive;
+        }
     }
 
-    public void setPath(String value) {
-        this.path = value;
+    public void setAdditive(String value) {
+        this.additive = value;
     }
 
-    public String getKeyPoints() {
-        return keyPoints;
+    public String getAccumulate() {
+        if (accumulate == null) {
+            return "none";
+        } else {
+            return accumulate;
+        }
     }
 
-    public void setKeyPoints(String value) {
-        this.keyPoints = value;
-    }
-
-    public String getRotate() {
-        return rotate;
-    }
-
-    public void setRotate(String value) {
-        this.rotate = value;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String value) {
-        this.origin = value;
+    public void setAccumulate(String value) {
+        this.accumulate = value;
     }
 
     /**
-     * Gets the value of the mpathOrDescOrTitleOrMetadata property.
+     * Gets the value of the descOrTitleOrMetadata property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the mpathOrDescOrTitleOrMetadata property.
+     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadata property.
      *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getMpathOrDescOrTitleOrMetadata().add(newItem);
+     *    getDescOrTitleOrMetadata().add(newItem);
      * </pre>
      *
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link SvgMotionPath }
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
      *
      *
      */

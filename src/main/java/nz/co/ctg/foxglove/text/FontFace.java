@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 
 
 /**
@@ -151,9 +151,9 @@ public class FontFace {
     protected String overlineThickness;
     @XmlElements({
         @XmlElement(name = "font-face-src", required = true, type = FontFaceSrc.class),
-        @XmlElement(name = "desc", required = true, type = Desc.class),
-        @XmlElement(name = "title", required = true, type = Title.class),
-        @XmlElement(name = "metadata", required = true, type = Metadata.class)
+        @XmlElement(name = "desc", required = true, type = SvgDescription.class),
+        @XmlElement(name = "title", required = true, type = SvgTitle.class),
+        @XmlElement(name = "metadata", required = true, type = SvgMetadata.class)
     })
     protected List<Object> fontFaceSrcOrDescOrTitleOrMetadata;
 
@@ -1064,9 +1064,9 @@ public class FontFace {
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link FontFaceSrc }
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
      * 
      * 
      */

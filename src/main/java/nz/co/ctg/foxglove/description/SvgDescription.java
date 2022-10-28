@@ -6,40 +6,33 @@
 //
 
 
-package nz.co.ctg.foxglove.clip;
+package nz.co.ctg.foxglove.description;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.AnimateColor;
-import nz.co.ctg.foxglove.animate.AnimateMotion;
-import nz.co.ctg.foxglove.animate.AnimateTransform;
-import nz.co.ctg.foxglove.animate.Set;
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
-import nz.co.ctg.foxglove.document.Use;
-import nz.co.ctg.foxglove.shape.SvgCircle;
-import nz.co.ctg.foxglove.shape.SvgEllipse;
-import nz.co.ctg.foxglove.shape.SvgLine;
-import nz.co.ctg.foxglove.shape.SvgPath;
-import nz.co.ctg.foxglove.shape.SvgPolygon;
-import nz.co.ctg.foxglove.shape.SvgPolyline;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.text.SvgText;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.ISvgStylable;
+import nz.co.ctg.foxglove.parser.DoubleListAdapter;
+import nz.co.ctg.foxglove.parser.SvgPaintAdapter;
+import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
+import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
+
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 
 /**
@@ -47,11 +40,13 @@ import nz.co.ctg.foxglove.text.SvgText;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "contents"
+    "value"
 })
-@XmlRootElement(name = "clipPath")
-public class ClipPath {
+@XmlRootElement(name = "desc")
+public class SvgDescription implements ISvgDescriptiveElement, ISvgStylable {
 
+    @XmlValue
+    protected String value;
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
@@ -65,21 +60,21 @@ public class ClipPath {
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
-    @XmlAttribute(name = "requiredFeatures")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
-    @XmlAttribute(name = "requiredExtensions")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
-    @XmlAttribute(name = "systemLanguage")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
     @XmlAttribute(name = "style")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String style;
     @XmlAttribute(name = "class")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String clazz;
+    protected String className;
+    @XmlAttribute(name = "flood-color")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String floodColor;
+    @XmlAttribute(name = "flood-opacity")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String floodOpacity;
+    @XmlAttribute(name = "lighting-color")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String lightingColor;
     @XmlAttribute(name = "enable-background")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String enableBackground;
@@ -150,32 +145,29 @@ public class ClipPath {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fontWeight;
     @XmlAttribute(name = "fill")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fill;
+    @XmlJavaTypeAdapter(SvgPaintAdapter.class)
+    protected Paint fill;
     @XmlAttribute(name = "fill-rule")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String fillRule;
     @XmlAttribute(name = "stroke")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String stroke;
+    @XmlJavaTypeAdapter(SvgPaintAdapter.class)
+    protected Paint stroke;
     @XmlAttribute(name = "stroke-dasharray")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDasharray;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    protected List<Double> strokeDasharray;
     @XmlAttribute(name = "stroke-dashoffset")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeDashoffset;
+    protected double strokeDashoffset;
     @XmlAttribute(name = "stroke-linecap")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinecap;
+    @XmlJavaTypeAdapter(StrokeLineCapAdapter.class)
+    protected StrokeLineCap strokeLinecap;
     @XmlAttribute(name = "stroke-linejoin")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String strokeLinejoin;
+    @XmlJavaTypeAdapter(StrokeLineJoinAdapter.class)
+    protected StrokeLineJoin strokeLinejoin;
     @XmlAttribute(name = "stroke-miterlimit")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeMiterlimit;
+    protected double strokeMiterlimit;
     @XmlAttribute(name = "stroke-width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strokeWidth;
+    protected double strokeWidth;
     @XmlAttribute(name = "color")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String color;
@@ -248,43 +240,30 @@ public class ClipPath {
     @XmlAttribute(name = "cursor")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String cursor;
-    @XmlAttribute(name = "flood-color")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String floodColor;
-    @XmlAttribute(name = "flood-opacity")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String floodOpacity;
-    @XmlAttribute(name = "lighting-color")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String lightingColor;
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
-    @XmlAttribute(name = "transform")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String transform;
-    @XmlAttribute(name = "clipPathUnits")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String clipPathUnits;
-    @XmlElements({
-        @XmlElement(name = "desc", type = Desc.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "title", type = Title.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "metadata", type = Metadata.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animate", type = Animate.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "set", type = Set.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animateMotion", type = AnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animateColor", type = AnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animateTransform", type = AnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "use", type = Use.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "path", type = SvgPath.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "rect", type = SvgRectangle.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "circle", type = SvgCircle.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "line", type = SvgLine.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "ellipse", type = SvgEllipse.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "polyline", type = SvgPolyline.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "polygon", type = SvgPolygon.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "text", type = SvgText.class, namespace = "http://www.w3.org/2000/svg")
-    })
-    protected List<Object> contents;
+
+    /**
+     * Gets the value of the value property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Sets the value of the value property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
     /**
      * Gets the value of the id property.
@@ -294,6 +273,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -306,6 +286,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setId(String value) {
         this.id = value;
     }
@@ -318,6 +299,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlBase() {
         return xmlBase;
     }
@@ -330,6 +312,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlBase(String value) {
         this.xmlBase = value;
     }
@@ -342,6 +325,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlLang() {
         return xmlLang;
     }
@@ -354,6 +338,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlLang(String value) {
         this.xmlLang = value;
     }
@@ -366,6 +351,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlSpace() {
         return xmlSpace;
     }
@@ -378,80 +364,9 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlSpace(String value) {
         this.xmlSpace = value;
-    }
-
-    /**
-     * Gets the value of the requiredFeatures property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getRequiredFeatures() {
-        return requiredFeatures;
-    }
-
-    /**
-     * Sets the value of the requiredFeatures property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setRequiredFeatures(String value) {
-        this.requiredFeatures = value;
-    }
-
-    /**
-     * Gets the value of the requiredExtensions property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getRequiredExtensions() {
-        return requiredExtensions;
-    }
-
-    /**
-     * Sets the value of the requiredExtensions property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setRequiredExtensions(String value) {
-        this.requiredExtensions = value;
-    }
-
-    /**
-     * Gets the value of the systemLanguage property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getSystemLanguage() {
-        return systemLanguage;
-    }
-
-    /**
-     * Sets the value of the systemLanguage property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setSystemLanguage(String value) {
-        this.systemLanguage = value;
     }
 
     /**
@@ -462,6 +377,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getStyle() {
         return style;
     }
@@ -474,6 +390,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setStyle(String value) {
         this.style = value;
     }
@@ -486,8 +403,9 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public String getClazz() {
-        return clazz;
+    @Override
+    public String getClassName() {
+        return className;
     }
 
     /**
@@ -498,8 +416,9 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public void setClazz(String value) {
-        this.clazz = value;
+    @Override
+    public void setClassName(String value) {
+        this.className = value;
     }
 
     /**
@@ -510,6 +429,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getEnableBackground() {
         return enableBackground;
     }
@@ -522,6 +442,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setEnableBackground(String value) {
         this.enableBackground = value;
     }
@@ -534,6 +455,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getClip() {
         return clip;
     }
@@ -546,6 +468,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setClip(String value) {
         this.clip = value;
     }
@@ -558,6 +481,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getOverflow() {
         return overflow;
     }
@@ -570,6 +494,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setOverflow(String value) {
         this.overflow = value;
     }
@@ -582,6 +507,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getWritingMode() {
         return writingMode;
     }
@@ -594,6 +520,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setWritingMode(String value) {
         this.writingMode = value;
     }
@@ -606,6 +533,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getAlignmentBaseline() {
         return alignmentBaseline;
     }
@@ -618,6 +546,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setAlignmentBaseline(String value) {
         this.alignmentBaseline = value;
     }
@@ -630,6 +559,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getBaselineShift() {
         return baselineShift;
     }
@@ -642,6 +572,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setBaselineShift(String value) {
         this.baselineShift = value;
     }
@@ -654,6 +585,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getDirection() {
         return direction;
     }
@@ -666,6 +598,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setDirection(String value) {
         this.direction = value;
     }
@@ -678,6 +611,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getDominantBaseline() {
         return dominantBaseline;
     }
@@ -690,6 +624,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setDominantBaseline(String value) {
         this.dominantBaseline = value;
     }
@@ -702,6 +637,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getGlyphOrientationHorizontal() {
         return glyphOrientationHorizontal;
     }
@@ -714,6 +650,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setGlyphOrientationHorizontal(String value) {
         this.glyphOrientationHorizontal = value;
     }
@@ -726,6 +663,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getGlyphOrientationVertical() {
         return glyphOrientationVertical;
     }
@@ -738,6 +676,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setGlyphOrientationVertical(String value) {
         this.glyphOrientationVertical = value;
     }
@@ -750,6 +689,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getKerning() {
         return kerning;
     }
@@ -762,6 +702,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setKerning(String value) {
         this.kerning = value;
     }
@@ -774,6 +715,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getLetterSpacing() {
         return letterSpacing;
     }
@@ -786,6 +728,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setLetterSpacing(String value) {
         this.letterSpacing = value;
     }
@@ -798,6 +741,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getTextAnchor() {
         return textAnchor;
     }
@@ -810,6 +754,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setTextAnchor(String value) {
         this.textAnchor = value;
     }
@@ -822,6 +767,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getTextDecoration() {
         return textDecoration;
     }
@@ -834,6 +780,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setTextDecoration(String value) {
         this.textDecoration = value;
     }
@@ -846,6 +793,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getUnicodeBidi() {
         return unicodeBidi;
     }
@@ -858,6 +806,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setUnicodeBidi(String value) {
         this.unicodeBidi = value;
     }
@@ -870,6 +819,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getWordSpacing() {
         return wordSpacing;
     }
@@ -882,6 +832,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setWordSpacing(String value) {
         this.wordSpacing = value;
     }
@@ -894,6 +845,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFontFamily() {
         return fontFamily;
     }
@@ -906,6 +858,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFontFamily(String value) {
         this.fontFamily = value;
     }
@@ -918,6 +871,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFontSize() {
         return fontSize;
     }
@@ -930,6 +884,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFontSize(String value) {
         this.fontSize = value;
     }
@@ -942,6 +897,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFontSizeAdjust() {
         return fontSizeAdjust;
     }
@@ -954,6 +910,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFontSizeAdjust(String value) {
         this.fontSizeAdjust = value;
     }
@@ -966,6 +923,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFontStretch() {
         return fontStretch;
     }
@@ -978,6 +936,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFontStretch(String value) {
         this.fontStretch = value;
     }
@@ -990,6 +949,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFontStyle() {
         return fontStyle;
     }
@@ -1002,6 +962,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFontStyle(String value) {
         this.fontStyle = value;
     }
@@ -1014,6 +975,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFontVariant() {
         return fontVariant;
     }
@@ -1026,6 +988,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFontVariant(String value) {
         this.fontVariant = value;
     }
@@ -1038,6 +1001,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFontWeight() {
         return fontWeight;
     }
@@ -1050,6 +1014,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFontWeight(String value) {
         this.fontWeight = value;
     }
@@ -1059,10 +1024,11 @@ public class ClipPath {
      *
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public String getFill() {
+    @Override
+    public Paint getFill() {
         return fill;
     }
 
@@ -1071,10 +1037,11 @@ public class ClipPath {
      *
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public void setFill(String value) {
+    @Override
+    public void setFill(Paint value) {
         this.fill = value;
     }
 
@@ -1086,6 +1053,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFillRule() {
         return fillRule;
     }
@@ -1098,6 +1066,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFillRule(String value) {
         this.fillRule = value;
     }
@@ -1107,10 +1076,11 @@ public class ClipPath {
      *
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public String getStroke() {
+    @Override
+    public Paint getStroke() {
         return stroke;
     }
 
@@ -1119,10 +1089,11 @@ public class ClipPath {
      *
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Paint }
      *
      */
-    public void setStroke(String value) {
+    @Override
+    public void setStroke(Paint value) {
         this.stroke = value;
     }
 
@@ -1134,7 +1105,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public String getStrokeDasharray() {
+    @Override
+    public List<Double> getStrokeDashArray() {
         return strokeDasharray;
     }
 
@@ -1146,7 +1118,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public void setStrokeDasharray(String value) {
+    @Override
+    public void setStrokeDashArray(List<Double> value) {
         this.strokeDasharray = value;
     }
 
@@ -1158,7 +1131,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public String getStrokeDashoffset() {
+    @Override
+    public double getStrokeDashOffset() {
         return strokeDashoffset;
     }
 
@@ -1170,7 +1144,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public void setStrokeDashoffset(String value) {
+    @Override
+    public void setStrokeDashOffset(double value) {
         this.strokeDashoffset = value;
     }
 
@@ -1182,7 +1157,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public String getStrokeLinecap() {
+    @Override
+    public StrokeLineCap getStrokeLineCap() {
         return strokeLinecap;
     }
 
@@ -1194,7 +1170,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public void setStrokeLinecap(String value) {
+    @Override
+    public void setStrokeLineCap(StrokeLineCap value) {
         this.strokeLinecap = value;
     }
 
@@ -1206,7 +1183,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public String getStrokeLinejoin() {
+    @Override
+    public StrokeLineJoin getStrokeLineJoin() {
         return strokeLinejoin;
     }
 
@@ -1218,7 +1196,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public void setStrokeLinejoin(String value) {
+    @Override
+    public void setStrokeLineJoin(StrokeLineJoin value) {
         this.strokeLinejoin = value;
     }
 
@@ -1230,7 +1209,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public String getStrokeMiterlimit() {
+    @Override
+    public double getStrokeMiterLimit() {
         return strokeMiterlimit;
     }
 
@@ -1242,7 +1222,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public void setStrokeMiterlimit(String value) {
+    @Override
+    public void setStrokeMiterLimit(double value) {
         this.strokeMiterlimit = value;
     }
 
@@ -1254,7 +1235,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public String getStrokeWidth() {
+    @Override
+    public double getStrokeWidth() {
         return strokeWidth;
     }
 
@@ -1266,7 +1248,8 @@ public class ClipPath {
      *     {@link String }
      *
      */
-    public void setStrokeWidth(String value) {
+    @Override
+    public void setStrokeWidth(double value) {
         this.strokeWidth = value;
     }
 
@@ -1278,6 +1261,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getColor() {
         return color;
     }
@@ -1290,6 +1274,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setColor(String value) {
         this.color = value;
     }
@@ -1302,6 +1287,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getColorInterpolation() {
         return colorInterpolation;
     }
@@ -1314,6 +1300,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setColorInterpolation(String value) {
         this.colorInterpolation = value;
     }
@@ -1326,6 +1313,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getColorRendering() {
         return colorRendering;
     }
@@ -1338,6 +1326,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setColorRendering(String value) {
         this.colorRendering = value;
     }
@@ -1350,6 +1339,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getOpacity() {
         return opacity;
     }
@@ -1362,6 +1352,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setOpacity(String value) {
         this.opacity = value;
     }
@@ -1374,6 +1365,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFillOpacity() {
         return fillOpacity;
     }
@@ -1386,6 +1378,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFillOpacity(String value) {
         this.fillOpacity = value;
     }
@@ -1398,6 +1391,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getStrokeOpacity() {
         return strokeOpacity;
     }
@@ -1410,6 +1404,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setStrokeOpacity(String value) {
         this.strokeOpacity = value;
     }
@@ -1422,6 +1417,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getDisplay() {
         return display;
     }
@@ -1434,6 +1430,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setDisplay(String value) {
         this.display = value;
     }
@@ -1446,6 +1443,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getImageRendering() {
         return imageRendering;
     }
@@ -1458,6 +1456,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setImageRendering(String value) {
         this.imageRendering = value;
     }
@@ -1470,6 +1469,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getPointerEvents() {
         return pointerEvents;
     }
@@ -1482,6 +1482,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setPointerEvents(String value) {
         this.pointerEvents = value;
     }
@@ -1494,6 +1495,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getShapeRendering() {
         return shapeRendering;
     }
@@ -1506,6 +1508,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setShapeRendering(String value) {
         this.shapeRendering = value;
     }
@@ -1518,6 +1521,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getTextRendering() {
         return textRendering;
     }
@@ -1530,6 +1534,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setTextRendering(String value) {
         this.textRendering = value;
     }
@@ -1542,6 +1547,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getVisibility() {
         return visibility;
     }
@@ -1554,6 +1560,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setVisibility(String value) {
         this.visibility = value;
     }
@@ -1566,6 +1573,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerStart() {
         return markerStart;
     }
@@ -1578,6 +1586,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerStart(String value) {
         this.markerStart = value;
     }
@@ -1590,6 +1599,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerMid() {
         return markerMid;
     }
@@ -1602,6 +1612,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerMid(String value) {
         this.markerMid = value;
     }
@@ -1614,6 +1625,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getMarkerEnd() {
         return markerEnd;
     }
@@ -1626,6 +1638,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setMarkerEnd(String value) {
         this.markerEnd = value;
     }
@@ -1638,6 +1651,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getColorProfile() {
         return colorProfile;
     }
@@ -1650,6 +1664,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setColorProfile(String value) {
         this.colorProfile = value;
     }
@@ -1662,6 +1677,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getStopColor() {
         return stopColor;
     }
@@ -1674,6 +1690,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setStopColor(String value) {
         this.stopColor = value;
     }
@@ -1686,6 +1703,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getStopOpacity() {
         return stopOpacity;
     }
@@ -1698,6 +1716,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setStopOpacity(String value) {
         this.stopOpacity = value;
     }
@@ -1710,6 +1729,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getClipPath() {
         return clipPath;
     }
@@ -1722,6 +1742,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setClipPath(String value) {
         this.clipPath = value;
     }
@@ -1734,6 +1755,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getClipRule() {
         return clipRule;
     }
@@ -1746,6 +1768,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setClipRule(String value) {
         this.clipRule = value;
     }
@@ -1758,6 +1781,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getMask() {
         return mask;
     }
@@ -1770,6 +1794,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setMask(String value) {
         this.mask = value;
     }
@@ -1782,6 +1807,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFilter() {
         return filter;
     }
@@ -1794,6 +1820,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFilter(String value) {
         this.filter = value;
     }
@@ -1806,6 +1833,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getColorInterpolationFilters() {
         return colorInterpolationFilters;
     }
@@ -1818,6 +1846,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setColorInterpolationFilters(String value) {
         this.colorInterpolationFilters = value;
     }
@@ -1830,6 +1859,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getCursor() {
         return cursor;
     }
@@ -1842,6 +1872,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setCursor(String value) {
         this.cursor = value;
     }
@@ -1854,6 +1885,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFloodColor() {
         return floodColor;
     }
@@ -1866,6 +1898,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFloodColor(String value) {
         this.floodColor = value;
     }
@@ -1878,6 +1911,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getFloodOpacity() {
         return floodOpacity;
     }
@@ -1890,6 +1924,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setFloodOpacity(String value) {
         this.floodOpacity = value;
     }
@@ -1902,6 +1937,7 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public String getLightingColor() {
         return lightingColor;
     }
@@ -1914,125 +1950,20 @@ public class ClipPath {
      *     {@link String }
      *
      */
+    @Override
     public void setLightingColor(String value) {
         this.lightingColor = value;
     }
 
-    /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
-     * Gets the value of the transform property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getTransform() {
-        return transform;
-    }
-
-    /**
-     * Sets the value of the transform property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setTransform(String value) {
-        this.transform = value;
-    }
-
-    /**
-     * Gets the value of the clipPathUnits property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getClipPathUnits() {
-        return clipPathUnits;
-    }
-
-    /**
-     * Sets the value of the clipPathUnits property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setClipPathUnits(String value) {
-        this.clipPathUnits = value;
-    }
-
-    /**
-     * Gets the value of the descOrTitleOrMetadataOrAnimateOrSetOrAnimateMotionOrAnimateColorOrAnimateTransformOrUseOrPathOrRectOrCircleOrLineOrEllipseOrPolylineOrPolygonOrText property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadataOrAnimateOrSetOrAnimateMotionOrAnimateColorOrAnimateTransformOrUseOrPathOrRectOrCircleOrLineOrEllipseOrPolylineOrPolygonOrText property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDescOrTitleOrMetadataOrAnimateOrSetOrAnimateMotionOrAnimateColorOrAnimateTransformOrUseOrPathOrRectOrCircleOrLineOrEllipseOrPolylineOrPolygonOrText().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
-     * {@link Animate }
-     * {@link Set }
-     * {@link AnimateMotion }
-     * {@link AnimateColor }
-     * {@link AnimateTransform }
-     * {@link Use }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
-     * {@link SvgText }
-     *
-     *
-     */
-    public List<Object> getDescOrTitleOrMetadataOrAnimateOrSetOrAnimateMotionOrAnimateColorOrAnimateTransformOrUseOrSvgPathOrSvgRectangleOrSvgCircleOrSvgLineOrSvgEllipseOrSvgPolylineOrSvgPolygonOrSvgText() {
-        if (contents == null) {
-            contents = new ArrayList<>();
-        }
-        return this.contents;
+    @Override
+    public String toString() {
+        ToStringHelper builder = MoreObjects.toStringHelper(this).omitNullValues();
+        builder.add("id", id);
+        builder.add("xmlBase", xmlBase);
+        builder.add("xmlLang", xmlLang);
+        builder.add("xmlSpace", xmlSpace);
+        builder.add("value", value);
+        return builder.toString();
     }
 
 }

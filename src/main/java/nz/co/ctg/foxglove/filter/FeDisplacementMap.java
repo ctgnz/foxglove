@@ -22,8 +22,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.Set;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgSet;
 
 
 /**
@@ -263,8 +263,8 @@ public class FeDisplacementMap {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String yChannelSelector;
     @XmlElements({
-        @XmlElement(name = "animate", type = Animate.class),
-        @XmlElement(name = "set", type = Set.class)
+        @XmlElement(name = "animate", type = SvgAnimate.class),
+        @XmlElement(name = "set", type = SvgSet.class)
     })
     protected List<Object> animateOrSet;
 
@@ -2094,8 +2094,8 @@ public class FeDisplacementMap {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Animate }
-     * {@link Set }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
      * 
      * 
      */

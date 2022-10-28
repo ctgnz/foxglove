@@ -23,11 +23,11 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.Set;
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 
 
 /**
@@ -284,11 +284,11 @@ public class Filter {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String primitiveUnits;
     @XmlElements({
-        @XmlElement(name = "desc", type = Desc.class),
-        @XmlElement(name = "title", type = Title.class),
-        @XmlElement(name = "metadata", type = Metadata.class),
-        @XmlElement(name = "animate", type = Animate.class),
-        @XmlElement(name = "set", type = Set.class),
+        @XmlElement(name = "desc", type = SvgDescription.class),
+        @XmlElement(name = "title", type = SvgTitle.class),
+        @XmlElement(name = "metadata", type = SvgMetadata.class),
+        @XmlElement(name = "animate", type = SvgAnimate.class),
+        @XmlElement(name = "set", type = SvgSet.class),
         @XmlElement(name = "feBlend", type = FeBlend.class),
         @XmlElement(name = "feColorMatrix", type = FeColorMatrix.class),
         @XmlElement(name = "feComponentTransfer", type = FeComponentTransfer.class),
@@ -2286,11 +2286,11 @@ public class Filter {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
-     * {@link Animate }
-     * {@link Set }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
      * {@link FeBlend }
      * {@link FeColorMatrix }
      * {@link FeComponentTransfer }

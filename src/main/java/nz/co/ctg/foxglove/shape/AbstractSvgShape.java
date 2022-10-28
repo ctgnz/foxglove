@@ -27,14 +27,14 @@ import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.ISvgTransformable;
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.AnimateColor;
-import nz.co.ctg.foxglove.animate.AnimateMotion;
-import nz.co.ctg.foxglove.animate.AnimateTransform;
-import nz.co.ctg.foxglove.animate.Set;
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.parser.SvgTransformListHandler;
 
 import javafx.scene.shape.Shape;
@@ -118,14 +118,14 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
     /* Content */
 
     @XmlElements({
-        @XmlElement(name = "desc", type = Desc.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "title", type = Title.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "metadata", type = Metadata.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animate", type = Animate.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "set", type = Set.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animateMotion", type = AnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animateColor", type = AnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animateTransform", type = AnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimate.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSet.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<Object> content;
 
@@ -540,14 +540,14 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
-     * {@link Animate }
-     * {@link Set }
-     * {@link AnimateMotion }
-     * {@link AnimateColor }
-     * {@link AnimateTransform }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
+     * {@link SvgAnimateMotion }
+     * {@link SvgAnimateColor }
+     * {@link SvgAnimateTransform }
      *
      *
      */

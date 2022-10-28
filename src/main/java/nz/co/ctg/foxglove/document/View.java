@@ -23,9 +23,9 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 
 
 /**
@@ -66,9 +66,9 @@ public class View {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String viewTarget;
     @XmlElements({
-        @XmlElement(name = "desc", type = Desc.class),
-        @XmlElement(name = "title", type = Title.class),
-        @XmlElement(name = "metadata", type = Metadata.class)
+        @XmlElement(name = "desc", type = SvgDescription.class),
+        @XmlElement(name = "title", type = SvgTitle.class),
+        @XmlElement(name = "metadata", type = SvgMetadata.class)
     })
     protected List<Object> descOrTitleOrMetadata;
 
@@ -314,9 +314,9 @@ public class View {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
      *
      *
      */

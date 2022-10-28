@@ -6,7 +6,7 @@
 //
 
 
-package nz.co.ctg.foxglove.document;
+package nz.co.ctg.foxglove.paint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +16,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -33,239 +33,61 @@ import nz.co.ctg.foxglove.description.SvgTitle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "descOrTitleOrMetadata"
+    "content"
 })
-@XmlRootElement(name = "cursor")
-public class Cursor {
+@XmlRootElement(name = "color-profile")
+public class SvgColorProfile extends AbstractSvgElement {
 
-    @XmlAttribute(name = "id")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    protected String id;
-    @XmlAttribute(name = "xml:base")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlBase;
-    @XmlAttribute(name = "xml:lang")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlLang;
-    @XmlAttribute(name = "xml:space")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlSpace;
-    @XmlAttribute(name = "requiredFeatures")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
-    @XmlAttribute(name = "requiredExtensions")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
-    @XmlAttribute(name = "systemLanguage")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
+
     @XmlAttribute(name = "xlink:type")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkType;
-    @XmlAttribute(name = "xlink:href", required = true)
+
+    @XmlAttribute(name = "xlink:href")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkHref;
+
     @XmlAttribute(name = "xlink:role")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkRole;
+
     @XmlAttribute(name = "xlink:arcrole")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkArcrole;
+
     @XmlAttribute(name = "xlink:title")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkTitle;
+
     @XmlAttribute(name = "xlink:show")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkShow;
+
     @XmlAttribute(name = "xlink:actuate")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
-    @XmlAttribute(name = "x")
+
+    @XmlAttribute(name = "local")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
-    @XmlAttribute(name = "y")
+    protected String local;
+
+    @XmlAttribute(name = "name", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    protected String name;
+
+    @XmlAttribute(name = "rendering-intent")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String renderingIntent;
+
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class),
         @XmlElement(name = "title", type = SvgTitle.class),
         @XmlElement(name = "metadata", type = SvgMetadata.class)
     })
-    protected List<Object> descOrTitleOrMetadata;
-
-    /**
-     * Gets the value of the id property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
-     * Gets the value of the xmlBase property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlBase() {
-        return xmlBase;
-    }
-
-    /**
-     * Sets the value of the xmlBase property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlBase(String value) {
-        this.xmlBase = value;
-    }
-
-    /**
-     * Gets the value of the xmlLang property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlLang() {
-        return xmlLang;
-    }
-
-    /**
-     * Sets the value of the xmlLang property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlLang(String value) {
-        this.xmlLang = value;
-    }
-
-    /**
-     * Gets the value of the xmlSpace property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getXmlSpace() {
-        return xmlSpace;
-    }
-
-    /**
-     * Sets the value of the xmlSpace property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setXmlSpace(String value) {
-        this.xmlSpace = value;
-    }
-
-    /**
-     * Gets the value of the requiredFeatures property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getRequiredFeatures() {
-        return requiredFeatures;
-    }
-
-    /**
-     * Sets the value of the requiredFeatures property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setRequiredFeatures(String value) {
-        this.requiredFeatures = value;
-    }
-
-    /**
-     * Gets the value of the requiredExtensions property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getRequiredExtensions() {
-        return requiredExtensions;
-    }
-
-    /**
-     * Sets the value of the requiredExtensions property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setRequiredExtensions(String value) {
-        this.requiredExtensions = value;
-    }
-
-    /**
-     * Gets the value of the systemLanguage property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getSystemLanguage() {
-        return systemLanguage;
-    }
-
-    /**
-     * Sets the value of the systemLanguage property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setSystemLanguage(String value) {
-        this.systemLanguage = value;
-    }
+    protected List<Object> content;
 
     /**
      * Gets the value of the xmlnsXlink property.
@@ -476,90 +298,94 @@ public class Cursor {
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
+     * Gets the value of the local property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
+    public String getLocal() {
+        return local;
     }
 
     /**
-     * Sets the value of the externalResourcesRequired property.
+     * Sets the value of the local property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
+    public void setLocal(String value) {
+        this.local = value;
     }
 
     /**
-     * Gets the value of the x property.
+     * Gets the value of the name property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getX() {
-        return x;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the x property.
+     * Sets the value of the name property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setX(String value) {
-        this.x = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
-     * Gets the value of the y property.
+     * Gets the value of the renderingIntent property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getY() {
-        return y;
+    public String getRenderingIntent() {
+        if (renderingIntent == null) {
+            return "auto";
+        } else {
+            return renderingIntent;
+        }
     }
 
     /**
-     * Sets the value of the y property.
+     * Sets the value of the renderingIntent property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setY(String value) {
-        this.y = value;
+    public void setRenderingIntent(String value) {
+        this.renderingIntent = value;
     }
 
     /**
-     * Gets the value of the descOrTitleOrMetadata property.
+     * Gets the value of the content property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadata property.
+     * This is why there is not a <CODE>set</CODE> method for the content property.
      *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDescOrTitleOrMetadata().add(newItem);
+     *    getcontent().add(newItem);
      * </pre>
      *
      *
@@ -571,11 +397,11 @@ public class Cursor {
      *
      *
      */
-    public List<Object> getDescOrTitleOrMetadata() {
-        if (descOrTitleOrMetadata == null) {
-            descOrTitleOrMetadata = new ArrayList<>();
+    public List<Object> getContent() {
+        if (content == null) {
+            content = new ArrayList<Object>();
         }
-        return this.descOrTitleOrMetadata;
+        return this.content;
     }
 
 }

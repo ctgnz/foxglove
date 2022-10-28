@@ -23,16 +23,16 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.AnimateColor;
-import nz.co.ctg.foxglove.animate.AnimateMotion;
-import nz.co.ctg.foxglove.animate.AnimateTransform;
-import nz.co.ctg.foxglove.animate.Set;
-import nz.co.ctg.foxglove.clip.ClipPath;
-import nz.co.ctg.foxglove.clip.Mask;
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.clip.SvgClipPath;
+import nz.co.ctg.foxglove.clip.SvgMask;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.document.Anchor;
 import nz.co.ctg.foxglove.document.Cursor;
 import nz.co.ctg.foxglove.document.Defs;
@@ -46,10 +46,10 @@ import nz.co.ctg.foxglove.document.Symbol;
 import nz.co.ctg.foxglove.document.Use;
 import nz.co.ctg.foxglove.document.View;
 import nz.co.ctg.foxglove.filter.Filter;
-import nz.co.ctg.foxglove.paint.ColorProfile;
-import nz.co.ctg.foxglove.paint.LinearGradient;
-import nz.co.ctg.foxglove.paint.Pattern;
-import nz.co.ctg.foxglove.paint.RadialGradient;
+import nz.co.ctg.foxglove.paint.SvgColorProfile;
+import nz.co.ctg.foxglove.paint.SvgLinearGradient;
+import nz.co.ctg.foxglove.paint.SvgPattern;
+import nz.co.ctg.foxglove.paint.SvgRadialGradient;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -373,14 +373,14 @@ public class SvgGraphic implements ISvgEventListener {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String contentStyleType;
     @XmlElements({
-        @XmlElement(name = "desc", type = Desc.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "title", type = Title.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "metadata", type = Metadata.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animate", type = Animate.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "set", type = Set.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animateMotion", type = AnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animateColor", type = AnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "animateTransform", type = AnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimate.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSet.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "svg", type = SvgGraphic.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "g", type = SvgGroup.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "defs", type = Defs.class, namespace = "http://www.w3.org/2000/svg"),
@@ -399,12 +399,12 @@ public class SvgGraphic implements ISvgEventListener {
         @XmlElement(name = "text", type = SvgText.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "altGlyphDef", type = AltGlyphDef.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "marker", type = Marker.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "color-profile", type = ColorProfile.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "linearGradient", type = LinearGradient.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "radialGradient", type = RadialGradient.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "pattern", type = Pattern.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "clipPath", type = ClipPath.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "mask", type = Mask.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "color-profile", type = SvgColorProfile.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "linearGradient", type = SvgLinearGradient.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "radialGradient", type = SvgRadialGradient.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "pattern", type = SvgPattern.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "clipPath", type = SvgClipPath.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "mask", type = SvgMask.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "filter", type = Filter.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "cursor", type = Cursor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "a", type = Anchor.class, namespace = "http://www.w3.org/2000/svg"),
@@ -2834,14 +2834,14 @@ public class SvgGraphic implements ISvgEventListener {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
-     * {@link Animate }
-     * {@link Set }
-     * {@link AnimateMotion }
-     * {@link AnimateColor }
-     * {@link AnimateTransform }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
+     * {@link SvgAnimateMotion }
+     * {@link SvgAnimateColor }
+     * {@link SvgAnimateTransform }
      * {@link SvgGraphic }
      * {@link SvgGroup }
      * {@link Defs }
@@ -2860,12 +2860,12 @@ public class SvgGraphic implements ISvgEventListener {
      * {@link SvgText }
      * {@link AltGlyphDef }
      * {@link Marker }
-     * {@link ColorProfile }
-     * {@link LinearGradient }
-     * {@link RadialGradient }
-     * {@link Pattern }
-     * {@link ClipPath }
-     * {@link Mask }
+     * {@link SvgColorProfile }
+     * {@link SvgLinearGradient }
+     * {@link SvgRadialGradient }
+     * {@link SvgPattern }
+     * {@link SvgClipPath }
+     * {@link SvgMask }
      * {@link Filter }
      * {@link Cursor }
      * {@link Anchor }

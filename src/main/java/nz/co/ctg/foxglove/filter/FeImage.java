@@ -23,9 +23,9 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.AnimateTransform;
-import nz.co.ctg.foxglove.animate.Set;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSet;
 
 
 /**
@@ -279,9 +279,9 @@ public class FeImage {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String preserveAspectRatio;
     @XmlElements({
-        @XmlElement(name = "animate", type = Animate.class),
-        @XmlElement(name = "set", type = Set.class),
-        @XmlElement(name = "animateTransform", type = AnimateTransform.class)
+        @XmlElement(name = "animate", type = SvgAnimate.class),
+        @XmlElement(name = "set", type = SvgSet.class),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class)
     })
     protected List<Object> animateOrSetOrAnimateTransform;
 
@@ -2243,9 +2243,9 @@ public class FeImage {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Animate }
-     * {@link Set }
-     * {@link AnimateTransform }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
+     * {@link SvgAnimateTransform }
      *
      *
      */

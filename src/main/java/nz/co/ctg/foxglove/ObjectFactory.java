@@ -10,17 +10,18 @@ package nz.co.ctg.foxglove;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.AnimateColor;
-import nz.co.ctg.foxglove.animate.AnimateMotion;
-import nz.co.ctg.foxglove.animate.AnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgMotionPath;
-import nz.co.ctg.foxglove.animate.Set;
-import nz.co.ctg.foxglove.clip.ClipPath;
-import nz.co.ctg.foxglove.clip.Mask;
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.clip.SvgClipElement;
+import nz.co.ctg.foxglove.clip.SvgClipPath;
+import nz.co.ctg.foxglove.clip.SvgMask;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.document.Anchor;
 import nz.co.ctg.foxglove.document.Cursor;
 import nz.co.ctg.foxglove.document.Defs;
@@ -58,11 +59,11 @@ import nz.co.ctg.foxglove.filter.FeSpotLight;
 import nz.co.ctg.foxglove.filter.FeTile;
 import nz.co.ctg.foxglove.filter.FeTurbulence;
 import nz.co.ctg.foxglove.filter.Filter;
-import nz.co.ctg.foxglove.paint.ColorProfile;
-import nz.co.ctg.foxglove.paint.LinearGradient;
-import nz.co.ctg.foxglove.paint.Pattern;
-import nz.co.ctg.foxglove.paint.RadialGradient;
-import nz.co.ctg.foxglove.paint.Stop;
+import nz.co.ctg.foxglove.paint.SvgColorProfile;
+import nz.co.ctg.foxglove.paint.SvgLinearGradient;
+import nz.co.ctg.foxglove.paint.SvgPattern;
+import nz.co.ctg.foxglove.paint.SvgRadialGradient;
+import nz.co.ctg.foxglove.paint.SvgStop;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -125,67 +126,67 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Desc }
+     * Create an instance of {@link SvgDescription }
      * 
      */
-    public Desc createDesc() {
-        return new Desc();
+    public SvgDescription createDesc() {
+        return new SvgDescription();
     }
 
     /**
-     * Create an instance of {@link Title }
+     * Create an instance of {@link SvgTitle }
      * 
      */
-    public Title createTitle() {
-        return new Title();
+    public SvgTitle createTitle() {
+        return new SvgTitle();
     }
 
     /**
-     * Create an instance of {@link Metadata }
+     * Create an instance of {@link SvgMetadata }
      * 
      */
-    public Metadata createMetadata() {
-        return new Metadata();
+    public SvgMetadata createMetadata() {
+        return new SvgMetadata();
     }
 
     /**
-     * Create an instance of {@link Animate }
+     * Create an instance of {@link SvgAnimate }
      * 
      */
-    public Animate createAnimate() {
-        return new Animate();
+    public SvgAnimate createAnimate() {
+        return new SvgAnimate();
     }
 
     /**
-     * Create an instance of {@link Set }
+     * Create an instance of {@link SvgSet }
      * 
      */
-    public Set createSet() {
-        return new Set();
+    public SvgSet createSet() {
+        return new SvgSet();
     }
 
     /**
-     * Create an instance of {@link AnimateMotion }
+     * Create an instance of {@link SvgAnimateMotion }
      * 
      */
-    public AnimateMotion createAnimateMotion() {
-        return new AnimateMotion();
+    public SvgAnimateMotion createAnimateMotion() {
+        return new SvgAnimateMotion();
     }
 
     /**
-     * Create an instance of {@link AnimateColor }
+     * Create an instance of {@link SvgAnimateColor }
      * 
      */
-    public AnimateColor createAnimateColor() {
-        return new AnimateColor();
+    public SvgAnimateColor createAnimateColor() {
+        return new SvgAnimateColor();
     }
 
     /**
-     * Create an instance of {@link AnimateTransform }
+     * Create an instance of {@link SvgAnimateTransform }
      * 
      */
-    public AnimateTransform createAnimateTransform() {
-        return new AnimateTransform();
+    public SvgAnimateTransform createAnimateTransform() {
+        return new SvgAnimateTransform();
     }
 
     /**
@@ -325,51 +326,51 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ColorProfile }
+     * Create an instance of {@link SvgColorProfile }
      * 
      */
-    public ColorProfile createColorProfile() {
-        return new ColorProfile();
+    public SvgColorProfile createColorProfile() {
+        return new SvgColorProfile();
     }
 
     /**
-     * Create an instance of {@link LinearGradient }
+     * Create an instance of {@link SvgLinearGradient }
      * 
      */
-    public LinearGradient createLinearGradient() {
-        return new LinearGradient();
+    public SvgLinearGradient createLinearGradient() {
+        return new SvgLinearGradient();
     }
 
     /**
-     * Create an instance of {@link RadialGradient }
+     * Create an instance of {@link SvgRadialGradient }
      * 
      */
-    public RadialGradient createRadialGradient() {
-        return new RadialGradient();
+    public SvgRadialGradient createRadialGradient() {
+        return new SvgRadialGradient();
     }
 
     /**
-     * Create an instance of {@link Pattern }
+     * Create an instance of {@link SvgPattern }
      * 
      */
-    public Pattern createPattern() {
-        return new Pattern();
+    public SvgPattern createPattern() {
+        return new SvgPattern();
     }
 
     /**
-     * Create an instance of {@link ClipPath }
+     * Create an instance of {@link SvgClipPath }
      * 
      */
-    public ClipPath createClipPath() {
-        return new ClipPath();
+    public SvgClipElement createClipPath() {
+        return new SvgClipPath();
     }
 
     /**
-     * Create an instance of {@link Mask }
+     * Create an instance of {@link SvgMask }
      * 
      */
-    public Mask createMask() {
-        return new Mask();
+    public SvgMask createMask() {
+        return new SvgMask();
     }
 
     /**
@@ -533,11 +534,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Stop }
+     * Create an instance of {@link SvgStop }
      * 
      */
-    public Stop createStop() {
-        return new Stop();
+    public SvgStop createStop() {
+        return new SvgStop();
     }
 
     /**

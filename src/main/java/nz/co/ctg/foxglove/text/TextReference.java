@@ -24,12 +24,12 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.AnimateColor;
-import nz.co.ctg.foxglove.animate.Set;
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 
 
 /**
@@ -325,12 +325,12 @@ public class TextReference implements ISvgEventListener {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String lengthAdjust;
     @XmlElements({
-        @XmlElement(name = "animate", type = Animate.class),
-        @XmlElement(name = "set", type = Set.class),
-        @XmlElement(name = "animateColor", type = AnimateColor.class),
-        @XmlElement(name = "desc", type = Desc.class),
-        @XmlElement(name = "title", type = Title.class),
-        @XmlElement(name = "metadata", type = Metadata.class)
+        @XmlElement(name = "animate", type = SvgAnimate.class),
+        @XmlElement(name = "set", type = SvgSet.class),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class),
+        @XmlElement(name = "desc", type = SvgDescription.class),
+        @XmlElement(name = "title", type = SvgTitle.class),
+        @XmlElement(name = "metadata", type = SvgMetadata.class)
     })
     protected List<Object> animateOrSetOrAnimateColorOrDescOrTitleOrMetadata;
 
@@ -2644,12 +2644,12 @@ public class TextReference implements ISvgEventListener {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Animate }
-     * {@link Set }
-     * {@link AnimateColor }
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
+     * {@link SvgAnimateColor }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
      *
      *
      */

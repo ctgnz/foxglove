@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.AnimateColor;
-import nz.co.ctg.foxglove.animate.Set;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgSet;
 
 
 /**
@@ -249,9 +249,9 @@ public class FeFlood {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String result;
     @XmlElements({
-        @XmlElement(name = "animate", type = Animate.class),
-        @XmlElement(name = "set", type = Set.class),
-        @XmlElement(name = "animateColor", type = AnimateColor.class)
+        @XmlElement(name = "animate", type = SvgAnimate.class),
+        @XmlElement(name = "set", type = SvgSet.class),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class)
     })
     protected List<Object> animateOrSetOrAnimateColor;
 
@@ -1953,9 +1953,9 @@ public class FeFlood {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Animate }
-     * {@link Set }
-     * {@link AnimateColor }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
+     * {@link SvgAnimateColor }
      * 
      * 
      */

@@ -24,14 +24,14 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.animate.Animate;
-import nz.co.ctg.foxglove.animate.AnimateColor;
-import nz.co.ctg.foxglove.animate.AnimateMotion;
-import nz.co.ctg.foxglove.animate.AnimateTransform;
-import nz.co.ctg.foxglove.animate.Set;
-import nz.co.ctg.foxglove.description.Desc;
-import nz.co.ctg.foxglove.description.Metadata;
-import nz.co.ctg.foxglove.description.Title;
+import nz.co.ctg.foxglove.animate.SvgAnimate;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSet;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
 
 
 /**
@@ -321,14 +321,14 @@ public class Use implements ISvgEventListener {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String transform;
     @XmlElements({
-        @XmlElement(name = "desc", type = Desc.class),
-        @XmlElement(name = "title", type = Title.class),
-        @XmlElement(name = "metadata", type = Metadata.class),
-        @XmlElement(name = "animate", type = Animate.class),
-        @XmlElement(name = "set", type = Set.class),
-        @XmlElement(name = "animateMotion", type = AnimateMotion.class),
-        @XmlElement(name = "animateColor", type = AnimateColor.class),
-        @XmlElement(name = "animateTransform", type = AnimateTransform.class)
+        @XmlElement(name = "desc", type = SvgDescription.class),
+        @XmlElement(name = "title", type = SvgTitle.class),
+        @XmlElement(name = "metadata", type = SvgMetadata.class),
+        @XmlElement(name = "animate", type = SvgAnimate.class),
+        @XmlElement(name = "set", type = SvgSet.class),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class)
     })
     protected List<Object> descOrTitleOrMetadataOrAnimateOrSetOrAnimateMotionOrAnimateColorOrAnimateTransform;
 
@@ -2594,14 +2594,14 @@ public class Use implements ISvgEventListener {
      *
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Desc }
-     * {@link Title }
-     * {@link Metadata }
-     * {@link Animate }
-     * {@link Set }
-     * {@link AnimateMotion }
-     * {@link AnimateColor }
-     * {@link AnimateTransform }
+     * {@link SvgDescription }
+     * {@link SvgTitle }
+     * {@link SvgMetadata }
+     * {@link SvgAnimate }
+     * {@link SvgSet }
+     * {@link SvgAnimateMotion }
+     * {@link SvgAnimateColor }
+     * {@link SvgAnimateTransform }
      *
      *
      */
