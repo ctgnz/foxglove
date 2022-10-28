@@ -27,7 +27,7 @@ import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgAnchor;
 import nz.co.ctg.foxglove.element.SvgCursor;
-import nz.co.ctg.foxglove.element.SvgDefs;
+import nz.co.ctg.foxglove.element.SvgDefinitions;
 import nz.co.ctg.foxglove.element.SvgForeignObject;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.element.SvgImage;
@@ -64,7 +64,7 @@ import nz.co.ctg.foxglove.text.SvgText;
     "content"
 })
 @XmlRootElement(name = "mask")
-public class SvgMask extends SvgClipElement {
+public class SvgMask extends AbstractSvgClipElement implements ISvgClipElement {
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -101,7 +101,7 @@ public class SvgMask extends SvgClipElement {
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class),
         @XmlElement(name = "svg", type = SvgGraphic.class),
         @XmlElement(name = "g", type = SvgGroup.class),
-        @XmlElement(name = "defs", type = SvgDefs.class),
+        @XmlElement(name = "defs", type = SvgDefinitions.class),
         @XmlElement(name = "symbol", type = SvgSymbol.class),
         @XmlElement(name = "use", type = SvgUse.class),
         @XmlElement(name = "switch", type = SvgSwitch.class),
@@ -306,7 +306,7 @@ public class SvgMask extends SvgClipElement {
      * {@link SvgAnimateTransform }
      * {@link SvgGraphic }
      * {@link SvgGroup }
-     * {@link SvgDefs }
+     * {@link SvgDefinitions }
      * {@link SvgSymbol }
      * {@link SvgUse }
      * {@link SvgSwitch }

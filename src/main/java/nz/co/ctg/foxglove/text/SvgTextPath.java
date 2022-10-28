@@ -19,6 +19,7 @@ import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgStylable;
+import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.parser.DoubleListAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
@@ -37,7 +38,7 @@ import javafx.scene.shape.StrokeLineJoin;
     "value"
 })
 @XmlRootElement(name = "textPath")
-public class SvgTextPath implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgLinkable {
+public class SvgTextPath implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgLinkable, ISvgValueElement {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -2813,6 +2814,7 @@ public class SvgTextPath implements ISvgElement, ISvgEventListener, ISvgStylable
      *     {@link String }
      *
      */
+    @Override
     public String getValue() {
         return value;
     }
@@ -2825,6 +2827,7 @@ public class SvgTextPath implements ISvgElement, ISvgEventListener, ISvgStylable
      *     {@link String }
      *
      */
+    @Override
     public void setValue(String value) {
         this.value = value;
     }

@@ -18,6 +18,8 @@ import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgStylable;
+import nz.co.ctg.foxglove.ISvgTransformable;
+import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.parser.DoubleListAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
@@ -36,7 +38,7 @@ import javafx.scene.shape.StrokeLineJoin;
     "value"
 })
 @XmlRootElement(name = "text")
-public class SvgText implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures {
+public class SvgText implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable, ISvgValueElement {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -2616,6 +2618,7 @@ public class SvgText implements ISvgElement, ISvgEventListener, ISvgStylable, IS
      *     {@link String }
      *
      */
+    @Override
     public String getTransform() {
         return transform;
     }
@@ -2628,6 +2631,7 @@ public class SvgText implements ISvgElement, ISvgEventListener, ISvgStylable, IS
      *     {@link String }
      *
      */
+    @Override
     public void setTransform(String value) {
         this.transform = value;
     }
@@ -2640,6 +2644,7 @@ public class SvgText implements ISvgElement, ISvgEventListener, ISvgStylable, IS
      *     {@link String }
      *
      */
+    @Override
     public String getValue() {
         return value;
     }
@@ -2652,6 +2657,7 @@ public class SvgText implements ISvgElement, ISvgEventListener, ISvgStylable, IS
      *     {@link String }
      *
      */
+    @Override
     public void setValue(String value) {
         this.value = value;
     }

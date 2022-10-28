@@ -20,6 +20,7 @@ import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
+import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.parser.DoubleListAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
@@ -30,7 +31,6 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.transform.Transform;
 
 
 /**
@@ -41,7 +41,7 @@ import javafx.scene.transform.Transform;
     "value"
 })
 @XmlRootElement(name = "a")
-public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable {
+public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable, ISvgValueElement {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -2749,12 +2749,6 @@ public class SvgAnchor implements ISvgElement, ISvgEventListener, ISvgStylable, 
      */
     public void setValue(String value) {
         this.value = value;
-    }
-
-    @Override
-    public List<Transform> getTransformList() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override

@@ -5,10 +5,8 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
-import nz.co.ctg.foxglove.ISvgExternalResources;
 
-public abstract class SvgClipElement extends AbstractSvgStylable implements ISvgConditionalFeatures, ISvgExternalResources {
+public abstract class AbstractSvgClipElement extends AbstractSvgStylable implements ISvgClipElement {
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

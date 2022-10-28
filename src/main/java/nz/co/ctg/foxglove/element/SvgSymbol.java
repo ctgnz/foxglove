@@ -118,7 +118,7 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgEventListener,
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class),
         @XmlElement(name = "svg", type = SvgGraphic.class),
         @XmlElement(name = "g", type = SvgGroup.class),
-        @XmlElement(name = "defs", type = SvgDefs.class),
+        @XmlElement(name = "defs", type = SvgDefinitions.class),
         @XmlElement(name = "symbol", type = SvgSymbol.class),
         @XmlElement(name = "use", type = SvgUse.class),
         @XmlElement(name = "switch", type = SvgSwitch.class),
@@ -517,7 +517,7 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgEventListener,
      * {@link SvgAnimateTransform }
      * {@link SvgGraphic }
      * {@link SvgGroup }
-     * {@link SvgDefs }
+     * {@link SvgDefinitions }
      * {@link SvgSymbol }
      * {@link SvgUse }
      * {@link SvgSwitch }

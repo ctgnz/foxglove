@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -43,7 +44,7 @@ import nz.co.ctg.foxglove.text.SvgText;
     "content"
 })
 @XmlRootElement(name = "clipPath")
-public class SvgClipPath extends SvgClipElement {
+public class SvgClipPath extends AbstractSvgClipElement implements ISvgClipElement, ISvgTransformable {
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -82,6 +83,7 @@ public class SvgClipPath extends SvgClipElement {
      *     {@link String }
      *
      */
+    @Override
     public String getTransform() {
         return transform;
     }
@@ -94,6 +96,7 @@ public class SvgClipPath extends SvgClipElement {
      *     {@link String }
      *
      */
+    @Override
     public void setTransform(String value) {
         this.transform = value;
     }

@@ -36,7 +36,6 @@ import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
 import nz.co.ctg.foxglove.paint.SvgRadialGradient;
-import nz.co.ctg.foxglove.parser.SvgTransformListHandler;
 import nz.co.ctg.foxglove.shape.ISvgShape;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
@@ -52,7 +51,6 @@ import nz.co.ctg.foxglove.text.SvgFontFace;
 import nz.co.ctg.foxglove.text.SvgText;
 
 import javafx.scene.Group;
-import javafx.scene.transform.Transform;
 
 
 /**
@@ -135,7 +133,7 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgEventListener, 
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "svg", type = SvgGraphic.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "g", type = SvgGroup.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "defs", type = SvgDefs.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "defs", type = SvgDefinitions.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "symbol", type = SvgSymbol.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "use", type = SvgUse.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "switch", type = SvgSwitch.class, namespace = "http://www.w3.org/2000/svg"),
@@ -586,7 +584,7 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgEventListener, 
      * {@link SvgAnimateTransform }
      * {@link SvgGraphic }
      * {@link SvgGroup }
-     * {@link SvgDefs }
+     * {@link SvgDefinitions }
      * {@link SvgSymbol }
      * {@link SvgUse }
      * {@link SvgSwitch }
@@ -624,11 +622,6 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgEventListener, 
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    @Override
-    public List<Transform> getTransformList() {
-        return new SvgTransformListHandler().parse(transform);
     }
 
     public Group createGroup() {

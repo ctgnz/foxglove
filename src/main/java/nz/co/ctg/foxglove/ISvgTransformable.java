@@ -12,7 +12,10 @@
 
 package nz.co.ctg.foxglove;
 
+import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nz.co.ctg.foxglove.parser.SvgTransformListHandler;
 
@@ -25,6 +28,9 @@ public interface ISvgTransformable {
     void setTransform(String value);
 
     default List<Transform> getTransformList() {
+        if (StringUtils.isBlank(getTransform())) {
+            return Collections.emptyList();
+        }
         return new SvgTransformListHandler().parse(getTransform());
     }
 

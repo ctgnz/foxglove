@@ -18,6 +18,7 @@ import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgStylable;
+import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.parser.DoubleListAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineJoinAdapter;
@@ -36,7 +37,7 @@ import javafx.scene.shape.StrokeLineJoin;
     "value"
 })
 @XmlRootElement(name = "tspan")
-public class SvgTextSpan implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures {
+public class SvgTextSpan implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgValueElement {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -2612,6 +2613,7 @@ public class SvgTextSpan implements ISvgElement, ISvgEventListener, ISvgStylable
      *     {@link String }
      *
      */
+    @Override
     public String getValue() {
         return value;
     }
@@ -2624,6 +2626,7 @@ public class SvgTextSpan implements ISvgElement, ISvgEventListener, ISvgStylable
      *     {@link String }
      *
      */
+    @Override
     public void setValue(String value) {
         this.value = value;
     }

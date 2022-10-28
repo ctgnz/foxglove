@@ -56,6 +56,7 @@ public class SvgMetadata implements ISvgDescriptiveElement {
      *     {@link String }
      *
      */
+    @Override
     public String getValue() {
         return value;
     }
@@ -68,6 +69,7 @@ public class SvgMetadata implements ISvgDescriptiveElement {
      *     {@link String }
      *
      */
+    @Override
     public void setValue(String value) {
         this.value = value;
     }

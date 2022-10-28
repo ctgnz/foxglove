@@ -26,7 +26,7 @@ import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgAnchor;
 import nz.co.ctg.foxglove.element.SvgCursor;
-import nz.co.ctg.foxglove.element.SvgDefs;
+import nz.co.ctg.foxglove.element.SvgDefinitions;
 import nz.co.ctg.foxglove.element.SvgForeignObject;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.element.SvgImage;
@@ -211,7 +211,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "svg", type = SvgGraphic.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "g", type = SvgGroup.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElement(name = "defs", type = SvgDefs.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "defs", type = SvgDefinitions.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "symbol", type = SvgSymbol.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "use", type = SvgUse.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "switch", type = SvgSwitch.class, namespace = "http://www.w3.org/2000/svg"),
@@ -1120,7 +1120,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
      * {@link SvgAnimateTransform }
      * {@link SvgGraphic }
      * {@link SvgGroup }
-     * {@link SvgDefs }
+     * {@link SvgDefinitions }
      * {@link SvgSymbol }
      * {@link SvgUse }
      * {@link SvgSwitch }

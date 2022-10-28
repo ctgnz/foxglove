@@ -1,7 +1,6 @@
 package nz.co.ctg.foxglove.shape;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,7 +12,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 
@@ -34,7 +32,6 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.parser.SvgTransformListHandler;
 
 import javafx.scene.shape.Shape;
 import javafx.scene.transform.Transform;
@@ -573,14 +570,6 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
     public CSSValue getPresentationAttribute(String name) {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public List<Transform> getTransformList() {
-        if (StringUtils.isBlank(transform)) {
-            return Collections.emptyList();
-        }
-        return new SvgTransformListHandler().parse(transform);
     }
 
     @Override

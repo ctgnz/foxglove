@@ -9,7 +9,7 @@ import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgMotionPath;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
-import nz.co.ctg.foxglove.clip.SvgClipElement;
+import nz.co.ctg.foxglove.clip.AbstractSvgClipElement;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
@@ -17,7 +17,7 @@ import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgAnchor;
 import nz.co.ctg.foxglove.element.SvgCursor;
-import nz.co.ctg.foxglove.element.SvgDefs;
+import nz.co.ctg.foxglove.element.SvgDefinitions;
 import nz.co.ctg.foxglove.element.SvgForeignObject;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.element.SvgImage;
@@ -201,11 +201,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SvgDefs }
+     * Create an instance of {@link SvgDefinitions }
      *
      */
-    public SvgDefs createDefs() {
-        return new SvgDefs();
+    public SvgDefinitions createDefs() {
+        return new SvgDefinitions();
     }
 
     /**
@@ -356,7 +356,7 @@ public class ObjectFactory {
      * Create an instance of {@link SvgClipPath }
      *
      */
-    public SvgClipElement createClipPath() {
+    public AbstractSvgClipElement createClipPath() {
         return new SvgClipPath();
     }
 

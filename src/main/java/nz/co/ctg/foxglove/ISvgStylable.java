@@ -21,7 +21,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
-public interface ISvgStylable {
+public interface ISvgStylable extends ISvgElement {
     default CSSStyleDeclaration getStyleDeclaration() {
         return null;
     }

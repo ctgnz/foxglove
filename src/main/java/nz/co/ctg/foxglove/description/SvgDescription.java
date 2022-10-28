@@ -306,6 +306,7 @@ public class SvgDescription implements ISvgDescriptiveElement, ISvgStylable {
      *     {@link String }
      *
      */
+    @Override
     public String getValue() {
         return value;
     }
@@ -318,6 +319,7 @@ public class SvgDescription implements ISvgDescriptiveElement, ISvgStylable {
      *     {@link String }
      *
      */
+    @Override
     public void setValue(String value) {
         this.value = value;
     }
