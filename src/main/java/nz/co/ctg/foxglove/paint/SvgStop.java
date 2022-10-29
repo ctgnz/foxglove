@@ -10,6 +10,7 @@ import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -41,7 +42,7 @@ public class SvgStop extends AbstractSvgStylable implements ISvgStylable {
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> content;
+    protected List<ISvgDescriptiveElement> content;
 
     /**
      * Gets the value of the offset property.
@@ -91,9 +92,9 @@ public class SvgStop extends AbstractSvgStylable implements ISvgStylable {
      *
      *
      */
-    public List<Object> getContent() {
+    public List<ISvgDescriptiveElement> getContent() {
         if (content == null) {
-            content = new ArrayList<Object>();
+            content = new ArrayList<>();
         }
         return this.content;
     }

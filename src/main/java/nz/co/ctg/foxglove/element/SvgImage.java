@@ -5,6 +5,7 @@ import java.util.List;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
+import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
@@ -160,7 +161,7 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> content;
+    protected List<ISvgElement> content;
 
     /**
      * Gets the value of the requiredFeatures property.
@@ -913,7 +914,7 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
      *
      *
      */
-    public List<Object> getContent() {
+    public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
         }

@@ -3,6 +3,13 @@ package nz.co.ctg.foxglove.animate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -13,12 +20,6 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import com.google.common.base.MoreObjects.ToStringHelper;
-
-import nz.co.ctg.foxglove.description.SvgDescription;
-import nz.co.ctg.foxglove.description.SvgMetadata;
-import nz.co.ctg.foxglove.description.SvgTitle;
 
 
 /**
@@ -80,7 +81,7 @@ public class SvgAnimateTransform extends AbstractSvgAnimationElement implements 
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> contents;
+    protected List<ISvgDescriptiveElement> contents;
 
     public String getAttributeName() {
         return attributeName;
@@ -210,7 +211,7 @@ public class SvgAnimateTransform extends AbstractSvgAnimationElement implements 
      *
      *
      */
-    public List<Object> getContents() {
+    public List<ISvgDescriptiveElement> getContents() {
         if (contents == null) {
             contents = new ArrayList<>();
         }

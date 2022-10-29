@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgElement;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -27,7 +28,7 @@ public class SvgFontFaceSrc extends AbstractSvgElement {
         @XmlElement(name = "font-face-uri", required = true, type = SvgFontFaceUri.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "font-face-name", required = true, type = SvgFontFaceName.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> content;
+    protected List<ISvgElement> content;
 
     /**
      * Gets the value of the content property.
@@ -52,9 +53,9 @@ public class SvgFontFaceSrc extends AbstractSvgElement {
      *
      *
      */
-    public List<Object> getContent() {
+    public List<ISvgElement> getContent() {
         if (content == null) {
-            content = new ArrayList<Object>();
+            content = new ArrayList<>();
         }
         return this.content;
     }

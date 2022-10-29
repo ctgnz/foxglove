@@ -8,6 +8,9 @@
 
 package nz.co.ctg.foxglove.element;
 
+import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
+
+import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgValueElement;
 
@@ -17,7 +20,6 @@ import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlID;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -31,7 +33,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "value"
 })
 @XmlRootElement(name = "script")
-public class SvgScript implements ISvgStructuralElement, ISvgLinkable, ISvgValueElement {
+public class SvgScript extends AbstractSvgElement implements ISvgStructuralElement, ISvgLinkable, ISvgValueElement {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -75,7 +77,7 @@ public class SvgScript implements ISvgStructuralElement, ISvgLinkable, ISvgValue
     @XmlAttribute(name = "type", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String type;
-    @XmlValue
+    @XmlValueExtension
     protected String value;
 
     /**

@@ -9,6 +9,7 @@ import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -75,7 +76,7 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> contents;
+    protected List<ISvgDescriptiveElement> contents;
 
     @Override
     public String getXmlnsXlink() {
@@ -207,7 +208,7 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
      *
      *
      */
-    public List<Object> getContents() {
+    public List<ISvgDescriptiveElement> getContents() {
         if (contents == null) {
             contents = new ArrayList<>();
         }

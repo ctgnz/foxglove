@@ -243,7 +243,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
         @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> content;
+    protected List<ISvgElement> content;
 
     /**
      * Gets the value of the xmlns property.
@@ -1158,7 +1158,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
      *
      *
      */
-    public List<Object> getContent() {
+    public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
         }

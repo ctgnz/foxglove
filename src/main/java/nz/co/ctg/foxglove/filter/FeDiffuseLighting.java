@@ -23,7 +23,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "feDistantLightOrFePointLightOrFeSpotLight",
+    "lightSources",
     "animateOrSetOrAnimateColor"
 })
 @XmlRootElement(name = "feDiffuseLighting")
@@ -70,7 +70,7 @@ public class FeDiffuseLighting extends AbstractSvgFilterPrimitive {
         @XmlElement(name = "fePointLight", required = true, type = FePointLight.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "feSpotLight", required = true, type = FeSpotLight.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> feDistantLightOrFePointLightOrFeSpotLight;
+    protected List<ISvgFilterLightSource> lightSources;
 
     @XmlElements({
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
@@ -319,11 +319,11 @@ public class FeDiffuseLighting extends AbstractSvgFilterPrimitive {
      *
      *
      */
-    public List<Object> getFeDistantLightOrFePointLightOrFeSpotLight() {
-        if (feDistantLightOrFePointLightOrFeSpotLight == null) {
-            feDistantLightOrFePointLightOrFeSpotLight = new ArrayList<Object>();
+    public List<ISvgFilterLightSource> getLightSources() {
+        if (lightSources == null) {
+            lightSources = new ArrayList<>();
         }
-        return this.feDistantLightOrFePointLightOrFeSpotLight;
+        return this.lightSources;
     }
 
     /**
@@ -352,7 +352,7 @@ public class FeDiffuseLighting extends AbstractSvgFilterPrimitive {
      */
     public List<Object> getAnimateOrSetOrAnimateColor() {
         if (animateOrSetOrAnimateColor == null) {
-            animateOrSetOrAnimateColor = new ArrayList<Object>();
+            animateOrSetOrAnimateColor = new ArrayList<>();
         }
         return this.animateOrSetOrAnimateColor;
     }

@@ -14,6 +14,7 @@ import java.util.List;
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -118,7 +119,7 @@ public class SvgCursor extends AbstractSvgElement implements ISvgStructuralEleme
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> content;
+    protected List<ISvgDescriptiveElement> content;
 
     /**
      * Gets the value of the id property.
@@ -624,7 +625,7 @@ public class SvgCursor extends AbstractSvgElement implements ISvgStructuralEleme
      *
      *
      */
-    public List<Object> getContent() {
+    public List<ISvgDescriptiveElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
         }

@@ -8,6 +8,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -83,7 +84,7 @@ public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, 
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> content;
+    protected List<ISvgDescriptiveElement> content;
 
     /**
      * Gets the value of the xmlnsXlink property.
@@ -409,9 +410,9 @@ public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, 
      *
      *
      */
-    public List<Object> getContent() {
+    public List<ISvgDescriptiveElement> getContent() {
         if (content == null) {
-            content = new ArrayList<Object>();
+            content = new ArrayList<>();
         }
         return this.content;
     }
