@@ -1,6 +1,9 @@
 package nz.co.ctg.foxglove.animate;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
@@ -9,17 +12,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public abstract class AbstractSvgAnimationElement extends AbstractSvgElement implements ISvgAnimationElement {
 
-    @XmlAttribute(name = "requiredFeatures")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
-
-    @XmlAttribute(name = "requiredExtensions")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
-
-    @XmlAttribute(name = "systemLanguage")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
+    @XmlPath(".")
+    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
     @XmlAttribute(name = "onbegin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -110,33 +104,8 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
     protected String to;
 
     @Override
-    public String getRequiredFeatures() {
-        return requiredFeatures;
-    }
-
-    @Override
-    public void setRequiredFeatures(String value) {
-        this.requiredFeatures = value;
-    }
-
-    @Override
-    public String getRequiredExtensions() {
-        return requiredExtensions;
-    }
-
-    @Override
-    public void setRequiredExtensions(String value) {
-        this.requiredExtensions = value;
-    }
-
-    @Override
-    public String getSystemLanguage() {
-        return systemLanguage;
-    }
-
-    @Override
-    public void setSystemLanguage(String value) {
-        this.systemLanguage = value;
+    public SvgConditionalFeatures getConditionalFeatures() {
+        return conditionalFeatures;
     }
 
     public String getOnbegin() {

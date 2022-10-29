@@ -7,6 +7,7 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
@@ -18,6 +19,7 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgUse;
+import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
@@ -48,10 +50,13 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "externalResources", "content"
 })
 @XmlRootElement(name = "clipPath")
-public class SvgClipPath extends AbstractSvgClipElement implements ISvgClipElement, ISvgTransformable {
+public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement, ISvgTransformable {
 
     @XmlPath(".")
     protected final SvgExternalResources externalResources = new SvgExternalResources();
+
+    @XmlPath(".")
+    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -188,4 +193,8 @@ public class SvgClipPath extends AbstractSvgClipElement implements ISvgClipEleme
         return externalResources;
     }
 
+    @Override
+    public SvgConditionalFeatures getConditionalFeatures() {
+        return conditionalFeatures;
+    }
 }

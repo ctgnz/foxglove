@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
@@ -18,6 +20,7 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
@@ -49,17 +52,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "switch")
 public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
 
-    @XmlAttribute(name = "requiredFeatures")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
-
-    @XmlAttribute(name = "requiredExtensions")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
-
-    @XmlAttribute(name = "systemLanguage")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
+    @XmlPath(".")
+    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -135,82 +129,9 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
     })
     protected List<ISvgElement> content;
 
-    /**
-     * Gets the value of the requiredFeatures property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
-    public String getRequiredFeatures() {
-        return requiredFeatures;
-    }
-
-    /**
-     * Sets the value of the requiredFeatures property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setRequiredFeatures(String value) {
-        this.requiredFeatures = value;
-    }
-
-    /**
-     * Gets the value of the requiredExtensions property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getRequiredExtensions() {
-        return requiredExtensions;
-    }
-
-    /**
-     * Sets the value of the requiredExtensions property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setRequiredExtensions(String value) {
-        this.requiredExtensions = value;
-    }
-
-    /**
-     * Gets the value of the systemLanguage property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getSystemLanguage() {
-        return systemLanguage;
-    }
-
-    /**
-     * Sets the value of the systemLanguage property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setSystemLanguage(String value) {
-        this.systemLanguage = value;
+    public SvgConditionalFeatures getConditionalFeatures() {
+        return conditionalFeatures;
     }
 
     /**

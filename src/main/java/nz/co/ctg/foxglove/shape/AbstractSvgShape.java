@@ -24,6 +24,7 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -45,17 +46,8 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
 
     public static final int maxLen = 10;
 
-    @XmlAttribute(name = "requiredFeatures")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String requiredFeatures;
-
-    @XmlAttribute(name = "requiredExtensions")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String requiredExtensions;
-
-    @XmlAttribute(name = "systemLanguage")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String systemLanguage;
+    @XmlPath(".")
+    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -119,82 +111,9 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
     public AbstractSvgShape() {
     }
 
-    /**
-     * Gets the value of the requiredFeatures property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
-    public String getRequiredFeatures() {
-        return requiredFeatures;
-    }
-
-    /**
-     * Sets the value of the requiredFeatures property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setRequiredFeatures(String value) {
-        this.requiredFeatures = value;
-    }
-
-    /**
-     * Gets the value of the requiredExtensions property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getRequiredExtensions() {
-        return requiredExtensions;
-    }
-
-    /**
-     * Sets the value of the requiredExtensions property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setRequiredExtensions(String value) {
-        this.requiredExtensions = value;
-    }
-
-    /**
-     * Gets the value of the systemLanguage property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getSystemLanguage() {
-        return systemLanguage;
-    }
-
-    /**
-     * Sets the value of the systemLanguage property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setSystemLanguage(String value) {
-        this.systemLanguage = value;
+    public SvgConditionalFeatures getConditionalFeatures() {
+        return conditionalFeatures;
     }
 
     /**
@@ -551,9 +470,9 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
     @Override
     protected void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
-        builder.add("requiredFeatures", requiredFeatures);
-        builder.add("requiredExtensions", requiredExtensions);
-        builder.add("systemLanguage", systemLanguage);
+        builder.add("requiredFeatures", getRequiredFeatures());
+        builder.add("requiredExtensions", getRequiredExtensions());
+        builder.add("systemLanguage", getSystemLanguage());
         builder.add("onfocusin", onFocusIn);
         builder.add("onfocusout", onFocusOut);
         builder.add("onactivate", onActivate);

@@ -12,40 +12,52 @@
 
 package nz.co.ctg.foxglove;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 
 public interface ISvgConditionalFeatures {
 
-    default List<String> getRequiredFeaturesList() {
-        return getRequiredFeatures() != null ? Arrays.stream(getRequiredFeatures().split(",")).collect(toList()) : Collections.emptyList();
+    SvgConditionalFeatures getConditionalFeatures();
+
+    default String getRequiredExtensions() {
+        return getConditionalFeatures().getRequiredExtensions();
     }
 
     default List<String> getRequiredExtensionsList() {
-        return getRequiredExtensions() != null ? Arrays.stream(getRequiredExtensions().split(",")).collect(toList()) : Collections.emptyList();
+        return getConditionalFeatures().getRequiredExtensionsList();
+    }
+
+    default String getRequiredFeatures() {
+        return getConditionalFeatures().getRequiredFeatures();
+    }
+
+    default List<String> getRequiredFeaturesList() {
+        return getConditionalFeatures().getRequiredFeaturesList();
+    }
+
+    default String getSystemLanguage() {
+        return getConditionalFeatures().getSystemLanguage();
     }
 
     default List<String> getSystemLanguageList() {
-        return getSystemLanguage() != null ? Arrays.stream(getSystemLanguage().split(",")).collect(toList()) : Collections.emptyList();
+        return getConditionalFeatures().getSystemLanguageList();
     }
 
     default boolean hasExtension(String extension) {
-        return getRequiredExtensionsList().contains(extension);
+        return getConditionalFeatures().hasExtension(extension);
     }
 
-    void setSystemLanguage(String value);
+    default void setRequiredExtensions(String value) {
+        getConditionalFeatures().setRequiredExtensions(value);
+    }
 
-    String getSystemLanguage();
+    default void setRequiredFeatures(String value) {
+        getConditionalFeatures().setRequiredFeatures(value);
+    }
 
-    void setRequiredExtensions(String value);
-
-    String getRequiredExtensions();
-
-    void setRequiredFeatures(String value);
-
-    String getRequiredFeatures();
+    default void setSystemLanguage(String value) {
+        getConditionalFeatures().setSystemLanguage(value);
+    }
 
 }

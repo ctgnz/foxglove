@@ -31,6 +31,7 @@ import nz.co.ctg.foxglove.element.SvgSymbol;
 import nz.co.ctg.foxglove.element.SvgUse;
 import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
@@ -81,18 +82,6 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
-
-    @XmlAttribute(name = "requiredFeatures")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
-
-    @XmlAttribute(name = "requiredExtensions")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
-
-    @XmlAttribute(name = "systemLanguage")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
 
     @XmlAttribute(name = "onunload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -160,6 +149,9 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
 
     @XmlPath(".")
     protected final SvgExternalResources externalResources = new SvgExternalResources();
+
+    @XmlPath(".")
+    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -255,6 +247,11 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         return externalResources;
     }
 
+    @Override
+    public SvgConditionalFeatures getConditionalFeatures() {
+        return conditionalFeatures;
+    }
+
     /**
      * Gets the value of the xmlns property.
      *
@@ -309,84 +306,6 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
      */
     public void setXmlnsXlink(String value) {
         this.xmlnsXlink = value;
-    }
-
-    /**
-     * Gets the value of the requiredFeatures property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getRequiredFeatures() {
-        return requiredFeatures;
-    }
-
-    /**
-     * Sets the value of the requiredFeatures property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setRequiredFeatures(String value) {
-        this.requiredFeatures = value;
-    }
-
-    /**
-     * Gets the value of the requiredExtensions property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getRequiredExtensions() {
-        return requiredExtensions;
-    }
-
-    /**
-     * Sets the value of the requiredExtensions property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setRequiredExtensions(String value) {
-        this.requiredExtensions = value;
-    }
-
-    /**
-     * Gets the value of the systemLanguage property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getSystemLanguage() {
-        return systemLanguage;
-    }
-
-    /**
-     * Sets the value of the systemLanguage property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setSystemLanguage(String value) {
-        this.systemLanguage = value;
     }
 
     /**
@@ -1169,9 +1088,9 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     @Override
     protected void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
-        builder.add("requiredFeatures", requiredFeatures);
-        builder.add("requiredExtensions", requiredExtensions);
-        builder.add("systemLanguage", systemLanguage);
+        builder.add("requiredFeatures", getRequiredFeatures());
+        builder.add("requiredExtensions", getRequiredExtensions());
+        builder.add("systemLanguage", getSystemLanguage());
         builder.add("onfocusin", onFocusIn);
         builder.add("onfocusout", onFocusOut);
         builder.add("onactivate", onActivate);
@@ -1182,7 +1101,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         builder.add("onmousemove", onMouseMove);
         builder.add("onmouseout", onMouseOut);
         builder.add("onload", onLoad);
-        builder.add("externalResourcesRequired", externalResources.isExternalResourcesRequired());
+        builder.add("externalResourcesRequired", isExternalResourcesRequired());
     }
 
 }

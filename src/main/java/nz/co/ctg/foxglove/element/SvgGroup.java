@@ -25,6 +25,7 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
@@ -66,17 +67,8 @@ import javafx.scene.Group;
 @XmlRootElement(name = "g", namespace = "http://www.w3.org/2000/svg")
 public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures {
 
-    @XmlAttribute(name = "requiredFeatures")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
-
-    @XmlAttribute(name = "requiredExtensions")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
-
-    @XmlAttribute(name = "systemLanguage")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
+    @XmlPath(".")
+    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -169,82 +161,9 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
     })
     protected List<ISvgElement> content;
 
-    /**
-     * Gets the value of the requiredFeatures property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
-    public String getRequiredFeatures() {
-        return requiredFeatures;
-    }
-
-    /**
-     * Sets the value of the requiredFeatures property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setRequiredFeatures(String value) {
-        this.requiredFeatures = value;
-    }
-
-    /**
-     * Gets the value of the requiredExtensions property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getRequiredExtensions() {
-        return requiredExtensions;
-    }
-
-    /**
-     * Sets the value of the requiredExtensions property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setRequiredExtensions(String value) {
-        this.requiredExtensions = value;
-    }
-
-    /**
-     * Gets the value of the systemLanguage property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getSystemLanguage() {
-        return systemLanguage;
-    }
-
-    /**
-     * Sets the value of the systemLanguage property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setSystemLanguage(String value) {
-        this.systemLanguage = value;
+    public SvgConditionalFeatures getConditionalFeatures() {
+        return conditionalFeatures;
     }
 
     /**
@@ -627,9 +546,9 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
     @Override
     protected void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
-        builder.add("requiredFeatures", requiredFeatures);
-        builder.add("requiredExtensions", requiredExtensions);
-        builder.add("systemLanguage", systemLanguage);
+        builder.add("requiredFeatures", getRequiredFeatures());
+        builder.add("requiredExtensions", getRequiredExtensions());
+        builder.add("systemLanguage", getSystemLanguage());
         builder.add("externalResourcesRequired", isExternalResourcesRequired());
         builder.add("onfocusin", onfocusin);
         builder.add("onfocusout", onfocusout);

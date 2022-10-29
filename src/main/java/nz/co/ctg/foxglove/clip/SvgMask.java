@@ -7,6 +7,7 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
@@ -30,6 +31,7 @@ import nz.co.ctg.foxglove.element.SvgSymbol;
 import nz.co.ctg.foxglove.element.SvgUse;
 import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
@@ -68,10 +70,13 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "externalResources", "content"
 })
 @XmlRootElement(name = "mask")
-public class SvgMask extends AbstractSvgClipElement implements ISvgClipElement {
+public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {
 
     @XmlPath(".")
     protected final SvgExternalResources externalResources = new SvgExternalResources();
+
+    @XmlPath(".")
+    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -364,4 +369,8 @@ public class SvgMask extends AbstractSvgClipElement implements ISvgClipElement {
         return externalResources;
     }
 
+    @Override
+    public SvgConditionalFeatures getConditionalFeatures() {
+        return conditionalFeatures;
+    }
 }
