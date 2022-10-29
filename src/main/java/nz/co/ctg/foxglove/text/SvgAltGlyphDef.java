@@ -18,7 +18,7 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "glyphRefOrAltGlyphItem"
+    "glyphItems"
 })
 @XmlRootElement(name = "altGlyphDef")
 public class SvgAltGlyphDef extends AbstractSvgElement {
@@ -27,7 +27,7 @@ public class SvgAltGlyphDef extends AbstractSvgElement {
         @XmlElement(name = "glyphRef", required = true, type = SvgGlyphRef.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "altGlyphItem", required = true, type = SvgAltGlyphItem.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> glyphRefOrAltGlyphItem;
+    protected List<ISvgGlyphItem> glyphItems;
 
     /**
      * Gets the value of the glyphRefOrAltGlyphItem property.
@@ -52,11 +52,11 @@ public class SvgAltGlyphDef extends AbstractSvgElement {
      *
      *
      */
-    public List<Object> getGlyphRefOrAltGlyphItem() {
-        if (glyphRefOrAltGlyphItem == null) {
-            glyphRefOrAltGlyphItem = new ArrayList<Object>();
+    public List<ISvgGlyphItem> getGlyphItems() {
+        if (glyphItems == null) {
+            glyphItems = new ArrayList<>();
         }
-        return this.glyphRefOrAltGlyphItem;
+        return this.glyphItems;
     }
 
 }

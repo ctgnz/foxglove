@@ -20,7 +20,7 @@ import jakarta.xml.bind.annotation.XmlType;
     "glyphRef"
 })
 @XmlRootElement(name = "altGlyphItem")
-public class SvgAltGlyphItem extends AbstractSvgElement {
+public class SvgAltGlyphItem extends AbstractSvgElement implements ISvgGlyphItem {
 
     @XmlElement(required = true)
     protected List<SvgGlyphRef> glyphRef;
@@ -49,7 +49,7 @@ public class SvgAltGlyphItem extends AbstractSvgElement {
      */
     public List<SvgGlyphRef> getGlyphRef() {
         if (glyphRef == null) {
-            glyphRef = new ArrayList<SvgGlyphRef>();
+            glyphRef = new ArrayList<>();
         }
         return this.glyphRef;
     }

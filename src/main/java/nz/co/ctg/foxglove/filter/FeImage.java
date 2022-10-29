@@ -5,6 +5,7 @@ import java.util.List;
 
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -26,7 +27,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "animateOrSetOrAnimateTransform"
+    "animations"
 })
 @XmlRootElement(name = "feImage")
 public class FeImage extends AbstractSvgFilterPrimitive implements ISvgExternalResources, ISvgLinkable {
@@ -95,7 +96,7 @@ public class FeImage extends AbstractSvgFilterPrimitive implements ISvgExternalR
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> animateOrSetOrAnimateTransform;
+    protected List<ISvgAnimationElement> animations;
 
     /**
      * Gets the value of the x property.
@@ -519,11 +520,11 @@ public class FeImage extends AbstractSvgFilterPrimitive implements ISvgExternalR
      *
      *
      */
-    public List<Object> getAnimateOrSetOrAnimateTransform() {
-        if (animateOrSetOrAnimateTransform == null) {
-            animateOrSetOrAnimateTransform = new ArrayList<>();
+    public List<ISvgAnimationElement> getAnimations() {
+        if (animations == null) {
+            animations = new ArrayList<>();
         }
-        return this.animateOrSetOrAnimateTransform;
+        return this.animations;
     }
 
 }

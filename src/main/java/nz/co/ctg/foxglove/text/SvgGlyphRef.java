@@ -1,5 +1,8 @@
 package nz.co.ctg.foxglove.text;
 
+import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgLinkable;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -9,9 +12,6 @@ import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgLinkable;
-
 
 /**
  *
@@ -19,7 +19,7 @@ import nz.co.ctg.foxglove.ISvgLinkable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "glyphRef")
-public class SvgGlyphRef extends AbstractSvgStylable implements ISvgLinkable {
+public class SvgGlyphRef extends AbstractSvgStylable implements ISvgGlyphItem, ISvgLinkable {
 
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

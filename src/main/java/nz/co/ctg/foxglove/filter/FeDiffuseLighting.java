@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.filter;
 import java.util.ArrayList;
 import java.util.List;
 
+import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -24,7 +25,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "lightSources",
-    "animateOrSetOrAnimateColor"
+    "animations"
 })
 @XmlRootElement(name = "feDiffuseLighting")
 public class FeDiffuseLighting extends AbstractSvgFilterPrimitive {
@@ -77,7 +78,7 @@ public class FeDiffuseLighting extends AbstractSvgFilterPrimitive {
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> animateOrSetOrAnimateColor;
+    protected List<ISvgAnimationElement> animations;
 
     /**
      * Gets the value of the x property.
@@ -350,11 +351,11 @@ public class FeDiffuseLighting extends AbstractSvgFilterPrimitive {
      *
      *
      */
-    public List<Object> getAnimateOrSetOrAnimateColor() {
-        if (animateOrSetOrAnimateColor == null) {
-            animateOrSetOrAnimateColor = new ArrayList<>();
+    public List<ISvgAnimationElement> getAnimations() {
+        if (animations == null) {
+            animations = new ArrayList<>();
         }
-        return this.animateOrSetOrAnimateColor;
+        return this.animations;
     }
 
 }

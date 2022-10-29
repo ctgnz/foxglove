@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.filter;
 import java.util.ArrayList;
 import java.util.List;
 
+import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
@@ -23,7 +24,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "animateOrSet"
+    "animations"
 })
 @XmlRootElement(name = "feConvolveMatrix")
 public class FeConvolveMatrix extends AbstractSvgFilterPrimitive {
@@ -92,7 +93,7 @@ public class FeConvolveMatrix extends AbstractSvgFilterPrimitive {
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<Object> animateOrSet;
+    protected List<ISvgAnimationElement> animations;
 
     /**
      * Gets the value of the x property.
@@ -481,11 +482,11 @@ public class FeConvolveMatrix extends AbstractSvgFilterPrimitive {
      *
      *
      */
-    public List<Object> getAnimateOrSet() {
-        if (animateOrSet == null) {
-            animateOrSet = new ArrayList<Object>();
+    public List<ISvgAnimationElement> getAnimations() {
+        if (animations == null) {
+            animations = new ArrayList<>();
         }
-        return this.animateOrSet;
+        return this.animations;
     }
 
 }
