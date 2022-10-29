@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
@@ -19,6 +21,7 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
@@ -52,7 +55,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+    "externalResources", "content"
 })
 @XmlRootElement(name = "symbol")
 public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgFitToViewBox {
@@ -97,8 +100,8 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElem
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "viewBox")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -413,32 +416,6 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElem
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the viewBox property.
      *
      * @return
@@ -560,6 +537,11 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElem
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }

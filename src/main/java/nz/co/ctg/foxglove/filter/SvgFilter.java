@@ -12,6 +12,7 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -30,7 +31,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+    "externalResources", "content"
 })
 @XmlRootElement(name = "filter")
 public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResources, ISvgLinkable {
@@ -66,9 +67,6 @@ public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResour
     @XmlAttribute(name = "xlink:actuate", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
-
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -348,32 +346,6 @@ public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResour
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the x property.
      *
      * @return
@@ -588,6 +560,12 @@ public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResour
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

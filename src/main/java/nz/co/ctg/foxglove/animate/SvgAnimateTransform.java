@@ -3,12 +3,15 @@ package nz.co.ctg.foxglove.animate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -27,10 +30,13 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "contents"
+    "externalResources", "contents"
 })
 @XmlRootElement(name = "animateTransform")
 public class SvgAnimateTransform extends AbstractSvgAnimationElement implements ISvgAnimationElement {
+
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "attributeName", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -222,6 +228,11 @@ public class SvgAnimateTransform extends AbstractSvgAnimationElement implements 
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }

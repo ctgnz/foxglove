@@ -9,6 +9,7 @@ import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -26,7 +27,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+    "externalResources", "content"
 })
 @XmlRootElement(name = "font")
 public class SvgFont extends AbstractSvgStylable implements ISvgExternalResources {
@@ -79,7 +80,7 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
      *
      */
     @Override
-    public boolean getExternalResourcesRequired() {
+    public boolean isExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -274,6 +275,12 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

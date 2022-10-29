@@ -1,10 +1,12 @@
 package nz.co.ctg.foxglove.text;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgValueElement;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -21,7 +23,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "value"
+    "externalResources", "value"
 })
 @XmlRootElement(name = "textPath")
 public class SvgTextPath extends AbstractSvgStylable implements ISvgTextContentElement, ISvgLinkable, ISvgValueElement {
@@ -110,8 +112,8 @@ public class SvgTextPath extends AbstractSvgStylable implements ISvgTextContentE
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "startOffset")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -699,32 +701,6 @@ public class SvgTextPath extends AbstractSvgStylable implements ISvgTextContentE
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the startOffset property.
      *
      * @return
@@ -868,6 +844,11 @@ public class SvgTextPath extends AbstractSvgStylable implements ISvgTextContentE
     @Override
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }

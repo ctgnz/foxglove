@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.shape;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 
@@ -23,6 +24,7 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -37,13 +39,11 @@ import javafx.scene.transform.Transform;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {
-    "content"
+    "externalResources", "content"
 })
 public abstract class AbstractSvgShape extends AbstractSvgStylable implements ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
 
     public static final int maxLen = 10;
-
-    /* FXVGConditionalFeatures */
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -56,8 +56,6 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
     @XmlAttribute(name = "systemLanguage")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     public String systemLanguage;
-
-    /* Graphical Events */
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -99,18 +97,12 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     public String onLoad;
 
-    /* SVGExternalResourcesRequired */
-
-    @XmlAttribute(name = "externalResourcesRequired")
-    public boolean externalResourcesRequired;
-
-    /* SVGTransformable */
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     public String transform;
-
-    /* Content */
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -466,32 +458,6 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the transform property.
      *
      * @return
@@ -598,10 +564,15 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
         builder.add("onmousemove", onMouseMove);
         builder.add("onmouseout", onMouseOut);
         builder.add("onload", onLoad);
-        builder.add("externalResourcesRequired", externalResourcesRequired);
+        builder.add("externalResourcesRequired", isExternalResourcesRequired());
         builder.add("transform", transform);
         if (content != null) {
             builder.add("content", content.subList(0, Math.min(content.size(), maxLen)));
         }
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 }

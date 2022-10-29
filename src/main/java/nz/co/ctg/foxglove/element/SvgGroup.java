@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
@@ -23,6 +25,7 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
@@ -58,7 +61,7 @@ import javafx.scene.Group;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "g", propOrder = {
-    "content"
+    "externalResources", "content"
 })
 @XmlRootElement(name = "g", namespace = "http://www.w3.org/2000/svg")
 public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures {
@@ -115,8 +118,8 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -505,32 +508,6 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the transform property.
      *
      * @return
@@ -653,7 +630,7 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
         builder.add("requiredFeatures", requiredFeatures);
         builder.add("requiredExtensions", requiredExtensions);
         builder.add("systemLanguage", systemLanguage);
-        builder.add("externalResourcesRequired", externalResourcesRequired);
+        builder.add("externalResourcesRequired", isExternalResourcesRequired());
         builder.add("onfocusin", onfocusin);
         builder.add("onfocusout", onfocusout);
         builder.add("onactivate", onactivate);
@@ -665,6 +642,11 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
         builder.add("onmouseout", onmouseout);
         builder.add("onload", onload);
         builder.add("transform", transform);
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }

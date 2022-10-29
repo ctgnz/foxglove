@@ -36,6 +36,7 @@ import nz.co.ctg.foxglove.element.SvgSymbol;
 import nz.co.ctg.foxglove.element.SvgUse;
 import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -66,7 +67,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+    "externalResources", "content"
 })
 @XmlRootElement(name = "pattern")
 public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISvgLinkable, ISvgExternalResources, ISvgConditionalFeatures, ISvgFitToViewBox {
@@ -509,7 +510,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
      *
      */
     @Override
-    public boolean getExternalResourcesRequired() {
+    public boolean isExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -822,6 +823,12 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

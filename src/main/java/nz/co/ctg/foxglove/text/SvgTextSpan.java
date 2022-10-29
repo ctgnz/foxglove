@@ -1,9 +1,11 @@
 package nz.co.ctg.foxglove.text;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgValueElement;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -20,10 +22,13 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "value"
+    "externalResources", "value"
 })
 @XmlRootElement(name = "tspan")
 public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgValueElement {
+
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -76,9 +81,6 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
     @XmlAttribute(name = "onload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
-
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -450,32 +452,6 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the x property.
      *
      * @return
@@ -667,6 +643,11 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
     @Override
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }

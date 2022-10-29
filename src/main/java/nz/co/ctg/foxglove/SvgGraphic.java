@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -28,6 +31,7 @@ import nz.co.ctg.foxglove.element.SvgSymbol;
 import nz.co.ctg.foxglove.element.SvgUse;
 import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
@@ -65,10 +69,10 @@ import javafx.scene.layout.Region;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "svg", propOrder = {
-    "content"
+    "externalResources", "content"
 })
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
-public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener, ISvgConditionalFeatures, ISvgExternalResources, ISvgFitToViewBox {
+public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISvgEventListener, ISvgConditionalFeatures, ISvgFitToViewBox, ISvgExternalResources {
 
     @XmlAttribute(name = "xmlns")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -154,8 +158,8 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onLoad;
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -244,6 +248,12 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<ISvgElement> content;
+
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
+    }
 
     /**
      * Gets the value of the xmlns property.
@@ -784,32 +794,6 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the x property.
      *
      * @return
@@ -1180,6 +1164,25 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
             }
         });
         return baseGroup;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        super.toStringDetail(builder);
+        builder.add("requiredFeatures", requiredFeatures);
+        builder.add("requiredExtensions", requiredExtensions);
+        builder.add("systemLanguage", systemLanguage);
+        builder.add("onfocusin", onFocusIn);
+        builder.add("onfocusout", onFocusOut);
+        builder.add("onactivate", onActivate);
+        builder.add("onclick", onClick);
+        builder.add("onmousedown", onMouseDown);
+        builder.add("onmouseup", onMouseUp);
+        builder.add("onmouseover", onMouseOver);
+        builder.add("onmousemove", onMouseMove);
+        builder.add("onmouseout", onMouseOut);
+        builder.add("onload", onLoad);
+        builder.add("externalResourcesRequired", externalResources.isExternalResourcesRequired());
     }
 
 }

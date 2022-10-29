@@ -21,9 +21,6 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String systemLanguage;
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
-
     @XmlAttribute(name = "onbegin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onbegin;
@@ -140,16 +137,6 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
     @Override
     public void setSystemLanguage(String value) {
         this.systemLanguage = value;
-    }
-
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
     }
 
     public String getOnbegin() {

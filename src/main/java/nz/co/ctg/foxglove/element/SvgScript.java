@@ -8,11 +8,13 @@
 
 package nz.co.ctg.foxglove.element;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgValueElement;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -30,7 +32,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "value"
+    "externalResources", "value"
 })
 @XmlRootElement(name = "script")
 public class SvgScript extends AbstractSvgElement implements ISvgStructuralElement, ISvgLinkable, ISvgValueElement {
@@ -39,44 +41,58 @@ public class SvgScript extends AbstractSvgElement implements ISvgStructuralEleme
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     protected String id;
+
     @XmlAttribute(name = "xml:base")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlBase;
+
     @XmlAttribute(name = "xml:lang")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlLang;
+
     @XmlAttribute(name = "xml:space")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
+
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
+
     @XmlAttribute(name = "xlink:type", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkType;
+
     @XmlAttribute(name = "xlink:href", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkHref;
+
     @XmlAttribute(name = "xlink:role", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkRole;
+
     @XmlAttribute(name = "xlink:arcrole", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkArcrole;
+
     @XmlAttribute(name = "xlink:title", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkTitle;
+
     @XmlAttribute(name = "xlink:show", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkShow;
+
     @XmlAttribute(name = "xlink:actuate", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
+
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
+
     @XmlAttribute(name = "type", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String type;
+
     @XmlValueExtension
     protected String value;
 
@@ -409,32 +425,6 @@ public class SvgScript extends AbstractSvgElement implements ISvgStructuralEleme
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the type property.
      *
      * @return
@@ -482,6 +472,11 @@ public class SvgScript extends AbstractSvgElement implements ISvgStructuralEleme
     @Override
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }

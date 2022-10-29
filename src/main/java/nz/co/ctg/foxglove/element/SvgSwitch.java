@@ -18,6 +18,7 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -43,7 +44,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+    "externalResources", "content"
 })
 @XmlRootElement(name = "switch")
 public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
@@ -481,7 +482,7 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
      *
      */
     @Override
-    public boolean getExternalResourcesRequired() {
+    public boolean isExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -573,6 +574,12 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

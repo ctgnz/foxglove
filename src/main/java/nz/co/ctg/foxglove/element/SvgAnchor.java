@@ -1,5 +1,6 @@
 package nz.co.ctg.foxglove.element;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
@@ -9,6 +10,7 @@ import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.ISvgValueElement;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
@@ -27,7 +29,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "value"
+    "externalResources", "value"
 })
 @XmlRootElement(name = "a")
 public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgStylable, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable, ISvgValueElement {
@@ -116,8 +118,8 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -693,32 +695,6 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the transform property.
      *
      * @return
@@ -797,6 +773,11 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     @Override
     public String toString() {
         return toStringHelper("a").omitNullValues().toString();
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }

@@ -3,6 +3,16 @@ package nz.co.ctg.foxglove.animate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -13,23 +23,19 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.google.common.base.MoreObjects.ToStringHelper;
-
-import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
-import nz.co.ctg.foxglove.description.SvgDescription;
-import nz.co.ctg.foxglove.description.SvgMetadata;
-import nz.co.ctg.foxglove.description.SvgTitle;
-
 
 /**
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "contents"
+    "externalResources", "contents"
 })
 @XmlRootElement(name = "set")
 public class SvgSetAttribute extends AbstractSvgAnimationElement implements ISvgAttributeAnimation {
+
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "attributeName", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -101,6 +107,11 @@ public class SvgSetAttribute extends AbstractSvgAnimationElement implements ISvg
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }

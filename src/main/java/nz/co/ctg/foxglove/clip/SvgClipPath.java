@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.clip;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgElement;
@@ -16,6 +18,7 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgUse;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -42,10 +45,13 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+    "externalResources", "content"
 })
 @XmlRootElement(name = "clipPath")
 public class SvgClipPath extends AbstractSvgClipElement implements ISvgClipElement, ISvgTransformable {
+
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -175,6 +181,11 @@ public class SvgClipPath extends AbstractSvgClipElement implements ISvgClipEleme
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }

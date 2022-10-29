@@ -20,9 +20,6 @@ public abstract class AbstractSvgClipElement extends AbstractSvgStylable impleme
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String systemLanguage;
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
-
     /**
      * Gets the value of the requiredFeatures property.
      *
@@ -99,32 +96,6 @@ public abstract class AbstractSvgClipElement extends AbstractSvgStylable impleme
     @Override
     public void setSystemLanguage(String value) {
         this.systemLanguage = value;
-    }
-
-    /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
     }
 
 }

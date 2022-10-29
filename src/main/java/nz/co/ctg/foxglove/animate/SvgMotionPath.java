@@ -13,6 +13,7 @@ import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -31,7 +32,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "contents"
+    "externalResources", "contents"
 })
 @XmlRootElement(name = "mpath")
 public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, ISvgExternalResources, ISvgLinkable {
@@ -175,7 +176,7 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
     }
 
     @Override
-    public boolean getExternalResourcesRequired() {
+    public boolean isExternalResourcesRequired() {
         return externalResourcesRequired;
     }
 
@@ -219,6 +220,12 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

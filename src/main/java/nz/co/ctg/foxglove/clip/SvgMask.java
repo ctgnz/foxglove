@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.clip;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgElement;
@@ -28,6 +30,7 @@ import nz.co.ctg.foxglove.element.SvgSymbol;
 import nz.co.ctg.foxglove.element.SvgUse;
 import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
@@ -62,10 +65,13 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+    "externalResources", "content"
 })
 @XmlRootElement(name = "mask")
 public class SvgMask extends AbstractSvgClipElement implements ISvgClipElement {
+
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -351,6 +357,11 @@ public class SvgMask extends AbstractSvgClipElement implements ISvgClipElement {
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
 }
