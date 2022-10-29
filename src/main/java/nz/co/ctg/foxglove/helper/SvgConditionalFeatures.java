@@ -16,15 +16,15 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class SvgConditionalFeatures {
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredFeatures;
+    private String requiredFeatures;
 
     @XmlAttribute(name = "requiredExtensions")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String requiredExtensions;
+    private String requiredExtensions;
 
     @XmlAttribute(name = "systemLanguage")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String systemLanguage;
+    private String systemLanguage;
 
     public String getRequiredFeatures() {
         return requiredFeatures;

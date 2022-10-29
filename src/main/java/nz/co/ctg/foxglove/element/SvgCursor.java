@@ -22,16 +22,15 @@ import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 import nz.co.ctg.foxglove.helper.SvgExternalResources;
+import nz.co.ctg.foxglove.helper.SvgLinkable;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlID;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -41,62 +40,16 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "content"
+    "conditionalFeatures", "externalResources", "linkable", "content"
 })
 @XmlRootElement(name = "cursor")
 public class SvgCursor extends AbstractSvgElement implements ISvgStructuralElement, ISvgConditionalFeatures, ISvgLinkable {
 
-    @XmlAttribute(name = "id")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    protected String id;
-
-    @XmlAttribute(name = "xml:base")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlBase;
-
-    @XmlAttribute(name = "xml:lang")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlLang;
-
-    @XmlAttribute(name = "xml:space")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xmlSpace;
-
     @XmlPath(".")
     protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
-    @XmlAttribute(name = "xmlns:xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlnsXlink;
-
-    @XmlAttribute(name = "xlink:type", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkType;
-
-    @XmlAttribute(name = "xlink:href", required = true, namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkHref;
-
-    @XmlAttribute(name = "xlink:role", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkRole;
-
-    @XmlAttribute(name = "xlink:arcrole", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkArcrole;
-
-    @XmlAttribute(name = "xlink:title", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkTitle;
-
-    @XmlAttribute(name = "xlink:show", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkShow;
-
-    @XmlAttribute(name = "xlink:actuate", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkActuate;
+    @XmlPath(".")
+    protected final SvgLinkable linkable = new SvgLinkable();
 
     @XmlPath(".")
     protected final SvgExternalResources externalResources = new SvgExternalResources();
@@ -116,337 +69,19 @@ public class SvgCursor extends AbstractSvgElement implements ISvgStructuralEleme
     })
     protected List<ISvgDescriptiveElement> content;
 
-    /**
-     * Gets the value of the id property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
-     * Gets the value of the xmlBase property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXmlBase() {
-        return xmlBase;
-    }
-
-    /**
-     * Sets the value of the xmlBase property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXmlBase(String value) {
-        this.xmlBase = value;
-    }
-
-    /**
-     * Gets the value of the xmlLang property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXmlLang() {
-        return xmlLang;
-    }
-
-    /**
-     * Sets the value of the xmlLang property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXmlLang(String value) {
-        this.xmlLang = value;
-    }
-
-    /**
-     * Gets the value of the xmlSpace property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXmlSpace() {
-        return xmlSpace;
-    }
-
-    /**
-     * Sets the value of the xmlSpace property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXmlSpace(String value) {
-        this.xmlSpace = value;
-    }
-
     @Override
     public SvgConditionalFeatures getConditionalFeatures() {
         return conditionalFeatures;
     }
 
-    /**
-     * Gets the value of the xmlnsXlink property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
-    public String getXmlnsXlink() {
-        if (xmlnsXlink == null) {
-            return "http://www.w3.org/1999/xlink";
-        } else {
-            return xmlnsXlink;
-        }
+    public SvgLinkable getSvgLinkable() {
+        return linkable;
     }
 
-    /**
-     * Sets the value of the xmlnsXlink property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
-    public void setXmlnsXlink(String value) {
-        this.xmlnsXlink = value;
-    }
-
-    /**
-     * Gets the value of the xlinkType property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkType() {
-        if (xlinkType == null) {
-            return "simple";
-        } else {
-            return xlinkType;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkType property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkType(String value) {
-        this.xlinkType = value;
-    }
-
-    /**
-     * Gets the value of the xlinkHref property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkHref() {
-        return xlinkHref;
-    }
-
-    /**
-     * Sets the value of the xlinkHref property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkHref(String value) {
-        this.xlinkHref = value;
-    }
-
-    /**
-     * Gets the value of the xlinkRole property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkRole() {
-        return xlinkRole;
-    }
-
-    /**
-     * Sets the value of the xlinkRole property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkRole(String value) {
-        this.xlinkRole = value;
-    }
-
-    /**
-     * Gets the value of the xlinkArcrole property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkArcrole() {
-        return xlinkArcrole;
-    }
-
-    /**
-     * Sets the value of the xlinkArcrole property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkArcrole(String value) {
-        this.xlinkArcrole = value;
-    }
-
-    /**
-     * Gets the value of the xlinkTitle property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkTitle() {
-        return xlinkTitle;
-    }
-
-    /**
-     * Sets the value of the xlinkTitle property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkTitle(String value) {
-        this.xlinkTitle = value;
-    }
-
-    /**
-     * Gets the value of the xlinkShow property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkShow() {
-        if (xlinkShow == null) {
-            return "other";
-        } else {
-            return xlinkShow;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkShow property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkShow(String value) {
-        this.xlinkShow = value;
-    }
-
-    /**
-     * Gets the value of the xlinkActuate property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkActuate() {
-        if (xlinkActuate == null) {
-            return "onLoad";
-        } else {
-            return xlinkActuate;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkActuate property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkActuate(String value) {
-        this.xlinkActuate = value;
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
     /**
@@ -526,11 +161,6 @@ public class SvgCursor extends AbstractSvgElement implements ISvgStructuralEleme
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
     }
 
 }

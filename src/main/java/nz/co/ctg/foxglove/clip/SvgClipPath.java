@@ -47,7 +47,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "content"
+    "externalResources", "conditionalFeatures", "content"
 })
 @XmlRootElement(name = "clipPath")
 public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement, ISvgTransformable {

@@ -23,7 +23,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "value"
+    "conditionalFeatures", "externalResources", "value"
 })
 @XmlRootElement(name = "tspan")
 public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgValueElement {

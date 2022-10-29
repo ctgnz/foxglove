@@ -62,7 +62,7 @@ import javafx.scene.Group;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "g", propOrder = {
-    "externalResources", "content"
+    "conditionalFeatures", "externalResources", "content"
 })
 @XmlRootElement(name = "g", namespace = "http://www.w3.org/2000/svg")
 public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures {

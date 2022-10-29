@@ -67,7 +67,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "content"
+    "externalResources", "conditionalFeatures", "content"
 })
 @XmlRootElement(name = "mask")
 public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {

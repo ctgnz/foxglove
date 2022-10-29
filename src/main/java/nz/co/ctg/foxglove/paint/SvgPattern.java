@@ -40,6 +40,7 @@ import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.SvgFilter;
 import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
 import nz.co.ctg.foxglove.helper.SvgExternalResources;
+import nz.co.ctg.foxglove.helper.SvgLinkable;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -70,7 +71,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "content"
+    "conditionalFeatures", "externalResources", "linkable", "content"
 })
 @XmlRootElement(name = "pattern")
 public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISvgLinkable, ISvgExternalResources, ISvgConditionalFeatures, ISvgFitToViewBox {
@@ -81,37 +82,8 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
     @XmlPath(".")
     protected final SvgExternalResources externalResources = new SvgExternalResources();
 
-    @XmlAttribute(name = "xmlns:xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlnsXlink;
-
-    @XmlAttribute(name = "xlink:type", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkType;
-
-    @XmlAttribute(name = "xlink:href", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkHref;
-
-    @XmlAttribute(name = "xlink:role", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkRole;
-
-    @XmlAttribute(name = "xlink:arcrole", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkArcrole;
-
-    @XmlAttribute(name = "xlink:title", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkTitle;
-
-    @XmlAttribute(name = "xlink:show", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkShow;
-
-    @XmlAttribute(name = "xlink:actuate", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkActuate;
+    @XmlPath(".")
+    protected final SvgLinkable linkable = new SvgLinkable();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -203,228 +175,9 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
         return externalResources;
     }
 
-    /**
-     * Gets the value of the xmlnsXlink property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
-    public String getXmlnsXlink() {
-        if (xmlnsXlink == null) {
-            return "http://www.w3.org/1999/xlink";
-        } else {
-            return xmlnsXlink;
-        }
-    }
-
-    /**
-     * Sets the value of the xmlnsXlink property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXmlnsXlink(String value) {
-        this.xmlnsXlink = value;
-    }
-
-    /**
-     * Gets the value of the xlinkType property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkType() {
-        if (xlinkType == null) {
-            return "simple";
-        } else {
-            return xlinkType;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkType property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkType(String value) {
-        this.xlinkType = value;
-    }
-
-    /**
-     * Gets the value of the xlinkHref property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkHref() {
-        return xlinkHref;
-    }
-
-    /**
-     * Sets the value of the xlinkHref property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkHref(String value) {
-        this.xlinkHref = value;
-    }
-
-    /**
-     * Gets the value of the xlinkRole property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkRole() {
-        return xlinkRole;
-    }
-
-    /**
-     * Sets the value of the xlinkRole property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkRole(String value) {
-        this.xlinkRole = value;
-    }
-
-    /**
-     * Gets the value of the xlinkArcrole property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkArcrole() {
-        return xlinkArcrole;
-    }
-
-    /**
-     * Sets the value of the xlinkArcrole property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkArcrole(String value) {
-        this.xlinkArcrole = value;
-    }
-
-    /**
-     * Gets the value of the xlinkTitle property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkTitle() {
-        return xlinkTitle;
-    }
-
-    /**
-     * Sets the value of the xlinkTitle property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkTitle(String value) {
-        this.xlinkTitle = value;
-    }
-
-    /**
-     * Gets the value of the xlinkShow property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkShow() {
-        if (xlinkShow == null) {
-            return "other";
-        } else {
-            return xlinkShow;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkShow property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkShow(String value) {
-        this.xlinkShow = value;
-    }
-
-    /**
-     * Gets the value of the xlinkActuate property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getXlinkActuate() {
-        if (xlinkActuate == null) {
-            return "onLoad";
-        } else {
-            return xlinkActuate;
-        }
-    }
-
-    /**
-     * Sets the value of the xlinkActuate property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setXlinkActuate(String value) {
-        this.xlinkActuate = value;
+    public SvgLinkable getSvgLinkable() {
+        return linkable;
     }
 
     /**

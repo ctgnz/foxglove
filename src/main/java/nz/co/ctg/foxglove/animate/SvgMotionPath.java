@@ -16,17 +16,14 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.helper.SvgExternalResources;
+import nz.co.ctg.foxglove.helper.SvgLinkable;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -34,45 +31,16 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "contents"
+    "externalResources", "linkable", "contents"
 })
 @XmlRootElement(name = "mpath")
 public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, ISvgExternalResources, ISvgLinkable {
 
-    @XmlAttribute(name = "xmlns:xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlnsXlink;
-
-    @XmlAttribute(name = "xlink:type", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkType;
-
-    @XmlAttribute(name = "xlink:href", required = true, namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkHref;
-
-    @XmlAttribute(name = "xlink:role", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkRole;
-
-    @XmlAttribute(name = "xlink:arcrole", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkArcrole;
-
-    @XmlAttribute(name = "xlink:title", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkTitle;
-
-    @XmlAttribute(name = "xlink:show", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkShow;
-
-    @XmlAttribute(name = "xlink:actuate", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkActuate;
-
     @XmlPath(".")
     protected final SvgExternalResources externalResources = new SvgExternalResources();
+
+    @XmlPath(".")
+    protected final SvgLinkable linkable = new SvgLinkable();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -82,104 +50,13 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
     protected List<ISvgDescriptiveElement> contents;
 
     @Override
-    public String getXmlnsXlink() {
-        if (xmlnsXlink == null) {
-            return "http://www.w3.org/1999/xlink";
-        } else {
-            return xmlnsXlink;
-        }
-    }
-
-    @Override
-    public void setXmlnsXlink(String value) {
-        this.xmlnsXlink = value;
-    }
-
-    @Override
-    public String getXlinkType() {
-        if (xlinkType == null) {
-            return "simple";
-        } else {
-            return xlinkType;
-        }
-    }
-
-    @Override
-    public void setXlinkType(String value) {
-        this.xlinkType = value;
-    }
-
-    @Override
-    public String getXlinkHref() {
-        return xlinkHref;
-    }
-
-    @Override
-    public void setXlinkHref(String value) {
-        this.xlinkHref = value;
-    }
-
-    @Override
-    public String getXlinkRole() {
-        return xlinkRole;
-    }
-
-    @Override
-    public void setXlinkRole(String value) {
-        this.xlinkRole = value;
-    }
-
-    @Override
-    public String getXlinkArcrole() {
-        return xlinkArcrole;
-    }
-
-    @Override
-    public void setXlinkArcrole(String value) {
-        this.xlinkArcrole = value;
-    }
-
-    @Override
-    public String getXlinkTitle() {
-        return xlinkTitle;
-    }
-
-    @Override
-    public void setXlinkTitle(String value) {
-        this.xlinkTitle = value;
-    }
-
-    @Override
-    public String getXlinkShow() {
-        if (xlinkShow == null) {
-            return "other";
-        } else {
-            return xlinkShow;
-        }
-    }
-
-    @Override
-    public void setXlinkShow(String value) {
-        this.xlinkShow = value;
-    }
-
-    @Override
-    public String getXlinkActuate() {
-        if (xlinkActuate == null) {
-            return "onLoad";
-        } else {
-            return xlinkActuate;
-        }
-    }
-
-    @Override
-    public void setXlinkActuate(String value) {
-        this.xlinkActuate = value;
-    }
-
-    @Override
     public SvgExternalResources getExternalResources() {
         return externalResources;
+    }
+
+    @Override
+    public SvgLinkable getSvgLinkable() {
+        return linkable;
     }
 
     /**

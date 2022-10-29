@@ -40,7 +40,7 @@ import javafx.scene.transform.Transform;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {
-    "externalResources", "content"
+    "conditionalFeatures", "externalResources", "content"
 })
 public abstract class AbstractSvgShape extends AbstractSvgStylable implements ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
 

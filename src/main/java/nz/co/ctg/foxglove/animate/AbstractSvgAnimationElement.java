@@ -4,6 +4,7 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
+import nz.co.ctg.foxglove.helper.SvgLinkable;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
@@ -14,6 +15,9 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
 
     @XmlPath(".")
     protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+
+    @XmlPath(".")
+    protected final SvgLinkable linkable = new SvgLinkable();
 
     @XmlAttribute(name = "onbegin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -30,38 +34,6 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
     @XmlAttribute(name = "onload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
-
-    @XmlAttribute(name = "xmlns:xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlnsXlink;
-
-    @XmlAttribute(name = "xlink:type", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkType;
-
-    @XmlAttribute(name = "xlink:href", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkHref;
-
-    @XmlAttribute(name = "xlink:role", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkRole;
-
-    @XmlAttribute(name = "xlink:arcrole", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkArcrole;
-
-    @XmlAttribute(name = "xlink:title", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xlinkTitle;
-
-    @XmlAttribute(name = "xlink:show", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkShow;
-
-    @XmlAttribute(name = "xlink:actuate", namespace = "http://www.w3.org/1999/xlink")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String xlinkActuate;
 
     @XmlAttribute(name = "begin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -108,6 +80,11 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
         return conditionalFeatures;
     }
 
+    @Override
+    public SvgLinkable getSvgLinkable() {
+        return linkable;
+    }
+
     public String getOnbegin() {
         return onbegin;
     }
@@ -138,102 +115,6 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
 
     public void setOnload(String value) {
         this.onload = value;
-    }
-
-    @Override
-    public String getXmlnsXlink() {
-        if (xmlnsXlink == null) {
-            return "http://www.w3.org/1999/xlink";
-        } else {
-            return xmlnsXlink;
-        }
-    }
-
-    @Override
-    public void setXmlnsXlink(String value) {
-        this.xmlnsXlink = value;
-    }
-
-    @Override
-    public String getXlinkType() {
-        if (xlinkType == null) {
-            return "simple";
-        } else {
-            return xlinkType;
-        }
-    }
-
-    @Override
-    public void setXlinkType(String value) {
-        this.xlinkType = value;
-    }
-
-    @Override
-    public String getXlinkHref() {
-        return xlinkHref;
-    }
-
-    @Override
-    public void setXlinkHref(String value) {
-        this.xlinkHref = value;
-    }
-
-    @Override
-    public String getXlinkRole() {
-        return xlinkRole;
-    }
-
-    @Override
-    public void setXlinkRole(String value) {
-        this.xlinkRole = value;
-    }
-
-    @Override
-    public String getXlinkArcrole() {
-        return xlinkArcrole;
-    }
-
-    @Override
-    public void setXlinkArcrole(String value) {
-        this.xlinkArcrole = value;
-    }
-
-    @Override
-    public String getXlinkTitle() {
-        return xlinkTitle;
-    }
-
-    @Override
-    public void setXlinkTitle(String value) {
-        this.xlinkTitle = value;
-    }
-
-    @Override
-    public String getXlinkShow() {
-        if (xlinkShow == null) {
-            return "other";
-        } else {
-            return xlinkShow;
-        }
-    }
-
-    @Override
-    public void setXlinkShow(String value) {
-        this.xlinkShow = value;
-    }
-
-    @Override
-    public String getXlinkActuate() {
-        if (xlinkActuate == null) {
-            return "onLoad";
-        } else {
-            return xlinkActuate;
-        }
-    }
-
-    @Override
-    public void setXlinkActuate(String value) {
-        this.xlinkActuate = value;
     }
 
     public String getBegin() {

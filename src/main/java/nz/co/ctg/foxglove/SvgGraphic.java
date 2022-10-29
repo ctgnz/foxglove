@@ -70,7 +70,7 @@ import javafx.scene.layout.Region;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "svg", propOrder = {
-    "externalResources", "content"
+    "externalResources", "conditionalFeatures", "content"
 })
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
 public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISvgEventListener, ISvgConditionalFeatures, ISvgFitToViewBox, ISvgExternalResources {
