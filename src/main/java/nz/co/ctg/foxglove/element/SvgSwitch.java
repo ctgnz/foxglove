@@ -3,16 +3,6 @@ package nz.co.ctg.foxglove.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgEventListener;
@@ -35,6 +25,16 @@ import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.text.SvgText;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -107,29 +107,29 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
     protected String transform;
 
     @XmlElements({
-        @XmlElement(name = "desc", type = SvgDescription.class),
-        @XmlElement(name = "title", type = SvgTitle.class),
-        @XmlElement(name = "metadata", type = SvgMetadata.class),
-        @XmlElement(name = "svg", type = SvgGraphic.class),
-        @XmlElement(name = "g", type = SvgGroup.class),
-        @XmlElement(name = "use", type = SvgUse.class),
-        @XmlElement(name = "text", type = SvgText.class),
-        @XmlElement(name = "animate", type = SvgAnimateAttribute.class),
-        @XmlElement(name = "set", type = SvgSetAttribute.class),
-        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class),
-        @XmlElement(name = "animateColor", type = SvgAnimateColor.class),
-        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class),
-        @XmlElement(name = "switch", type = SvgSwitch.class),
-        @XmlElement(name = "image", type = SvgImage.class),
-        @XmlElement(name = "path", type = SvgPath.class),
-        @XmlElement(name = "rect", type = SvgRectangle.class),
-        @XmlElement(name = "circle", type = SvgCircle.class),
-        @XmlElement(name = "line", type = SvgLine.class),
-        @XmlElement(name = "ellipse", type = SvgEllipse.class),
-        @XmlElement(name = "polyline", type = SvgPolyline.class),
-        @XmlElement(name = "polygon", type = SvgPolygon.class),
-        @XmlElement(name = "a", type = SvgAnchor.class),
-        @XmlElement(name = "foreignObject", type = SvgForeignObject.class)
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "svg", type = SvgGraphic.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "g", type = SvgGroup.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "use", type = SvgUse.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "text", type = SvgText.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "switch", type = SvgSwitch.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "image", type = SvgImage.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "path", type = SvgPath.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "rect", type = SvgRectangle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "circle", type = SvgCircle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "line", type = SvgLine.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "ellipse", type = SvgEllipse.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "polyline", type = SvgPolyline.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "polygon", type = SvgPolygon.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "a", type = SvgAnchor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<Object> content;
 

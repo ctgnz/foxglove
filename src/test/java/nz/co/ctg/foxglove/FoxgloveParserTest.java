@@ -2,8 +2,6 @@ package nz.co.ctg.foxglove;
 
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
+import jakarta.xml.bind.JAXBException;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;

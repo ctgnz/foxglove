@@ -3,14 +3,14 @@ package nz.co.ctg.foxglove.text;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import nz.co.ctg.foxglove.AbstractSvgElement;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 
 /**
@@ -24,8 +24,8 @@ import nz.co.ctg.foxglove.AbstractSvgElement;
 public class SvgFontFaceSrc extends AbstractSvgElement {
 
     @XmlElements({
-        @XmlElement(name = "font-face-uri", required = true, type = SvgFontFaceUri.class),
-        @XmlElement(name = "font-face-name", required = true, type = SvgFontFaceName.class)
+        @XmlElement(name = "font-face-uri", required = true, type = SvgFontFaceUri.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "font-face-name", required = true, type = SvgFontFaceName.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<Object> content;
 

@@ -3,17 +3,6 @@ package nz.co.ctg.foxglove.paint;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
@@ -23,6 +12,17 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -39,31 +39,31 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
 
-    @XmlAttribute(name = "xlink:type")
+    @XmlAttribute(name = "xlink:type", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkType;
 
-    @XmlAttribute(name = "xlink:href")
+    @XmlAttribute(name = "xlink:href", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkHref;
 
-    @XmlAttribute(name = "xlink:role")
+    @XmlAttribute(name = "xlink:role", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkRole;
 
-    @XmlAttribute(name = "xlink:arcrole")
+    @XmlAttribute(name = "xlink:arcrole", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkArcrole;
 
-    @XmlAttribute(name = "xlink:title")
+    @XmlAttribute(name = "xlink:title", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xlinkTitle;
 
-    @XmlAttribute(name = "xlink:show")
+    @XmlAttribute(name = "xlink:show", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkShow;
 
-    @XmlAttribute(name = "xlink:actuate")
+    @XmlAttribute(name = "xlink:actuate", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
 
@@ -103,13 +103,13 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
     protected String spreadMethod;
 
     @XmlElements({
-        @XmlElement(name = "desc", type = SvgDescription.class),
-        @XmlElement(name = "title", type = SvgTitle.class),
-        @XmlElement(name = "metadata", type = SvgMetadata.class),
-        @XmlElement(name = "stop", type = SvgStop.class),
-        @XmlElement(name = "animate", type = SvgAnimateAttribute.class),
-        @XmlElement(name = "set", type = SvgSetAttribute.class),
-        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class)
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "stop", type = SvgStop.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<Object> content;
 

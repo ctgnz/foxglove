@@ -1,6 +1,6 @@
 package nz.co.ctg.foxglove;
 
-import javax.xml.bind.annotation.XmlRegistry;
+import jakarta.xml.bind.annotation.XmlRegistry;
 
 import nz.co.ctg.foxglove.animate.ISvgAttributeAnimation;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;

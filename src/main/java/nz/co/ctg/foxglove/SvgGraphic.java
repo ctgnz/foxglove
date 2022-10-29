@@ -3,16 +3,7 @@ package nz.co.ctg.foxglove;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.apache.commons.lang3.StringUtils;
 
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -55,6 +46,16 @@ import nz.co.ctg.foxglove.text.SvgFont;
 import nz.co.ctg.foxglove.text.SvgFontFace;
 import nz.co.ctg.foxglove.text.SvgText;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
@@ -1166,8 +1167,8 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
 
     public Region createGraphic() {
         Pane baseGroup = new Pane();
-        baseGroup.setMaxWidth(Double.valueOf(width));
-        baseGroup.setMaxHeight(Double.valueOf(height));
+        baseGroup.setMaxWidth(Double.valueOf(StringUtils.stripEnd(width, "px")));
+        baseGroup.setMaxHeight(Double.valueOf(StringUtils.stripEnd(height, "px")));
         content.forEach(child -> {
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;

@@ -3,21 +3,21 @@ package nz.co.ctg.foxglove.text;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -58,14 +58,14 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
     protected String vertAdvY;
 
     @XmlElements({
-        @XmlElement(name = "desc", type = SvgDescription.class),
-        @XmlElement(name = "title", type = SvgTitle.class),
-        @XmlElement(name = "metadata", type = SvgMetadata.class),
-        @XmlElement(name = "font-face", type = SvgFontFace.class),
-        @XmlElement(name = "missing-glyph", type = SvgMissingGlyph.class),
-        @XmlElement(name = "glyph", type = SvgGlyph.class),
-        @XmlElement(name = "hkern", type = SvgHorizontalKerning.class),
-        @XmlElement(name = "vkern", type = SvgVerticalKerning.class)
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "missing-glyph", type = SvgMissingGlyph.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "glyph", type = SvgGlyph.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "hkern", type = SvgHorizontalKerning.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "vkern", type = SvgVerticalKerning.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<Object> content;
 
