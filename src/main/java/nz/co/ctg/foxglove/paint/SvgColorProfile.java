@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -30,7 +32,7 @@ import nz.co.ctg.foxglove.description.SvgTitle;
     "content"
 })
 @XmlRootElement(name = "color-profile")
-public class SvgColorProfile extends AbstractSvgElement {
+public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, ISvgLinkable {
 
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -91,6 +93,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public String getXmlnsXlink() {
         if (xmlnsXlink == null) {
             return "http://www.w3.org/1999/xlink";
@@ -107,6 +110,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public void setXmlnsXlink(String value) {
         this.xmlnsXlink = value;
     }
@@ -119,6 +123,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkType() {
         if (xlinkType == null) {
             return "simple";
@@ -135,6 +140,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkType(String value) {
         this.xlinkType = value;
     }
@@ -147,6 +153,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkHref() {
         return xlinkHref;
     }
@@ -159,6 +166,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkHref(String value) {
         this.xlinkHref = value;
     }
@@ -171,6 +179,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkRole() {
         return xlinkRole;
     }
@@ -183,6 +192,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkRole(String value) {
         this.xlinkRole = value;
     }
@@ -195,6 +205,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkArcrole() {
         return xlinkArcrole;
     }
@@ -207,6 +218,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkArcrole(String value) {
         this.xlinkArcrole = value;
     }
@@ -219,6 +231,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkTitle() {
         return xlinkTitle;
     }
@@ -231,6 +244,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkTitle(String value) {
         this.xlinkTitle = value;
     }
@@ -243,6 +257,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkShow() {
         if (xlinkShow == null) {
             return "other";
@@ -259,6 +274,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkShow(String value) {
         this.xlinkShow = value;
     }
@@ -271,6 +287,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public String getXlinkActuate() {
         if (xlinkActuate == null) {
             return "onLoad";
@@ -287,6 +304,7 @@ public class SvgColorProfile extends AbstractSvgElement {
      *     {@link String }
      *
      */
+    @Override
     public void setXlinkActuate(String value) {
         this.xlinkActuate = value;
     }

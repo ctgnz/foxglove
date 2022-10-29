@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -37,7 +36,7 @@ import nz.co.ctg.foxglove.description.SvgTitle;
     "content"
 })
 @XmlRootElement(name = "view")
-public class SvgView extends AbstractSvgElement implements ISvgExternalResources {
+public class SvgView extends AbstractSvgElement implements ISvgStructuralElement {
 
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;

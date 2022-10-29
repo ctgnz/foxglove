@@ -1,6 +1,6 @@
 package nz.co.ctg.foxglove.animate;
 
-public interface ISvgAttributeAnimation {
+public interface ISvgAttributeAnimation extends ISvgAnimationElement {
 
     void setAttributeType(String value);
 

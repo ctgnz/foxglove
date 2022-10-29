@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -54,7 +54,7 @@ import nz.co.ctg.foxglove.text.SvgText;
     "content"
 })
 @XmlRootElement(name = "marker")
-public class SvgMarker extends AbstractSvgStylable implements ISvgExternalResources {
+public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable {
 
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;

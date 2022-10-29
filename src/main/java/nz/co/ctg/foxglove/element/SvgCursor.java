@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
-import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
@@ -40,7 +39,7 @@ import nz.co.ctg.foxglove.description.SvgTitle;
     "content"
 })
 @XmlRootElement(name = "cursor")
-public class SvgCursor extends AbstractSvgElement implements ISvgExternalResources, ISvgConditionalFeatures, ISvgLinkable {
+public class SvgCursor extends AbstractSvgElement implements ISvgStructuralElement, ISvgConditionalFeatures, ISvgLinkable {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)

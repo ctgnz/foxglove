@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -29,7 +30,7 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
     "content"
 })
 @XmlRootElement(name = "stop")
-public class SvgStop extends AbstractSvgStylable {
+public class SvgStop extends AbstractSvgStylable implements ISvgStylable {
 
     @XmlAttribute(name = "offset", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

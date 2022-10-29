@@ -45,7 +45,7 @@ import nz.co.ctg.foxglove.text.SvgText;
     "content"
 })
 @XmlRootElement(name = "switch")
-public class SvgSwitch extends AbstractSvgStylable implements ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
+public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

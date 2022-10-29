@@ -29,7 +29,7 @@ import nz.co.ctg.foxglove.description.SvgTitle;
     "contents"
 })
 @XmlRootElement(name = "set")
-public class SvgSetAttribute extends SvgAnimationElement implements ISvgAttributeAnimation {
+public class SvgSetAttribute extends AbstractSvgAnimationElement implements ISvgAttributeAnimation {
 
     @XmlAttribute(name = "attributeName", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

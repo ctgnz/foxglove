@@ -19,6 +19,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -35,7 +36,7 @@ import nz.co.ctg.foxglove.description.SvgTitle;
     "content"
 })
 @XmlRootElement(name = "radialGradient")
-public class SvgRadialGradient extends AbstractSvgStylable implements ISvgLinkable, ISvgExternalResources {
+public class SvgRadialGradient extends AbstractSvgStylable implements ISvgStylable, ISvgLinkable, ISvgExternalResources {
 
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

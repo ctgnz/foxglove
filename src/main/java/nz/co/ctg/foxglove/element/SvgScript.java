@@ -19,8 +19,6 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgValueElement;
 
@@ -33,7 +31,7 @@ import nz.co.ctg.foxglove.ISvgValueElement;
     "value"
 })
 @XmlRootElement(name = "script")
-public class SvgScript implements ISvgElement, ISvgExternalResources, ISvgLinkable, ISvgValueElement {
+public class SvgScript implements ISvgStructuralElement, ISvgLinkable, ISvgValueElement {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -466,6 +464,7 @@ public class SvgScript implements ISvgElement, ISvgExternalResources, ISvgLinkab
      *     {@link String }
      *
      */
+    @Override
     public String getValue() {
         return value;
     }
@@ -478,6 +477,7 @@ public class SvgScript implements ISvgElement, ISvgExternalResources, ISvgLinkab
      *     {@link String }
      *
      */
+    @Override
     public void setValue(String value) {
         this.value = value;
     }
