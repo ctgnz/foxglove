@@ -2,7 +2,7 @@ package nz.co.ctg.foxglove.filter;
 
 import java.util.List;
 
-import nz.co.ctg.foxglove.animate.ISvgAttributeAnimation;
+import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
@@ -31,6 +31,6 @@ public interface ISvgFilterLightSource {
      *
      *
      */
-    List<ISvgAttributeAnimation> getAnimations();
+    List<ISvgAnimationElement> getAnimations();
 
 }

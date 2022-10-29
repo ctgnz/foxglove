@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.animate.ISvgAttributeAnimation;
+import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
@@ -41,7 +41,7 @@ public class FeDistantLight extends AbstractSvgElement implements ISvgFilterLigh
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgAttributeAnimation> animations;
+    protected List<ISvgAnimationElement> animations;
 
     /**
      * Gets the value of the azimuth property.
@@ -115,9 +115,9 @@ public class FeDistantLight extends AbstractSvgElement implements ISvgFilterLigh
      *
      */
     @Override
-    public List<ISvgAttributeAnimation> getAnimations() {
+    public List<ISvgAnimationElement> getAnimations() {
         if (animations == null) {
-            animations = new ArrayList<ISvgAttributeAnimation>();
+            animations = new ArrayList<>();
         }
         return this.animations;
     }

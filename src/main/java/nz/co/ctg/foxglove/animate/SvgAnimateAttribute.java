@@ -33,7 +33,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "externalResources", "contents"
 })
 @XmlRootElement(name = "animate")
-public class SvgAnimateAttribute extends AbstractSvgAnimationElement implements ISvgAttributeAnimation {
+public class SvgAnimateAttribute extends AbstractSvgAnimationElement implements ISvgAnimationElement {
 
     @XmlPath(".")
     protected final SvgExternalResources externalResources = new SvgExternalResources();
@@ -85,22 +85,18 @@ public class SvgAnimateAttribute extends AbstractSvgAnimationElement implements 
     })
     protected List<ISvgDescriptiveElement> contents;
 
-    @Override
     public String getAttributeName() {
         return attributeName;
     }
 
-    @Override
     public void setAttributeName(String value) {
         this.attributeName = value;
     }
 
-    @Override
     public String getAttributeType() {
         return attributeType;
     }
 
-    @Override
     public void setAttributeType(String value) {
         this.attributeType = value;
     }

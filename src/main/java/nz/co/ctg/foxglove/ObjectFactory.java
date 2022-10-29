@@ -1,8 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import jakarta.xml.bind.annotation.XmlRegistry;
-
-import nz.co.ctg.foxglove.animate.ISvgAttributeAnimation;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -52,7 +49,6 @@ import nz.co.ctg.foxglove.filter.FeSpecularLighting;
 import nz.co.ctg.foxglove.filter.FeSpotLight;
 import nz.co.ctg.foxglove.filter.FeTile;
 import nz.co.ctg.foxglove.filter.FeTurbulence;
-import nz.co.ctg.foxglove.filter.ISvgFilterLightSource;
 import nz.co.ctg.foxglove.filter.SvgFilter;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
@@ -85,6 +81,8 @@ import nz.co.ctg.foxglove.text.SvgTextPath;
 import nz.co.ctg.foxglove.text.SvgTextReference;
 import nz.co.ctg.foxglove.text.SvgTextSpan;
 import nz.co.ctg.foxglove.text.SvgVerticalKerning;
+
+import jakarta.xml.bind.annotation.XmlRegistry;
 
 
 /**
@@ -148,7 +146,7 @@ public class ObjectFactory {
      * Create an instance of {@link SvgAnimateAttribute }
      *
      */
-    public ISvgAttributeAnimation createAnimate() {
+    public SvgAnimateAttribute createAnimate() {
         return new SvgAnimateAttribute();
     }
 
@@ -636,7 +634,7 @@ public class ObjectFactory {
      * Create an instance of {@link FeDistantLight }
      *
      */
-    public ISvgFilterLightSource createFeDistantLight() {
+    public FeDistantLight createFeDistantLight() {
         return new FeDistantLight();
     }
 
