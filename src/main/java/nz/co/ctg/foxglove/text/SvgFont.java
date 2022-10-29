@@ -8,10 +8,10 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -35,7 +35,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class SvgFont extends AbstractSvgStylable implements ISvgExternalResources {
 
     @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "horiz-origin-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -74,7 +74,7 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
     protected List<ISvgElement> content;
 
     @Override
-    public SvgExternalResources getExternalResources() {
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
         return externalResources;
     }
 

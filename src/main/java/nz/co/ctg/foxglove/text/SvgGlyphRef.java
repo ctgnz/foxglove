@@ -4,7 +4,7 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgLinkable;
-import nz.co.ctg.foxglove.helper.SvgLinkable;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -19,12 +19,14 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "")
+@XmlType(name = "", propOrder = {
+    "linkable"
+})
 @XmlRootElement(name = "glyphRef")
 public class SvgGlyphRef extends AbstractSvgStylable implements ISvgGlyphItem, ISvgLinkable {
 
     @XmlPath(".")
-    protected final SvgLinkable linkable = new SvgLinkable();
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -51,7 +53,7 @@ public class SvgGlyphRef extends AbstractSvgStylable implements ISvgGlyphItem, I
     protected String format;
 
     @Override
-    public SvgLinkable getSvgLinkable() {
+    public SvgLinkableAttributes getLinkableAttributes() {
         return linkable;
     }
 

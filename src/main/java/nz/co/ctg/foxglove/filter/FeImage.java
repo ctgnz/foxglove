@@ -11,8 +11,8 @@ import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
-import nz.co.ctg.foxglove.helper.SvgLinkable;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -30,16 +30,16 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "linkable", "animations"
+    "linkable", "externalResources", "animations"
 })
 @XmlRootElement(name = "feImage")
 public class FeImage extends AbstractSvgFilterPrimitive implements ISvgExternalResources, ISvgLinkable {
 
     @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlPath(".")
-    protected final SvgLinkable linkable = new SvgLinkable();
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -73,13 +73,13 @@ public class FeImage extends AbstractSvgFilterPrimitive implements ISvgExternalR
     protected List<ISvgAnimationElement> animations;
 
     @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
     }
 
     @Override
-    public SvgLinkable getSvgLinkable() {
-        return linkable;
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
     }
 
     /**

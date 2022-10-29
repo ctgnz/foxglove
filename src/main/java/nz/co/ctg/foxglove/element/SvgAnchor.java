@@ -10,9 +10,9 @@ import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.ISvgValueElement;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
-import nz.co.ctg.foxglove.helper.SvgLinkable;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
@@ -31,19 +31,19 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "conditionalFeatures", "externalResources", "linkable", "value"
+    "conditionalFeatures", "linkable", "externalResources", "value"
 })
 @XmlRootElement(name = "a")
 public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgStylable, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable, ISvgValueElement {
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
-    protected final SvgLinkable linkable = new SvgLinkable();
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -97,8 +97,18 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     protected String value;
 
     @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
         return conditionalFeatures;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
     }
 
     /**
@@ -359,16 +369,6 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     @Override
     public void setOnLoad(String value) {
         this.onload = value;
-    }
-
-    @Override
-    public SvgLinkable getSvgLinkable() {
-        return linkable;
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
     }
 
     /**

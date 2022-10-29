@@ -15,6 +15,8 @@ import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -31,8 +33,6 @@ import nz.co.ctg.foxglove.element.SvgSymbol;
 import nz.co.ctg.foxglove.element.SvgUse;
 import nz.co.ctg.foxglove.element.SvgView;
 import nz.co.ctg.foxglove.filter.SvgFilter;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
@@ -73,10 +73,10 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {
 
     @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -145,6 +145,16 @@ public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<ISvgElement> content;
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
 
     /**
      * Gets the value of the x property.
@@ -362,15 +372,5 @@ public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
-    }
-
-    @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
-        return conditionalFeatures;
     }
 }

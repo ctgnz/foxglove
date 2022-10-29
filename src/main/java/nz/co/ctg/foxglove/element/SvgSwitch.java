@@ -17,11 +17,11 @@ import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -53,10 +53,10 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -130,12 +130,12 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
     protected List<ISvgElement> content;
 
     @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
         return conditionalFeatures;
     }
 
     @Override
-    public SvgExternalResources getExternalResources() {
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
         return externalResources;
     }
 

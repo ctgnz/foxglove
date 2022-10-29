@@ -11,11 +11,11 @@ import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
-import nz.co.ctg.foxglove.helper.SvgLinkable;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -34,16 +34,16 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "linkable", "content"
+    "linkable", "externalResources", "content"
 })
 @XmlRootElement(name = "filter")
 public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResources, ISvgLinkable {
 
     @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlPath(".")
-    protected final SvgLinkable linkable = new SvgLinkable();
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -99,13 +99,13 @@ public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResour
     protected List<ISvgElement> content;
 
     @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
     }
 
     @Override
-    public SvgLinkable getSvgLinkable() {
-        return linkable;
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
     }
 
     /**

@@ -6,9 +6,9 @@ import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgValueElement;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
-import nz.co.ctg.foxglove.helper.SvgLinkable;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -24,13 +24,19 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "conditionalFeatures", "externalResources", "linkable", "value"
+    "conditionalFeatures", "linkable", "externalResources", "value"
 })
 @XmlRootElement(name = "altGlyph")
 public class SvgAltGlyph extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgLinkable, ISvgValueElement {
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -72,12 +78,6 @@ public class SvgAltGlyph extends AbstractSvgStylable implements ISvgTextPosition
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
 
-    @XmlPath(".")
-    protected final SvgLinkable linkable = new SvgLinkable();
-
-    @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
@@ -110,18 +110,18 @@ public class SvgAltGlyph extends AbstractSvgStylable implements ISvgTextPosition
     protected String value;
 
     @Override
-    public SvgExternalResources getExternalResources() {
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
         return externalResources;
     }
 
     @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
-        return conditionalFeatures;
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
     }
 
     @Override
-    public SvgLinkable getSvgLinkable() {
-        return linkable;
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
     }
 
     /**

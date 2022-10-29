@@ -17,8 +17,8 @@ import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.ISvgValueElement;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -40,7 +40,10 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgEventListener, ISvgConditionalFeatures, ISvgTransformable, ISvgValueElement {
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -82,9 +85,6 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
 
-    @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
@@ -109,8 +109,13 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
     protected String value;
 
     @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
         return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
     }
 
     /**
@@ -519,11 +524,6 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
     @Override
     public void setValue(String value) {
         this.value = value;
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
     }
 
 }

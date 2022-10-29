@@ -21,11 +21,11 @@ import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -47,54 +47,54 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
     public static final int maxLen = 10;
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onFocusIn;
+    protected String onFocusIn;
 
     @XmlAttribute(name = "onfocusout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onFocusOut;
+    protected String onFocusOut;
 
     @XmlAttribute(name = "onactivate")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onActivate;
+    protected String onActivate;
 
     @XmlAttribute(name = "onclick")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onClick;
+    protected String onClick;
 
     @XmlAttribute(name = "onmousedown")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onMouseDown;
+    protected String onMouseDown;
 
     @XmlAttribute(name = "onmouseup")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onMouseUp;
+    protected String onMouseUp;
 
     @XmlAttribute(name = "onmouseover")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onMouseOver;
+    protected String onMouseOver;
 
     @XmlAttribute(name = "onmousemove")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onMouseMove;
+    protected String onMouseMove;
 
     @XmlAttribute(name = "onmouseout")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onMouseOut;
+    protected String onMouseOut;
 
     @XmlAttribute(name = "onload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String onLoad;
-
-    @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
+    protected String onLoad;
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String transform;
+    protected String transform;
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -106,14 +106,19 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
-    public List<ISvgElement> content;
+    protected List<ISvgElement> content;
 
     public AbstractSvgShape() {
     }
 
     @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
         return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
     }
 
     /**
@@ -488,10 +493,5 @@ public abstract class AbstractSvgShape extends AbstractSvgStylable implements IS
         if (content != null) {
             builder.add("content", content.subList(0, Math.min(content.size(), maxLen)));
         }
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
     }
 }

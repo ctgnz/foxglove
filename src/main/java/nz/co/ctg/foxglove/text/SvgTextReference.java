@@ -11,12 +11,12 @@ import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
-import nz.co.ctg.foxglove.helper.SvgLinkable;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -35,13 +35,19 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "conditionalFeatures", "externalResources", "svgLinkable", "content"
+    "conditionalFeatures", "linkable", "externalResources", "content"
 })
 @XmlRootElement(name = "tref")
 public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgLinkable {
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -83,12 +89,6 @@ public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPos
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
 
-    @XmlPath(".")
-    protected final SvgLinkable linkable = new SvgLinkable();
-
-    @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
@@ -128,17 +128,17 @@ public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPos
     protected List<ISvgElement> content;
 
     @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
         return conditionalFeatures;
     }
 
     @Override
-    public SvgLinkable getSvgLinkable() {
+    public SvgLinkableAttributes getLinkableAttributes() {
         return linkable;
     }
 
     @Override
-    public SvgExternalResources getExternalResources() {
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
         return externalResources;
     }
 

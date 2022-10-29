@@ -1,4 +1,4 @@
-package nz.co.ctg.foxglove.helper;
+package nz.co.ctg.foxglove.attributes;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SvgConditionalFeatures {
+public class SvgConditionalFeaturesAttributes {
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String requiredFeatures;

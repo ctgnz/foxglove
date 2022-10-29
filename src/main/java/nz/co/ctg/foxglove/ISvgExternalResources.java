@@ -12,18 +12,18 @@
 
 package nz.co.ctg.foxglove;
 
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 
 public interface ISvgExternalResources {
 
     default boolean isExternalResourcesRequired() {
-        return getExternalResources().isExternalResourcesRequired();
+        return getExternalResourcesAttributes().isExternalResourcesRequired();
     }
 
     default void setExternalResourcesRequired(boolean value) {
-        getExternalResources().setExternalResourcesRequired(value);
+        getExternalResourcesAttributes().setExternalResourcesRequired(value);
     }
 
-    SvgExternalResources getExternalResources();
+    SvgExternalResourcesAttributes getExternalResourcesAttributes();
 
 }

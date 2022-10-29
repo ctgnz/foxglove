@@ -3,8 +3,8 @@ package nz.co.ctg.foxglove.animate;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgLinkable;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
@@ -14,10 +14,10 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public abstract class AbstractSvgAnimationElement extends AbstractSvgElement implements ISvgAnimationElement {
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
-    protected final SvgLinkable linkable = new SvgLinkable();
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlAttribute(name = "onbegin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -76,12 +76,12 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
     protected String to;
 
     @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
         return conditionalFeatures;
     }
 
     @Override
-    public SvgLinkable getSvgLinkable() {
+    public SvgLinkableAttributes getLinkableAttributes() {
         return linkable;
     }
 

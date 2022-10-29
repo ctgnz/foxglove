@@ -15,13 +15,13 @@ import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.filter.SvgFilter;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.paint.SvgPattern;
@@ -62,7 +62,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgFitToViewBox {
 
     @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "refX")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -139,6 +139,11 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<ISvgElement> content;
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
 
     /**
      * Gets the value of the refX property.
@@ -406,11 +411,6 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
     }
 
 }

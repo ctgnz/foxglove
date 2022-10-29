@@ -7,7 +7,7 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgLinkable;
-import nz.co.ctg.foxglove.helper.SvgLinkable;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -27,13 +27,13 @@ import jakarta.xml.bind.annotation.XmlType;
 public class SvgFontFaceUri extends AbstractSvgElement implements ISvgLinkable {
 
     @XmlPath(".")
-    protected final SvgLinkable linkable = new SvgLinkable();
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlElement(name = "font-face-format")
     protected List<SvgFontFaceFormat> fontFaceFormat;
 
     @Override
-    public SvgLinkable getSvgLinkable() {
+    public SvgLinkableAttributes getLinkableAttributes() {
         return linkable;
     }
 

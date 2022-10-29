@@ -6,8 +6,8 @@ import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.ISvgValueElement;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -24,13 +24,16 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "text", propOrder = {
-    "conditionalFeatures", "externalResources", "conditionalFeatures", "value"
+    "conditionalFeatures", "externalResources", "value"
 })
 @XmlRootElement(name = "text")
 public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgTransformable, ISvgValueElement {
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -72,9 +75,6 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
 
-    @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
@@ -111,8 +111,13 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     protected String value;
 
     @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
         return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
     }
 
     /**
@@ -593,11 +598,6 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     @Override
     public void setValue(String value) {
         this.value = value;
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
     }
 
 }

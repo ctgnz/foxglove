@@ -15,12 +15,12 @@ import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgUse;
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
-import nz.co.ctg.foxglove.helper.SvgExternalResources;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgEllipse;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -53,10 +53,10 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement, ISvgTransformable {
 
     @XmlPath(".")
-    protected final SvgExternalResources externalResources = new SvgExternalResources();
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
-    protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -86,6 +86,16 @@ public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement,
         @XmlElement(name = "text", type = SvgText.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<ISvgElement> content;
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
 
     /**
      * Gets the value of the transform property.
@@ -186,15 +196,5 @@ public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement,
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        return externalResources;
-    }
-
-    @Override
-    public SvgConditionalFeatures getConditionalFeatures() {
-        return conditionalFeatures;
     }
 }

@@ -1,11 +1,11 @@
-package nz.co.ctg.foxglove.helper;
+package nz.co.ctg.foxglove.attributes;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SvgExternalResources {
+public class SvgExternalResourcesAttributes {
 
     @XmlAttribute(name = "externalResourcesRequired")
     private boolean externalResourcesRequired;

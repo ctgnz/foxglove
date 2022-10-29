@@ -14,50 +14,50 @@ package nz.co.ctg.foxglove;
 
 import java.util.List;
 
-import nz.co.ctg.foxglove.helper.SvgConditionalFeatures;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 
 public interface ISvgConditionalFeatures {
 
-    SvgConditionalFeatures getConditionalFeatures();
+    SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes();
 
     default String getRequiredExtensions() {
-        return getConditionalFeatures().getRequiredExtensions();
+        return getConditionalFeaturesAttributes().getRequiredExtensions();
     }
 
     default List<String> getRequiredExtensionsList() {
-        return getConditionalFeatures().getRequiredExtensionsList();
+        return getConditionalFeaturesAttributes().getRequiredExtensionsList();
     }
 
     default String getRequiredFeatures() {
-        return getConditionalFeatures().getRequiredFeatures();
+        return getConditionalFeaturesAttributes().getRequiredFeatures();
     }
 
     default List<String> getRequiredFeaturesList() {
-        return getConditionalFeatures().getRequiredFeaturesList();
+        return getConditionalFeaturesAttributes().getRequiredFeaturesList();
     }
 
     default String getSystemLanguage() {
-        return getConditionalFeatures().getSystemLanguage();
+        return getConditionalFeaturesAttributes().getSystemLanguage();
     }
 
     default List<String> getSystemLanguageList() {
-        return getConditionalFeatures().getSystemLanguageList();
+        return getConditionalFeaturesAttributes().getSystemLanguageList();
     }
 
     default boolean hasExtension(String extension) {
-        return getConditionalFeatures().hasExtension(extension);
+        return getConditionalFeaturesAttributes().hasExtension(extension);
     }
 
     default void setRequiredExtensions(String value) {
-        getConditionalFeatures().setRequiredExtensions(value);
+        getConditionalFeaturesAttributes().setRequiredExtensions(value);
     }
 
     default void setRequiredFeatures(String value) {
-        getConditionalFeatures().setRequiredFeatures(value);
+        getConditionalFeaturesAttributes().setRequiredFeatures(value);
     }
 
     default void setSystemLanguage(String value) {
-        getConditionalFeatures().setSystemLanguage(value);
+        getConditionalFeaturesAttributes().setSystemLanguage(value);
     }
 
 }

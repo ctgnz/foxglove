@@ -1,73 +1,73 @@
 package nz.co.ctg.foxglove;
 
-import nz.co.ctg.foxglove.helper.SvgLinkable;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 
 public interface ISvgLinkable {
 
     default String getXmlnsXlink() {
-        return getSvgLinkable().getXmlnsXlink();
+        return getLinkableAttributes().getXmlnsXlink();
     }
 
     default void setXmlnsXlink(String value) {
-        getSvgLinkable().setXmlnsXlink(value);
+        getLinkableAttributes().setXmlnsXlink(value);
     }
 
     default String getXlinkType() {
-        return getSvgLinkable().getXlinkType();
+        return getLinkableAttributes().getXlinkType();
     }
 
     default void setXlinkType(String value) {
-        getSvgLinkable().setXlinkType(value);
+        getLinkableAttributes().setXlinkType(value);
     }
 
     default String getXlinkHref() {
-        return getSvgLinkable().getXlinkHref();
+        return getLinkableAttributes().getXlinkHref();
     }
 
     default void setXlinkHref(String value) {
-        getSvgLinkable().setXlinkHref(value);
+        getLinkableAttributes().setXlinkHref(value);
     }
 
     default String getXlinkRole() {
-        return getSvgLinkable().getXlinkRole();
+        return getLinkableAttributes().getXlinkRole();
     }
 
     default void setXlinkRole(String value) {
-        getSvgLinkable().setXlinkRole(value);
+        getLinkableAttributes().setXlinkRole(value);
     }
 
     default String getXlinkArcrole() {
-        return getSvgLinkable().getXlinkArcrole();
+        return getLinkableAttributes().getXlinkArcrole();
     }
 
     default void setXlinkArcrole(String value) {
-        getSvgLinkable().setXlinkArcrole(value);
+        getLinkableAttributes().setXlinkArcrole(value);
     }
 
     default String getXlinkTitle() {
-        return getSvgLinkable().getXlinkTitle();
+        return getLinkableAttributes().getXlinkTitle();
     }
 
     default void setXlinkTitle(String value) {
-        getSvgLinkable().setXlinkTitle(value);
+        getLinkableAttributes().setXlinkTitle(value);
     }
 
     default String getXlinkShow() {
-        return getSvgLinkable().getXlinkShow();
+        return getLinkableAttributes().getXlinkShow();
     }
 
     default void setXlinkShow(String value) {
-        getSvgLinkable().setXlinkShow(value);
+        getLinkableAttributes().setXlinkShow(value);
     }
 
     default String getXlinkActuate() {
-        return getSvgLinkable().getXlinkActuate();
+        return getLinkableAttributes().getXlinkActuate();
     }
 
     default void setXlinkActuate(String value) {
-        getSvgLinkable().setXlinkActuate(value);
+        getLinkableAttributes().setXlinkActuate(value);
     }
 
-    SvgLinkable getSvgLinkable();
+    SvgLinkableAttributes getLinkableAttributes();
 
 }
