@@ -12,6 +12,8 @@
 
 package org.w3c.dom.svg;
 
+import org.w3c.dom.svg.type.SVGStringList;
+
 public interface SVGTests {
     SVGStringList getRequiredFeatures();
     SVGStringList getRequiredExtensions();

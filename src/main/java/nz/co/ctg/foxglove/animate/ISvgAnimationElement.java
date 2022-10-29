@@ -6,5 +6,9 @@ import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 
 public interface ISvgAnimationElement extends ISvgElement, ISvgExternalResources, ISvgConditionalFeatures, ISvgLinkable {
+//    SVGElement getTargetElement();
+//    float getStartTime();
+//    float getCurrentTime();
+//    float getSimpleDuration();
 
 }

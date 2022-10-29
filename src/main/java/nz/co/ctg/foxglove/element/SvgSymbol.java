@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgEventListener;
+import nz.co.ctg.foxglove.ISvgFitToViewBox;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -53,7 +54,7 @@ import nz.co.ctg.foxglove.text.SvgText;
     "content"
 })
 @XmlRootElement(name = "symbol")
-public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener {
+public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgFitToViewBox {
 
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -444,6 +445,7 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElem
      *     {@link String }
      *
      */
+    @Override
     public String getViewBox() {
         return viewBox;
     }
@@ -456,6 +458,7 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElem
      *     {@link String }
      *
      */
+    @Override
     public void setViewBox(String value) {
         this.viewBox = value;
     }
@@ -468,6 +471,7 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElem
      *     {@link String }
      *
      */
+    @Override
     public String getPreserveAspectRatio() {
         if (preserveAspectRatio == null) {
             return "xMidYMid meet";
@@ -484,6 +488,7 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElem
      *     {@link String }
      *
      */
+    @Override
     public void setPreserveAspectRatio(String value) {
         this.preserveAspectRatio = value;
     }

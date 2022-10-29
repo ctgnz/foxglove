@@ -12,6 +12,8 @@
 
 package org.w3c.dom.svg;
 
+import org.w3c.dom.svg.type.SVGAnimatedBoolean;
+
 public interface SVGExternalResourcesRequired {
     SVGAnimatedBoolean getExternalResourcesRequired();
 }

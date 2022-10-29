@@ -13,6 +13,8 @@
 package org.w3c.dom.svg;
 
 import org.w3c.dom.events.UIEvent;
+import org.w3c.dom.svg.type.SVGPoint;
+import org.w3c.dom.svg.type.SVGRect;
 
 public interface SVGZoomEvent extends UIEvent {
     SVGRect getZoomRectScreen();

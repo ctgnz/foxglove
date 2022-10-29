@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgFitToViewBox;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -36,7 +37,7 @@ import nz.co.ctg.foxglove.description.SvgTitle;
     "content"
 })
 @XmlRootElement(name = "view")
-public class SvgView extends AbstractSvgElement implements ISvgStructuralElement {
+public class SvgView extends AbstractSvgElement implements ISvgStructuralElement, ISvgFitToViewBox {
 
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
@@ -98,6 +99,7 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
      *     {@link String }
      *
      */
+    @Override
     public String getViewBox() {
         return viewBox;
     }
@@ -110,6 +112,7 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
      *     {@link String }
      *
      */
+    @Override
     public void setViewBox(String value) {
         this.viewBox = value;
     }
@@ -122,6 +125,7 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
      *     {@link String }
      *
      */
+    @Override
     public String getPreserveAspectRatio() {
         if (preserveAspectRatio == null) {
             return "xMidYMid meet";
@@ -138,6 +142,7 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
      *     {@link String }
      *
      */
+    @Override
     public void setPreserveAspectRatio(String value) {
         this.preserveAspectRatio = value;
     }

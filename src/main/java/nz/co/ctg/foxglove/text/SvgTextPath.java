@@ -13,12 +13,7 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
-import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
-import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.parser.DoubleListAdapter;
 import nz.co.ctg.foxglove.parser.StrokeLineCapAdapter;
@@ -38,7 +33,7 @@ import javafx.scene.shape.StrokeLineJoin;
     "value"
 })
 @XmlRootElement(name = "textPath")
-public class SvgTextPath implements ISvgElement, ISvgEventListener, ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgLinkable, ISvgValueElement {
+public class SvgTextPath implements ISvgTextContentElement, ISvgLinkable, ISvgValueElement {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)

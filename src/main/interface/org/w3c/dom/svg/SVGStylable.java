@@ -14,6 +14,7 @@ package org.w3c.dom.svg;
 
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.svg.type.SVGAnimatedString;
 
 public interface SVGStylable {
     SVGAnimatedString getClassName();

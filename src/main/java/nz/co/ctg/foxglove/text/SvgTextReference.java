@@ -15,9 +15,6 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -35,7 +32,7 @@ import nz.co.ctg.foxglove.description.SvgTitle;
     "content"
 })
 @XmlRootElement(name = "tref")
-public class SvgTextReference extends AbstractSvgStylable implements ISvgConditionalFeatures, ISvgEventListener, ISvgExternalResources, ISvgLinkable {
+public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgLinkable {
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

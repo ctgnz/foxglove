@@ -12,6 +12,8 @@
 
 package org.w3c.dom.svg;
 
+import org.w3c.dom.svg.type.SVGTransformList;
+
 public interface SVGViewSpec extends SVGZoomAndPan, SVGFitToViewBox {
     SVGTransformList getTransform();
     SVGElement getViewTarget();

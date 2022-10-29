@@ -12,6 +12,9 @@
 
 package org.w3c.dom.svg;
 
+import org.w3c.dom.svg.type.SVGMatrix;
+import org.w3c.dom.svg.type.SVGRect;
+
 public interface SVGLocatable {
     SVGElement getNearestViewportElement();
     SVGElement getFarthestViewportElement();

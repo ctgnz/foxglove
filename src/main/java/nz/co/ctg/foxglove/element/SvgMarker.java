@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgFitToViewBox;
 import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
@@ -54,7 +55,7 @@ import nz.co.ctg.foxglove.text.SvgText;
     "content"
 })
 @XmlRootElement(name = "marker")
-public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable {
+public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgFitToViewBox {
 
     @XmlAttribute(name = "externalResourcesRequired")
     protected boolean externalResourcesRequired;
@@ -313,6 +314,7 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
      *     {@link String }
      *
      */
+    @Override
     public String getViewBox() {
         return viewBox;
     }
@@ -325,6 +327,7 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
      *     {@link String }
      *
      */
+    @Override
     public void setViewBox(String value) {
         this.viewBox = value;
     }
@@ -337,6 +340,7 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
      *     {@link String }
      *
      */
+    @Override
     public String getPreserveAspectRatio() {
         if (preserveAspectRatio == null) {
             return "xMidYMid meet";
@@ -353,6 +357,7 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
      *     {@link String }
      *
      */
+    @Override
     public void setPreserveAspectRatio(String value) {
         this.preserveAspectRatio = value;
     }

@@ -67,7 +67,7 @@ import javafx.scene.layout.Region;
     "content"
 })
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
-public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener, ISvgConditionalFeatures, ISvgExternalResources {
+public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener, ISvgConditionalFeatures, ISvgExternalResources, ISvgFitToViewBox {
 
     @XmlAttribute(name = "xmlns")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -912,6 +912,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
      *     {@link String }
      *
      */
+    @Override
     public String getViewBox() {
         return viewBox;
     }
@@ -924,6 +925,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
      *     {@link String }
      *
      */
+    @Override
     public void setViewBox(String value) {
         this.viewBox = value;
     }
@@ -936,6 +938,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
      *     {@link String }
      *
      */
+    @Override
     public String getPreserveAspectRatio() {
         if (preserveAspectRatio == null) {
             return "xMidYMid meet";
@@ -952,6 +955,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgEventListener
      *     {@link String }
      *
      */
+    @Override
     public void setPreserveAspectRatio(String value) {
         this.preserveAspectRatio = value;
     }

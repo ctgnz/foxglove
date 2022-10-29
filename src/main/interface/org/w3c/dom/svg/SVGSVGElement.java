@@ -17,6 +17,14 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.css.DocumentCSS;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.DocumentEvent;
+import org.w3c.dom.svg.type.SVGAngle;
+import org.w3c.dom.svg.type.SVGAnimatedLength;
+import org.w3c.dom.svg.type.SVGLength;
+import org.w3c.dom.svg.type.SVGMatrix;
+import org.w3c.dom.svg.type.SVGNumber;
+import org.w3c.dom.svg.type.SVGPoint;
+import org.w3c.dom.svg.type.SVGRect;
+import org.w3c.dom.svg.type.SVGTransform;
 
 public interface SVGSVGElement extends SVGElement, SVGTests, SVGLangSpace, SVGExternalResourcesRequired, SVGStylable, SVGLocatable, SVGFitToViewBox, SVGZoomAndPan, DocumentEvent, ViewCSS, DocumentCSS {
     SVGAnimatedLength getX();

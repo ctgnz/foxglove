@@ -12,6 +12,9 @@
 
 package org.w3c.dom.svg;
 
+import org.w3c.dom.svg.type.SVGAnimatedPreserveAspectRatio;
+import org.w3c.dom.svg.type.SVGAnimatedRect;
+
 public interface SVGFitToViewBox {
     SVGAnimatedRect getViewBox();
     SVGAnimatedPreserveAspectRatio getPreserveAspectRatio();

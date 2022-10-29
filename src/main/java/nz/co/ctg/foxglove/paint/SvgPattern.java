@@ -19,6 +19,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgFitToViewBox;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.SvgGraphic;
@@ -67,7 +68,7 @@ import nz.co.ctg.foxglove.text.SvgText;
     "content"
 })
 @XmlRootElement(name = "pattern")
-public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISvgLinkable, ISvgExternalResources, ISvgConditionalFeatures {
+public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISvgLinkable, ISvgExternalResources, ISvgConditionalFeatures, ISvgFitToViewBox {
 
     @XmlAttribute(name = "requiredFeatures")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -700,6 +701,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
      *     {@link String }
      *
      */
+    @Override
     public String getViewBox() {
         return viewBox;
     }
@@ -712,6 +714,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
      *     {@link String }
      *
      */
+    @Override
     public void setViewBox(String value) {
         this.viewBox = value;
     }
@@ -724,6 +727,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
      *     {@link String }
      *
      */
+    @Override
     public String getPreserveAspectRatio() {
         if (preserveAspectRatio == null) {
             return "xMidYMid meet";
@@ -740,6 +744,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
      *     {@link String }
      *
      */
+    @Override
     public void setPreserveAspectRatio(String value) {
         this.preserveAspectRatio = value;
     }
