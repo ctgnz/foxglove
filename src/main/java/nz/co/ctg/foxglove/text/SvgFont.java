@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
@@ -32,8 +34,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "font")
 public class SvgFont extends AbstractSvgStylable implements ISvgExternalResources {
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlAttribute(name = "horiz-origin-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -71,30 +73,9 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
     })
     protected List<ISvgElement> content;
 
-    /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
-    public boolean isExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
     /**
@@ -275,12 +256,6 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

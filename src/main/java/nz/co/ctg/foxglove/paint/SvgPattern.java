@@ -78,6 +78,9 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
     @XmlPath(".")
     protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
+
     @XmlAttribute(name = "xmlns:xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String xmlnsXlink;
@@ -109,9 +112,6 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
     @XmlAttribute(name = "xlink:actuate", namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
-
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -196,6 +196,11 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
     @Override
     public SvgConditionalFeatures getConditionalFeatures() {
         return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
     /**
@@ -420,32 +425,6 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
     @Override
     public void setXlinkActuate(String value) {
         this.xlinkActuate = value;
-    }
-
-    /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean isExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
     }
 
     /**
@@ -744,12 +723,6 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

@@ -55,6 +55,9 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
     @XmlPath(".")
     protected final SvgConditionalFeatures conditionalFeatures = new SvgConditionalFeatures();
 
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
+
     @XmlAttribute(name = "onfocusin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onfocusin;
@@ -95,9 +98,6 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onload;
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
-
     @XmlAttribute(name = "transform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String transform;
@@ -132,6 +132,11 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
     @Override
     public SvgConditionalFeatures getConditionalFeatures() {
         return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
     /**
@@ -395,32 +400,6 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
     }
 
     /**
-     * Gets the value of the externalResourcesRequired property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public boolean isExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    /**
-     * Sets the value of the externalResourcesRequired property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
-    }
-
-    /**
      * Gets the value of the transform property.
      *
      * @return
@@ -495,12 +474,6 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

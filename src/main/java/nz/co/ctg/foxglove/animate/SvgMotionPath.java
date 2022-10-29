@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.animate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
@@ -69,8 +71,8 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xlinkActuate;
 
-    @XmlAttribute(name = "externalResourcesRequired")
-    protected boolean externalResourcesRequired;
+    @XmlPath(".")
+    protected final SvgExternalResources externalResources = new SvgExternalResources();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -176,13 +178,8 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
     }
 
     @Override
-    public boolean isExternalResourcesRequired() {
-        return externalResourcesRequired;
-    }
-
-    @Override
-    public void setExternalResourcesRequired(boolean value) {
-        this.externalResourcesRequired = value;
+    public SvgExternalResources getExternalResources() {
+        return externalResources;
     }
 
     /**
@@ -220,12 +217,6 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public SvgExternalResources getExternalResources() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }
