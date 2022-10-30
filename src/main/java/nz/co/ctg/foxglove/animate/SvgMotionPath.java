@@ -31,23 +31,23 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "mpath", propOrder = {
-    "externalResources", "linkable", "contents"
+    "linkable", "externalResources", "contents"
 })
 @XmlRootElement(name = "mpath")
 public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, ISvgExternalResources, ISvgLinkable {
 
     @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgDescriptiveElement> contents;
+    private List<ISvgDescriptiveElement> contents;
 
     @Override
     public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
@@ -59,30 +59,6 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
         return linkable;
     }
 
-    /**
-     * Gets the value of the descOrTitleOrMetadata property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadata property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDescOrTitleOrMetadata().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     *
-     *
-     */
     public List<ISvgDescriptiveElement> getContents() {
         if (contents == null) {
             contents = new ArrayList<>();
@@ -93,6 +69,8 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
     @Override
     protected void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

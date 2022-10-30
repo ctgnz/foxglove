@@ -67,40 +67,40 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "conditionalFeatures", "content"
+    "conditionalFeatures", "externalResources", "content"
 })
 @XmlRootElement(name = "mask")
 public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {
 
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    private String x;
 
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    private String y;
 
     @XmlAttribute(name = "width")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
+    private String width;
 
     @XmlAttribute(name = "height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
+    private String height;
 
     @XmlAttribute(name = "maskUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String maskUnits;
+    private String maskUnits;
 
     @XmlAttribute(name = "maskContentUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String maskContentUnits;
+    private String maskContentUnits;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -144,7 +144,55 @@ public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {
         @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
+
+    public String getX() {
+        return x;
+    }
+
+    public void setX(String value) {
+        this.x = value;
+    }
+
+    public String getY() {
+        return y;
+    }
+
+    public void setY(String value) {
+        this.y = value;
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String value) {
+        this.width = value;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String value) {
+        this.height = value;
+    }
+
+    public String getMaskUnits() {
+        return maskUnits;
+    }
+
+    public void setMaskUnits(String value) {
+        this.maskUnits = value;
+    }
+
+    public String getMaskContentUnits() {
+        return maskContentUnits;
+    }
+
+    public void setMaskContentUnits(String value) {
+        this.maskContentUnits = value;
+    }
 
     @Override
     public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
@@ -156,211 +204,6 @@ public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {
         return externalResources;
     }
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getX() {
-        return x;
-    }
-
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setX(String value) {
-        this.x = value;
-    }
-
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getY() {
-        return y;
-    }
-
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setY(String value) {
-        this.y = value;
-    }
-
-    /**
-     * Gets the value of the width property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getWidth() {
-        return width;
-    }
-
-    /**
-     * Sets the value of the width property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setWidth(String value) {
-        this.width = value;
-    }
-
-    /**
-     * Gets the value of the height property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getHeight() {
-        return height;
-    }
-
-    /**
-     * Sets the value of the height property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setHeight(String value) {
-        this.height = value;
-    }
-
-    /**
-     * Gets the value of the maskUnits property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getMaskUnits() {
-        return maskUnits;
-    }
-
-    /**
-     * Sets the value of the maskUnits property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setMaskUnits(String value) {
-        this.maskUnits = value;
-    }
-
-    /**
-     * Gets the value of the maskContentUnits property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getMaskContentUnits() {
-        return maskContentUnits;
-    }
-
-    /**
-     * Sets the value of the maskContentUnits property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setMaskContentUnits(String value) {
-        this.maskContentUnits = value;
-    }
-
-    /**
-     * Gets the value of the content property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    content().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     * {@link SvgAnimateMotion }
-     * {@link SvgAnimateColor }
-     * {@link SvgAnimateTransform }
-     * {@link SvgGraphic }
-     * {@link SvgGroup }
-     * {@link SvgDefinitions }
-     * {@link SvgSymbol }
-     * {@link SvgUse }
-     * {@link SvgSwitch }
-     * {@link SvgImage }
-     * {@link SvgStyle }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
-     * {@link SvgText }
-     * {@link SvgAltGlyphDef }
-     * {@link SvgMarker }
-     * {@link SvgColorProfile }
-     * {@link SvgLinearGradient }
-     * {@link SvgRadialGradient }
-     * {@link SvgPattern }
-     * {@link SvgClipPath }
-     * {@link SvgMask }
-     * {@link SvgFilter }
-     * {@link SvgCursor }
-     * {@link SvgAnchor }
-     * {@link SvgView }
-     * {@link SvgScript }
-     * {@link SvgFont }
-     * {@link SvgFontFace }
-     * {@link SvgForeignObject }
-     *
-     *
-     */
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -370,6 +213,14 @@ public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        builder.add("width", width);
+        builder.add("height", height);
+        builder.add("maskUnits", maskUnits);
+        builder.add("maskContentUnits", maskContentUnits);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 }

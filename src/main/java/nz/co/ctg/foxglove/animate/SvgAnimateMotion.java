@@ -38,65 +38,65 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "animateMotion")
 public class SvgAnimateMotion extends AbstractSvgElement implements ISvgAnimationElement {
 
-    @XmlPath(".")
-    protected final SvgAnimationAttributes animation = new SvgAnimationAttributes();
-
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "additive")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String additive;
+    private String additive;
 
     @XmlAttribute(name = "accumulate")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String accumulate;
+    private String accumulate;
 
     @XmlAttribute(name = "calcMode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String calcMode;
+    private String calcMode;
 
     @XmlAttribute(name = "values")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String values;
+    private String values;
 
     @XmlAttribute(name = "keyTimes")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String keyTimes;
+    private String keyTimes;
 
     @XmlAttribute(name = "keySplines")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String keySplines;
+    private String keySplines;
 
     @XmlAttribute(name = "from")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String from;
+    private String from;
 
     @XmlAttribute(name = "by")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String by;
+    private String by;
 
     @XmlAttribute(name = "path")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String path;
+    private String path;
 
     @XmlAttribute(name = "keyPoints")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String keyPoints;
+    private String keyPoints;
 
     @XmlAttribute(name = "rotate")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String rotate;
+    private String rotate;
 
     @XmlAttribute(name = "origin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String origin;
+    private String origin;
+
+    @XmlPath(".")
+    private final SvgAnimationAttributes animation = new SvgAnimationAttributes();
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "mpath", required = true, type = SvgMotionPath.class, namespace = "http://www.w3.org/2000/svg"),
@@ -104,27 +104,7 @@ public class SvgAnimateMotion extends AbstractSvgElement implements ISvgAnimatio
         @XmlElement(name = "title", required = true, type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", required = true, type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> contents;
-
-    @Override
-    public SvgAnimationAttributes getAnimationAttributes() {
-        return animation;
-    }
-
-    @Override
-    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
-        return conditionalFeatures;
-    }
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
+    private List<ISvgElement> contents;
 
     public String getAdditive() {
         if (additive == null) {
@@ -234,31 +214,26 @@ public class SvgAnimateMotion extends AbstractSvgElement implements ISvgAnimatio
         this.origin = value;
     }
 
-    /**
-     * Gets the value of the mpathOrDescOrTitleOrMetadata property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the mpathOrDescOrTitleOrMetadata property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getMpathOrDescOrTitleOrMetadata().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgMotionPath }
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     *
-     *
-     */
+    @Override
+    public SvgAnimationAttributes getAnimationAttributes() {
+        return animation;
+    }
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
     public List<ISvgElement> getContents() {
         if (contents == null) {
             contents = new ArrayList<>();
@@ -268,7 +243,23 @@ public class SvgAnimateMotion extends AbstractSvgElement implements ISvgAnimatio
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("additive", additive);
+        builder.add("accumulate", accumulate);
+        builder.add("calcMode", calcMode);
+        builder.add("values", values);
+        builder.add("keyTimes", keyTimes);
+        builder.add("keySplines", keySplines);
+        builder.add("from", from);
+        builder.add("by", by);
+        builder.add("path", path);
+        builder.add("keyPoints", keyPoints);
+        builder.add("rotate", rotate);
+        builder.add("origin", origin);
         super.toStringDetail(builder);
+        animation.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

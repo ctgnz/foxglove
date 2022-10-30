@@ -1,13 +1,34 @@
 package nz.co.ctg.foxglove.shape;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import javafx.scene.shape.Line;
 
 
@@ -15,21 +36,46 @@ import javafx.scene.shape.Line;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "line")
+@XmlType(name = "line", propOrder = {
+    "conditionalFeatures", "externalResources", "eventListener", "transform", "content"
+})
 @XmlRootElement(name = "line")
-public class SvgLine extends AbstractSvgShape implements ISvgShape<Line> {
+public class SvgLine extends AbstractSvgStylable implements ISvgShape<Line> {
 
     @XmlAttribute(name = "x1")
-    protected double startX;
+    private double startX;
 
     @XmlAttribute(name = "y1")
-    protected double startY;
+    private double startY;
 
     @XmlAttribute(name = "x2")
-    protected double endX;
+    private double endX;
 
     @XmlAttribute(name = "y2")
-    protected double endY;
+    private double endY;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgEventListener eventListener = new SvgEventListener();
+
+    @XmlPath(".")
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
+
+    @XmlElements({
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"), @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
+    })
+    private List<ISvgElement> content;
 
     @Override
     public Line createShape() {
@@ -37,104 +83,67 @@ public class SvgLine extends AbstractSvgShape implements ISvgShape<Line> {
         Line line = new Line(startX, startY, endX, endY);
         setColors(line);
         setStrokeProperties(line);
-        setTransforms(line);
+        line.getTransforms().addAll(transform.getTransformList());
         return line;
     }
 
-    /**
-     * Gets the value of the x2 property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getEndX() {
         return endX;
     }
 
-    /**
-     * Gets the value of the y2 property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getEndY() {
         return endY;
     }
 
-    /**
-     * Gets the value of the x1 property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getStartX() {
         return startX;
     }
 
-    /**
-     * Gets the value of the y1 property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getStartY() {
         return startY;
     }
 
-    /**
-     * Sets the value of the x2 property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setEndX(double value) {
         this.endX = value;
     }
 
-    /**
-     * Sets the value of the y2 property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setEndY(double value) {
         this.endY = value;
     }
 
-    /**
-     * Sets the value of the x1 property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setStartX(double value) {
         this.startX = value;
     }
 
-    /**
-     * Sets the value of the y1 property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setStartY(double value) {
         this.startY = value;
+    }
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
+    @Override
+    public SvgEventListener getEventListener() {
+        return eventListener;
+    }
+
+    @Override
+    public SvgTransformAttribute getTransformAttribute() {
+        return transform;
+    }
+
+    public List<ISvgElement> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
+        }
+        return this.content;
     }
 
     @Override
@@ -144,6 +153,10 @@ public class SvgLine extends AbstractSvgShape implements ISvgShape<Line> {
         builder.add("x2", endX);
         builder.add("y2", endY);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        eventListener.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        transform.toStringDetail(builder);
     }
 
 }

@@ -2,6 +2,8 @@ package nz.co.ctg.foxglove.style;
 
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgElement;
 
@@ -39,100 +41,44 @@ public class SvgStyle extends AbstractSvgElement implements ISvgElement {
     @XmlValueExtension
     protected String value;
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getType() {
         return type;
     }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setType(String value) {
         this.type = value;
     }
 
-    /**
-     * Gets the value of the media property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getMedia() {
         return media;
     }
 
-    /**
-     * Sets the value of the media property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setMedia(String value) {
         this.media = value;
     }
 
-    /**
-     * Gets the value of the title property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getTitle() {
         return title;
     }
 
-    /**
-     * Sets the value of the title property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setTitle(String value) {
         this.title = value;
     }
 
-    /**
-     * Gets the value of the value property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("type", type);
+        builder.add("media", media);
+        builder.add("title", title);
+        super.toStringDetail(builder);
+        builder.add("value", value);
+    }
 }

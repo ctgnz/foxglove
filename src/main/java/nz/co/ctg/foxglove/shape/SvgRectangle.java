@@ -1,13 +1,34 @@
 package nz.co.ctg.foxglove.shape;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import javafx.scene.shape.Rectangle;
 
 
@@ -15,16 +36,52 @@ import javafx.scene.shape.Rectangle;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "rect")
+@XmlType(name = "rect", propOrder = {
+    "conditionalFeatures", "externalResources", "eventListener", "transform", "content"
+})
 @XmlRootElement(name = "rect")
-public class SvgRectangle extends AbstractSvgShape implements ISvgShape<Rectangle> {
+public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Rectangle> {
 
-    private @XmlAttribute(name = "x") double x;
-    private @XmlAttribute(name = "y") double y;
-    private @XmlAttribute(name = "width", required = true) double width;
-    private @XmlAttribute(name = "height", required = true) double height;
-    private @XmlAttribute(name = "rx") double radiusX;
-    private @XmlAttribute(name = "ry") double radiusY;
+    @XmlAttribute(name = "x")
+    private double x;
+
+    @XmlAttribute(name = "y")
+    private double y;
+
+    @XmlAttribute(name = "width", required = true)
+    private double width;
+
+    @XmlAttribute(name = "height", required = true)
+    private double height;
+
+    @XmlAttribute(name = "rx")
+    private double radiusX;
+
+    @XmlAttribute(name = "ry")
+    private double radiusY;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgEventListener eventListener = new SvgEventListener();
+
+    @XmlPath(".")
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
+
+    @XmlElements({
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"), @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
+    })
+    private List<ISvgElement> content;
 
     public SvgRectangle() {
     }
@@ -37,152 +94,83 @@ public class SvgRectangle extends AbstractSvgShape implements ISvgShape<Rectangl
         rect.setArcHeight(radiusY);
         setColors(rect);
         setStrokeProperties(rect);
-        setTransforms(rect);
+        rect.getTransforms().addAll(transform.getTransformList());
         return rect;
     }
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getX() {
         return x;
     }
 
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setX(double value) {
         this.x = value;
     }
 
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getY() {
         return y;
     }
 
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setY(double value) {
         this.y = value;
     }
 
-    /**
-     * Gets the value of the width property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getWidth() {
         return width;
     }
 
-    /**
-     * Sets the value of the width property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setWidth(double value) {
         this.width = value;
     }
 
-    /**
-     * Gets the value of the height property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getHeight() {
         return height;
     }
 
-    /**
-     * Sets the value of the height property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setHeight(double value) {
         this.height = value;
     }
 
-    /**
-     * Gets the value of the rx property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getRadiusX() {
         return radiusX;
     }
 
-    /**
-     * Sets the value of the rx property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setRadiusX(double value) {
         this.radiusX = value;
     }
 
-    /**
-     * Gets the value of the ry property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getRadiusY() {
         return radiusY;
     }
 
-    /**
-     * Sets the value of the ry property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setRadiusY(double value) {
         this.radiusY = value;
+    }
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
+    @Override
+    public SvgEventListener getEventListener() {
+        return eventListener;
+    }
+
+    @Override
+    public SvgTransformAttribute getTransformAttribute() {
+        return transform;
+    }
+
+    public List<ISvgElement> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
+        }
+        return this.content;
     }
 
     @Override
@@ -194,6 +182,10 @@ public class SvgRectangle extends AbstractSvgShape implements ISvgShape<Rectangl
         builder.add("rx", radiusX);
         builder.add("ry", radiusY);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        eventListener.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        transform.toStringDetail(builder);
     }
 
 }

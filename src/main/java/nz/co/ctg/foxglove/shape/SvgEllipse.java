@@ -1,13 +1,34 @@
 package nz.co.ctg.foxglove.shape;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import javafx.scene.shape.Ellipse;
 
 
@@ -15,21 +36,46 @@ import javafx.scene.shape.Ellipse;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ellipse")
+@XmlType(name = "ellipse", propOrder = {
+    "conditionalFeatures", "externalResources", "eventListener", "transform", "content"
+})
 @XmlRootElement(name = "ellipse")
-public class SvgEllipse extends AbstractSvgShape implements ISvgShape<Ellipse> {
+public class SvgEllipse extends AbstractSvgStylable implements ISvgShape<Ellipse> {
 
     @XmlAttribute(name = "cx")
-    protected double centreX;
+    private double centreX;
 
     @XmlAttribute(name = "cy")
-    protected double centreY;
+    private double centreY;
 
     @XmlAttribute(name = "rx", required = true)
-    protected double radiusX;
+    private double radiusX;
 
     @XmlAttribute(name = "ry", required = true)
-    protected double radiusY;
+    private double radiusY;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgEventListener eventListener = new SvgEventListener();
+
+    @XmlPath(".")
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
+
+    @XmlElements({
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"), @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
+    })
+    private List<ISvgElement> content;
 
     @Override
     public Ellipse createShape() {
@@ -37,104 +83,67 @@ public class SvgEllipse extends AbstractSvgShape implements ISvgShape<Ellipse> {
         Ellipse ellipse = new Ellipse(centreY, centreX, radiusX, radiusY);
         setColors(ellipse);
         setStrokeProperties(ellipse);
-        setTransforms(ellipse);
+        ellipse.getTransforms().addAll(transform.getTransformList());
         return ellipse;
     }
 
-    /**
-     * Gets the value of the cx property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getCentreX() {
         return centreX;
     }
 
-    /**
-     * Gets the value of the cy property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getCentreY() {
         return centreY;
     }
 
-    /**
-     * Gets the value of the rx property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getRadiusX() {
         return radiusX;
     }
 
-    /**
-     * Gets the value of the ry property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getRadiusY() {
         return radiusY;
     }
 
-    /**
-     * Sets the value of the cx property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setCentreX(double value) {
         this.centreX = value;
     }
 
-    /**
-     * Sets the value of the cy property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setCentreY(double value) {
         this.centreY = value;
     }
 
-    /**
-     * Sets the value of the rx property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setRadiusX(double value) {
         this.radiusX = value;
     }
 
-    /**
-     * Sets the value of the ry property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setRadiusY(double value) {
         this.radiusY = value;
+    }
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
+    @Override
+    public SvgEventListener getEventListener() {
+        return eventListener;
+    }
+
+    @Override
+    public SvgTransformAttribute getTransformAttribute() {
+        return transform;
+    }
+
+    public List<ISvgElement> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
+        }
+        return this.content;
     }
 
     @Override
@@ -144,6 +153,10 @@ public class SvgEllipse extends AbstractSvgShape implements ISvgShape<Ellipse> {
         builder.add("rx", radiusX);
         builder.add("ry", radiusY);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        eventListener.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        transform.toStringDetail(builder);
     }
 
 }

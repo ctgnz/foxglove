@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
@@ -159,6 +161,12 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        super.toStringDetail(builder);
+        transform.toStringDetail(builder);
     }
 
 }

@@ -47,23 +47,23 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "conditionalFeatures", "transform", "content"
+    "conditionalFeatures", "externalResources", "transform", "content"
 })
 @XmlRootElement(name = "clipPath")
 public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement, ISvgTransformable {
 
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
-    @XmlPath(".")
-    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
-
     @XmlAttribute(name = "clipPathUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String clipPathUnits;
+    private String clipPathUnits;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -84,7 +84,15 @@ public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement,
         @XmlElement(name = "polygon", type = SvgPolygon.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "text", type = SvgText.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
+
+    public String getClipPathUnits() {
+        return clipPathUnits;
+    }
+
+    public void setClipPathUnits(String value) {
+        this.clipPathUnits = value;
+    }
 
     @Override
     public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
@@ -101,68 +109,6 @@ public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement,
         return transform;
     }
 
-    /**
-     * Gets the value of the clipPathUnits property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getClipPathUnits() {
-        return clipPathUnits;
-    }
-
-    /**
-     * Sets the value of the clipPathUnits property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setClipPathUnits(String value) {
-        this.clipPathUnits = value;
-    }
-
-    /**
-     * Gets the value of the content property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    content().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     * {@link SvgAnimateMotion }
-     * {@link SvgAnimateColor }
-     * {@link SvgAnimateTransform }
-     * {@link SvgUse }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
-     * {@link SvgText }
-     *
-     *
-     */
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -172,6 +118,10 @@ public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement,
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("clipPathUnits", clipPathUnits);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        transform.toStringDetail(builder);
     }
 }

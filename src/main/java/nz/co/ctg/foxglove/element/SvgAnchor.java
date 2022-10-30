@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.element;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgEventListener;
@@ -15,8 +17,6 @@ import nz.co.ctg.foxglove.attributes.SvgEventListener;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
-
-import static com.google.common.base.MoreObjects.toStringHelper;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -135,8 +135,8 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     }
 
     @Override
-    public String toString() {
-        return toStringHelper("a").omitNullValues().toString();
+    protected void toStringDetail(ToStringHelper builder) {
+        super.toStringDetail(builder);
+        transform.toStringDetail(builder);
     }
-
 }

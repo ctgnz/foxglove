@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.parser.SvgTransformListHandler;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -32,6 +34,10 @@ public class SvgTransformAttribute {
             return Collections.emptyList();
         }
         return adapter.parse(getTransform());
+    }
+
+    public void toStringDetail(ToStringHelper builder) {
+        builder.add("transform", transform);
     }
 
 }

@@ -1,13 +1,34 @@
 package nz.co.ctg.foxglove.shape;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import javafx.scene.shape.Circle;
 
 
@@ -15,18 +36,43 @@ import javafx.scene.shape.Circle;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "circle")
+@XmlType(name = "circle", propOrder = {
+    "conditionalFeatures", "externalResources", "eventListener", "transform", "content"
+})
 @XmlRootElement(name = "circle")
-public class SvgCircle extends AbstractSvgShape implements ISvgShape<Circle> {
+public class SvgCircle extends AbstractSvgStylable implements ISvgShape<Circle> {
 
     @XmlAttribute(name = "cx")
-    protected double centreX;
+    private double centreX;
 
     @XmlAttribute(name = "cy")
-    protected double centreY;
+    private double centreY;
 
     @XmlAttribute(name = "r", required = true)
-    protected double radius;
+    private double radius;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgEventListener eventListener = new SvgEventListener();
+
+    @XmlPath(".")
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
+
+    @XmlElements({
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"), @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
+    })
+    private List<ISvgElement> content;
 
     @Override
     public Circle createShape() {
@@ -34,80 +80,59 @@ public class SvgCircle extends AbstractSvgShape implements ISvgShape<Circle> {
         Circle circle = new Circle(centreX, centreY, radius);
         setColors(circle);
         setStrokeProperties(circle);
-        setTransforms(circle);
+        circle.getTransforms().addAll(transform.getTransformList());
         return circle;
     }
 
-    /**
-     * Gets the value of the cx property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getCentreX() {
         return centreX;
     }
 
-    /**
-     * Gets the value of the cy property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getCentreY() {
         return centreY;
     }
 
-    /**
-     * Gets the value of the r property.
-     *
-     * @return
-     *     possible object is
-     *     {@link double }
-     *
-     */
     public double getRadius() {
         return radius;
     }
 
-    /**
-     * Sets the value of the cx property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setCentreX(double value) {
         this.centreX = value;
     }
 
-    /**
-     * Sets the value of the cy property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setCentreY(double value) {
         this.centreY = value;
     }
 
-    /**
-     * Sets the value of the r property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link double }
-     *
-     */
     public void setRadius(double value) {
         this.radius = value;
+    }
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
+    @Override
+    public SvgEventListener getEventListener() {
+        return eventListener;
+    }
+
+    @Override
+    public SvgTransformAttribute getTransformAttribute() {
+        return transform;
+    }
+
+    public List<ISvgElement> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
+        }
+        return this.content;
     }
 
     @Override
@@ -116,6 +141,10 @@ public class SvgCircle extends AbstractSvgShape implements ISvgShape<Circle> {
         builder.add("cy", centreY);
         builder.add("r", radius);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        eventListener.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        transform.toStringDetail(builder);
     }
 
 }

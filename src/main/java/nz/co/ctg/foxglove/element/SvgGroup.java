@@ -239,7 +239,7 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
         conditionalFeatures.toStringDetail(builder);
         eventListener.toStringDetail(builder);
         externalResources.toStringDetail(builder);
-        builder.add("transform", transform);
+        transform.toStringDetail(builder);
     }
 
 }

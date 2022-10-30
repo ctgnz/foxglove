@@ -37,32 +37,48 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "set")
 public class SvgSetAttribute extends AbstractSvgElement implements ISvgAnimationElement {
 
-    @XmlPath(".")
-    protected final SvgAnimationAttributes animation = new SvgAnimationAttributes();
-
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "attributeName", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String attributeName;
+    private String attributeName;
 
     @XmlAttribute(name = "attributeType")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String attributeType;
+    private String attributeType;
+
+    @XmlPath(".")
+    private final SvgAnimationAttributes animation = new SvgAnimationAttributes();
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgDescriptiveElement> contents;
+    private List<ISvgDescriptiveElement> contents;
+
+    public String getAttributeName() {
+        return attributeName;
+    }
+
+    public void setAttributeName(String value) {
+        this.attributeName = value;
+    }
+
+    public String getAttributeType() {
+        return attributeType;
+    }
+
+    public void setAttributeType(String value) {
+        this.attributeType = value;
+    }
 
     @Override
     public SvgAnimationAttributes getAnimationAttributes() {
@@ -84,46 +100,6 @@ public class SvgSetAttribute extends AbstractSvgElement implements ISvgAnimation
         return externalResources;
     }
 
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    public void setAttributeName(String value) {
-        this.attributeName = value;
-    }
-
-    public String getAttributeType() {
-        return attributeType;
-    }
-
-    public void setAttributeType(String value) {
-        this.attributeType = value;
-    }
-
-    /**
-     * Gets the value of the descOrTitleOrMetadata property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadata property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDescOrTitleOrMetadata().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     *
-     *
-     */
     public List<ISvgDescriptiveElement> getContents() {
         if (contents == null) {
             contents = new ArrayList<>();
@@ -133,7 +109,13 @@ public class SvgSetAttribute extends AbstractSvgElement implements ISvgAnimation
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("attributeName", attributeName);
+        builder.add("attributeType", attributeType);
         super.toStringDetail(builder);
+        animation.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

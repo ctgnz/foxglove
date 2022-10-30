@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove.animate;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
@@ -9,59 +11,59 @@ public class SvgAnimationAttributes {
 
     @XmlAttribute(name = "onbegin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onBegin;
+    private String onBegin;
 
     @XmlAttribute(name = "onend")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onEnd;
+    private String onEnd;
 
     @XmlAttribute(name = "onrepeat")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onRepeat;
+    private String onRepeat;
 
     @XmlAttribute(name = "onload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onLoad;
+    private String onLoad;
 
     @XmlAttribute(name = "begin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String begin;
+    private String begin;
 
     @XmlAttribute(name = "dur")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String duration;
+    private String duration;
 
     @XmlAttribute(name = "end")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String end;
+    private String end;
 
     @XmlAttribute(name = "min")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String min;
+    private String min;
 
     @XmlAttribute(name = "max")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String max;
+    private String max;
 
     @XmlAttribute(name = "restart")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String restart;
+    private String restart;
 
     @XmlAttribute(name = "repeatCount")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String repeatCount;
+    private String repeatCount;
 
     @XmlAttribute(name = "repeatDur")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String repeatDuration;
+    private String repeatDuration;
 
     @XmlAttribute(name = "fill")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String fill;
+    private String fill;
 
     @XmlAttribute(name = "to")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String to;
+    private String to;
 
     public String getOnBegin() {
         return onBegin;
@@ -181,6 +183,23 @@ public class SvgAnimationAttributes {
 
     public void setTo(String value) {
         this.to = value;
+    }
+
+    public void toStringDetail(ToStringHelper builder) {
+        builder.add("onBegin", onBegin);
+        builder.add("onEnd", onEnd);
+        builder.add("onRepeat", onRepeat);
+        builder.add("onLoad", onLoad);
+        builder.add("begin", begin);
+        builder.add("duration", duration);
+        builder.add("end", end);
+        builder.add("min", min);
+        builder.add("max", max);
+        builder.add("restart", restart);
+        builder.add("repeatCount", repeatCount);
+        builder.add("repeatDuration", repeatDuration);
+        builder.add("fill", fill);
+        builder.add("to", to);
     }
 
 }

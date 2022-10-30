@@ -40,12 +40,6 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "radialGradient")
 public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradientElement {
 
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "cx")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String cx;
@@ -78,6 +72,12 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String spreadMethod;
 
+    @XmlPath(".")
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
@@ -88,16 +88,6 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<ISvgElement> content;
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
 
     /**
      * Gets the value of the cx property.
@@ -289,6 +279,16 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
      */
     public void setSpreadMethod(String value) {
         this.spreadMethod = value;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
     }
 
     /**

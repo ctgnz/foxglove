@@ -11,6 +11,8 @@ package nz.co.ctg.foxglove.element;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgEventListener;
@@ -212,6 +214,12 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
     @Override
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        super.toStringDetail(builder);
+        transform.toStringDetail(builder);
     }
 
 }

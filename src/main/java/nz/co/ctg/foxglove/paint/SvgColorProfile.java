@@ -38,9 +38,6 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "color-profile")
 public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, ISvgLinkable {
 
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
     @XmlAttribute(name = "local")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String local;
@@ -53,17 +50,15 @@ public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, 
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String renderingIntent;
 
+    @XmlPath(".")
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<ISvgDescriptiveElement> content;
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
 
     /**
      * Gets the value of the local property.
@@ -139,6 +134,11 @@ public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, 
      */
     public void setRenderingIntent(String value) {
         this.renderingIntent = value;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
     }
 
     /**

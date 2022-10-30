@@ -38,84 +38,64 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "animateColor")
 public class SvgAnimateColor extends AbstractSvgElement implements ISvgAnimationElement {
 
-    @XmlPath(".")
-    protected final SvgAnimationAttributes animation = new SvgAnimationAttributes();
-
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "attributeName", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String attributeName;
+    private String attributeName;
 
     @XmlAttribute(name = "attributeType")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String attributeType;
+    private String attributeType;
 
     @XmlAttribute(name = "calcMode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String calcMode;
+    private String calcMode;
 
     @XmlAttribute(name = "values")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String values;
+    private String values;
 
     @XmlAttribute(name = "keyTimes")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String keyTimes;
+    private String keyTimes;
 
     @XmlAttribute(name = "keySplines")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String keySplines;
+    private String keySplines;
 
     @XmlAttribute(name = "from")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String from;
+    private String from;
 
     @XmlAttribute(name = "by")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String by;
+    private String by;
 
     @XmlAttribute(name = "additive")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String additive;
+    private String additive;
 
     @XmlAttribute(name = "accumulate")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String accumulate;
+    private String accumulate;
+
+    @XmlPath(".")
+    private final SvgAnimationAttributes animation = new SvgAnimationAttributes();
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgDescriptiveElement> contents;
-
-    @Override
-    public SvgAnimationAttributes getAnimationAttributes() {
-        return animation;
-    }
-
-    @Override
-    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
-        return conditionalFeatures;
-    }
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
+    private List<ISvgDescriptiveElement> contents;
 
     public String getAttributeName() {
         return attributeName;
@@ -209,30 +189,6 @@ public class SvgAnimateColor extends AbstractSvgElement implements ISvgAnimation
         this.accumulate = value;
     }
 
-    /**
-     * Gets the value of the descOrTitleOrMetadata property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the descOrTitleOrMetadata property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDescOrTitleOrMetadata().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     *
-     *
-     */
     public List<ISvgDescriptiveElement> getContents() {
         if (contents == null) {
             contents = new ArrayList<>();
@@ -241,8 +197,42 @@ public class SvgAnimateColor extends AbstractSvgElement implements ISvgAnimation
     }
 
     @Override
+    public SvgAnimationAttributes getAnimationAttributes() {
+        return animation;
+    }
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
+    @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("attributeName", attributeName);
+        builder.add("attributeType", attributeType);
+        builder.add("calcMode", calcMode);
+        builder.add("values", values);
+        builder.add("keyTimes", keyTimes);
+        builder.add("keySplines", keySplines);
+        builder.add("from", from);
+        builder.add("by", by);
+        builder.add("additive", additive);
+        builder.add("accumulate", accumulate);
         super.toStringDetail(builder);
+        animation.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }
