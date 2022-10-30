@@ -18,6 +18,7 @@ import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgEventListener;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
@@ -40,7 +41,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "conditionalFeatures", "linkable", "externalResources", "content"
+    "conditionalFeatures", "linkable", "externalResources", "eventListener", "content"
 })
 @XmlRootElement(name = "image")
 public class SvgImage extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgEventListener, ISvgConditionalFeatures, ISvgLinkable, ISvgTransformable {
@@ -54,45 +55,8 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
     @XmlPath(".")
     protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
-    @XmlAttribute(name = "onfocusin")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onfocusin;
-
-    @XmlAttribute(name = "onfocusout")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onfocusout;
-
-    @XmlAttribute(name = "onactivate")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onactivate;
-
-    @XmlAttribute(name = "onclick")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onclick;
-
-    @XmlAttribute(name = "onmousedown")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmousedown;
-
-    @XmlAttribute(name = "onmouseup")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmouseup;
-
-    @XmlAttribute(name = "onmouseover")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmouseover;
-
-    @XmlAttribute(name = "onmousemove")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmousemove;
-
-    @XmlAttribute(name = "onmouseout")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onmouseout;
-
-    @XmlAttribute(name = "onload")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onload;
+    @XmlPath(".")
+    protected final SvgEventListener eventListener = new SvgEventListener();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -145,264 +109,9 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
         return externalResources;
     }
 
-    /**
-     * Gets the value of the onfocusin property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
-    public String getOnFocusIn() {
-        return onfocusin;
-    }
-
-    /**
-     * Sets the value of the onfocusin property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnFocusIn(String value) {
-        this.onfocusin = value;
-    }
-
-    /**
-     * Gets the value of the onfocusout property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnFocusOut() {
-        return onfocusout;
-    }
-
-    /**
-     * Sets the value of the onfocusout property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnFocusOut(String value) {
-        this.onfocusout = value;
-    }
-
-    /**
-     * Gets the value of the onactivate property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnActivate() {
-        return onactivate;
-    }
-
-    /**
-     * Sets the value of the onactivate property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnActivate(String value) {
-        this.onactivate = value;
-    }
-
-    /**
-     * Gets the value of the onclick property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnClick() {
-        return onclick;
-    }
-
-    /**
-     * Sets the value of the onclick property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnClick(String value) {
-        this.onclick = value;
-    }
-
-    /**
-     * Gets the value of the onmousedown property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnMouseDown() {
-        return onmousedown;
-    }
-
-    /**
-     * Sets the value of the onmousedown property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnMouseDown(String value) {
-        this.onmousedown = value;
-    }
-
-    /**
-     * Gets the value of the onmouseup property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnMouseUp() {
-        return onmouseup;
-    }
-
-    /**
-     * Sets the value of the onmouseup property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnMouseUp(String value) {
-        this.onmouseup = value;
-    }
-
-    /**
-     * Gets the value of the onmouseover property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnMouseOver() {
-        return onmouseover;
-    }
-
-    /**
-     * Sets the value of the onmouseover property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnMouseOver(String value) {
-        this.onmouseover = value;
-    }
-
-    /**
-     * Gets the value of the onmousemove property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnMouseMove() {
-        return onmousemove;
-    }
-
-    /**
-     * Sets the value of the onmousemove property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnMouseMove(String value) {
-        this.onmousemove = value;
-    }
-
-    /**
-     * Gets the value of the onmouseout property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnMouseOut() {
-        return onmouseout;
-    }
-
-    /**
-     * Sets the value of the onmouseout property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnMouseOut(String value) {
-        this.onmouseout = value;
-    }
-
-    /**
-     * Gets the value of the onload property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getOnLoad() {
-        return onload;
-    }
-
-    /**
-     * Sets the value of the onload property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setOnLoad(String value) {
-        this.onload = value;
+    public SvgEventListener getEventListener() {
+        return eventListener;
     }
 
     /**

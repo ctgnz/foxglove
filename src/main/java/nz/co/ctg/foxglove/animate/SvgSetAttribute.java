@@ -52,6 +52,11 @@ public class SvgSetAttribute extends AbstractSvgAnimationElement implements ISvg
     })
     protected List<ISvgDescriptiveElement> contents;
 
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
     public String getAttributeName() {
         return attributeName;
     }
@@ -103,11 +108,6 @@ public class SvgSetAttribute extends AbstractSvgAnimationElement implements ISvg
     protected void toStringDetail(ToStringHelper builder) {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
     }
 
 }

@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove.attributes;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -16,6 +18,10 @@ public class SvgExternalResourcesAttributes {
 
     public void setExternalResourcesRequired(boolean value) {
         this.externalResourcesRequired = value;
+    }
+
+    public void toStringDetail(ToStringHelper builder) {
+        builder.add("externalResourcesRequired", isExternalResourcesRequired());
     }
 
 }

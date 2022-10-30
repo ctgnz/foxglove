@@ -1,45 +1,89 @@
 package nz.co.ctg.foxglove;
 
+import nz.co.ctg.foxglove.attributes.SvgEventListener;
+
 public interface ISvgEventListener {
 
-    String getOnFocusIn();
+    default String getOnFocusIn() {
+        return getEventListener().getOnFocusIn();
+    }
 
-    void setOnFocusIn(String value);
+    default void setOnFocusIn(String value) {
+        getEventListener().setOnFocusIn(value);
+    }
 
-    String getOnFocusOut();
+    default String getOnFocusOut() {
+        return getEventListener().getOnFocusOut();
+    }
 
-    void setOnFocusOut(String value);
+    default void setOnFocusOut(String value) {
+        getEventListener().setOnFocusOut(value);
+    }
 
-    String getOnActivate();
+    default String getOnActivate() {
+        return getEventListener().getOnActivate();
+    }
 
-    void setOnActivate(String value);
+    default void setOnActivate(String value) {
+        getEventListener().setOnActivate(value);
+    }
 
-    String getOnClick();
+    default String getOnClick() {
+        return getEventListener().getOnClick();
+    }
 
-    void setOnClick(String value);
+    default void setOnClick(String value) {
+        getEventListener().setOnClick(value);
+    }
 
-    String getOnMouseDown();
+    default String getOnMouseDown() {
+        return getEventListener().getOnMouseDown();
+    }
 
-    void setOnMouseDown(String value);
+    default void setOnMouseDown(String value) {
+        getEventListener().setOnMouseDown(value);
+    }
 
-    String getOnMouseUp();
+    default String getOnMouseUp() {
+        return getEventListener().getOnMouseUp();
+    }
 
-    void setOnMouseUp(String value);
+    default void setOnMouseUp(String value) {
+        getEventListener().setOnMouseUp(value);
+    }
 
-    String getOnMouseOver();
+    default String getOnMouseOver() {
+        return getEventListener().getOnMouseOver();
+    }
 
-    void setOnMouseOver(String value);
+    default void setOnMouseOver(String value) {
+        getEventListener().setOnMouseOver(value);
+    }
 
-    String getOnMouseMove();
+    default String getOnMouseMove() {
+        return getEventListener().getOnMouseMove();
+    }
 
-    void setOnMouseMove(String value);
+    default void setOnMouseMove(String value) {
+        getEventListener().setOnMouseMove(value);
+    }
 
-    String getOnMouseOut();
+    default String getOnMouseOut() {
+        return getEventListener().getOnMouseOut();
+    }
 
-    void setOnMouseOut(String value);
+    default void setOnMouseOut(String value) {
+        getEventListener().setOnMouseOut(value);
+    }
 
-    String getOnLoad();
+    default String getOnLoad() {
+        return getEventListener().getOnLoad();
+    }
 
-    void setOnLoad(String value);
+    default void setOnLoad(String value) {
+        getEventListener().setOnLoad(value);
+    }
+
+    SvgEventListener getEventListener();
 
 }

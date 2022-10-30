@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove.attributes;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -119,6 +121,17 @@ public class SvgLinkableAttributes {
 
     public void setXlinkActuate(String value) {
         this.xlinkActuate = value;
+    }
+
+    public void toStringDetail(ToStringHelper builder) {
+        builder.add("xmlnsXlink", xmlnsXlink);
+        builder.add("xlinkType", xlinkType);
+        builder.add("xlinkHref", xlinkHref);
+        builder.add("xlinkRole", xlinkRole);
+        builder.add("xlinkArcrole", xlinkArcrole);
+        builder.add("xlinkTitle", xlinkTitle);
+        builder.add("xlinkShow", xlinkShow);
+        builder.add("xlinkActuate", xlinkActuate);
     }
 
 }

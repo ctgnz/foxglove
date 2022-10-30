@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import static java.util.stream.Collectors.toList;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -64,6 +66,12 @@ public class SvgConditionalFeaturesAttributes {
 
     public boolean hasExtension(String extension) {
         return getRequiredExtensionsList().contains(extension);
+    }
+
+    public void toStringDetail(ToStringHelper builder) {
+        builder.add("requiredFeatures", getRequiredFeatures());
+        builder.add("requiredExtensions", getRequiredExtensions());
+        builder.add("systemLanguage", getSystemLanguage());
     }
 
 }
