@@ -43,56 +43,36 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "foreignObject")
 public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgEventListener, ISvgConditionalFeatures, ISvgTransformable, ISvgValueElement {
 
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
-    @XmlPath(".")
-    protected final SvgEventListener eventListener = new SvgEventListener();
-
-    @XmlPath(".")
-    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    private String x;
 
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    private String y;
 
     @XmlAttribute(name = "width", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
+    private String width;
 
     @XmlAttribute(name = "height", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
+    private String height;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgEventListener eventListener = new SvgEventListener();
+
+    @XmlPath(".")
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlValueExtension
-    protected String value;
-
-    @Override
-    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
-        return conditionalFeatures;
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
-
-    @Override
-    public SvgEventListener getEventListener() {
-        return eventListener;
-    }
-
-    @Override
-    public SvgTransformAttribute getTransformAttribute() {
-        return transform;
-    }
+    private String value;
 
     /**
      * Gets the value of the x property.
@@ -190,6 +170,26 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
         this.height = value;
     }
 
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
+    @Override
+    public SvgEventListener getEventListener() {
+        return eventListener;
+    }
+
+    @Override
+    public SvgTransformAttribute getTransformAttribute() {
+        return transform;
+    }
+
     /**
      * Gets the value of the value property.
      *
@@ -218,7 +218,14 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        builder.add("width", width);
+        builder.add("height", height);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        eventListener.toStringDetail(builder);
         transform.toStringDetail(builder);
     }
 

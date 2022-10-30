@@ -28,7 +28,7 @@ public class SvgFontFaceSrc extends AbstractSvgElement {
         @XmlElement(name = "font-face-uri", required = true, type = SvgFontFaceUri.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "font-face-name", required = true, type = SvgFontFaceName.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the content property.

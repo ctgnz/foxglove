@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
@@ -32,135 +34,135 @@ public class SvgFontFace extends AbstractSvgElement {
 
     @XmlAttribute(name = "font-family")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fontFamily;
+    private String fontFamily;
 
     @XmlAttribute(name = "font-style")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fontStyle;
+    private String fontStyle;
 
     @XmlAttribute(name = "font-variant")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fontVariant;
+    private String fontVariant;
 
     @XmlAttribute(name = "font-weight")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fontWeight;
+    private String fontWeight;
 
     @XmlAttribute(name = "font-stretch")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fontStretch;
+    private String fontStretch;
 
     @XmlAttribute(name = "font-size")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fontSize;
+    private String fontSize;
 
     @XmlAttribute(name = "unicode-range")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String unicodeRange;
+    private String unicodeRange;
 
     @XmlAttribute(name = "units-per-em")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String unitsPerEm;
+    private String unitsPerEm;
 
     @XmlAttribute(name = "panose-1")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String panose1;
+    private String panose1;
 
     @XmlAttribute(name = "stemv")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String stemWidthVertical;
+    private String stemWidthVertical;
 
     @XmlAttribute(name = "stemh")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String stemWidthHorizontal;
+    private String stemWidthHorizontal;
 
     @XmlAttribute(name = "slope")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String slope;
+    private String slope;
 
     @XmlAttribute(name = "cap-height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String capHeight;
+    private String capHeight;
 
     @XmlAttribute(name = "x-height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xHeight;
+    private String xHeight;
 
     @XmlAttribute(name = "accent-height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String accentHeight;
+    private String accentHeight;
 
     @XmlAttribute(name = "ascent")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String ascent;
+    private String ascent;
 
     @XmlAttribute(name = "descent")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String descent;
+    private String descent;
 
     @XmlAttribute(name = "widths")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String widths;
+    private String widths;
 
     @XmlAttribute(name = "bbox")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String boundingBox;
+    private String boundingBox;
 
     @XmlAttribute(name = "ideographic")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String ideographic;
+    private String ideographic;
 
     @XmlAttribute(name = "alphabetic")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String alphabetic;
+    private String alphabetic;
 
     @XmlAttribute(name = "mathematical")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String mathematical;
+    private String mathematical;
 
     @XmlAttribute(name = "hanging")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String hanging;
+    private String hanging;
 
     @XmlAttribute(name = "v-ideographic")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vIdeographic;
+    private String vIdeographic;
 
     @XmlAttribute(name = "v-alphabetic")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vAlphabetic;
+    private String vAlphabetic;
 
     @XmlAttribute(name = "v-mathematical")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vMathematical;
+    private String vMathematical;
 
     @XmlAttribute(name = "v-hanging")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vHanging;
+    private String vHanging;
 
     @XmlAttribute(name = "underline-position")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String underlinePosition;
+    private String underlinePosition;
 
     @XmlAttribute(name = "underline-thickness")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String underlineThickness;
+    private String underlineThickness;
 
     @XmlAttribute(name = "strikethrough-position")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strikethroughPosition;
+    private String strikethroughPosition;
 
     @XmlAttribute(name = "strikethrough-thickness")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String strikethroughThickness;
+    private String strikethroughThickness;
 
     @XmlAttribute(name = "overline-position")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String overlinePosition;
+    private String overlinePosition;
 
     @XmlAttribute(name = "overline-thickness")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String overlineThickness;
+    private String overlineThickness;
 
     @XmlElements({
         @XmlElement(name = "font-face-src", required = true, type = SvgFontFaceSrc.class, namespace = "http://www.w3.org/2000/svg"),
@@ -168,7 +170,7 @@ public class SvgFontFace extends AbstractSvgElement {
         @XmlElement(name = "title", required = true, type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", required = true, type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the fontFamily property.
@@ -992,6 +994,44 @@ public class SvgFontFace extends AbstractSvgElement {
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("fontFamily", fontFamily);
+        builder.add("fontStyle", fontStyle);
+        builder.add("fontVariant", fontVariant);
+        builder.add("fontWeight", fontWeight);
+        builder.add("fontStretch", fontStretch);
+        builder.add("fontSize", fontSize);
+        builder.add("unicodeRange", unicodeRange);
+        builder.add("unitsPerEm", unitsPerEm);
+        builder.add("panose1", panose1);
+        builder.add("stemWidthVertical", stemWidthVertical);
+        builder.add("stemWidthHorizontal", stemWidthHorizontal);
+        builder.add("slope", slope);
+        builder.add("capHeight", capHeight);
+        builder.add("xHeight", xHeight);
+        builder.add("accentHeight", accentHeight);
+        builder.add("ascent", ascent);
+        builder.add("descent", descent);
+        builder.add("widths", widths);
+        builder.add("boundingBox", boundingBox);
+        builder.add("ideographic", ideographic);
+        builder.add("alphabetic", alphabetic);
+        builder.add("mathematical", mathematical);
+        builder.add("hanging", hanging);
+        builder.add("vIdeographic", vIdeographic);
+        builder.add("vAlphabetic", vAlphabetic);
+        builder.add("vMathematical", vMathematical);
+        builder.add("vHanging", vHanging);
+        builder.add("underlinePosition", underlinePosition);
+        builder.add("underlineThickness", underlineThickness);
+        builder.add("strikethroughPosition", strikethroughPosition);
+        builder.add("strikethroughThickness", strikethroughThickness);
+        builder.add("overlinePosition", overlinePosition);
+        builder.add("overlineThickness", overlineThickness);
+        super.toStringDetail(builder);
     }
 
 }

@@ -13,6 +13,8 @@ import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgLinkable;
@@ -45,44 +47,29 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "cursor")
 public class SvgCursor extends AbstractSvgElement implements ISvgStructuralElement, ISvgConditionalFeatures, ISvgLinkable {
 
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    private String x;
 
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    private String y;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgDescriptiveElement> content;
-
-    @Override
-    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
-        return conditionalFeatures;
-    }
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
+    private List<ISvgDescriptiveElement> content;
 
     /**
      * Gets the value of the x property.
@@ -132,6 +119,21 @@ public class SvgCursor extends AbstractSvgElement implements ISvgStructuralEleme
         this.y = value;
     }
 
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
     /**
      * Gets the value of the content property.
      *
@@ -161,6 +163,16 @@ public class SvgCursor extends AbstractSvgElement implements ISvgStructuralEleme
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

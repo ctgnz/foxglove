@@ -42,41 +42,41 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
 
     @XmlAttribute(name = "cx")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String cx;
+    private String cx;
 
     @XmlAttribute(name = "cy")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String cy;
+    private String cy;
 
     @XmlAttribute(name = "r")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String r;
+    private String r;
 
     @XmlAttribute(name = "fx")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fx;
+    private String fx;
 
     @XmlAttribute(name = "fy")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String fy;
+    private String fy;
 
     @XmlAttribute(name = "gradientUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String gradientUnits;
+    private String gradientUnits;
 
     @XmlAttribute(name = "gradientTransform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String gradientTransform;
+    private String gradientTransform;
 
     @XmlAttribute(name = "spreadMethod")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String spreadMethod;
+    private String spreadMethod;
 
     @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -87,7 +87,7 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the cx property.
@@ -328,7 +328,17 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("cx", cx);
+        builder.add("cy", cy);
+        builder.add("r", r);
+        builder.add("fx", fx);
+        builder.add("fy", fy);
+        builder.add("gradientUnits", gradientUnits);
+        builder.add("gradientTransform", gradientTransform);
+        builder.add("spreadMethod", spreadMethod);
         super.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

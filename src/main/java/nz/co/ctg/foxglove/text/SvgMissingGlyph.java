@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.SvgGraphic;
@@ -65,23 +67,23 @@ public class SvgMissingGlyph extends AbstractSvgStylable {
 
     @XmlAttribute(name = "d")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String d;
+    private String d;
 
     @XmlAttribute(name = "horiz-adv-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String horizAdvX;
+    private String horizAdvX;
 
     @XmlAttribute(name = "vert-origin-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertOriginX;
+    private String vertOriginX;
 
     @XmlAttribute(name = "vert-origin-y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertOriginY;
+    private String vertOriginY;
 
     @XmlAttribute(name = "vert-adv-y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertAdvY;
+    private String vertAdvY;
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -125,7 +127,7 @@ public class SvgMissingGlyph extends AbstractSvgStylable {
         @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the d property.
@@ -313,6 +315,16 @@ public class SvgMissingGlyph extends AbstractSvgStylable {
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("d", d);
+        builder.add("horizAdvX", horizAdvX);
+        builder.add("vertOriginX", vertOriginX);
+        builder.add("vertOriginY", vertOriginY);
+        builder.add("vertAdvY", vertAdvY);
+        super.toStringDetail(builder);
     }
 
 }

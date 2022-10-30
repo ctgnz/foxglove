@@ -67,16 +67,16 @@ import javafx.scene.Group;
 public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures {
 
     @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlPath(".")
-    protected final SvgEventListener eventListener = new SvgEventListener();
+    private final SvgEventListener eventListener = new SvgEventListener();
 
     @XmlPath(".")
-    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -120,7 +120,30 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
         @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
+
+    public Group createGroup() {
+        Group group = new Group();
+        if ("none".equals(display)) {
+            group.setVisible(false);
+        }
+        group.getTransforms().addAll(transform.getTransformList());
+        if (content != null) {
+            content.forEach(child -> {
+                if (child instanceof SvgGroup) {
+                    SvgGroup childGroup = (SvgGroup) child;
+                    group.getChildren()
+                        .add(childGroup.createGroup());
+                }
+                if (child instanceof ISvgShape<?>) {
+                    ISvgShape<?> shape = (ISvgShape<?>) child;
+                    group.getChildren()
+                        .add(shape.createShape());
+                }
+            });
+        }
+        return group;
+    }
 
     @Override
     public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
@@ -208,29 +231,6 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    public Group createGroup() {
-        Group group = new Group();
-        if ("none".equals(display)) {
-            group.setVisible(false);
-        }
-        group.getTransforms().addAll(transform.getTransformList());
-        if (content != null) {
-            content.forEach(child -> {
-                if (child instanceof SvgGroup) {
-                    SvgGroup childGroup = (SvgGroup) child;
-                    group.getChildren()
-                        .add(childGroup.createGroup());
-                }
-                if (child instanceof ISvgShape<?>) {
-                    ISvgShape<?> shape = (ISvgShape<?>) child;
-                    group.getChildren()
-                        .add(shape.createShape());
-                }
-            });
-        }
-        return group;
     }
 
     @Override

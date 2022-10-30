@@ -23,7 +23,7 @@ import jakarta.xml.bind.annotation.XmlType;
 public class SvgAltGlyphItem extends AbstractSvgElement implements ISvgGlyphItem {
 
     @XmlElement(required = true)
-    protected List<SvgGlyphRef> glyphRef;
+    private List<SvgGlyphRef> glyphRef;
 
     /**
      * Gets the value of the glyphRef property.

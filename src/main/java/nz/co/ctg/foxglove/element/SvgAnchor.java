@@ -37,27 +37,51 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "a")
 public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgStylable, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable, ISvgValueElement {
 
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
-    @XmlPath(".")
-    protected final SvgEventListener eventListener = new SvgEventListener();
-
-    @XmlPath(".")
-    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
-
     @XmlAttribute(name = "target")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String target;
+    private String target;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgEventListener eventListener = new SvgEventListener();
+
+    @XmlPath(".")
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlValueExtension
-    protected String value;
+    private String value;
+
+    /**
+     * Gets the value of the target property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getTarget() {
+        return target;
+    }
+
+    /**
+     * Sets the value of the target property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setTarget(String value) {
+        this.target = value;
+    }
 
     @Override
     public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
@@ -82,30 +106,6 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     @Override
     public SvgTransformAttribute getTransformAttribute() {
         return transform;
-    }
-
-    /**
-     * Gets the value of the target property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getTarget() {
-        return target;
-    }
-
-    /**
-     * Sets the value of the target property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setTarget(String value) {
-        this.target = value;
     }
 
     /**
@@ -136,7 +136,12 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("target", target);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        eventListener.toStringDetail(builder);
         transform.toStringDetail(builder);
     }
 }

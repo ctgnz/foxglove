@@ -40,25 +40,25 @@ public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, 
 
     @XmlAttribute(name = "local")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String local;
+    private String local;
 
     @XmlAttribute(name = "name", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String name;
+    private String name;
 
     @XmlAttribute(name = "rendering-intent")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String renderingIntent;
+    private String renderingIntent;
 
     @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgDescriptiveElement> content;
+    private List<ISvgDescriptiveElement> content;
 
     /**
      * Gets the value of the local property.
@@ -174,7 +174,11 @@ public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, 
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("local", local);
+        builder.add("name", name);
+        builder.add("renderingIntent", renderingIntent);
         super.toStringDetail(builder);
+        linkable.toStringDetail(builder);
     }
 
 }

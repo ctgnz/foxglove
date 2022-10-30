@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
@@ -34,32 +36,32 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "font")
 public class SvgFont extends AbstractSvgStylable implements ISvgExternalResources {
 
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "horiz-origin-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String horizOriginX;
+    private String horizOriginX;
 
     @XmlAttribute(name = "horiz-origin-y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String horizOriginY;
+    private String horizOriginY;
 
     @XmlAttribute(name = "horiz-adv-x", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String horizAdvX;
+    private String horizAdvX;
 
     @XmlAttribute(name = "vert-origin-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertOriginX;
+    private String vertOriginX;
 
     @XmlAttribute(name = "vert-origin-y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertOriginY;
+    private String vertOriginY;
 
     @XmlAttribute(name = "vert-adv-y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertAdvY;
+    private String vertAdvY;
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -71,12 +73,7 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
         @XmlElement(name = "hkern", type = SvgHorizontalKerning.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "vkern", type = SvgVerticalKerning.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the horizOriginX property.
@@ -222,6 +219,11 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
         this.vertAdvY = value;
     }
 
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
     /**
      * Gets the value of the content property.
      *
@@ -256,6 +258,18 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("horizOriginX", horizOriginX);
+        builder.add("horizOriginY", horizOriginY);
+        builder.add("horizAdvX", horizAdvX);
+        builder.add("vertOriginX", vertOriginX);
+        builder.add("vertOriginY", vertOriginY);
+        builder.add("vertAdvY", vertAdvY);
+        super.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

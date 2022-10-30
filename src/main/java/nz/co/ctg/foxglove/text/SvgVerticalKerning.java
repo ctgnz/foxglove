@@ -1,5 +1,9 @@
 package nz.co.ctg.foxglove.text;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.AbstractSvgElement;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -7,8 +11,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import nz.co.ctg.foxglove.AbstractSvgElement;
 
 
 /**
@@ -21,23 +23,23 @@ public class SvgVerticalKerning extends AbstractSvgElement {
 
     @XmlAttribute(name = "u1")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String unicodeChars1;
+    private String unicodeChars1;
 
     @XmlAttribute(name = "g1")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String glyphs1;
+    private String glyphs1;
 
     @XmlAttribute(name = "u2")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String unicodeChars2;
+    private String unicodeChars2;
 
     @XmlAttribute(name = "g2")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String glyphs2;
+    private String glyphs2;
 
     @XmlAttribute(name = "k", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String kern;
+    private String kern;
 
     /**
      * Gets the value of the u1 property.
@@ -157,6 +159,16 @@ public class SvgVerticalKerning extends AbstractSvgElement {
      */
     public void setKern(String value) {
         this.kern = value;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("unicodeChars1", unicodeChars1);
+        builder.add("glyphs1", glyphs1);
+        builder.add("unicodeChars2", unicodeChars2);
+        builder.add("glyphs2", glyphs2);
+        builder.add("kern", kern);
+        super.toStringDetail(builder);
     }
 
 }

@@ -11,6 +11,8 @@ package nz.co.ctg.foxglove.element;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgValueElement;
@@ -36,28 +38,18 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "script")
 public class SvgScript extends AbstractSvgElement implements ISvgStructuralElement, ISvgLinkable, ISvgValueElement {
 
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "type", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String type;
+    private String type;
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlValueExtension
-    protected String value;
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
+    private String value;
 
     /**
      * Gets the value of the type property.
@@ -81,6 +73,16 @@ public class SvgScript extends AbstractSvgElement implements ISvgStructuralEleme
      */
     public void setType(String value) {
         this.type = value;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
     }
 
     /**
@@ -107,6 +109,14 @@ public class SvgScript extends AbstractSvgElement implements ISvgStructuralEleme
     @Override
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("type", type);
+        super.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

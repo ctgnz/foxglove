@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.text;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgValueElement;
@@ -31,60 +33,40 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "textPath")
 public class SvgTextPath extends AbstractSvgStylable implements ISvgTextContentElement, ISvgLinkable, ISvgValueElement {
 
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
-    @XmlPath(".")
-    protected final SvgEventListener eventListener = new SvgEventListener();
-
     @XmlAttribute(name = "startOffset")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String startOffset;
+    private String startOffset;
 
     @XmlAttribute(name = "textLength")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String textLength;
+    private String textLength;
 
     @XmlAttribute(name = "lengthAdjust")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String lengthAdjust;
+    private String lengthAdjust;
 
     @XmlAttribute(name = "method")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String method;
+    private String method;
 
     @XmlAttribute(name = "spacing")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String spacing;
+    private String spacing;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgEventListener eventListener = new SvgEventListener();
 
     @XmlValueExtension
-    protected String value;
-
-    @Override
-    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
-        return conditionalFeatures;
-    }
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
-
-    @Override
-    public SvgEventListener getEventListener() {
-        return eventListener;
-    }
+    private String value;
 
     /**
      * Gets the value of the startOffset property.
@@ -206,6 +188,26 @@ public class SvgTextPath extends AbstractSvgStylable implements ISvgTextContentE
         this.spacing = value;
     }
 
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
+    @Override
+    public SvgEventListener getEventListener() {
+        return eventListener;
+    }
+
     /**
      * Gets the value of the value property.
      *
@@ -230,6 +232,21 @@ public class SvgTextPath extends AbstractSvgStylable implements ISvgTextContentE
     @Override
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("horizOriginX", startOffset);
+        builder.add("textLength", textLength);
+        builder.add("lengthAdjust", lengthAdjust);
+        builder.add("method", method);
+        builder.add("spacing", spacing);
+        super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        eventListener.toStringDetail(builder);
+        builder.add("value", value);
     }
 
 }

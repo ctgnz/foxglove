@@ -78,48 +78,48 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    private String x;
 
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    private String y;
 
     @XmlAttribute(name = "width")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
+    private String width;
 
     @XmlAttribute(name = "height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
+    private String height;
 
     @XmlAttribute(name = "patternUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String patternUnits;
+    private String patternUnits;
 
     @XmlAttribute(name = "patternContentUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String patternContentUnits;
+    private String patternContentUnits;
 
     @XmlAttribute(name = "patternTransform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String patternTransform;
+    private String patternTransform;
 
     @XmlAttribute(name = "viewBox")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String viewBox;
+    private String viewBox;
 
     @XmlAttribute(name = "preserveAspectRatio")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String preserveAspectRatio;
+    private String preserveAspectRatio;
 
     @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -163,7 +163,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
         @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the x property.
@@ -474,7 +474,19 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        builder.add("width", width);
+        builder.add("height", height);
+        builder.add("patternUnits", patternUnits);
+        builder.add("patternContentUnits", patternContentUnits);
+        builder.add("patternTransform", patternTransform);
+        builder.add("viewBox", viewBox);
+        builder.add("preserveAspectRatio", preserveAspectRatio);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

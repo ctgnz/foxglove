@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.text;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgValueElement;
@@ -30,68 +32,48 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "altGlyph")
 public class SvgAltGlyph extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgLinkable, ISvgValueElement {
 
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
-    @XmlPath(".")
-    protected final SvgEventListener eventListener = new SvgEventListener();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    private String x;
 
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    private String y;
 
     @XmlAttribute(name = "dx")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String dx;
+    private String dx;
 
     @XmlAttribute(name = "dy")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String dy;
+    private String dy;
 
     @XmlAttribute(name = "glyphRef")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String glyphRef;
+    private String glyphRef;
 
     @XmlAttribute(name = "format")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String format;
+    private String format;
 
     @XmlAttribute(name = "rotate")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String rotate;
+    private String rotate;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgEventListener eventListener = new SvgEventListener();
 
     @XmlValueExtension
-    protected String value;
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
-
-    @Override
-    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
-        return conditionalFeatures;
-    }
-
-    @Override
-    public SvgEventListener getEventListener() {
-        return eventListener;
-    }
+    private String value;
 
     /**
      * Gets the value of the x property.
@@ -261,6 +243,26 @@ public class SvgAltGlyph extends AbstractSvgStylable implements ISvgTextPosition
         this.rotate = value;
     }
 
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgEventListener getEventListener() {
+        return eventListener;
+    }
+
     /**
      * Gets the value of the value property.
      *
@@ -285,6 +287,18 @@ public class SvgAltGlyph extends AbstractSvgStylable implements ISvgTextPosition
     @Override
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        builder.add("dx", dx);
+        builder.add("dy", dy);
+        builder.add("glyphRef", glyphRef);
+        builder.add("format", format);
+        builder.add("rotate", rotate);
+        super.toStringDetail(builder);
     }
 
 }

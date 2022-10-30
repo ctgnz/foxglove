@@ -49,40 +49,40 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "image")
 public class SvgImage extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgEventListener, ISvgConditionalFeatures, ISvgLinkable, ISvgTransformable {
 
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
-    @XmlPath(".")
-    protected final SvgEventListener eventListener = new SvgEventListener();
-
-    @XmlPath(".")
-    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    private String x;
 
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    private String y;
 
     @XmlAttribute(name = "width", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
+    private String width;
 
     @XmlAttribute(name = "height", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
+    private String height;
 
     @XmlAttribute(name = "preserveAspectRatio")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String preserveAspectRatio;
+    private String preserveAspectRatio;
+
+    @XmlPath(".")
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgEventListener eventListener = new SvgEventListener();
+
+    @XmlPath(".")
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -94,32 +94,7 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
-
-    @Override
-    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
-        return conditionalFeatures;
-    }
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
-
-    @Override
-    public SvgEventListener getEventListener() {
-        return eventListener;
-    }
-
-    @Override
-    public SvgTransformAttribute getTransformAttribute() {
-        return transform;
-    }
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the x property.
@@ -245,6 +220,31 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
         this.preserveAspectRatio = value;
     }
 
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
+    @Override
+    public SvgEventListener getEventListener() {
+        return eventListener;
+    }
+
+    @Override
+    public SvgTransformAttribute getTransformAttribute() {
+        return transform;
+    }
+
     /**
      * Gets the value of the content property.
      *
@@ -283,7 +283,16 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        builder.add("width", width);
+        builder.add("height", height);
+        builder.add("preserveAspectRatio", preserveAspectRatio);
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        eventListener.toStringDetail(builder);
         transform.toStringDetail(builder);
     }
 

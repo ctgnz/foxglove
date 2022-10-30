@@ -54,16 +54,16 @@ import jakarta.xml.bind.annotation.XmlType;
 public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
 
     @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+    private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlPath(".")
-    protected final SvgEventListener eventListener = new SvgEventListener();
+    private final SvgEventListener eventListener = new SvgEventListener();
 
     @XmlPath(".")
-    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
+    private final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -90,7 +90,7 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
         @XmlElement(name = "a", type = SvgAnchor.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
 
     @Override
     public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
@@ -166,6 +166,9 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
     @Override
     protected void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
+        conditionalFeatures.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+        eventListener.toStringDetail(builder);
         transform.toStringDetail(builder);
     }
 

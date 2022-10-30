@@ -42,37 +42,37 @@ public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradie
 
     @XmlAttribute(name = "x1")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x1;
+    private String x1;
 
     @XmlAttribute(name = "y1")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y1;
+    private String y1;
 
     @XmlAttribute(name = "x2")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x2;
+    private String x2;
 
     @XmlAttribute(name = "y2")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y2;
+    private String y2;
 
     @XmlAttribute(name = "gradientUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String gradientUnits;
+    private String gradientUnits;
 
     @XmlAttribute(name = "gradientTransform")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String gradientTransform;
+    private String gradientTransform;
 
     @XmlAttribute(name = "spreadMethod")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String spreadMethod;
+    private String spreadMethod;
 
     @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -83,7 +83,7 @@ public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradie
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the x1 property.
@@ -300,7 +300,16 @@ public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradie
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x1", x1);
+        builder.add("y1", y1);
+        builder.add("x2", x2);
+        builder.add("y2", y2);
+        builder.add("gradientUnits", gradientUnits);
+        builder.add("gradientTransform", gradientTransform);
+        builder.add("spreadMethod", spreadMethod);
         super.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

@@ -42,7 +42,7 @@ public class SvgStop extends AbstractSvgStylable implements ISvgStylable {
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgDescriptiveElement> content;
+    private List<ISvgDescriptiveElement> content;
 
     /**
      * Gets the value of the offset property.
@@ -101,6 +101,7 @@ public class SvgStop extends AbstractSvgStylable implements ISvgStylable {
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
+        builder.add("offset", offset);
         super.toStringDetail(builder);
     }
 

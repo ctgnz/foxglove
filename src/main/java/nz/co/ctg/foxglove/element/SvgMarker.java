@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgFitToViewBox;
@@ -61,40 +63,40 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "marker")
 public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgFitToViewBox {
 
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "refX")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String refX;
+    private String refX;
 
     @XmlAttribute(name = "refY")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String refY;
+    private String refY;
 
     @XmlAttribute(name = "markerUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String markerUnits;
+    private String markerUnits;
 
     @XmlAttribute(name = "markerWidth")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String markerWidth;
+    private String markerWidth;
 
     @XmlAttribute(name = "markerHeight")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String markerHeight;
+    private String markerHeight;
 
     @XmlAttribute(name = "orient")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String orient;
+    private String orient;
 
     @XmlAttribute(name = "viewBox")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String viewBox;
+    private String viewBox;
 
     @XmlAttribute(name = "preserveAspectRatio")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String preserveAspectRatio;
+    private String preserveAspectRatio;
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -138,12 +140,7 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
         @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the refX property.
@@ -345,6 +342,11 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
         this.preserveAspectRatio = value;
     }
 
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
     /**
      * Gets the value of the content property.
      *
@@ -411,6 +413,20 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("refX", refX);
+        builder.add("refY", refY);
+        builder.add("markerUnits", markerUnits);
+        builder.add("markerWidth", markerWidth);
+        builder.add("markerHeight", markerHeight);
+        builder.add("orient", orient);
+        builder.add("viewBox", viewBox);
+        builder.add("preserveAspectRatio", preserveAspectRatio);
+        super.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

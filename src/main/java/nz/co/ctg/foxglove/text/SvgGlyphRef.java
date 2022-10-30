@@ -2,6 +2,8 @@ package nz.co.ctg.foxglove.text;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
@@ -25,37 +27,32 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "glyphRef")
 public class SvgGlyphRef extends AbstractSvgStylable implements ISvgGlyphItem, ISvgLinkable {
 
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    private String x;
 
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    private String y;
 
     @XmlAttribute(name = "dx")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String dx;
+    private String dx;
 
     @XmlAttribute(name = "dy")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String dy;
+    private String dy;
 
     @XmlAttribute(name = "glyphRef")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String glyphRef;
+    private String glyphRef;
 
     @XmlAttribute(name = "format")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String format;
+    private String format;
 
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     /**
      * Gets the value of the x property.
@@ -199,6 +196,23 @@ public class SvgGlyphRef extends AbstractSvgStylable implements ISvgGlyphItem, I
      */
     public void setFormat(String value) {
         this.format = value;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        builder.add("dx", dx);
+        builder.add("dy", dy);
+        builder.add("glyphRef", glyphRef);
+        builder.add("format", format);
+        super.toStringDetail(builder);
+        linkable.toStringDetail(builder);
     }
 
 }

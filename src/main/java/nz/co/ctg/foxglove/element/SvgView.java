@@ -13,6 +13,8 @@ import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgFitToViewBox;
@@ -43,36 +45,31 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "view")
 public class SvgView extends AbstractSvgElement implements ISvgStructuralElement, ISvgFitToViewBox {
 
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlAttribute(name = "viewBox")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String viewBox;
+    private String viewBox;
 
     @XmlAttribute(name = "preserveAspectRatio")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String preserveAspectRatio;
+    private String preserveAspectRatio;
 
     @XmlAttribute(name = "zoomAndPan")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String zoomAndPan;
+    private String zoomAndPan;
 
     @XmlAttribute(name = "viewTarget")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String viewTarget;
+    private String viewTarget;
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the viewBox property.
@@ -182,6 +179,11 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
         this.viewTarget = value;
     }
 
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
     /**
      * Gets the value of the content property.
      *
@@ -211,6 +213,16 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("viewBox", viewBox);
+        builder.add("preserveAspectRatio", preserveAspectRatio);
+        builder.add("zoomAndPan", zoomAndPan);
+        builder.add("viewTarget", viewTarget);
+        super.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
     }
 
 }

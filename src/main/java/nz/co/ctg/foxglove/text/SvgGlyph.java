@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.SvgGraphic;
@@ -65,43 +67,43 @@ public class SvgGlyph extends AbstractSvgStylable {
 
     @XmlAttribute(name = "unicode")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String unicode;
+    private String unicode;
 
     @XmlAttribute(name = "glyph-name")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String glyphName;
+    private String glyphName;
 
     @XmlAttribute(name = "d")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String d;
+    private String d;
 
     @XmlAttribute(name = "orientation")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String orientation;
+    private String orientation;
 
     @XmlAttribute(name = "arabic-form")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String arabicForm;
+    private String arabicForm;
 
     @XmlAttribute(name = "lang")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String lang;
+    private String lang;
 
     @XmlAttribute(name = "horiz-adv-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String horizAdvX;
+    private String horizAdvX;
 
     @XmlAttribute(name = "vert-origin-x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertOriginX;
+    private String vertOriginX;
 
     @XmlAttribute(name = "vert-origin-y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertOriginY;
+    private String vertOriginY;
 
     @XmlAttribute(name = "vert-adv-y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertAdvY;
+    private String vertAdvY;
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -145,7 +147,7 @@ public class SvgGlyph extends AbstractSvgStylable {
         @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
+    private List<ISvgElement> content;
 
     /**
      * Gets the value of the unicode property.
@@ -453,6 +455,21 @@ public class SvgGlyph extends AbstractSvgStylable {
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("name", unicode);
+        builder.add("name", glyphName);
+        builder.add("name", orientation);
+        builder.add("name", arabicForm);
+        builder.add("name", lang);
+        builder.add("name", horizAdvX);
+        builder.add("name", vertOriginX);
+        builder.add("name", vertOriginY);
+        builder.add("name", vertAdvY);
+        super.toStringDetail(builder);
+        builder.add("name", d);
     }
 
 }

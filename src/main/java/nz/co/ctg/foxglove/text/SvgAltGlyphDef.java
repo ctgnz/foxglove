@@ -27,7 +27,7 @@ public class SvgAltGlyphDef extends AbstractSvgElement {
         @XmlElement(name = "glyphRef", required = true, type = SvgGlyphRef.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "altGlyphItem", required = true, type = SvgAltGlyphItem.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgGlyphItem> glyphItems;
+    private List<ISvgGlyphItem> glyphItems;
 
     /**
      * Gets the value of the glyphRefOrAltGlyphItem property.

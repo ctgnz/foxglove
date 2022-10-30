@@ -26,16 +26,11 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "font-face-uri")
 public class SvgFontFaceUri extends AbstractSvgElement implements ISvgLinkable {
 
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
     @XmlElement(name = "font-face-format")
-    protected List<SvgFontFaceFormat> fontFaceFormat;
+    private List<SvgFontFaceFormat> fontFaceFormat;
 
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     /**
      * Gets the value of the fontFaceFormat property.
@@ -64,6 +59,11 @@ public class SvgFontFaceUri extends AbstractSvgElement implements ISvgLinkable {
             fontFaceFormat = new ArrayList<>();
         }
         return this.fontFaceFormat;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
     }
 
 }
