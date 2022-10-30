@@ -17,6 +17,7 @@ import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -38,7 +39,6 @@ import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
@@ -47,7 +47,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "conditionalFeatures", "content"
+    "externalResources", "conditionalFeatures", "transform", "content"
 })
 @XmlRootElement(name = "clipPath")
 public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement, ISvgTransformable {
@@ -58,9 +58,8 @@ public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement,
     @XmlPath(".")
     protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
-    @XmlAttribute(name = "transform")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String transform;
+    @XmlPath(".")
+    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlAttribute(name = "clipPathUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -97,30 +96,9 @@ public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement,
         return externalResources;
     }
 
-    /**
-     * Gets the value of the transform property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
-    public String getTransform() {
+    public SvgTransformAttribute getTransformAttribute() {
         return transform;
-    }
-
-    /**
-     * Sets the value of the transform property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setTransform(String value) {
-        this.transform = value;
     }
 
     /**

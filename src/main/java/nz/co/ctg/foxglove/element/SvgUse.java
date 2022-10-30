@@ -20,6 +20,7 @@ import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgEventListener;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -40,7 +41,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "conditionalFeatures", "linkable", "externalResources", "eventListener", "content"
+    "conditionalFeatures", "linkable", "externalResources", "eventListener", "transform", "content"
 })
 @XmlRootElement(name = "use")
 public class SvgUse extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable {
@@ -57,6 +58,9 @@ public class SvgUse extends AbstractSvgStylable implements ISvgStructuralElement
     @XmlPath(".")
     protected final SvgEventListener eventListener = new SvgEventListener();
 
+    @XmlPath(".")
+    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
+
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String x;
@@ -72,10 +76,6 @@ public class SvgUse extends AbstractSvgStylable implements ISvgStructuralElement
     @XmlAttribute(name = "height")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String height;
-
-    @XmlAttribute(name = "transform")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String transform;
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -107,6 +107,12 @@ public class SvgUse extends AbstractSvgStylable implements ISvgStructuralElement
     @Override
     public SvgEventListener getEventListener() {
         return eventListener;
+    }
+
+    @Override
+    public SvgTransformAttribute getTransformAttribute() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
@@ -203,32 +209,6 @@ public class SvgUse extends AbstractSvgStylable implements ISvgStructuralElement
      */
     public void setHeight(String value) {
         this.height = value;
-    }
-
-    /**
-     * Gets the value of the transform property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getTransform() {
-        return transform;
-    }
-
-    /**
-     * Sets the value of the transform property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setTransform(String value) {
-        this.transform = value;
     }
 
     /**

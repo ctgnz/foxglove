@@ -19,6 +19,7 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgEventListener;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
@@ -44,13 +45,10 @@ import nz.co.ctg.foxglove.text.SvgText;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -58,7 +56,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "conditionalFeatures", "externalResources", "eventListener", "content"
+    "conditionalFeatures", "externalResources", "eventListener", "transform", "content"
 })
 @XmlRootElement(name = "defs")
 public class SvgDefinitions extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgConditionalFeatures, ISvgTransformable {
@@ -72,9 +70,8 @@ public class SvgDefinitions extends AbstractSvgStylable implements ISvgStructura
     @XmlPath(".")
     protected final SvgEventListener eventListener = new SvgEventListener();
 
-    @XmlAttribute(name = "transform")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String transform;
+    @XmlPath(".")
+    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -135,30 +132,9 @@ public class SvgDefinitions extends AbstractSvgStylable implements ISvgStructura
         return eventListener;
     }
 
-    /**
-     * Gets the value of the transform property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
-    public String getTransform() {
+    public SvgTransformAttribute getTransformAttribute() {
         return transform;
-    }
-
-    /**
-     * Sets the value of the transform property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setTransform(String value) {
-        this.transform = value;
     }
 
     /**

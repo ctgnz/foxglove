@@ -20,6 +20,7 @@ import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgEventListener;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -35,7 +36,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "conditionalFeatures", "externalResources", "eventListener", "value"
+    "conditionalFeatures", "externalResources", "eventListener", "transform", "value"
 })
 @XmlRootElement(name = "foreignObject")
 public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgEventListener, ISvgConditionalFeatures, ISvgTransformable, ISvgValueElement {
@@ -48,6 +49,9 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
 
     @XmlPath(".")
     protected final SvgEventListener eventListener = new SvgEventListener();
+
+    @XmlPath(".")
+    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -65,10 +69,6 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String height;
 
-    @XmlAttribute(name = "transform")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String transform;
-
     @XmlValueExtension
     protected String value;
 
@@ -85,6 +85,11 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
     @Override
     public SvgEventListener getEventListener() {
         return eventListener;
+    }
+
+    @Override
+    public SvgTransformAttribute getTransformAttribute() {
+        return transform;
     }
 
     /**
@@ -181,32 +186,6 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
      */
     public void setHeight(String value) {
         this.height = value;
-    }
-
-    /**
-     * Gets the value of the transform property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getTransform() {
-        return transform;
-    }
-
-    /**
-     * Sets the value of the transform property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setTransform(String value) {
-        this.transform = value;
     }
 
     /**

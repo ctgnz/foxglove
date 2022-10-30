@@ -45,7 +45,7 @@ public class FoxgloveParserTest {
     public void testParseTransform() throws Exception {
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
         SvgGroup group = (SvgGroup) svg.getContent().get(4);
-        List<Transform> transformList = group.getTransformList();
+        List<Transform> transformList = group.getTransformAttribute().getTransformList();
         assertThat(transformList, hasSize(1));
     }
 

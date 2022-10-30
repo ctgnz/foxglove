@@ -9,6 +9,7 @@ import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgEventListener;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -25,7 +26,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "text", propOrder = {
-    "conditionalFeatures", "externalResources", "eventListener", "value"
+    "conditionalFeatures", "externalResources", "eventListener", "transform", "value"
 })
 @XmlRootElement(name = "text")
 public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgTransformable, ISvgValueElement {
@@ -38,6 +39,9 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
 
     @XmlPath(".")
     protected final SvgEventListener eventListener = new SvgEventListener();
+
+    @XmlPath(".")
+    protected final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -67,10 +71,6 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String lengthAdjust;
 
-    @XmlAttribute(name = "transform")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String transform;
-
     @XmlValueExtension
     protected String value;
 
@@ -87,6 +87,11 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     @Override
     public SvgEventListener getEventListener() {
         return eventListener;
+    }
+
+    @Override
+    public SvgTransformAttribute getTransformAttribute() {
+        return transform;
     }
 
     /**
@@ -255,32 +260,6 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
      */
     public void setLengthAdjust(String value) {
         this.lengthAdjust = value;
-    }
-
-    /**
-     * Gets the value of the transform property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public String getTransform() {
-        return transform;
-    }
-
-    /**
-     * Sets the value of the transform property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    @Override
-    public void setTransform(String value) {
-        this.transform = value;
     }
 
     /**
