@@ -474,8 +474,7 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISv
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
-        // TODO Auto-generated method stub
-
+        super.toStringDetail(builder);
     }
 
 }

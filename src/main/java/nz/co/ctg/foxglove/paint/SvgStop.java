@@ -101,8 +101,7 @@ public class SvgStop extends AbstractSvgStylable implements ISvgStylable {
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
-        // TODO Auto-generated method stub
-
+        super.toStringDetail(builder);
     }
 
 }

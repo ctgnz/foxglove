@@ -1,39 +1,27 @@
 package nz.co.ctg.foxglove.animate;
 
-import org.eclipse.persistence.oxm.annotations.XmlPath;
-
-import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
-import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
-
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-public abstract class AbstractSvgAnimationElement extends AbstractSvgElement implements ISvgAnimationElement {
-
-    @XmlPath(".")
-    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+public class SvgAnimationAttributes {
 
     @XmlAttribute(name = "onbegin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onbegin;
+    protected String onBegin;
 
     @XmlAttribute(name = "onend")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onend;
+    protected String onEnd;
 
     @XmlAttribute(name = "onrepeat")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onrepeat;
+    protected String onRepeat;
 
     @XmlAttribute(name = "onload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String onload;
+    protected String onLoad;
 
     @XmlAttribute(name = "begin")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -41,7 +29,7 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
 
     @XmlAttribute(name = "dur")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String dur;
+    protected String duration;
 
     @XmlAttribute(name = "end")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -65,7 +53,7 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
 
     @XmlAttribute(name = "repeatDur")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String repeatDur;
+    protected String repeatDuration;
 
     @XmlAttribute(name = "fill")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -75,46 +63,36 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String to;
 
-    @Override
-    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
-        return conditionalFeatures;
+    public String getOnBegin() {
+        return onBegin;
     }
 
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
+    public void setOnBegin(String value) {
+        this.onBegin = value;
     }
 
-    public String getOnbegin() {
-        return onbegin;
+    public String getOnEnd() {
+        return onEnd;
     }
 
-    public void setOnbegin(String value) {
-        this.onbegin = value;
+    public void setOnEnd(String value) {
+        this.onEnd = value;
     }
 
-    public String getOnend() {
-        return onend;
+    public String getOnRepeat() {
+        return onRepeat;
     }
 
-    public void setOnend(String value) {
-        this.onend = value;
+    public void setOnRepeat(String value) {
+        this.onRepeat = value;
     }
 
-    public String getOnrepeat() {
-        return onrepeat;
+    public String getOnLoad() {
+        return onLoad;
     }
 
-    public void setOnrepeat(String value) {
-        this.onrepeat = value;
-    }
-
-    public String getOnload() {
-        return onload;
-    }
-
-    public void setOnload(String value) {
-        this.onload = value;
+    public void setOnLoad(String value) {
+        this.onLoad = value;
     }
 
     public String getBegin() {
@@ -125,12 +103,12 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
         this.begin = value;
     }
 
-    public String getDur() {
-        return dur;
+    public String getDuration() {
+        return duration;
     }
 
-    public void setDur(String value) {
-        this.dur = value;
+    public void setDuration(String value) {
+        this.duration = value;
     }
 
     public String getEnd() {
@@ -177,12 +155,12 @@ public abstract class AbstractSvgAnimationElement extends AbstractSvgElement imp
         this.repeatCount = value;
     }
 
-    public String getRepeatDur() {
-        return repeatDur;
+    public String getRepeatDuration() {
+        return repeatDuration;
     }
 
-    public void setRepeatDur(String value) {
-        this.repeatDur = value;
+    public void setRepeatDuration(String value) {
+        this.repeatDuration = value;
     }
 
     public String getFill() {

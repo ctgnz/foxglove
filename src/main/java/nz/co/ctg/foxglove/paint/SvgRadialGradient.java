@@ -328,8 +328,7 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
-        // TODO Auto-generated method stub
-
+        super.toStringDetail(builder);
     }
 
 }

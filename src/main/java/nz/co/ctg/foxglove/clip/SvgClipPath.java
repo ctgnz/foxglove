@@ -172,7 +172,6 @@ public class SvgClipPath extends AbstractSvgStylable implements ISvgClipElement,
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
-        // TODO Auto-generated method stub
-
+        super.toStringDetail(builder);
     }
 }

@@ -30,7 +30,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "mpath", propOrder = {
     "externalResources", "linkable", "contents"
 })
 @XmlRootElement(name = "mpath")
@@ -92,8 +92,7 @@ public class SvgMotionPath extends AbstractSvgElement implements ISvgElement, IS
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
-        // TODO Auto-generated method stub
-
+        super.toStringDetail(builder);
     }
 
 }

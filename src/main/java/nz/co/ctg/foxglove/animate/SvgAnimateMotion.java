@@ -7,8 +7,11 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -30,10 +33,19 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "contents"
+    "animation", "conditionalFeatures", "linkable", "externalResources", "contents"
 })
 @XmlRootElement(name = "animateMotion")
-public class SvgAnimateMotion extends AbstractSvgAnimationElement implements ISvgAnimationElement {
+public class SvgAnimateMotion extends AbstractSvgElement implements ISvgAnimationElement {
+
+    @XmlPath(".")
+    protected final SvgAnimationAttributes animation = new SvgAnimationAttributes();
+
+    @XmlPath(".")
+    protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
+
+    @XmlPath(".")
+    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlPath(".")
     protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
@@ -93,6 +105,21 @@ public class SvgAnimateMotion extends AbstractSvgAnimationElement implements ISv
         @XmlElement(name = "metadata", required = true, type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<ISvgElement> contents;
+
+    @Override
+    public SvgAnimationAttributes getAnimationAttributes() {
+        return animation;
+    }
+
+    @Override
+    public SvgConditionalFeaturesAttributes getConditionalFeaturesAttributes() {
+        return conditionalFeatures;
+    }
+
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
 
     @Override
     public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
@@ -241,8 +268,7 @@ public class SvgAnimateMotion extends AbstractSvgAnimationElement implements ISv
 
     @Override
     protected void toStringDetail(ToStringHelper builder) {
-        // TODO Auto-generated method stub
-
+        super.toStringDetail(builder);
     }
 
 }
