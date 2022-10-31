@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
+import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlTransformation;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -23,6 +27,7 @@ import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgEventListener;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
+import nz.co.ctg.foxglove.attributes.TransformAttributeTransformer;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
@@ -72,7 +77,11 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
     @XmlPath(".")
     private final SvgEventListener eventListener = new SvgEventListener();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = TransformAttributeTransformer.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@transform", transformerClass = TransformAttributeTransformer.class)
+    })
     private final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlElements({

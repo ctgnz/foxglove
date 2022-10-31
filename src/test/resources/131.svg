@@ -5,7 +5,7 @@
 <g id="Amplifier">
 	<g>
 		
-			<line transform="translate(10,10)" fill="none" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="116.393" y1="566.25" x2="493.607" y2="566.25"/>
+			<line fill="none" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="116.393" y1="566.25" x2="493.607" y2="566.25"/>
 		
 			<circle fill="none" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" cx="141.429" cy="591.287" r="25.037"/>
 		

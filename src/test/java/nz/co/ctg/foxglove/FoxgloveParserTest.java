@@ -97,7 +97,13 @@ public class FoxgloveParserTest {
     @Test
     public void testWrite() throws Exception {
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(new SvgGroup());
+        SvgGroup group = new SvgGroup();
+        group.setId("g1");
+        SvgGroup subGroup = new SvgGroup();
+        subGroup.setId("g2");
+        subGroup.setTransform("rotate(1.23456)");
+        group.getContent().add(subGroup);
+        svg.getContent().add(group);
         System.out.println(parser.write(svg));
     }
 

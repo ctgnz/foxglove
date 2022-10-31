@@ -1,7 +1,11 @@
 package nz.co.ctg.foxglove.text;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
+import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlTransformation;
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -12,6 +16,7 @@ import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgEventListener;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
+import nz.co.ctg.foxglove.attributes.TransformAttributeTransformer;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -67,7 +72,11 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     @XmlPath(".")
     private final SvgEventListener eventListener = new SvgEventListener();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = TransformAttributeTransformer.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@transform", transformerClass = TransformAttributeTransformer.class)
+    })
     private final SvgTransformAttribute transform = new SvgTransformAttribute();
 
     @XmlValueExtension

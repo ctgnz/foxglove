@@ -9,18 +9,23 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.parser.SvgTransformListHandler;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javafx.scene.transform.Transform;
 
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class SvgTransformAttribute {
-    @XmlAttribute(name = "transform")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String transform;
-
     private static SvgTransformListHandler adapter = new SvgTransformListHandler();
 
+    public SvgTransformAttribute() {
+    }
+
+    @XmlAttribute(name = "transform")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     public String getTransform() {
         return transform;
     }
