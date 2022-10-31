@@ -17,7 +17,7 @@ import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
-import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgEventListenerAttributes;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
@@ -62,7 +62,7 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlPath(".")
-    private final SvgEventListener eventListener = new SvgEventListener();
+    private final SvgEventListenerAttributes eventListener = new SvgEventListenerAttributes();
 
     @XmlTransformation
     @XmlReadTransformer(transformerClass = SvgTransformAttribute.class)
@@ -98,7 +98,7 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     }
 
     @Override
-    public SvgEventListener getEventListener() {
+    public SvgEventListenerAttributes getEventListenerAttributes() {
         return eventListener;
     }
 

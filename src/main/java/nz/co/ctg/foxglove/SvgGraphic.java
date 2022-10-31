@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
 import org.eclipse.persistence.oxm.annotations.XmlTransformation;
 import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
@@ -18,7 +17,7 @@ import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
-import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgEventListenerAttributes;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgMask;
@@ -124,8 +123,21 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     })
     protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
-    @XmlPath(".")
-    protected final SvgEventListener eventListener = new SvgEventListener();
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgEventListenerAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@onfocusin", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onfocusout", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onactivate", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onclick", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmousedown", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmouseup", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmouseover", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmousemove", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmouseout", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onload", transformerClass = SvgEventListenerAttributes.class)
+    })
+    protected final SvgEventListenerAttributes eventListener = new SvgEventListenerAttributes();
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -227,7 +239,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     }
 
     @Override
-    public SvgEventListener getEventListener() {
+    public SvgEventListenerAttributes getEventListenerAttributes() {
         return eventListener;
     }
 

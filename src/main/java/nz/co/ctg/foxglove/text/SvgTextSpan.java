@@ -12,7 +12,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
-import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgEventListenerAttributes;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -77,7 +77,7 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
     private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
-    private final SvgEventListener eventListener = new SvgEventListener();
+    private final SvgEventListenerAttributes eventListener = new SvgEventListenerAttributes();
 
     @XmlValueExtension
     private String value;
@@ -149,7 +149,7 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
     }
 
     @Override
-    public SvgEventListener getEventListener() {
+    public SvgEventListenerAttributes getEventListenerAttributes() {
         return eventListener;
     }
 

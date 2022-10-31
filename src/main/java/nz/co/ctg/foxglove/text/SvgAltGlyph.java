@@ -13,7 +13,7 @@ import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgValueElement;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
-import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgEventListenerAttributes;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 
@@ -81,7 +81,7 @@ public class SvgAltGlyph extends AbstractSvgStylable implements ISvgTextPosition
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlPath(".")
-    private final SvgEventListener eventListener = new SvgEventListener();
+    private final SvgEventListenerAttributes eventListener = new SvgEventListenerAttributes();
 
     @XmlValueExtension
     private String value;
@@ -158,7 +158,7 @@ public class SvgAltGlyph extends AbstractSvgStylable implements ISvgTextPosition
     }
 
     @Override
-    public SvgEventListener getEventListener() {
+    public SvgEventListenerAttributes getEventListenerAttributes() {
         return eventListener;
     }
 

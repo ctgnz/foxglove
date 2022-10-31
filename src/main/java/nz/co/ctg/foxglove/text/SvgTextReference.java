@@ -18,7 +18,7 @@ import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
-import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgEventListenerAttributes;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgLinkableAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
@@ -92,7 +92,7 @@ public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPos
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlPath(".")
-    private final SvgEventListener eventListener = new SvgEventListener();
+    private final SvgEventListenerAttributes eventListener = new SvgEventListenerAttributes();
 
     @XmlElements({
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
@@ -176,7 +176,7 @@ public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPos
     }
 
     @Override
-    public SvgEventListener getEventListener() {
+    public SvgEventListenerAttributes getEventListenerAttributes() {
         return eventListener;
     }
 

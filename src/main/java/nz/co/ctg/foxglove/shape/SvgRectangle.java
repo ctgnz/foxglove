@@ -19,7 +19,7 @@ import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
-import nz.co.ctg.foxglove.attributes.SvgEventListener;
+import nz.co.ctg.foxglove.attributes.SvgEventListenerAttributes;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
 import nz.co.ctg.foxglove.description.SvgDescription;
@@ -78,7 +78,7 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlPath(".")
-    private final SvgEventListener eventListener = new SvgEventListener();
+    private final SvgEventListenerAttributes eventListener = new SvgEventListenerAttributes();
 
     @XmlTransformation
     @XmlReadTransformer(transformerClass = SvgTransformAttribute.class)
@@ -172,7 +172,7 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
     }
 
     @Override
-    public SvgEventListener getEventListener() {
+    public SvgEventListenerAttributes getEventListenerAttributes() {
         return eventListener;
     }
 

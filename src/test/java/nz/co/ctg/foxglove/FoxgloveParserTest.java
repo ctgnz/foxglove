@@ -101,6 +101,8 @@ public class FoxgloveParserTest {
         svg.setRequiredExtensions("barqux");
         svg.setSystemLanguage("quxfoo");
         svg.setExternalResourcesRequired(true);
+        svg.setOnFocusIn("foo");
+        svg.setOnFocusOut("bar");
         SvgGroup group = new SvgGroup();
         group.setId("g1");
         SvgGroup subGroup = new SvgGroup();
