@@ -28,9 +28,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "externalResources", "linkable", "value"
@@ -51,26 +48,10 @@ public class SvgScript extends AbstractSvgElement implements ISvgStructuralEleme
     @XmlValueExtension
     private String value;
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getType() {
         return type;
     }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setType(String value) {
         this.type = value;
     }
@@ -85,27 +66,11 @@ public class SvgScript extends AbstractSvgElement implements ISvgStructuralEleme
         return externalResources;
     }
 
-    /**
-     * Gets the value of the value property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setValue(String value) {
         this.value = value;

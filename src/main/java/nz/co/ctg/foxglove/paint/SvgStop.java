@@ -23,9 +23,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
@@ -44,54 +41,14 @@ public class SvgStop extends AbstractSvgStylable implements ISvgStylable {
     })
     private List<ISvgDescriptiveElement> content;
 
-    /**
-     * Gets the value of the offset property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getOffset() {
         return offset;
     }
 
-    /**
-     * Sets the value of the offset property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setOffset(String value) {
         this.offset = value;
     }
 
-    /**
-     * Gets the value of the content property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContent().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     * {@link SvgAnimateColor }
-     *
-     *
-     */
     public List<ISvgDescriptiveElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

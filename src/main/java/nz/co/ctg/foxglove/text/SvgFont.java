@@ -26,9 +26,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "externalResources", "content"
@@ -75,146 +72,50 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
     })
     private List<ISvgElement> content;
 
-    /**
-     * Gets the value of the horizOriginX property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getHorizOriginX() {
         return horizOriginX;
     }
 
-    /**
-     * Sets the value of the horizOriginX property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setHorizOriginX(String value) {
         this.horizOriginX = value;
     }
 
-    /**
-     * Gets the value of the horizOriginY property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getHorizOriginY() {
         return horizOriginY;
     }
 
-    /**
-     * Sets the value of the horizOriginY property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setHorizOriginY(String value) {
         this.horizOriginY = value;
     }
 
-    /**
-     * Gets the value of the horizAdvX property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getHorizAdvX() {
         return horizAdvX;
     }
 
-    /**
-     * Sets the value of the horizAdvX property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setHorizAdvX(String value) {
         this.horizAdvX = value;
     }
 
-    /**
-     * Gets the value of the vertOriginX property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getVertOriginX() {
         return vertOriginX;
     }
 
-    /**
-     * Sets the value of the vertOriginX property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setVertOriginX(String value) {
         this.vertOriginX = value;
     }
 
-    /**
-     * Gets the value of the vertOriginY property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getVertOriginY() {
         return vertOriginY;
     }
 
-    /**
-     * Sets the value of the vertOriginY property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setVertOriginY(String value) {
         this.vertOriginY = value;
     }
 
-    /**
-     * Gets the value of the vertAdvY property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getVertAdvY() {
         return vertAdvY;
     }
 
-    /**
-     * Sets the value of the vertAdvY property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setVertAdvY(String value) {
         this.vertAdvY = value;
     }
@@ -224,35 +125,6 @@ public class SvgFont extends AbstractSvgStylable implements ISvgExternalResource
         return externalResources;
     }
 
-    /**
-     * Gets the value of the content property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContent().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     * {@link SvgFontFace }
-     * {@link SvgMissingGlyph }
-     * {@link SvgGlyph }
-     * {@link SvgHorizontalKerning }
-     * {@link SvgVerticalKerning }
-     *
-     *
-     */
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

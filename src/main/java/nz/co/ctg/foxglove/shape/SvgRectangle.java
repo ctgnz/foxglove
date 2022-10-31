@@ -32,9 +32,6 @@ import jakarta.xml.bind.annotation.XmlType;
 import javafx.scene.shape.Rectangle;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "rect", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "transform", "content"

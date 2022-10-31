@@ -21,9 +21,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "value"
@@ -71,170 +68,58 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
     @XmlValueExtension
     private String value;
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getX() {
         return x;
     }
 
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setX(String value) {
         this.x = value;
     }
 
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getY() {
         return y;
     }
 
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setY(String value) {
         this.y = value;
     }
 
-    /**
-     * Gets the value of the dx property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getDx() {
         return dx;
     }
 
-    /**
-     * Sets the value of the dx property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setDx(String value) {
         this.dx = value;
     }
 
-    /**
-     * Gets the value of the dy property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getDy() {
         return dy;
     }
 
-    /**
-     * Sets the value of the dy property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setDy(String value) {
         this.dy = value;
     }
 
-    /**
-     * Gets the value of the rotate property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getRotate() {
         return rotate;
     }
 
-    /**
-     * Sets the value of the rotate property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setRotate(String value) {
         this.rotate = value;
     }
 
-    /**
-     * Gets the value of the textLength property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getTextLength() {
         return textLength;
     }
 
-    /**
-     * Sets the value of the textLength property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setTextLength(String value) {
         this.textLength = value;
     }
 
-    /**
-     * Gets the value of the lengthAdjust property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getLengthAdjust() {
         return lengthAdjust;
     }
 
-    /**
-     * Sets the value of the lengthAdjust property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setLengthAdjust(String value) {
         this.lengthAdjust = value;
     }
@@ -254,27 +139,11 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
         return eventListener;
     }
 
-    /**
-     * Gets the value of the value property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setValue(String value) {
         this.value = value;

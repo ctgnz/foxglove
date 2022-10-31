@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.filter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
@@ -19,9 +21,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "animations"
@@ -31,66 +30,33 @@ public class FeMergeNode extends AbstractSvgElement {
 
     @XmlAttribute(name = "in")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String in;
+    private String in;
 
     @XmlElements({
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgAnimationElement> animations;
+    private List<ISvgAnimationElement> animations;
 
-    /**
-     * Gets the value of the in property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getIn() {
         return in;
     }
 
-    /**
-     * Sets the value of the in property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setIn(String value) {
         this.in = value;
     }
 
-    /**
-     * Gets the value of the animations property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animations property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAnimations().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     *
-     *
-     */
     public List<ISvgAnimationElement> getAnimations() {
         if (animations == null) {
             animations = new ArrayList<>();
         }
         return this.animations;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("in", in);
+        super.toStringDetail(builder);
     }
 
 }

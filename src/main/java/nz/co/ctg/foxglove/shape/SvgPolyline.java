@@ -36,9 +36,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.shape.Polyline;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "polyline", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "transform", "content"

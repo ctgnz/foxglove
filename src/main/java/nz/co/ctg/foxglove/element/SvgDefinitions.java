@@ -53,9 +53,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "transform", "content"
@@ -139,67 +136,6 @@ public class SvgDefinitions extends AbstractSvgStylable implements ISvgStructura
         return transform;
     }
 
-    /**
-     * Gets the value of the content property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContent().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     * {@link SvgAnimateMotion }
-     * {@link SvgAnimateColor }
-     * {@link SvgAnimateTransform }
-     * {@link SvgGraphic }
-     * {@link SvgGroup }
-     * {@link SvgDefinitions }
-     * {@link SvgSymbol }
-     * {@link SvgUse }
-     * {@link SvgSwitch }
-     * {@link SvgImage }
-     * {@link SvgStyle }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
-     * {@link SvgText }
-     * {@link SvgAltGlyphDef }
-     * {@link SvgMarker }
-     * {@link SvgColorProfile }
-     * {@link SvgLinearGradient }
-     * {@link SvgRadialGradient }
-     * {@link SvgPattern }
-     * {@link SvgClipPath }
-     * {@link SvgMask }
-     * {@link SvgFilter }
-     * {@link SvgCursor }
-     * {@link SvgAnchor }
-     * {@link SvgView }
-     * {@link SvgScript }
-     * {@link SvgFont }
-     * {@link SvgFontFace }
-     * {@link SvgForeignObject }
-     *
-     *
-     */
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

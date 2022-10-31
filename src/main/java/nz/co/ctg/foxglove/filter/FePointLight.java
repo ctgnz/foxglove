@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.filter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
@@ -19,9 +21,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "animations"
@@ -31,123 +30,60 @@ public class FePointLight extends AbstractSvgElement implements ISvgFilterLightS
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
+    private String x;
 
     @XmlAttribute(name = "y")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
+    private String y;
 
     @XmlAttribute(name = "z")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String z;
+    private String z;
 
     @XmlElements({
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgAnimationElement> animations;
+    private List<ISvgAnimationElement> animations;
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getX() {
         return x;
     }
 
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setX(String value) {
         this.x = value;
     }
 
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getY() {
         return y;
     }
 
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setY(String value) {
         this.y = value;
     }
 
-    /**
-     * Gets the value of the z property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getZ() {
         return z;
     }
 
-    /**
-     * Sets the value of the z property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setZ(String value) {
         this.z = value;
     }
 
-    /**
-     * Gets the value of the animations property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animations property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAnimations().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     *
-     *
-     */
     @Override
     public List<ISvgAnimationElement> getAnimations() {
         if (animations == null) {
             animations = new ArrayList<>();
         }
         return this.animations;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        builder.add("z", z);
+        super.toStringDetail(builder);
     }
 
 }

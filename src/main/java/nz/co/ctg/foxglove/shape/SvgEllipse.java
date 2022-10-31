@@ -32,9 +32,6 @@ import jakarta.xml.bind.annotation.XmlType;
 import javafx.scene.shape.Ellipse;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ellipse", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "transform", "content"

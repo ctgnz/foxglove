@@ -34,9 +34,6 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javafx.scene.shape.SVGPath;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "path", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "transform", "content"

@@ -27,9 +27,6 @@ import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "conditionalFeatures", "linkable", "externalResources", "eventListener", "transform", "value"
@@ -59,26 +56,10 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     @XmlValueExtension
     private String value;
 
-    /**
-     * Gets the value of the target property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getTarget() {
         return target;
     }
 
-    /**
-     * Sets the value of the target property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setTarget(String value) {
         this.target = value;
     }
@@ -108,27 +89,11 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
         return transform;
     }
 
-    /**
-     * Gets the value of the value property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setValue(String value) {
         this.value = value;

@@ -53,9 +53,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "externalResources", "content"
@@ -142,184 +139,64 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
     })
     private List<ISvgElement> content;
 
-    /**
-     * Gets the value of the refX property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getRefX() {
         return refX;
     }
 
-    /**
-     * Sets the value of the refX property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setRefX(String value) {
         this.refX = value;
     }
 
-    /**
-     * Gets the value of the refY property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getRefY() {
         return refY;
     }
 
-    /**
-     * Sets the value of the refY property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setRefY(String value) {
         this.refY = value;
     }
 
-    /**
-     * Gets the value of the markerUnits property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getMarkerUnits() {
         return markerUnits;
     }
 
-    /**
-     * Sets the value of the markerUnits property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setMarkerUnits(String value) {
         this.markerUnits = value;
     }
 
-    /**
-     * Gets the value of the markerWidth property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getMarkerWidth() {
         return markerWidth;
     }
 
-    /**
-     * Sets the value of the markerWidth property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setMarkerWidth(String value) {
         this.markerWidth = value;
     }
 
-    /**
-     * Gets the value of the markerHeight property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getMarkerHeight() {
         return markerHeight;
     }
 
-    /**
-     * Sets the value of the markerHeight property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setMarkerHeight(String value) {
         this.markerHeight = value;
     }
 
-    /**
-     * Gets the value of the orient property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getOrient() {
         return orient;
     }
 
-    /**
-     * Sets the value of the orient property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setOrient(String value) {
         this.orient = value;
     }
 
-    /**
-     * Gets the value of the viewBox property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getViewBox() {
         return viewBox;
     }
 
-    /**
-     * Sets the value of the viewBox property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setViewBox(String value) {
         this.viewBox = value;
     }
 
-    /**
-     * Gets the value of the preserveAspectRatio property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getPreserveAspectRatio() {
         if (preserveAspectRatio == null) {
@@ -329,14 +206,6 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
         }
     }
 
-    /**
-     * Sets the value of the preserveAspectRatio property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setPreserveAspectRatio(String value) {
         this.preserveAspectRatio = value;
@@ -347,67 +216,6 @@ public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElem
         return externalResources;
     }
 
-    /**
-     * Gets the value of the content property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContent().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     * {@link SvgAnimateMotion }
-     * {@link SvgAnimateColor }
-     * {@link SvgAnimateTransform }
-     * {@link SvgGraphic }
-     * {@link SvgGroup }
-     * {@link SvgDefinitions }
-     * {@link SvgSymbol }
-     * {@link SvgUse }
-     * {@link SvgSwitch }
-     * {@link SvgImage }
-     * {@link SvgStyle }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
-     * {@link SvgText }
-     * {@link SvgAltGlyphDef }
-     * {@link SvgMarker }
-     * {@link SvgColorProfile }
-     * {@link SvgLinearGradient }
-     * {@link SvgRadialGradient }
-     * {@link SvgPattern }
-     * {@link SvgClipPath }
-     * {@link SvgMask }
-     * {@link SvgFilter }
-     * {@link SvgCursor }
-     * {@link SvgAnchor }
-     * {@link SvgView }
-     * {@link SvgScript }
-     * {@link SvgFont }
-     * {@link SvgFontFace }
-     * {@link SvgForeignObject }
-     *
-     *
-     */
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

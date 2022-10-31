@@ -17,9 +17,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "linkable"
@@ -54,146 +51,50 @@ public class SvgGlyphRef extends AbstractSvgStylable implements ISvgGlyphItem, I
     @XmlPath(".")
     private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getX() {
         return x;
     }
 
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setX(String value) {
         this.x = value;
     }
 
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getY() {
         return y;
     }
 
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setY(String value) {
         this.y = value;
     }
 
-    /**
-     * Gets the value of the dx property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getDx() {
         return dx;
     }
 
-    /**
-     * Sets the value of the dx property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setDx(String value) {
         this.dx = value;
     }
 
-    /**
-     * Gets the value of the dy property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getDy() {
         return dy;
     }
 
-    /**
-     * Sets the value of the dy property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setDy(String value) {
         this.dy = value;
     }
 
-    /**
-     * Gets the value of the glyphRef property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getGlyphRef() {
         return glyphRef;
     }
 
-    /**
-     * Sets the value of the glyphRef property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setGlyphRef(String value) {
         this.glyphRef = value;
     }
 
-    /**
-     * Gets the value of the format property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getFormat() {
         return format;
     }
 
-    /**
-     * Sets the value of the format property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setFormat(String value) {
         this.format = value;
     }

@@ -33,9 +33,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "transform", "value"
@@ -74,98 +71,34 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
     @XmlValueExtension
     private String value;
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getX() {
         return x;
     }
 
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setX(String value) {
         this.x = value;
     }
 
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getY() {
         return y;
     }
 
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setY(String value) {
         this.y = value;
     }
 
-    /**
-     * Gets the value of the width property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getWidth() {
         return width;
     }
 
-    /**
-     * Sets the value of the width property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setWidth(String value) {
         this.width = value;
     }
 
-    /**
-     * Gets the value of the height property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getHeight() {
         return height;
     }
 
-    /**
-     * Sets the value of the height property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setHeight(String value) {
         this.height = value;
     }
@@ -190,27 +123,11 @@ public class SvgForeignObject extends AbstractSvgStylable implements ISvgStructu
         return transform;
     }
 
-    /**
-     * Gets the value of the value property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setValue(String value) {
         this.value = value;

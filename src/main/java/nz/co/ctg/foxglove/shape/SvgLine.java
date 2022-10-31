@@ -32,9 +32,6 @@ import jakarta.xml.bind.annotation.XmlType;
 import javafx.scene.shape.Line;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "line", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "transform", "content"

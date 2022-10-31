@@ -13,9 +13,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "font-face-format")
@@ -25,26 +22,10 @@ public class SvgFontFaceFormat extends AbstractSvgElement {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String string;
 
-    /**
-     * Gets the value of the string property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getString() {
         return string;
     }
 
-    /**
-     * Sets the value of the string property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setString(String value) {
         this.string = value;
     }

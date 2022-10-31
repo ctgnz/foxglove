@@ -35,9 +35,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "externalResources", "content"
@@ -71,40 +68,16 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
     })
     private List<ISvgElement> content;
 
-    /**
-     * Gets the value of the viewBox property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getViewBox() {
         return viewBox;
     }
 
-    /**
-     * Sets the value of the viewBox property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setViewBox(String value) {
         this.viewBox = value;
     }
 
-    /**
-     * Gets the value of the preserveAspectRatio property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getPreserveAspectRatio() {
         if (preserveAspectRatio == null) {
@@ -114,27 +87,11 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
         }
     }
 
-    /**
-     * Sets the value of the preserveAspectRatio property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setPreserveAspectRatio(String value) {
         this.preserveAspectRatio = value;
     }
 
-    /**
-     * Gets the value of the zoomAndPan property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getZoomAndPan() {
         if (zoomAndPan == null) {
             return "magnify";
@@ -143,38 +100,14 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
         }
     }
 
-    /**
-     * Sets the value of the zoomAndPan property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setZoomAndPan(String value) {
         this.zoomAndPan = value;
     }
 
-    /**
-     * Gets the value of the viewTarget property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getViewTarget() {
         return viewTarget;
     }
 
-    /**
-     * Sets the value of the viewTarget property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setViewTarget(String value) {
         this.viewTarget = value;
     }
@@ -184,30 +117,6 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
         return externalResources;
     }
 
-    /**
-     * Gets the value of the content property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContent().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     *
-     *
-     */
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

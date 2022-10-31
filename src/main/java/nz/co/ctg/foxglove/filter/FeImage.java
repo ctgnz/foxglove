@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
@@ -25,52 +28,44 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "linkable", "externalResources", "animations"
+    "linkable", "externalResources", "filter", "animations"
 })
 @XmlRootElement(name = "feImage")
-public class FeImage extends AbstractSvgFilterPrimitive implements ISvgExternalResources, ISvgLinkable {
-
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
-
-    @XmlPath(".")
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
-    @XmlAttribute(name = "x")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
-
-    @XmlAttribute(name = "y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
-
-    @XmlAttribute(name = "width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
-
-    @XmlAttribute(name = "height")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
-
-    @XmlAttribute(name = "result")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String result;
+public class FeImage extends AbstractSvgStylable implements ISvgFilterPrimitive, ISvgExternalResources, ISvgLinkable {
 
     @XmlAttribute(name = "preserveAspectRatio")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String preserveAspectRatio;
+    private String preserveAspectRatio;
+
+    @XmlPath(".")
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+
+    @XmlPath(".")
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
+
+    @XmlPath(".")
+    private final SvgFilterAttributes filter = new SvgFilterAttributes();
 
     @XmlElements({
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgAnimationElement> animations;
+    private List<ISvgAnimationElement> animations;
+
+    public String getPreserveAspectRatio() {
+        if (preserveAspectRatio == null) {
+            return "xMidYMid meet";
+        } else {
+            return preserveAspectRatio;
+        }
+    }
+
+    public void setPreserveAspectRatio(String value) {
+        this.preserveAspectRatio = value;
+    }
 
     @Override
     public SvgLinkableAttributes getLinkableAttributes() {
@@ -82,183 +77,23 @@ public class FeImage extends AbstractSvgFilterPrimitive implements ISvgExternalR
         return externalResources;
     }
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getX() {
-        return x;
+    @Override
+    public SvgFilterAttributes getFilterAttributes() {
+        return filter;
     }
 
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setX(String value) {
-        this.x = value;
-    }
-
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getY() {
-        return y;
-    }
-
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setY(String value) {
-        this.y = value;
-    }
-
-    /**
-     * Gets the value of the width property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getWidth() {
-        return width;
-    }
-
-    /**
-     * Sets the value of the width property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setWidth(String value) {
-        this.width = value;
-    }
-
-    /**
-     * Gets the value of the height property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getHeight() {
-        return height;
-    }
-
-    /**
-     * Sets the value of the height property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setHeight(String value) {
-        this.height = value;
-    }
-
-    /**
-     * Gets the value of the result property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getResult() {
-        return result;
-    }
-
-    /**
-     * Sets the value of the result property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setResult(String value) {
-        this.result = value;
-    }
-
-    /**
-     * Gets the value of the preserveAspectRatio property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPreserveAspectRatio() {
-        if (preserveAspectRatio == null) {
-            return "xMidYMid meet";
-        } else {
-            return preserveAspectRatio;
-        }
-    }
-
-    /**
-     * Sets the value of the preserveAspectRatio property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPreserveAspectRatio(String value) {
-        this.preserveAspectRatio = value;
-    }
-
-    /**
-     * Gets the value of the animateOrSetOrAnimateTransform property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animateOrSetOrAnimateTransform property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAnimateOrSetOrAnimateTransform().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     * {@link SvgAnimateTransform }
-     *
-     *
-     */
     public List<ISvgAnimationElement> getAnimations() {
         if (animations == null) {
             animations = new ArrayList<>();
         }
         return this.animations;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("preserveAspectRatio", preserveAspectRatio);
+        super.toStringDetail(builder);
+        filter.toStringDetail(builder);
     }
 
 }

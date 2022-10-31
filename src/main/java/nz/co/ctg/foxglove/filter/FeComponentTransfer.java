@@ -1,293 +1,101 @@
 package nz.co.ctg.foxglove.filter;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.AbstractSvgStylable;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "feFuncR",
-    "feFuncG",
-    "feFuncB",
-    "feFuncA"
+    "filter", "feFuncR", "feFuncG", "feFuncB", "feFuncA"
 })
 @XmlRootElement(name = "feComponentTransfer")
-public class FeComponentTransfer extends AbstractSvgFilterPrimitive {
-
-    @XmlAttribute(name = "x")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
-
-    @XmlAttribute(name = "y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
-
-    @XmlAttribute(name = "width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
-
-    @XmlAttribute(name = "height")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
-
-    @XmlAttribute(name = "result")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String result;
+public class FeComponentTransfer extends AbstractSvgStylable implements ISvgFilterPrimitive {
 
     @XmlAttribute(name = "in")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String in;
-    protected FeFuncR feFuncR;
-    protected FeFuncG feFuncG;
-    protected FeFuncB feFuncB;
-    protected FeFuncA feFuncA;
+    private String in;
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getX() {
-        return x;
-    }
+    @XmlPath(".")
+    private final SvgFilterAttributes filter = new SvgFilterAttributes();
 
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setX(String value) {
-        this.x = value;
-    }
+    @XmlElement(name = "feFuncR")
+    private FilterEffectFunctionRed feFuncR;
 
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getY() {
-        return y;
-    }
+    @XmlElement(name = "feFuncG")
+    private FilterEffectFunctionGreen feFuncG;
 
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setY(String value) {
-        this.y = value;
-    }
+    @XmlElement(name = "feFuncB")
+    private FilterEffectFunctionBlue feFuncB;
 
-    /**
-     * Gets the value of the width property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getWidth() {
-        return width;
-    }
+    @XmlElement(name = "feFuncA")
+    private FilterEffectFunctionAlpha feFuncA;
 
-    /**
-     * Sets the value of the width property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setWidth(String value) {
-        this.width = value;
-    }
-
-    /**
-     * Gets the value of the height property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getHeight() {
-        return height;
-    }
-
-    /**
-     * Sets the value of the height property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setHeight(String value) {
-        this.height = value;
-    }
-
-    /**
-     * Gets the value of the result property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getResult() {
-        return result;
-    }
-
-    /**
-     * Sets the value of the result property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setResult(String value) {
-        this.result = value;
-    }
-
-    /**
-     * Gets the value of the in property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getIn() {
         return in;
     }
 
-    /**
-     * Sets the value of the in property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setIn(String value) {
         this.in = value;
     }
 
-    /**
-     * Gets the value of the feFuncR property.
-     *
-     * @return
-     *     possible object is
-     *     {@link FeFuncR }
-     *
-     */
-    public FeFuncR getFeFuncR() {
+    @Override
+    public SvgFilterAttributes getFilterAttributes() {
+        return filter;
+    }
+
+    public FilterEffectFunctionRed getFeFuncR() {
         return feFuncR;
     }
 
-    /**
-     * Sets the value of the feFuncR property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link FeFuncR }
-     *
-     */
-    public void setFeFuncR(FeFuncR value) {
+    public void setFeFuncR(FilterEffectFunctionRed value) {
         this.feFuncR = value;
     }
 
-    /**
-     * Gets the value of the feFuncG property.
-     *
-     * @return
-     *     possible object is
-     *     {@link FeFuncG }
-     *
-     */
-    public FeFuncG getFeFuncG() {
+    public FilterEffectFunctionGreen getFeFuncG() {
         return feFuncG;
     }
 
-    /**
-     * Sets the value of the feFuncG property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link FeFuncG }
-     *
-     */
-    public void setFeFuncG(FeFuncG value) {
+    public void setFeFuncG(FilterEffectFunctionGreen value) {
         this.feFuncG = value;
     }
 
-    /**
-     * Gets the value of the feFuncB property.
-     *
-     * @return
-     *     possible object is
-     *     {@link FeFuncB }
-     *
-     */
-    public FeFuncB getFeFuncB() {
+    public FilterEffectFunctionBlue getFeFuncB() {
         return feFuncB;
     }
 
-    /**
-     * Sets the value of the feFuncB property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link FeFuncB }
-     *
-     */
-    public void setFeFuncB(FeFuncB value) {
+    public void setFeFuncB(FilterEffectFunctionBlue value) {
         this.feFuncB = value;
     }
 
-    /**
-     * Gets the value of the feFuncA property.
-     *
-     * @return
-     *     possible object is
-     *     {@link FeFuncA }
-     *
-     */
-    public FeFuncA getFeFuncA() {
+    public FilterEffectFunctionAlpha getFeFuncA() {
         return feFuncA;
     }
 
-    /**
-     * Sets the value of the feFuncA property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link FeFuncA }
-     *
-     */
-    public void setFeFuncA(FeFuncA value) {
+    public void setFeFuncA(FilterEffectFunctionAlpha value) {
         this.feFuncA = value;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("in", in);
+        super.toStringDetail(builder);
+        filter.toStringDetail(builder);
+        builder.add("feFuncR", feFuncR);
+        builder.add("feFuncG", feFuncG);
+        builder.add("feFuncB", feFuncB);
+        builder.add("feFuncA", feFuncA);
     }
 
 }

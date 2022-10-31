@@ -28,9 +28,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "linkable", "content"
@@ -60,62 +57,22 @@ public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, 
     })
     private List<ISvgDescriptiveElement> content;
 
-    /**
-     * Gets the value of the local property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getLocal() {
         return local;
     }
 
-    /**
-     * Sets the value of the local property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setLocal(String value) {
         this.local = value;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setName(String value) {
         this.name = value;
     }
 
-    /**
-     * Gets the value of the renderingIntent property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getRenderingIntent() {
         if (renderingIntent == null) {
             return "auto";
@@ -124,14 +81,6 @@ public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, 
         }
     }
 
-    /**
-     * Sets the value of the renderingIntent property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setRenderingIntent(String value) {
         this.renderingIntent = value;
     }
@@ -141,30 +90,6 @@ public class SvgColorProfile extends AbstractSvgElement implements ISvgElement, 
         return linkable;
     }
 
-    /**
-     * Gets the value of the content property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContent().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     *
-     *
-     */
     public List<ISvgDescriptiveElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

@@ -66,9 +66,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "svg", propOrder = {
     "externalResources", "conditionalFeatures", "eventListener", "content"
@@ -221,14 +218,6 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         return eventListener;
     }
 
-    /**
-     * Gets the value of the xmlns property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getXmlns() {
         if (xmlns == null) {
             return "http://www.w3.org/2000/svg";
@@ -237,26 +226,10 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         }
     }
 
-    /**
-     * Sets the value of the xmlns property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setXmlns(String value) {
         this.xmlns = value;
     }
 
-    /**
-     * Gets the value of the xmlnsXlink property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getXmlnsXlink() {
         if (xmlnsXlink == null) {
             return "http://www.w3.org/1999/xlink";
@@ -265,292 +238,100 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         }
     }
 
-    /**
-     * Sets the value of the xmlnsXlink property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setXmlnsXlink(String value) {
         this.xmlnsXlink = value;
     }
 
-    /**
-     * Gets the value of the onunload property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getOnUnload() {
         return onUnload;
     }
 
-    /**
-     * Sets the value of the onunload property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setOnUnload(String value) {
         this.onUnload = value;
     }
 
-    /**
-     * Gets the value of the onabort property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getOnAbort() {
         return onAbort;
     }
 
-    /**
-     * Sets the value of the onabort property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setOnAbort(String value) {
         this.onAbort = value;
     }
 
-    /**
-     * Gets the value of the onerror property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getOnError() {
         return onError;
     }
 
-    /**
-     * Sets the value of the onerror property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setOnError(String value) {
         this.onError = value;
     }
 
-    /**
-     * Gets the value of the onresize property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getOnResize() {
         return onResize;
     }
 
-    /**
-     * Sets the value of the onresize property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setOnResize(String value) {
         this.onResize = value;
     }
 
-    /**
-     * Gets the value of the onscroll property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getOnScroll() {
         return onScroll;
     }
 
-    /**
-     * Sets the value of the onscroll property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setOnScroll(String value) {
         this.onScroll = value;
     }
 
-    /**
-     * Gets the value of the onzoom property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getOnZoom() {
         return onZoom;
     }
 
-    /**
-     * Sets the value of the onzoom property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setOnZoom(String value) {
         this.onZoom = value;
     }
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getX() {
         return x;
     }
 
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setX(String value) {
         this.x = value;
     }
 
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getY() {
         return y;
     }
 
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setY(String value) {
         this.y = value;
     }
 
-    /**
-     * Gets the value of the width property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getWidth() {
         return width;
     }
 
-    /**
-     * Sets the value of the width property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setWidth(String value) {
         this.width = value;
     }
 
-    /**
-     * Gets the value of the height property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getHeight() {
         return height;
     }
 
-    /**
-     * Sets the value of the height property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setHeight(String value) {
         this.height = value;
     }
 
-    /**
-     * Gets the value of the viewBox property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getViewBox() {
         return viewBox;
     }
 
-    /**
-     * Sets the value of the viewBox property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setViewBox(String value) {
         this.viewBox = value;
     }
 
-    /**
-     * Gets the value of the preserveAspectRatio property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getPreserveAspectRatio() {
         if (preserveAspectRatio == null) {
@@ -560,27 +341,11 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         }
     }
 
-    /**
-     * Sets the value of the preserveAspectRatio property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setPreserveAspectRatio(String value) {
         this.preserveAspectRatio = value;
     }
 
-    /**
-     * Gets the value of the zoomAndPan property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getZoomAndPan() {
         if (zoomAndPan == null) {
             return "magnify";
@@ -589,26 +354,10 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         }
     }
 
-    /**
-     * Sets the value of the zoomAndPan property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setZoomAndPan(String value) {
         this.zoomAndPan = value;
     }
 
-    /**
-     * Gets the value of the version property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getVersion() {
         if (version == null) {
             return "1.1";
@@ -617,50 +366,18 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         }
     }
 
-    /**
-     * Sets the value of the version property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setVersion(String value) {
         this.version = value;
     }
 
-    /**
-     * Gets the value of the baseProfile property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getBaseProfile() {
         return baseProfile;
     }
 
-    /**
-     * Sets the value of the baseProfile property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setBaseProfile(String value) {
         this.baseProfile = value;
     }
 
-    /**
-     * Gets the value of the contentScriptType property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getContentScriptType() {
         if (contentScriptType == null) {
             return "application/ecmascript";
@@ -669,26 +386,10 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         }
     }
 
-    /**
-     * Sets the value of the contentScriptType property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setContentScriptType(String value) {
         this.contentScriptType = value;
     }
 
-    /**
-     * Gets the value of the contentStyleType property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getContentStyleType() {
         if (contentStyleType == null) {
             return "text/css";
@@ -697,79 +398,10 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         }
     }
 
-    /**
-     * Sets the value of the contentStyleType property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setContentStyleType(String value) {
         this.contentStyleType = value;
     }
 
-    /**
-     * Gets the value of the elements property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the elements property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getElements().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     * {@link SvgAnimateMotion }
-     * {@link SvgAnimateColor }
-     * {@link SvgAnimateTransform }
-     * {@link SvgGraphic }
-     * {@link SvgGroup }
-     * {@link SvgDefinitions }
-     * {@link SvgSymbol }
-     * {@link SvgUse }
-     * {@link SvgSwitch }
-     * {@link SvgImage }
-     * {@link SvgStyle }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
-     * {@link SvgText }
-     * {@link SvgAltGlyphDef }
-     * {@link SvgMarker }
-     * {@link SvgColorProfile }
-     * {@link SvgLinearGradient }
-     * {@link SvgRadialGradient }
-     * {@link SvgPattern }
-     * {@link SvgClipPath }
-     * {@link SvgMask }
-     * {@link SvgFilter }
-     * {@link SvgCursor }
-     * {@link SvgAnchor }
-     * {@link SvgView }
-     * {@link SvgScript }
-     * {@link SvgFont }
-     * {@link SvgFontFace }
-     * {@link SvgForeignObject }
-     *
-     *
-     */
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

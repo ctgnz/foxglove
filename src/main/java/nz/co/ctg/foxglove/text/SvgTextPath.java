@@ -23,9 +23,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "conditionalFeatures", "linkable", "externalResources", "eventListener", "value"
@@ -68,122 +65,42 @@ public class SvgTextPath extends AbstractSvgStylable implements ISvgTextContentE
     @XmlValueExtension
     private String value;
 
-    /**
-     * Gets the value of the startOffset property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getStartOffset() {
         return startOffset;
     }
 
-    /**
-     * Sets the value of the startOffset property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setStartOffset(String value) {
         this.startOffset = value;
     }
 
-    /**
-     * Gets the value of the textLength property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getTextLength() {
         return textLength;
     }
 
-    /**
-     * Sets the value of the textLength property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setTextLength(String value) {
         this.textLength = value;
     }
 
-    /**
-     * Gets the value of the lengthAdjust property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getLengthAdjust() {
         return lengthAdjust;
     }
 
-    /**
-     * Sets the value of the lengthAdjust property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setLengthAdjust(String value) {
         this.lengthAdjust = value;
     }
 
-    /**
-     * Gets the value of the method property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getMethod() {
         return method;
     }
 
-    /**
-     * Sets the value of the method property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setMethod(String value) {
         this.method = value;
     }
 
-    /**
-     * Gets the value of the spacing property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getSpacing() {
         return spacing;
     }
 
-    /**
-     * Sets the value of the spacing property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setSpacing(String value) {
         this.spacing = value;
     }
@@ -208,27 +125,11 @@ public class SvgTextPath extends AbstractSvgStylable implements ISvgTextContentE
         return eventListener;
     }
 
-    /**
-     * Gets the value of the value property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     @Override
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     @Override
     public void setValue(String value) {
         this.value = value;

@@ -55,9 +55,6 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
@@ -149,307 +146,86 @@ public class SvgGlyph extends AbstractSvgStylable {
     })
     private List<ISvgElement> content;
 
-    /**
-     * Gets the value of the unicode property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getUnicode() {
         return unicode;
     }
 
-    /**
-     * Sets the value of the unicode property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setUnicode(String value) {
         this.unicode = value;
     }
 
-    /**
-     * Gets the value of the glyphName property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getGlyphName() {
         return glyphName;
     }
 
-    /**
-     * Sets the value of the glyphName property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setGlyphName(String value) {
         this.glyphName = value;
     }
 
-    /**
-     * Gets the value of the d property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getD() {
         return d;
     }
 
-    /**
-     * Sets the value of the d property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setD(String value) {
         this.d = value;
     }
 
-    /**
-     * Gets the value of the orientation property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getOrientation() {
         return orientation;
     }
 
-    /**
-     * Sets the value of the orientation property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setOrientation(String value) {
         this.orientation = value;
     }
 
-    /**
-     * Gets the value of the arabicForm property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getArabicForm() {
         return arabicForm;
     }
 
-    /**
-     * Sets the value of the arabicForm property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setArabicForm(String value) {
         this.arabicForm = value;
     }
 
-    /**
-     * Gets the value of the lang property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getLang() {
         return lang;
     }
 
-    /**
-     * Sets the value of the lang property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setLang(String value) {
         this.lang = value;
     }
 
-    /**
-     * Gets the value of the horizAdvX property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getHorizAdvX() {
         return horizAdvX;
     }
 
-    /**
-     * Sets the value of the horizAdvX property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setHorizAdvX(String value) {
         this.horizAdvX = value;
     }
 
-    /**
-     * Gets the value of the vertOriginX property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getVertOriginX() {
         return vertOriginX;
     }
 
-    /**
-     * Sets the value of the vertOriginX property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setVertOriginX(String value) {
         this.vertOriginX = value;
     }
 
-    /**
-     * Gets the value of the vertOriginY property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getVertOriginY() {
         return vertOriginY;
     }
 
-    /**
-     * Sets the value of the vertOriginY property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setVertOriginY(String value) {
         this.vertOriginY = value;
     }
 
-    /**
-     * Gets the value of the vertAdvY property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getVertAdvY() {
         return vertAdvY;
     }
 
-    /**
-     * Sets the value of the vertAdvY property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setVertAdvY(String value) {
         this.vertAdvY = value;
     }
 
-    /**
-     * Gets the value of the content property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContent().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgDescription }
-     * {@link SvgTitle }
-     * {@link SvgMetadata }
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     * {@link SvgAnimateMotion }
-     * {@link SvgAnimateColor }
-     * {@link SvgAnimateTransform }
-     * {@link SvgGraphic }
-     * {@link SvgGroup }
-     * {@link SvgDefinitions }
-     * {@link SvgSymbol }
-     * {@link SvgUse }
-     * {@link SvgSwitch }
-     * {@link SvgImage }
-     * {@link SvgStyle }
-     * {@link SvgPath }
-     * {@link SvgRectangle }
-     * {@link SvgCircle }
-     * {@link SvgLine }
-     * {@link SvgEllipse }
-     * {@link SvgPolyline }
-     * {@link SvgPolygon }
-     * {@link SvgText }
-     * {@link SvgAltGlyphDef }
-     * {@link SvgMarker }
-     * {@link SvgColorProfile }
-     * {@link SvgLinearGradient }
-     * {@link SvgRadialGradient }
-     * {@link SvgPattern }
-     * {@link SvgClipPath }
-     * {@link SvgMask }
-     * {@link SvgFilter }
-     * {@link SvgCursor }
-     * {@link SvgAnchor }
-     * {@link SvgView }
-     * {@link SvgScript }
-     * {@link SvgFont }
-     * {@link SvgFontFace }
-     * {@link SvgForeignObject }
-     *
-     *
-     */
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

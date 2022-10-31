@@ -3,6 +3,11 @@ package nz.co.ctg.foxglove.filter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -19,252 +24,66 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "animations"
+    "filter", "animations"
 })
 @XmlRootElement(name = "feTurbulence")
-public class FeTurbulence extends AbstractSvgFilterPrimitive {
+public class FeTurbulence extends AbstractSvgStylable implements ISvgFilterPrimitive {
 
-    @XmlAttribute(name = "x")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
-    @XmlAttribute(name = "y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
-    @XmlAttribute(name = "width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
-    @XmlAttribute(name = "height")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
-    @XmlAttribute(name = "result")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String result;
     @XmlAttribute(name = "baseFrequency")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String baseFrequency;
+    private String baseFrequency;
+
     @XmlAttribute(name = "numOctaves")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String numOctaves;
+    private String numOctaves;
+
     @XmlAttribute(name = "seed")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String seed;
+    private String seed;
+
     @XmlAttribute(name = "stitchTiles")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String stitchTiles;
+    private String stitchTiles;
+
     @XmlAttribute(name = "type")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String type;
+    private String type;
+
+    @XmlPath(".")
+    private final SvgFilterAttributes filter = new SvgFilterAttributes();
+
     @XmlElements({
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgAnimationElement> animations;
+    private List<ISvgAnimationElement> animations;
 
-    /**
-     * Gets the value of the x property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getX() {
-        return x;
-    }
-
-    /**
-     * Sets the value of the x property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setX(String value) {
-        this.x = value;
-    }
-
-    /**
-     * Gets the value of the y property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getY() {
-        return y;
-    }
-
-    /**
-     * Sets the value of the y property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setY(String value) {
-        this.y = value;
-    }
-
-    /**
-     * Gets the value of the width property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getWidth() {
-        return width;
-    }
-
-    /**
-     * Sets the value of the width property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setWidth(String value) {
-        this.width = value;
-    }
-
-    /**
-     * Gets the value of the height property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getHeight() {
-        return height;
-    }
-
-    /**
-     * Sets the value of the height property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setHeight(String value) {
-        this.height = value;
-    }
-
-    /**
-     * Gets the value of the result property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getResult() {
-        return result;
-    }
-
-    /**
-     * Sets the value of the result property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setResult(String value) {
-        this.result = value;
-    }
-
-    /**
-     * Gets the value of the baseFrequency property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getBaseFrequency() {
         return baseFrequency;
     }
 
-    /**
-     * Sets the value of the baseFrequency property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setBaseFrequency(String value) {
         this.baseFrequency = value;
     }
 
-    /**
-     * Gets the value of the numOctaves property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getNumOctaves() {
         return numOctaves;
     }
 
-    /**
-     * Sets the value of the numOctaves property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setNumOctaves(String value) {
         this.numOctaves = value;
     }
 
-    /**
-     * Gets the value of the seed property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getSeed() {
         return seed;
     }
 
-    /**
-     * Sets the value of the seed property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setSeed(String value) {
         this.seed = value;
     }
 
-    /**
-     * Gets the value of the stitchTiles property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getStitchTiles() {
         if (stitchTiles == null) {
             return "noStitch";
@@ -273,26 +92,10 @@ public class FeTurbulence extends AbstractSvgFilterPrimitive {
         }
     }
 
-    /**
-     * Sets the value of the stitchTiles property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setStitchTiles(String value) {
         this.stitchTiles = value;
     }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getType() {
         if (type == null) {
             return "turbulence";
@@ -301,46 +104,31 @@ public class FeTurbulence extends AbstractSvgFilterPrimitive {
         }
     }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setType(String value) {
         this.type = value;
     }
 
-    /**
-     * Gets the value of the animateOrSet property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animateOrSet property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAnimateOrSet().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SvgAnimateAttribute }
-     * {@link SvgSetAttribute }
-     *
-     *
-     */
+    @Override
+    public SvgFilterAttributes getFilterAttributes() {
+        return filter;
+    }
+
     public List<ISvgAnimationElement> getAnimations() {
         if (animations == null) {
             animations = new ArrayList<>();
         }
         return this.animations;
+    }
+
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("baseFrequency", baseFrequency);
+        builder.add("numOctaves", numOctaves);
+        builder.add("seed", seed);
+        builder.add("stitchTiles", stitchTiles);
+        builder.add("type", type);
+        super.toStringDetail(builder);
+        filter.toStringDetail(builder);
     }
 
 }

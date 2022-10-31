@@ -36,9 +36,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "polygon", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "transform", "content"

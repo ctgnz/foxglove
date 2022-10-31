@@ -32,9 +32,6 @@ import jakarta.xml.bind.annotation.XmlType;
 import javafx.scene.shape.Circle;
 
 
-/**
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "circle", propOrder = {
     "conditionalFeatures", "externalResources", "eventListener", "transform", "content"
