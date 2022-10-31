@@ -81,7 +81,9 @@ public class FoxgloveParserTest {
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/131.svg"));
         assertThat(svg, notNullValue());
         SvgGroup group = (SvgGroup) svg.getContent().get(0);
+        printElement(group);
         group = (SvgGroup) group.getContent().get(0);
+        printElement(group);
         SvgLine line = (SvgLine) group.getContent().get(0);
         printElement(line);
         Line fxLine = line.createShape();

@@ -1,30 +1,36 @@
 package nz.co.ctg.foxglove.parser;
 
-import java.lang.reflect.Method;
-
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.apache.commons.lang3.StringUtils;
 
-public abstract class SvgEnumAdapter<E extends Enum<?>> extends XmlAdapter<String, E> {
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
+import javafx.css.ParsedValue;
+import javafx.css.StyleConverter;
 
-    private Class<E> enumType;
-    private E defaultValue;
+public abstract class SvgEnumAdapter<E extends Enum<E>> extends XmlAdapter<String, E> {
 
-    public SvgEnumAdapter(Class<E> enumType, E defaultValue) {
-        this.enumType = enumType;
-        this.defaultValue = defaultValue;
+    private static class ParsedValueImpl<E extends Enum<E>> extends ParsedValue<String, E> {
+
+        protected ParsedValueImpl(String value, StyleConverter<String, E> converter) {
+            super(value, converter);
+        }
+
     }
 
-    @SuppressWarnings("unchecked")
+    private E defaultValue;
+    private StyleConverter<String, E> converter;
+
+    public SvgEnumAdapter(Class<E> enumType, E defaultValue) {
+        this.defaultValue = defaultValue;
+        this.converter = StyleConverter.getEnumConverter(enumType);
+    }
+
     @Override
     public E unmarshal(String value) throws Exception {
         if (StringUtils.isBlank(value) || "none".equals(value)) {
             return null;
         }
         try {
-            Method method = enumType.getMethod("valueOf", String.class);
-            return (E) method.invoke(enumType, value.toUpperCase());
+            return converter.convert(new ParsedValueImpl<>(value, converter), null);
         } catch (Exception e) {
             return defaultValue;
         }
