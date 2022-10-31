@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
+import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlTransformation;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -68,7 +72,11 @@ public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElem
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String preserveAspectRatio;
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgExternalResourcesAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@externalResourcesRequired", transformerClass = SvgExternalResourcesAttributes.class)
+    })
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlPath(".")

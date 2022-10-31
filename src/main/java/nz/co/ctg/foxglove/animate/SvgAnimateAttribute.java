@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
+import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlTransformation;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -78,13 +82,23 @@ public class SvgAnimateAttribute extends AbstractSvgElement implements ISvgAnima
     @XmlPath(".")
     protected final SvgAnimationAttributes animation = new SvgAnimationAttributes();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgConditionalFeaturesAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@requiredFeatures", transformerClass = SvgConditionalFeaturesAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@requiredExtensions", transformerClass = SvgConditionalFeaturesAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@systemLanguage", transformerClass = SvgConditionalFeaturesAttributes.class)
+    })
     protected final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
     @XmlPath(".")
     protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgExternalResourcesAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@externalResourcesRequired", transformerClass = SvgExternalResourcesAttributes.class)
+    })
     protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({

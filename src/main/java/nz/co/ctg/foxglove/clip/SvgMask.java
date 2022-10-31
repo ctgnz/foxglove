@@ -3,7 +3,10 @@ package nz.co.ctg.foxglove.clip;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.persistence.oxm.annotations.XmlPath;
+import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlTransformation;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -93,10 +96,20 @@ public class SvgMask extends AbstractSvgStylable implements ISvgClipElement {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     private String maskContentUnits;
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgConditionalFeaturesAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@requiredFeatures", transformerClass = SvgConditionalFeaturesAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@requiredExtensions", transformerClass = SvgConditionalFeaturesAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@systemLanguage", transformerClass = SvgConditionalFeaturesAttributes.class)
+    })
     private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgExternalResourcesAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@externalResourcesRequired", transformerClass = SvgExternalResourcesAttributes.class)
+    })
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({

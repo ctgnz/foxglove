@@ -97,6 +97,10 @@ public class FoxgloveParserTest {
     @Test
     public void testWrite() throws Exception {
         SvgGraphic svg = new SvgGraphic();
+        svg.setRequiredFeatures("foobar");
+        svg.setRequiredExtensions("barqux");
+        svg.setSystemLanguage("quxfoo");
+        svg.setExternalResourcesRequired(true);
         SvgGroup group = new SvgGroup();
         group.setId("g1");
         SvgGroup subGroup = new SvgGroup();

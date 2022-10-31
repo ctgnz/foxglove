@@ -2,6 +2,10 @@ package nz.co.ctg.foxglove.attributes;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.ISvgEventListener;
+
+import static com.google.common.base.MoreObjects.toStringHelper;
+
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -125,6 +129,13 @@ public class SvgEventListener {
 
     public void setOnLoad(String value) {
         this.onLoad = value;
+    }
+
+    @Override
+    public String toString() {
+        ToStringHelper builder = toStringHelper(ISvgEventListener.class.getSimpleName()).omitNullValues();
+        toStringDetail(builder);
+        return builder.toString();
     }
 
     public void toStringDetail(ToStringHelper builder) {

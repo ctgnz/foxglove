@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
+import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlTransformation;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
@@ -39,7 +43,11 @@ public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResour
     @XmlPath(".")
     protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgExternalResourcesAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@externalResourcesRequired", transformerClass = SvgExternalResourcesAttributes.class)
+    })
     protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlAttribute(name = "x")

@@ -16,7 +16,6 @@ import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgEventListener;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
-import nz.co.ctg.foxglove.attributes.TransformAttributeTransformer;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -63,19 +62,29 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     private String lengthAdjust;
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgConditionalFeaturesAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@requiredFeatures", transformerClass = SvgConditionalFeaturesAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@requiredExtensions", transformerClass = SvgConditionalFeaturesAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@systemLanguage", transformerClass = SvgConditionalFeaturesAttributes.class)
+    })
     private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgExternalResourcesAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@externalResourcesRequired", transformerClass = SvgExternalResourcesAttributes.class)
+    })
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlPath(".")
     private final SvgEventListener eventListener = new SvgEventListener();
 
     @XmlTransformation
-    @XmlReadTransformer(transformerClass = TransformAttributeTransformer.class)
+    @XmlReadTransformer(transformerClass = SvgTransformAttribute.class)
     @XmlWriteTransformers({
-        @XmlWriteTransformer(xmlPath = "@transform", transformerClass = TransformAttributeTransformer.class)
+        @XmlWriteTransformer(xmlPath = "@transform", transformerClass = SvgTransformAttribute.class)
     })
     private final SvgTransformAttribute transform = new SvgTransformAttribute();
 
