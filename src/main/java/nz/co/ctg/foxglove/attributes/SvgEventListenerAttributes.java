@@ -30,6 +30,9 @@ public class SvgEventListenerAttributes implements AttributeTransformer, FieldTr
     private static final String ATTR_ONFOCUSOUT = "onfocusout";
     private static final String ATTR_ONFOCUSIN = "onfocusin";
 
+    public SvgEventListenerAttributes() {
+    }
+
     @XmlAttribute(name = ATTR_ONFOCUSIN)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String onFocusIn;

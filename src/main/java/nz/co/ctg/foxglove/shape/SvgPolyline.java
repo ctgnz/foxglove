@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
 import org.eclipse.persistence.oxm.annotations.XmlTransformation;
 import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
@@ -67,7 +66,20 @@ public class SvgPolyline extends AbstractSvgStylable implements ISvgShape<Polyli
     })
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgEventListenerAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@onfocusin", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onfocusout", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onactivate", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onclick", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmousedown", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmouseup", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmouseover", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmousemove", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmouseout", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onload", transformerClass = SvgEventListenerAttributes.class)
+    })
     private final SvgEventListenerAttributes eventListener = new SvgEventListenerAttributes();
 
     @XmlTransformation

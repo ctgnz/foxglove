@@ -1,5 +1,12 @@
 package nz.co.ctg.foxglove.attributes;
 
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.persistence.mappings.foundation.AbstractTransformationMapping;
+import org.eclipse.persistence.mappings.transformers.AttributeTransformer;
+import org.eclipse.persistence.mappings.transformers.FieldTransformer;
+import org.eclipse.persistence.sessions.DataRecord;
+import org.eclipse.persistence.sessions.Session;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgLinkable;
@@ -14,126 +21,132 @@ import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SvgLinkableAttributes {
-    private static final String ATTR_ACTUATE = "xlink:actuate";
-    private static final String ATTR_SHOW = "xlink:show";
-    private static final String ATTR_TITLE = "xlink:title";
-    private static final String ATTR_ARCROLE = "xlink:arcrole";
-    private static final String ATTR_ROLE = "xlink:role";
-    private static final String ATTR_HREF = "xlink:href";
+public class SvgLinkableAttributes implements AttributeTransformer, FieldTransformer {
+    private static final long serialVersionUID = 1L;
+    private static final String ATTR_XLINK_NAMESPACE = "xmlns:xlink";
     private static final String ATTR_TYPE = "xlink:type";
-    private static final String ATTR_XMLNS_XLINK = "xmlns:xlink";
+    private static final String ATTR_HREF = "xlink:href";
+    private static final String ATTR_ROLE = "xlink:role";
+    private static final String ATTR_ARCROLE = "xlink:arcrole";
+    private static final String ATTR_TITLE = "xlink:title";
+    private static final String ATTR_SHOW = "xlink:show";
+    private static final String ATTR_ACTUATE = "xlink:actuate";
 
-    @XmlAttribute(name = ATTR_XMLNS_XLINK)
+    public SvgLinkableAttributes() {
+    }
+
+    @XmlAttribute(name = ATTR_XLINK_NAMESPACE)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String xmlnsXlink;
+    private String xlinkNamespace;
 
     @XmlAttribute(name = ATTR_TYPE, namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    private String xlinkType;
+    private String type;
 
     @XmlAttribute(name = ATTR_HREF, required = true, namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String xlinkHref;
+    private String href;
 
     @XmlAttribute(name = ATTR_ROLE, namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String xlinkRole;
+    private String role;
 
     @XmlAttribute(name = ATTR_ARCROLE, namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String xlinkArcrole;
+    private String arcRole;
 
     @XmlAttribute(name = ATTR_TITLE, namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String xlinkTitle;
+    private String title;
 
     @XmlAttribute(name = ATTR_SHOW, namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    private String xlinkShow;
+    private String show;
 
     @XmlAttribute(name = ATTR_ACTUATE, namespace = "http://www.w3.org/1999/xlink")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    private String xlinkActuate;
+    private String actuate;
 
-    public String getXmlnsXlink() {
-        if (xmlnsXlink == null) {
+    private AbstractTransformationMapping mapping;
+
+    public String getXlinkNamespace() {
+        if (xlinkNamespace == null) {
             return "http://www.w3.org/1999/xlink";
         } else {
-            return xmlnsXlink;
+            return xlinkNamespace;
         }
     }
 
-    public void setXmlnsXlink(String value) {
-        this.xmlnsXlink = value;
+    public void setXlinkNamespace(String value) {
+        this.xlinkNamespace = value;
     }
 
-    public String getXlinkType() {
-        if (xlinkType == null) {
+    public String getType() {
+        if (type == null) {
             return "simple";
         } else {
-            return xlinkType;
+            return type;
         }
     }
 
-    public void setXlinkType(String value) {
-        this.xlinkType = value;
+    public void setType(String value) {
+        this.type = value;
     }
 
-    public String getXlinkHref() {
-        return xlinkHref;
+    public String getHref() {
+        return href;
     }
 
-    public void setXlinkHref(String value) {
-        this.xlinkHref = value;
+    public void setHref(String value) {
+        this.href = value;
     }
 
-    public String getXlinkRole() {
-        return xlinkRole;
+    public String getRole() {
+        return role;
     }
 
-    public void setXlinkRole(String value) {
-        this.xlinkRole = value;
+    public void setRole(String value) {
+        this.role = value;
     }
 
-    public String getXlinkArcrole() {
-        return xlinkArcrole;
+    public String getArcRole() {
+        return arcRole;
     }
 
-    public void setXlinkArcrole(String value) {
-        this.xlinkArcrole = value;
+    public void setArcRole(String value) {
+        this.arcRole = value;
     }
 
-    public String getXlinkTitle() {
-        return xlinkTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setXlinkTitle(String value) {
-        this.xlinkTitle = value;
+    public void setTitle(String value) {
+        this.title = value;
     }
 
-    public String getXlinkShow() {
-        if (xlinkShow == null) {
+    public String getShow() {
+        if (show == null) {
             return "other";
         } else {
-            return xlinkShow;
+            return show;
         }
     }
 
-    public void setXlinkShow(String value) {
-        this.xlinkShow = value;
+    public void setShow(String value) {
+        this.show = value;
     }
 
-    public String getXlinkActuate() {
-        if (xlinkActuate == null) {
+    public String getActuate() {
+        if (actuate == null) {
             return "onLoad";
         } else {
-            return xlinkActuate;
+            return actuate;
         }
     }
 
-    public void setXlinkActuate(String value) {
-        this.xlinkActuate = value;
+    public void setActuate(String value) {
+        this.actuate = value;
     }
 
     @Override
@@ -144,14 +157,79 @@ public class SvgLinkableAttributes {
     }
 
     public void toStringDetail(ToStringHelper builder) {
-        builder.add(ATTR_XMLNS_XLINK, xmlnsXlink);
-        builder.add(ATTR_TYPE, xlinkType);
-        builder.add(ATTR_HREF, xlinkHref);
-        builder.add(ATTR_ROLE, xlinkRole);
-        builder.add(ATTR_ARCROLE, xlinkArcrole);
-        builder.add(ATTR_TITLE, xlinkTitle);
-        builder.add(ATTR_SHOW, xlinkShow);
-        builder.add(ATTR_ACTUATE, xlinkActuate);
+        builder.add(ATTR_XLINK_NAMESPACE, xlinkNamespace);
+        builder.add(ATTR_TYPE, type);
+        builder.add(ATTR_HREF, href);
+        builder.add(ATTR_ROLE, role);
+        builder.add(ATTR_ARCROLE, arcRole);
+        builder.add(ATTR_TITLE, title);
+        builder.add(ATTR_SHOW, show);
+        builder.add(ATTR_ACTUATE, actuate);
+    }
+
+    @Override
+    public Object buildFieldValue(Object instance, String fieldName, Session session) {
+        ISvgLinkable features = (ISvgLinkable) instance;
+        SvgLinkableAttributes attributes = features.getLinkableAttributes();
+        String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
+        switch (StringUtils.remove(attributeName, '@')) {
+            case ATTR_XLINK_NAMESPACE:
+                return attributes.getXlinkNamespace();
+            case ATTR_TYPE:
+                return attributes.getType();
+            case ATTR_HREF:
+                return attributes.getHref();
+            case ATTR_ROLE:
+                return attributes.getRole();
+            case ATTR_ARCROLE:
+                return attributes.getArcRole();
+            case ATTR_TITLE:
+                return attributes.getTitle();
+            case ATTR_SHOW:
+                return attributes.getShow();
+            case ATTR_ACTUATE:
+                return attributes.getActuate();
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void initialize(AbstractTransformationMapping mapping) {
+        this.mapping = mapping;
+    }
+
+    @Override
+    public Object buildAttributeValue(DataRecord dataRecord, Object object, Session session) {
+        ISvgLinkable features = (ISvgLinkable) object;
+        SvgLinkableAttributes attributes = features.getLinkableAttributes();
+        if (dataRecord != null) {
+            mapping.getFields().stream().filter(fld -> fld.getName().endsWith(ATTR_XLINK_NAMESPACE)).findFirst().ifPresent(fld -> {
+                attributes.setXlinkNamespace((String) dataRecord.get(fld));
+            });
+            mapping.getFields().stream().filter(fld -> fld.getName().endsWith(ATTR_TYPE)).findFirst().ifPresent(fld -> {
+                attributes.setType((String) dataRecord.get(fld));
+            });
+            mapping.getFields().stream().filter(fld -> fld.getName().endsWith(ATTR_HREF)).findFirst().ifPresent(fld -> {
+                attributes.setHref((String) dataRecord.get(fld));
+            });
+            mapping.getFields().stream().filter(fld -> fld.getName().endsWith(ATTR_ROLE)).findFirst().ifPresent(fld -> {
+                attributes.setRole((String) dataRecord.get(fld));
+            });
+            mapping.getFields().stream().filter(fld -> fld.getName().endsWith(ATTR_ARCROLE)).findFirst().ifPresent(fld -> {
+                attributes.setArcRole((String) dataRecord.get(fld));
+            });
+            mapping.getFields().stream().filter(fld -> fld.getName().endsWith(ATTR_TITLE)).findFirst().ifPresent(fld -> {
+                attributes.setTitle((String) dataRecord.get(fld));
+            });
+            mapping.getFields().stream().filter(fld -> fld.getName().endsWith(ATTR_SHOW)).findFirst().ifPresent(fld -> {
+                attributes.setShow((String) dataRecord.get(fld));
+            });
+            mapping.getFields().stream().filter(fld -> fld.getName().endsWith(ATTR_ACTUATE)).findFirst().ifPresent(fld -> {
+                attributes.setActuate((String) dataRecord.get(fld));
+            });
+        }
+        return attributes;
     }
 
 }

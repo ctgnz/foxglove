@@ -3,11 +3,12 @@ package nz.co.ctg.foxglove.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
 import org.eclipse.persistence.oxm.annotations.XmlTransformation;
 import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
 import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
@@ -40,43 +41,54 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "filter")
 public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResources, ISvgLinkable {
 
-    @XmlPath(".")
-    protected final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
+    @XmlAttribute(name = "x")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    private String x;
+
+    @XmlAttribute(name = "y")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    private String y;
+
+    @XmlAttribute(name = "width")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    private String width;
+
+    @XmlAttribute(name = "height")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    private String height;
+
+    @XmlAttribute(name = "filterRes")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    private String filterRes;
+
+    @XmlAttribute(name = "filterUnits")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    private String filterUnits;
+
+    @XmlAttribute(name = "primitiveUnits")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    private String primitiveUnits;
+
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgLinkableAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "xmlns:@xlink", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "xlink:@type", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "xlink:@href", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "xlink:@role", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "xlink:@arcrole", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "xlink:@title", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "xlink:@show", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "xlink:@actuate", transformerClass = SvgLinkableAttributes.class)
+    })
+    private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlTransformation
     @XmlReadTransformer(transformerClass = SvgExternalResourcesAttributes.class)
     @XmlWriteTransformers({
         @XmlWriteTransformer(xmlPath = "@externalResourcesRequired", transformerClass = SvgExternalResourcesAttributes.class)
     })
-    protected final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
-    @XmlAttribute(name = "x")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String x;
-
-    @XmlAttribute(name = "y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String y;
-
-    @XmlAttribute(name = "width")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String width;
-
-    @XmlAttribute(name = "height")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String height;
-
-    @XmlAttribute(name = "filterRes")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String filterRes;
-
-    @XmlAttribute(name = "filterUnits")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String filterUnits;
-
-    @XmlAttribute(name = "primitiveUnits")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String primitiveUnits;
+    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -101,17 +113,7 @@ public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResour
         @XmlElement(name = "feTile", type = FeTile.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "feTurbulence", type = FeTurbulence.class, namespace = "http://www.w3.org/2000/svg")
     })
-    protected List<ISvgElement> content;
-
-    @Override
-    public SvgLinkableAttributes getLinkableAttributes() {
-        return linkable;
-    }
-
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
+    private List<ISvgElement> content;
 
     public String getX() {
         return x;
@@ -169,6 +171,16 @@ public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResour
         this.primitiveUnits = value;
     }
 
+    @Override
+    public SvgLinkableAttributes getLinkableAttributes() {
+        return linkable;
+    }
+
+    @Override
+    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
+        return externalResources;
+    }
+
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -176,4 +188,17 @@ public class SvgFilter extends AbstractSvgStylable implements ISvgExternalResour
         return this.content;
     }
 
+    @Override
+    protected void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        builder.add("width", width);
+        builder.add("height", height);
+        builder.add("filterRes", filterRes);
+        builder.add("filterUnits", filterUnits);
+        builder.add("primitiveUnits", primitiveUnits);
+        super.toStringDetail(builder);
+        linkable.toStringDetail(builder);
+        externalResources.toStringDetail(builder);
+    }
 }

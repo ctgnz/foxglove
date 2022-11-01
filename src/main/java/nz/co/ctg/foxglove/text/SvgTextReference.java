@@ -3,7 +3,6 @@ package nz.co.ctg.foxglove.text;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
 import org.eclipse.persistence.oxm.annotations.XmlTransformation;
 import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
@@ -81,7 +80,18 @@ public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPos
     })
     private final SvgConditionalFeaturesAttributes conditionalFeatures = new SvgConditionalFeaturesAttributes();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgLinkableAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@xmlns:xlink", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@xlink:type", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@xlink:href", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@xlink:role", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@xlink:arcrole", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@xlink:title", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@xlink:show", transformerClass = SvgLinkableAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@xlink:actuate", transformerClass = SvgLinkableAttributes.class)
+    })
     private final SvgLinkableAttributes linkable = new SvgLinkableAttributes();
 
     @XmlTransformation
@@ -91,7 +101,20 @@ public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPos
     })
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgEventListenerAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@onfocusin", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onfocusout", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onactivate", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onclick", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmousedown", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmouseup", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmouseover", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmousemove", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onmouseout", transformerClass = SvgEventListenerAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onload", transformerClass = SvgEventListenerAttributes.class)
+    })
     private final SvgEventListenerAttributes eventListener = new SvgEventListenerAttributes();
 
     @XmlElements({

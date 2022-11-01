@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import nz.co.ctg.foxglove.element.SvgAnchor;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.parser.FoxgloveParser;
 import nz.co.ctg.foxglove.shape.SvgLine;
@@ -108,6 +109,10 @@ public class FoxgloveParserTest {
         SvgGroup subGroup = new SvgGroup();
         subGroup.setId("g2");
         subGroup.setTransform("rotate(1.23456)");
+        SvgAnchor anchor = new SvgAnchor();
+        anchor.setId("a1");
+        anchor.setXlinkHref("foobar");
+        subGroup.getContent().add(anchor);
         group.getContent().add(subGroup);
         svg.getContent().add(group);
         System.out.println(parser.write(svg));
