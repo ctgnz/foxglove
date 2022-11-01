@@ -75,7 +75,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "conditionalFeatures", "linkable", "externalResources", "content"
 })
 @XmlRootElement(name = "pattern")
-public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISvgLinkable, ISvgExternalResources, ISvgConditionalFeatures, ISvgFitToViewBox {
+public class SvgPattern extends AbstractSvgStylable implements ISvgStylable, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgFitToViewBox {
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

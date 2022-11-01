@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import nz.co.ctg.foxglove.element.SvgAnchor;
 import nz.co.ctg.foxglove.element.SvgGroup;
+import nz.co.ctg.foxglove.paint.SvgPattern;
 import nz.co.ctg.foxglove.parser.FoxgloveParser;
 import nz.co.ctg.foxglove.shape.SvgLine;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
@@ -113,6 +114,9 @@ public class FoxgloveParserTest {
         anchor.setId("a1");
         anchor.setXlinkHref("foobar");
         subGroup.getContent().add(anchor);
+        SvgPattern pattern = new SvgPattern();
+        pattern.setXlinkHref("barqux");
+        subGroup.getContent().add(pattern);
         group.getContent().add(subGroup);
         svg.getContent().add(group);
         System.out.println(parser.write(svg));

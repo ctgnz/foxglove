@@ -35,7 +35,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "conditionalFeatures", "linkable", "externalResources", "eventListener", "transform", "value"
 })
 @XmlRootElement(name = "a")
-public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgStylable, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable, ISvgValueElement {
+public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElement, ISvgStylable, ISvgConditionalFeatures, ISvgLinkable, ISvgEventListener, ISvgTransformable, ISvgValueElement {
 
     @XmlAttribute(name = "target")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
