@@ -105,7 +105,7 @@ public class SvgConditionalFeaturesAttributes implements AttributeTransformer, F
         ISvgConditionalFeatures features = (ISvgConditionalFeatures) instance;
         SvgConditionalFeaturesAttributes attributes = features.getConditionalFeaturesAttributes();
         String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
-        switch (attributeName.substring(1)) {
+        switch (StringUtils.remove(attributeName, '@')) {
             case ATTR_REQUIRED_FEATURES:
                 return attributes.getRequiredFeatures();
             case ATTR_REQUIRED_EXTENSIONS:

@@ -3,7 +3,6 @@ package nz.co.ctg.foxglove.animate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
 import org.eclipse.persistence.oxm.annotations.XmlTransformation;
 import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
@@ -87,7 +86,24 @@ public class SvgAnimateMotion extends AbstractSvgElement implements ISvgAnimatio
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String origin;
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgAnimationAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@onbegin", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onend", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onrepeat", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@onload", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@begin", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@dur", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@end", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@min", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@max", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@restart", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@repeatCount", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@repeatDur", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@fill", transformerClass = SvgAnimationAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@to", transformerClass = SvgAnimationAttributes.class),
+    })
     private final SvgAnimationAttributes animation = new SvgAnimationAttributes();
 
     @XmlTransformation

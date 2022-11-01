@@ -178,7 +178,7 @@ public class SvgEventListenerAttributes implements AttributeTransformer, FieldTr
         ISvgEventListener listener = (ISvgEventListener) instance;
         SvgEventListenerAttributes attributes = listener.getEventListenerAttributes();
         String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
-        switch (attributeName.substring(1)) {
+        switch (StringUtils.remove(attributeName, '@')) {
             case ATTR_ONFOCUSIN:
                 return attributes.getOnFocusIn();
             case ATTR_ONFOCUSOUT:
