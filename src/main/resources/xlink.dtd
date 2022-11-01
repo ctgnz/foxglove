@@ -1,0 +1,85 @@
+<!ENTITY % showActuate
+  "xlink:show      (new
+                   |replace
+                   |embed
+                   |other
+                   |none)          #IMPLIED
+   xlink:actuate   (onLoad
+                   |onRequest
+                   |other
+                   |none)          #IMPLIED">
+
+<!ENTITY % simpleAttrs
+  'xlink:type      (simple)        "simple"
+   xlink:href      CDATA           #IMPLIED
+   xlink:role      CDATA           #IMPLIED
+   xlink:arcrole   CDATA           #IMPLIED
+   xlink:title     CDATA           #IMPLIED
+   %showActuate;'>
+
+<!ELEMENT simple ANY>
+<!ATTLIST simple
+   xmlns:xlink     CDATA           #FIXED "http://www.w3.org/1999/xlink"
+   %simpleAttrs;>
+
+<!ENTITY % extendedContent.extras "">
+
+<!ENTITY % extendedModel
+  "(title|resource|locator|arc %extendedContent.extras;)*">
+
+<!ENTITY % extendedAttrs
+  'xlink:type      (extended)      #FIXED "extended"
+   xlink:role      CDATA           #IMPLIED
+   xlink:title     CDATA           #IMPLIED'>
+
+<!ELEMENT extended (%extendedModel;)>
+<!ATTLIST extended
+   xmlns:xlink     CDATA           #FIXED "http://www.w3.org/1999/xlink"
+   %extendedAttrs;>
+
+<!ENTITY % titleAttrs
+  'xlink:type      (title)         #FIXED "title"
+   xml:lang        CDATA           #IMPLIED'>
+
+<!ELEMENT title ANY>
+<!-- xml:lang is not required, but provides much of the motivation
+      for title elements in addition to attributes, and so is provided
+      here for convenience -->
+<!ATTLIST title
+   %titleAttrs;>
+
+<!ENTITY % resourceAttrs
+  'xlink:type      (resource)      #FIXED "resource"
+   xlink:role      CDATA           #IMPLIED
+   xlink:title     CDATA           #IMPLIED
+   xlink:label     NMTOKEN         #IMPLIED'>
+
+<!ELEMENT resource ANY>
+<!ATTLIST resource
+   %resourceAttrs;>
+
+<!ENTITY % locatorAttrs
+  'xlink:type      (locator)       #FIXED "locator"
+   xlink:href      CDATA           #REQUIRED
+   xlink:role      CDATA           #IMPLIED
+   xlink:title     CDATA           #IMPLIED
+   xlink:label     NMTOKEN         #IMPLIED'>
+
+<!ELEMENT locator (title*)>
+<!-- label is not required, but locators have no particular XLink 
+     function if they are not labeled -->
+<!ATTLIST locator
+   %locatorAttrs;>
+
+<!ENTITY % arcAttrs
+  'xlink:type      (arc)           #FIXED "arc"
+   xlink:arcrole   CDATA           #IMPLIED
+   xlink:title     CDATA           #IMPLIED
+   xlink:from      NMTOKEN         #IMPLIED
+   xlink:to        NMTOKEN         #IMPLIED
+   %showActuate;'>
+
+<!ELEMENT arc (title*)>
+<!-- from and to have default behavior when values are missing -->
+<!ATTLIST arc
+   %arcAttrs;>

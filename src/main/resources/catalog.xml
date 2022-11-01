@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog
+   PUBLIC "-//OASIS/DTD Entity Resolution XML Catalog V1.0//EN"
+   "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+<catalog  xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <group  prefer="public" xml:base="file:///D:/git/foxglove/src/main/resources/" >
+    <public publicId="-//W3C//DTD SVG 1.1//EN" uri="svg.dtd"/>
+    <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" uri="svg.dtd"/>
+    <system systemId="svg11.dtd" uri="svg.dtd"/>
+    <system systemId="http://www.w3.org/1999/xlink" uri="xlink.dtd"/>
+  </group>
+</catalog>

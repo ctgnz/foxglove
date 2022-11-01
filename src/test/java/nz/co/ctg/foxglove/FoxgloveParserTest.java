@@ -18,7 +18,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
-import jakarta.xml.bind.JAXBException;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
@@ -31,7 +30,7 @@ public class FoxgloveParserTest {
     private FoxgloveParser parser;
 
     @Before
-    public void setup() throws JAXBException {
+    public void setup() throws Exception {
         parser = new FoxgloveParser();
     }
 
