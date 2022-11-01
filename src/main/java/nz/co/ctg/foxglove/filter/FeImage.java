@@ -64,16 +64,13 @@ public class FeImage extends AbstractSvgStylable implements ISvgFilterPrimitive,
     private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
 
     @XmlTransformation
-    @XmlReadTransformer(transformerClass = SvgLinkableAttributes.class)
+    @XmlReadTransformer(transformerClass = SvgFilterAttributes.class)
     @XmlWriteTransformers({
-        @XmlWriteTransformer(xmlPath = "@xmlns:xlink", transformerClass = SvgLinkableAttributes.class),
-        @XmlWriteTransformer(xmlPath = "@xlink:type", transformerClass = SvgLinkableAttributes.class),
-        @XmlWriteTransformer(xmlPath = "@xlink:href", transformerClass = SvgLinkableAttributes.class),
-        @XmlWriteTransformer(xmlPath = "@xlink:role", transformerClass = SvgLinkableAttributes.class),
-        @XmlWriteTransformer(xmlPath = "@xlink:arcrole", transformerClass = SvgLinkableAttributes.class),
-        @XmlWriteTransformer(xmlPath = "@xlink:title", transformerClass = SvgLinkableAttributes.class),
-        @XmlWriteTransformer(xmlPath = "@xlink:show", transformerClass = SvgLinkableAttributes.class),
-        @XmlWriteTransformer(xmlPath = "@xlink:actuate", transformerClass = SvgLinkableAttributes.class)
+        @XmlWriteTransformer(xmlPath = "@x", transformerClass = SvgFilterAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@y", transformerClass = SvgFilterAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@width", transformerClass = SvgFilterAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@height", transformerClass = SvgFilterAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@result", transformerClass = SvgFilterAttributes.class)
     })
     private final SvgFilterAttributes filter = new SvgFilterAttributes();
 

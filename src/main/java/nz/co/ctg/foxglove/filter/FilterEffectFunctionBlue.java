@@ -17,10 +17,10 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "feFuncB")
 public class FilterEffectFunctionBlue extends AbstractSvgElement implements ISvgFilterFunction  {
 
-    private final CompositeFilterEffectFunction function = new CompositeFilterEffectFunction();
+    private final FilterEffectCompositeFunction function = new FilterEffectCompositeFunction();
 
     @Override
-    public CompositeFilterEffectFunction getFunctionAttributes() {
+    public FilterEffectCompositeFunction getFunctionAttributes() {
         return function;
     }
 

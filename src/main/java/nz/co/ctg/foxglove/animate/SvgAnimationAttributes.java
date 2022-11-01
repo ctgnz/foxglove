@@ -230,45 +230,6 @@ public class SvgAnimationAttributes implements AttributeTransformer, FieldTransf
     }
 
     @Override
-    public Object buildFieldValue(Object instance, String fieldName, Session session) {
-        ISvgAnimationElement animation = (ISvgAnimationElement) instance;
-        SvgAnimationAttributes attributes = animation.getAnimationAttributes();
-        String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
-        switch (StringUtils.remove(attributeName, '@')) {
-            case ATTR_ONBEGIN:
-                return attributes.getOnBegin();
-            case ATTR_ONEND:
-                return attributes.getOnEnd();
-            case ATTR_ONREPEAT:
-                return attributes.getOnRepeat();
-            case ATTR_ONLOAD:
-                return attributes.getOnLoad();
-            case ATTR_BEGIN:
-                return attributes.getBegin();
-            case ATTR_DUR:
-                return attributes.getDuration();
-            case ATTR_END:
-                return attributes.getEnd();
-            case ATTR_MIN:
-                return attributes.getMin();
-            case ATTR_MAX:
-                return attributes.getMax();
-            case ATTR_RESTART:
-                return attributes.getRestart();
-            case ATTR_REPEAT_COUNT:
-                return attributes.getRepeatCount();
-            case ATTR_REPEAT_DUR:
-                return attributes.getRepeatDuration();
-            case ATTR_FILL:
-                return attributes.getFill();
-            case ATTR_TO:
-                return attributes.getTo();
-            default:
-                return null;
-        }
-    }
-
-    @Override
     public void initialize(AbstractTransformationMapping mapping) {
         this.mapping = mapping;
     }
@@ -322,6 +283,45 @@ public class SvgAnimationAttributes implements AttributeTransformer, FieldTransf
             });
         }
         return attributes;
+    }
+
+    @Override
+    public Object buildFieldValue(Object instance, String fieldName, Session session) {
+        ISvgAnimationElement animation = (ISvgAnimationElement) instance;
+        SvgAnimationAttributes attributes = animation.getAnimationAttributes();
+        String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
+        switch (StringUtils.remove(attributeName, '@')) {
+            case ATTR_ONBEGIN:
+                return attributes.getOnBegin();
+            case ATTR_ONEND:
+                return attributes.getOnEnd();
+            case ATTR_ONREPEAT:
+                return attributes.getOnRepeat();
+            case ATTR_ONLOAD:
+                return attributes.getOnLoad();
+            case ATTR_BEGIN:
+                return attributes.getBegin();
+            case ATTR_DUR:
+                return attributes.getDuration();
+            case ATTR_END:
+                return attributes.getEnd();
+            case ATTR_MIN:
+                return attributes.getMin();
+            case ATTR_MAX:
+                return attributes.getMax();
+            case ATTR_RESTART:
+                return attributes.getRestart();
+            case ATTR_REPEAT_COUNT:
+                return attributes.getRepeatCount();
+            case ATTR_REPEAT_DUR:
+                return attributes.getRepeatDuration();
+            case ATTR_FILL:
+                return attributes.getFill();
+            case ATTR_TO:
+                return attributes.getTo();
+            default:
+                return null;
+        }
     }
 
 }

@@ -101,23 +101,6 @@ public class SvgConditionalFeaturesAttributes implements AttributeTransformer, F
     }
 
     @Override
-    public Object buildFieldValue(Object instance, String fieldName, Session session) {
-        ISvgConditionalFeatures features = (ISvgConditionalFeatures) instance;
-        SvgConditionalFeaturesAttributes attributes = features.getConditionalFeaturesAttributes();
-        String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
-        switch (StringUtils.remove(attributeName, '@')) {
-            case ATTR_REQUIRED_FEATURES:
-                return attributes.getRequiredFeatures();
-            case ATTR_REQUIRED_EXTENSIONS:
-                return attributes.getRequiredExtensions();
-            case ATTR_SYSTEM_LANGUAGE:
-                return attributes.getSystemLanguage();
-            default:
-                return null;
-        }
-    }
-
-    @Override
     public void initialize(AbstractTransformationMapping mapping) {
         this.mapping = mapping;
     }
@@ -138,6 +121,23 @@ public class SvgConditionalFeaturesAttributes implements AttributeTransformer, F
             });
         }
         return attributes;
+    }
+
+    @Override
+    public Object buildFieldValue(Object instance, String fieldName, Session session) {
+        ISvgConditionalFeatures features = (ISvgConditionalFeatures) instance;
+        SvgConditionalFeaturesAttributes attributes = features.getConditionalFeaturesAttributes();
+        String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
+        switch (StringUtils.remove(attributeName, '@')) {
+            case ATTR_REQUIRED_FEATURES:
+                return attributes.getRequiredFeatures();
+            case ATTR_REQUIRED_EXTENSIONS:
+                return attributes.getRequiredExtensions();
+            case ATTR_SYSTEM_LANGUAGE:
+                return attributes.getSystemLanguage();
+            default:
+                return null;
+        }
     }
 
 }

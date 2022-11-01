@@ -48,13 +48,6 @@ public class SvgExternalResourcesAttributes implements AttributeTransformer, Fie
     }
 
     @Override
-    public Object buildFieldValue(Object instance, String fieldName, Session session) {
-        ISvgExternalResources extResources = (ISvgExternalResources) instance;
-        SvgExternalResourcesAttributes attributes = extResources.getExternalResourcesAttributes();
-        return attributes.isExternalResourcesRequired();
-    }
-
-    @Override
     public void initialize(AbstractTransformationMapping mapping) {
         this.mapping = mapping;
     }
@@ -69,6 +62,13 @@ public class SvgExternalResourcesAttributes implements AttributeTransformer, Fie
             });
         }
         return attributes;
+    }
+
+    @Override
+    public Object buildFieldValue(Object instance, String fieldName, Session session) {
+        ISvgExternalResources extResources = (ISvgExternalResources) instance;
+        SvgExternalResourcesAttributes attributes = extResources.getExternalResourcesAttributes();
+        return attributes.isExternalResourcesRequired();
     }
 
 }

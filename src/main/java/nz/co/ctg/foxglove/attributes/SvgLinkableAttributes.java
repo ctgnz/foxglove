@@ -168,33 +168,6 @@ public class SvgLinkableAttributes implements AttributeTransformer, FieldTransfo
     }
 
     @Override
-    public Object buildFieldValue(Object instance, String fieldName, Session session) {
-        ISvgLinkable features = (ISvgLinkable) instance;
-        SvgLinkableAttributes attributes = features.getLinkableAttributes();
-        String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
-        switch (StringUtils.remove(attributeName, '@')) {
-            case ATTR_XLINK_NAMESPACE:
-                return attributes.getXlinkNamespace();
-            case ATTR_TYPE:
-                return attributes.getType();
-            case ATTR_HREF:
-                return attributes.getHref();
-            case ATTR_ROLE:
-                return attributes.getRole();
-            case ATTR_ARCROLE:
-                return attributes.getArcRole();
-            case ATTR_TITLE:
-                return attributes.getTitle();
-            case ATTR_SHOW:
-                return attributes.getShow();
-            case ATTR_ACTUATE:
-                return attributes.getActuate();
-            default:
-                return null;
-        }
-    }
-
-    @Override
     public void initialize(AbstractTransformationMapping mapping) {
         this.mapping = mapping;
     }
@@ -230,6 +203,33 @@ public class SvgLinkableAttributes implements AttributeTransformer, FieldTransfo
             });
         }
         return attributes;
+    }
+
+    @Override
+    public Object buildFieldValue(Object instance, String fieldName, Session session) {
+        ISvgLinkable features = (ISvgLinkable) instance;
+        SvgLinkableAttributes attributes = features.getLinkableAttributes();
+        String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
+        switch (StringUtils.remove(attributeName, '@')) {
+            case ATTR_XLINK_NAMESPACE:
+                return attributes.getXlinkNamespace();
+            case ATTR_TYPE:
+                return attributes.getType();
+            case ATTR_HREF:
+                return attributes.getHref();
+            case ATTR_ROLE:
+                return attributes.getRole();
+            case ATTR_ARCROLE:
+                return attributes.getArcRole();
+            case ATTR_TITLE:
+                return attributes.getTitle();
+            case ATTR_SHOW:
+                return attributes.getShow();
+            case ATTR_ACTUATE:
+                return attributes.getActuate();
+            default:
+                return null;
+        }
     }
 
 }

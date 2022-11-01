@@ -66,6 +66,6 @@ public interface ISvgFilterFunction {
         return getFunctionAttributes().getAnimations();
     }
 
-    CompositeFilterEffectFunction getFunctionAttributes();
+    FilterEffectCompositeFunction getFunctionAttributes();
 
 }

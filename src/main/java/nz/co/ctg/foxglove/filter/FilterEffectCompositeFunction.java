@@ -23,7 +23,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlType(name = "", propOrder = {
     "animations"
 })
-public class CompositeFilterEffectFunction {
+public class FilterEffectCompositeFunction {
 
     @XmlAttribute(name = "type", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -59,7 +59,7 @@ public class CompositeFilterEffectFunction {
     })
     private List<ISvgAnimationElement> animations;
 
-    public CompositeFilterEffectFunction() {
+    public FilterEffectCompositeFunction() {
     }
 
     public String getType() {

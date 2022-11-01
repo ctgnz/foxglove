@@ -174,36 +174,6 @@ public class SvgEventListenerAttributes implements AttributeTransformer, FieldTr
     }
 
     @Override
-    public Object buildFieldValue(Object instance, String fieldName, Session session) {
-        ISvgEventListener listener = (ISvgEventListener) instance;
-        SvgEventListenerAttributes attributes = listener.getEventListenerAttributes();
-        String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
-        switch (StringUtils.remove(attributeName, '@')) {
-            case ATTR_ONFOCUSIN:
-                return attributes.getOnFocusIn();
-            case ATTR_ONFOCUSOUT:
-                return attributes.getOnFocusOut();
-            case ATTR_ONACTIVATE:
-                return attributes.getOnActivate();
-            case ATTR_ONCLICK:
-                return attributes.getOnClick();
-            case ATTR_ONMOUSEDOWN:
-                return attributes.getOnMouseDown();
-            case ATTR_ONMOUSEUP:
-                return attributes.getOnMouseUp();
-            case ATTR_ONMOUSEOVER:
-                return attributes.getOnMouseOver();
-            case ATTR_ONMOUSEMOVE:
-                return attributes.getOnMouseMove();
-            case ATTR_ONMOUSEOUT:
-                return attributes.getOnMouseOut();
-            case ATTR_ONLOAD:
-                return attributes.getOnLoad();
-            default: return null;
-        }
-    }
-
-    @Override
     public void initialize(AbstractTransformationMapping mapping) {
         this.mapping = mapping;
     }
@@ -245,5 +215,35 @@ public class SvgEventListenerAttributes implements AttributeTransformer, FieldTr
             });
         }
         return attributes;
+    }
+
+    @Override
+    public Object buildFieldValue(Object instance, String fieldName, Session session) {
+        ISvgEventListener listener = (ISvgEventListener) instance;
+        SvgEventListenerAttributes attributes = listener.getEventListenerAttributes();
+        String attributeName = StringUtils.defaultIfBlank(fieldName, "@");
+        switch (StringUtils.remove(attributeName, '@')) {
+            case ATTR_ONFOCUSIN:
+                return attributes.getOnFocusIn();
+            case ATTR_ONFOCUSOUT:
+                return attributes.getOnFocusOut();
+            case ATTR_ONACTIVATE:
+                return attributes.getOnActivate();
+            case ATTR_ONCLICK:
+                return attributes.getOnClick();
+            case ATTR_ONMOUSEDOWN:
+                return attributes.getOnMouseDown();
+            case ATTR_ONMOUSEUP:
+                return attributes.getOnMouseUp();
+            case ATTR_ONMOUSEOVER:
+                return attributes.getOnMouseOver();
+            case ATTR_ONMOUSEMOVE:
+                return attributes.getOnMouseMove();
+            case ATTR_ONMOUSEOUT:
+                return attributes.getOnMouseOut();
+            case ATTR_ONLOAD:
+                return attributes.getOnLoad();
+            default: return null;
+        }
     }
 }

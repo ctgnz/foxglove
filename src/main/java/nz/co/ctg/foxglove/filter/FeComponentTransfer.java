@@ -1,6 +1,9 @@
 package nz.co.ctg.foxglove.filter;
 
-import org.eclipse.persistence.oxm.annotations.XmlPath;
+import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlTransformation;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
+import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -27,7 +30,15 @@ public class FeComponentTransfer extends AbstractSvgStylable implements ISvgFilt
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String in;
 
-    @XmlPath(".")
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgFilterAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@x", transformerClass = SvgFilterAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@y", transformerClass = SvgFilterAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@width", transformerClass = SvgFilterAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@height", transformerClass = SvgFilterAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@result", transformerClass = SvgFilterAttributes.class)
+    })
     private final SvgFilterAttributes filter = new SvgFilterAttributes();
 
     @XmlElement(name = "feFuncR")
