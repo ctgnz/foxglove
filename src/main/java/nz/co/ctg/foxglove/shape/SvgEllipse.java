@@ -106,11 +106,10 @@ public class SvgEllipse extends AbstractSvgStylable implements ISvgShape<Ellipse
 
     @Override
     public Ellipse createShape() {
-        parseStyle();
+        graphics.parseStyle(style);
         Ellipse ellipse = new Ellipse(centreY, centreX, radiusX, radiusY);
-        setColors(ellipse);
-        setStrokeProperties(ellipse);
-        ellipse.getTransforms().addAll(transform.getTransformList());
+        graphics.applyGraphicsProperties(ellipse);
+        transform.applyTransforms(ellipse);
         return ellipse;
     }
 

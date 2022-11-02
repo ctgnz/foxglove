@@ -106,11 +106,10 @@ public class SvgLine extends AbstractSvgStylable implements ISvgShape<Line> {
 
     @Override
     public Line createShape() {
-        parseStyle();
+        graphics.parseStyle(style);
         Line line = new Line(startX, startY, endX, endY);
-        setColors(line);
-        setStrokeProperties(line);
-        line.getTransforms().addAll(transform.getTransformList());
+        graphics.applyGraphicsProperties(line);
+        transform.applyTransforms(line);
         return line;
     }
 

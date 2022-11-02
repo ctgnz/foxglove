@@ -22,6 +22,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javafx.scene.Node;
 import javafx.scene.transform.Transform;
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -51,6 +52,10 @@ public class SvgTransformAttribute implements AttributeTransformer, FieldTransfo
             return Collections.emptyList();
         }
         return adapter.parse(getTransform());
+    }
+
+    public void applyTransforms(Node node) {
+        node.getTransforms().addAll(getTransformList());
     }
 
     @Override

@@ -115,13 +115,12 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
 
     @Override
     public Rectangle createShape() {
-        parseStyle();
+        graphics.parseStyle(style);
         Rectangle rect = new Rectangle(x, y, width, height);
         rect.setArcWidth(radiusX);
         rect.setArcHeight(radiusY);
-        setColors(rect);
-        setStrokeProperties(rect);
-        rect.getTransforms().addAll(transform.getTransformList());
+        graphics.applyGraphicsProperties(rect);
+        transform.applyTransforms(rect);
         return rect;
     }
 

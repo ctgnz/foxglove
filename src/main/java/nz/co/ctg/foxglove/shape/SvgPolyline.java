@@ -102,11 +102,10 @@ public class SvgPolyline extends AbstractSvgStylable implements ISvgShape<Polyli
 
     @Override
     public Polyline createShape() {
-        parseStyle();
+        graphics.parseStyle(style);
         Polyline polyline = new Polyline(getPointList());
-        setColors(polyline);
-        setStrokeProperties(polyline);
-        polyline.getTransforms().addAll(transform.getTransformList());
+        graphics.applyGraphicsProperties(polyline);
+        transform.applyTransforms(polyline);
         return polyline;
     }
 

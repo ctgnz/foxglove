@@ -103,11 +103,10 @@ public class SvgCircle extends AbstractSvgStylable implements ISvgShape<Circle> 
 
     @Override
     public Circle createShape() {
-        parseStyle();
+        graphics.parseStyle(style);
         Circle circle = new Circle(centreX, centreY, radius);
-        setColors(circle);
-        setStrokeProperties(circle);
-        circle.getTransforms().addAll(transform.getTransformList());
+        graphics.applyGraphicsProperties(circle);
+        transform.applyTransforms(circle);
         return circle;
     }
 

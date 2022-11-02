@@ -104,12 +104,11 @@ public class SvgPath extends AbstractSvgStylable implements ISvgShape<SVGPath> {
 
     @Override
     public SVGPath createShape() {
-        parseStyle();
+        graphics.parseStyle(style);
         SVGPath svgPath = new SVGPath();
         svgPath.setContent(pathData);
-        setColors(svgPath);
-        setStrokeProperties(svgPath);
-        svgPath.getTransforms().addAll(transform.getTransformList());
+        graphics.applyGraphicsProperties(svgPath);
+        transform.applyTransforms(svgPath);
         return svgPath;
     }
 

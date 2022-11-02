@@ -102,11 +102,10 @@ public class SvgPolygon extends AbstractSvgStylable implements ISvgShape<Polygon
 
     @Override
     public Polygon createShape() {
-        parseStyle();
+        graphics.parseStyle(style);
         Polygon polygon = new Polygon(getPointList());
-        setColors(polygon);
-        setStrokeProperties(polygon);
-        polygon.getTransforms().addAll(transform.getTransformList());
+        graphics.applyGraphicsProperties(polygon);
+        transform.applyTransforms(polygon);
         return polygon;
     }
 

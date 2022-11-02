@@ -151,10 +151,10 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
 
     public Group createGroup() {
         Group group = new Group();
-        if ("none".equals(display)) {
+        if ("none".equals(getDisplay())) {
             group.setVisible(false);
         }
-        group.getTransforms().addAll(transform.getTransformList());
+        transform.applyTransforms(group);
         if (content != null) {
             content.forEach(child -> {
                 if (child instanceof SvgGroup) {
