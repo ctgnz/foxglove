@@ -2,7 +2,6 @@ package nz.co.ctg.foxglove.attributes;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.persistence.mappings.foundation.AbstractTransformationMapping;
@@ -156,10 +155,8 @@ public class SvgGraphicsStyleAttributes implements AttributeTransformer, FieldTr
     private static final StrokeLineCapAdapter strokeLineCapAdapter = new StrokeLineCapAdapter();
     private static final StrokeLineJoinAdapter strokeLineJoinAdapter = new StrokeLineJoinAdapter();
     private static final DoubleListAdapter doubleListAdapter = new DoubleListAdapter();
-    private static final AtomicInteger instances = new AtomicInteger(0);
 
     public SvgGraphicsStyleAttributes() {
-        System.out.format("SGSA %d%n", instances.incrementAndGet());
     }
 
     public Paint getFill() {

@@ -7,4 +7,6 @@ import nz.co.ctg.foxglove.ISvgStylable;
 
 public interface ISvgTextContentElement extends ISvgStylable, ISvgExternalResources, ISvgConditionalFeatures, ISvgEventListener {
 
+    String getValue();
+
 }

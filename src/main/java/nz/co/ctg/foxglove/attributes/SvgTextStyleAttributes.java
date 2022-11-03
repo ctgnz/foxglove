@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove.attributes;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.persistence.mappings.foundation.AbstractTransformationMapping;
 import org.eclipse.persistence.mappings.transformers.AttributeTransformer;
@@ -17,6 +19,8 @@ import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SvgTextStyleAttributes implements AttributeTransformer, FieldTransformer {
@@ -288,6 +292,12 @@ public class SvgTextStyleAttributes implements AttributeTransformer, FieldTransf
         this.fontWeight = fontWeight;
     }
 
+    public void applyTextProperties(Text svgText) {
+        Double size = StringUtils.isNotBlank(fontSize) ? Double.valueOf(StringUtils.strip(fontSize, "px")) : Font.getDefault().getSize();
+        Font font = new Font(fontFamily, size);
+        svgText.setFont(font);
+    }
+
     @Override
     public void initialize(AbstractTransformationMapping mapping) {
         this.mapping = mapping;
@@ -349,6 +359,30 @@ public class SvgTextStyleAttributes implements AttributeTransformer, FieldTransf
         builder.add("fontStyle", fontStyle);
         builder.add("fontVariant", fontVariant);
         builder.add("fontWeight", fontWeight);
+    }
+
+    public void parseStyle(String style) {
+        if (StringUtils.isNotBlank(style)) {
+            Arrays.stream(StringUtils.split(style, ';')).forEach(stylePair -> {
+                String[] values = StringUtils.split(stylePair, ':');
+                String name = values[0].toLowerCase();
+                String value = values[1].toLowerCase();
+                switch (name) {
+                    case ATTR_FONT_FAMILY:
+                        setFontFamily(value);
+                        break;
+                    case ATTR_FONT_SIZE:
+                        setFontSize(value);
+                        break;
+                    case ATTR_FONT_STYLE:
+                        setFontStyle(value);
+                        break;
+                    case ATTR_FONT_WEIGHT:
+                        setFontWeight(value);
+                        break;
+                }
+            });
+        }
     }
 
 }

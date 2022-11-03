@@ -19,6 +19,9 @@ import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 import nz.co.ctg.foxglove.attributes.SvgConditionalFeaturesAttributes;
 import nz.co.ctg.foxglove.attributes.SvgEventListenerAttributes;
 import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import nz.co.ctg.foxglove.attributes.SvgGraphicsStyleAttributes;
+import nz.co.ctg.foxglove.attributes.SvgPresentationStyleAttributes;
+import nz.co.ctg.foxglove.attributes.SvgTextStyleAttributes;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.description.SvgDescription;
@@ -70,18 +73,10 @@ import javafx.scene.layout.Region;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "svg", propOrder = {
-    "externalResources", "conditionalFeatures", "eventListener", "content"
+    "presentation", "graphics", "text", "externalResources", "conditionalFeatures", "eventListener", "content"
 })
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
-public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISvgEventListener, ISvgConditionalFeatures, ISvgFitToViewBox, ISvgExternalResources {
-
-    @XmlAttribute(name = "xmlns")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlns;
-
-    @XmlAttribute(name = "xmlns:xlink")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String xmlnsXlink;
+public class SvgGraphic extends AbstractSvgElement implements ISvgStylable, ISvgEventListener, ISvgConditionalFeatures, ISvgFitToViewBox, ISvgExternalResources {
 
     @XmlAttribute(name = "onunload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -227,6 +222,88 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     })
     protected List<ISvgElement> content;
 
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgPresentationStyleAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@flood-color", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@flood-opacity", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@lighting-color", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@enable-background", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@clip", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@overflow", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@marker-start", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@marker-mid", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@marker-end", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@clip-path", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@clip-rule", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@mask", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@filter", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@color-interpolation-filters", transformerClass = SvgPresentationStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@cursor", transformerClass = SvgPresentationStyleAttributes.class)
+    })
+    protected final SvgPresentationStyleAttributes presentation = new SvgPresentationStyleAttributes();
+
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgGraphicsStyleAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@fill", transformerClass = SvgGraphicsStyleAttributes.class), @XmlWriteTransformer(xmlPath = "@fill-rule", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stroke", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stroke-dasharray", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stroke-dashoffset", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stroke-linecap", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stroke-linejoin", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stroke-miterlimit", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stroke-width", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@color", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@color-interpolation", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@color-rendering", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@opacity", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@fill-opacity", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stroke-opacity", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@display", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@image-rendering", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@pointer-events", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@shape-rendering", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@text-rendering", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@visibility", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@color-profile", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stop-color", transformerClass = SvgGraphicsStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@stop-opacity", transformerClass = SvgGraphicsStyleAttributes.class)
+    })
+    protected final SvgGraphicsStyleAttributes graphics = new SvgGraphicsStyleAttributes();
+
+    @XmlTransformation
+    @XmlReadTransformer(transformerClass = SvgTextStyleAttributes.class)
+    @XmlWriteTransformers({
+        @XmlWriteTransformer(xmlPath = "@font-family", transformerClass = SvgTextStyleAttributes.class), @XmlWriteTransformer(xmlPath = "@font-size", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@font-size-adjust", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@font-stretch", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@font-style", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@font-variant", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@font-weight", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@alignment-baseline", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@baseline-shift", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@direction", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@dominant-baseline", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@glyph-orientation-horizontal", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@glyph-orientation-vertical", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@kerning", transformerClass = SvgTextStyleAttributes.class), @XmlWriteTransformer(xmlPath = "@letter-spacing", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@text-anchor", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@text-decoration", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@unicode-bidi", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@word-spacing", transformerClass = SvgTextStyleAttributes.class),
+        @XmlWriteTransformer(xmlPath = "@writing-mode", transformerClass = SvgTextStyleAttributes.class)
+    })
+    protected final SvgTextStyleAttributes text = new SvgTextStyleAttributes();
+
+    @XmlAttribute(name = "style")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String style;
+
+    @XmlAttribute(name = "class")
+    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    protected String className;
+
 
     @Override
     public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
@@ -241,30 +318,6 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     @Override
     public SvgEventListenerAttributes getEventListenerAttributes() {
         return eventListener;
-    }
-
-    public String getXmlns() {
-        if (xmlns == null) {
-            return "http://www.w3.org/2000/svg";
-        } else {
-            return xmlns;
-        }
-    }
-
-    public void setXmlns(String value) {
-        this.xmlns = value;
-    }
-
-    public String getXmlnsXlink() {
-        if (xmlnsXlink == null) {
-            return "http://www.w3.org/1999/xlink";
-        } else {
-            return xmlnsXlink;
-        }
-    }
-
-    public void setXmlnsXlink(String value) {
-        this.xmlnsXlink = value;
     }
 
     public String getOnUnload() {
@@ -427,6 +480,41 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         this.contentStyleType = value;
     }
 
+    @Override
+    public String getStyle() {
+        return style;
+    }
+
+    @Override
+    public void setStyle(String value) {
+        this.style = value;
+    }
+
+    @Override
+    public String getClassName() {
+        return className;
+    }
+
+    @Override
+    public void setClassName(String value) {
+        this.className = value;
+    }
+
+    @Override
+    public SvgPresentationStyleAttributes getPresentationAttributes() {
+        return presentation;
+    }
+
+    @Override
+    public SvgGraphicsStyleAttributes getGraphicsAttributes() {
+        return graphics;
+    }
+
+    @Override
+    public SvgTextStyleAttributes getTextAttributes() {
+        return text;
+    }
+
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -454,6 +542,11 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     @Override
     protected void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
+        builder.add("style", style);
+        builder.add("className", className);
+        presentation.toStringDetail(builder);
+        graphics.toStringDetail(builder);
+        text.toStringDetail(builder);
         conditionalFeatures.toStringDetail(builder);
         eventListener.toStringDetail(builder);
         externalResources.toStringDetail(builder);
