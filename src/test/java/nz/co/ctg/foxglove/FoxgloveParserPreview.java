@@ -1,7 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import nz.co.ctg.foxglove.parser.FoxgloveParser;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Node;

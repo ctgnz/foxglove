@@ -12,18 +12,24 @@
 
 package nz.co.ctg.foxglove;
 
-import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
+import com.google.common.base.MoreObjects.ToStringHelper;
 
-public interface ISvgExternalResources {
+public interface ISvgExternalResources extends ISvgAttributes {
+    String EXTERNAL_RESOURCES_REQUIRED = "externalResourcesRequired";
 
     default boolean isExternalResourcesRequired() {
-        return getExternalResourcesAttributes().isExternalResourcesRequired();
+        if (!getProperties().containsKey(EXTERNAL_RESOURCES_REQUIRED)) {
+            return false;
+        }
+        return get(EXTERNAL_RESOURCES_REQUIRED);
     }
 
     default void setExternalResourcesRequired(boolean value) {
-        getExternalResourcesAttributes().setExternalResourcesRequired(value);
+        set(EXTERNAL_RESOURCES_REQUIRED, value);
     }
 
-    SvgExternalResourcesAttributes getExternalResourcesAttributes();
+    default void toStringDetail(ToStringHelper builder) {
+        builder.add(EXTERNAL_RESOURCES_REQUIRED, isExternalResourcesRequired());
+    }
 
 }

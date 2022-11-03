@@ -15,7 +15,7 @@ package nz.co.ctg.foxglove;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 
-public interface ISvgStylable extends ISvgElement, ISvgTextStyleAttributes, ISvgGraphicsAttributes, ISvgPresentationAttributes {
+public interface ISvgStylable extends ISvgElement {
 
     default CSSStyleDeclaration getStyleDeclaration() {
         return null;

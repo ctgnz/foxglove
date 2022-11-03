@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-bindings xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/oxm http://www.eclipse.org/eclipselink/xsds/eclipselink_oxm_2_6.xsd"
+	package-name="nz.co.ctg.foxglove" xml-mapping-metadata-complete="false" >
+  <xml-schema element-form-default="UNSET">
+    <xml-ns prefix="svg" namespace-uri="http://www.w3.org/2000/svg" />
+    <xml-ns prefix="xlink" namespace-uri="http://www.w3.org/1999/xlink" />
+  </xml-schema>
+  <java-types>
+  	<java-type name="nz.co.ctg.foxglove.SvgGraphic">
+  		<xml-virtual-access-methods/>
+  		<java-attributes>
+  			<!-- ISvgPresentationAttributes -->
+  			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
+  			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
+  			<xml-attribute java-attribute="lightingColor" name="lighting-color" type="java.lang.String" />
+  			<xml-attribute java-attribute="enableBackground" name="enable-background" type="java.lang.String" />
+  			<xml-attribute java-attribute="clip" name="clip" type="java.lang.String" />
+  			<xml-attribute java-attribute="overflow" name="overflow" type="java.lang.String" />
+  			<xml-attribute java-attribute="markerStart" name="marker-start" type="java.lang.String" />
+  			<xml-attribute java-attribute="markerMid" name="marker-mid" type="java.lang.String" />
+  			<xml-attribute java-attribute="markerEnd" name="marker-end" type="java.lang.String" />
+  			<xml-attribute java-attribute="clipPath" name="clip-path" type="java.lang.String" />
+  			<xml-attribute java-attribute="clipRule" name="clip-rule" type="java.lang.String" />
+  			<xml-attribute java-attribute="mask" name="mask" type="java.lang.String" />
+  			<xml-attribute java-attribute="filter" name="filter" type="java.lang.String" />
+  			<xml-attribute java-attribute="colorInterpolationFilters" name="color-interpolation-filters" type="java.lang.String" />
+  			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
+  			<!-- ISvgGraphicsAttributes -->
+  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="java.lang.String" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
+  				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
+  			</xml-attribute>
+  			<xml-attribute java-attribute="stroke-dashoffset" name="stroke-dashoffset" type="java.lang.Double" />
+  			<xml-attribute java-attribute="stroke-linecap" name="stroke-linecap" type="javafx.scene.shape.StrokeLineCap" />
+  			<xml-attribute java-attribute="stroke-linejoin" name="stroke-linejoin" type="javafx.scene.shape.StrokeLineJoin" />
+  			<xml-attribute java-attribute="stroke-miterlimit" name="stroke-miterlimit" type="java.lang.Double" />
+  			<xml-attribute java-attribute="stroke-width" name="stroke-width" type="java.lang.Double" />
+  			<xml-attribute java-attribute="color" name="color" type="java.lang.String" />
+  			<xml-attribute java-attribute="color-interpolation" name="color-interpolation" type="java.lang.String" />
+  			<xml-attribute java-attribute="color-rendering" name="color-rendering" type="java.lang.String" />
+  			<xml-attribute java-attribute="opacity" name="opacity" type="java.lang.String" />
+  			<xml-attribute java-attribute="fill-opacity" name="fill-opacity" type="java.lang.String" />
+  			<xml-attribute java-attribute="stroke-opacity" name="stroke-opacity" type="java.lang.String" />
+  			<xml-attribute java-attribute="display" name="display" type="java.lang.String" />
+  			<xml-attribute java-attribute="image-rendering" name="image-rendering" type="java.lang.String" />
+  			<xml-attribute java-attribute="pointer-events" name="pointer-events" type="java.lang.String" />
+  			<xml-attribute java-attribute="shape-rendering" name="shape-rendering" type="java.lang.String" />
+  			<xml-attribute java-attribute="text-rendering" name="text-rendering" type="java.lang.String" />
+  			<xml-attribute java-attribute="visibility" name="visibility" type="java.lang.String" />
+  			<xml-attribute java-attribute="color-profile" name="color-profile" type="java.lang.String" />
+  			<xml-attribute java-attribute="stop-color" name="stop-color" type="java.lang.String" />
+  			<xml-attribute java-attribute="stop-opacity" name="stop-opacity" type="java.lang.String" />
+  			<!-- ISvgTextAttributes -->
+  			<xml-attribute java-attribute="writingMode" name="writing-mode" type="java.lang.String" />
+  			<xml-attribute java-attribute="alignmentBaseline" name="alignment-baseline" type="java.lang.String" />
+  			<xml-attribute java-attribute="baselineShift" name="baseline-shift" type="java.lang.String" />
+  			<xml-attribute java-attribute="direction" name="direction" type="java.lang.String" />
+  			<xml-attribute java-attribute="dominantBaseline" name="dominant-baseline" type="java.lang.String" />
+  			<xml-attribute java-attribute="glyphOrientationHorizontal" name="glyph-orientation-horizontal" type="java.lang.String" />
+  			<xml-attribute java-attribute="glyphOrientationVertical" name="glyph-orientation-vertical" type="java.lang.String" />
+  			<xml-attribute java-attribute="kerning" name="kerning" type="java.lang.String" />
+  			<xml-attribute java-attribute="letterSpacing" name="letter-spacing" type="java.lang.String" />
+  			<xml-attribute java-attribute="textAnchor" name="text-anchor" type="java.lang.String" />
+  			<xml-attribute java-attribute="textDecoration" name="text-decoration" type="java.lang.String" />
+  			<xml-attribute java-attribute="unicodeBidi" name="unicode-bidi" type="java.lang.String" />
+  			<xml-attribute java-attribute="wordSpacing" name="word-spacing" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontFamily" name="font-family" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontSize" name="font-size" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontSize-adjust" name="font-size-adjust" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<!-- ISvgConditionalFeatures -->
+  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
+  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
+  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
+  			<!-- ISvgExternalResources -->
+  			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean" />
+  			<!-- ISvgEventListener -->
+  			<xml-attribute java-attribute="onfocusin" />
+  			<xml-attribute java-attribute="onfocusout" />
+  			<xml-attribute java-attribute="onactivate" />
+  			<xml-attribute java-attribute="onclick" />
+  			<xml-attribute java-attribute="onmousedown" />
+  			<xml-attribute java-attribute="onmouseup" />
+  			<xml-attribute java-attribute="onmouseover" />
+  			<xml-attribute java-attribute="onmousemove" />
+  			<xml-attribute java-attribute="onmouseout" />
+  			<xml-attribute java-attribute="onload" />
+  			<!-- ISvgFitToViewBox -->
+  			<xml-attribute java-attribute="viewBox" />
+  			<xml-attribute java-attribute="preserveAspectRatio" />
+  		</java-attributes>
+  	</java-type>
+  	<java-type name="nz.co.ctg.foxglove.SvgStyle">
+  		<xml-virtual-access-methods/>
+  		<java-attributes>
+  		</java-attributes>
+  	</java-type>
+  </java-types>
+  <xml-java-type-adapters>
+  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.SvgPaintAdapter" type="javafx.scene.paint.Paint"/>
+  </xml-java-type-adapters>
+</xml-bindings>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-bindings xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/oxm http://www.eclipse.org/eclipselink/xsds/eclipselink_oxm_2_6.xsd"
+	package-name="javafx.scene.shape" xml-mapping-metadata-complete="true" >
+  <xml-enums>
+  	<xml-enum java-enum="javafx.scene.shape.StrokeLineCap">
+  		<xml-enum-value java-enum-value="SQUARE">square</xml-enum-value>
+  		<xml-enum-value java-enum-value="BUTT">butt</xml-enum-value>
+  		<xml-enum-value java-enum-value="ROUND">round</xml-enum-value>
+  	</xml-enum>
+  	<xml-enum java-enum="javafx.scene.shape.StrokeLineJoin">
+  		<xml-enum-value java-enum-value="MITER">round</xml-enum-value>
+  		<xml-enum-value java-enum-value="BEVEL">bevel</xml-enum-value>
+  		<xml-enum-value java-enum-value="ROUND">round</xml-enum-value>
+  	</xml-enum>
+  </xml-enums>
+</xml-bindings>

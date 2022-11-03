@@ -1,4 +1,4 @@
-package nz.co.ctg.foxglove.parser;
+package nz.co.ctg.foxglove.adapter;
 
 import java.util.Arrays;
 import java.util.Collections;

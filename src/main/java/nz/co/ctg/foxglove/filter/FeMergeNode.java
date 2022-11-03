@@ -54,7 +54,7 @@ public class FeMergeNode extends AbstractSvgElement {
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("in", in);
         super.toStringDetail(builder);
     }

@@ -1,49 +1,62 @@
 package nz.co.ctg.foxglove.filter;
 
-import nz.co.ctg.foxglove.ISvgStylable;
+import com.google.common.base.MoreObjects.ToStringHelper;
 
-public interface ISvgFilterPrimitive extends ISvgStylable {
+import nz.co.ctg.foxglove.ISvgAttributes;
+
+public interface ISvgFilterPrimitive extends ISvgAttributes {
+    String FE_X = "x";
+    String FE_Y = "y";
+    String FE_WIDTH = "width";
+    String FE_HEIGHT = "height";
+    String FE_RESULT = "result";
 
     default String getX() {
-        return getFilterAttributes().getX();
+        return get(FE_X);
     }
 
     default void setX(String value) {
-        getFilterAttributes().setX(value);
+        set(FE_X, value);
     }
 
     default String getY() {
-        return getFilterAttributes().getY();
+        return get(FE_Y);
     }
 
     default void setY(String value) {
-        getFilterAttributes().setY(value);
+        set(FE_Y, value);
     }
 
     default String getWidth() {
-        return getFilterAttributes().getWidth();
+        return get(FE_WIDTH);
     }
 
     default void setWidth(String value) {
-        getFilterAttributes().setWidth(value);
+        set(FE_WIDTH, value);
     }
 
     default String getHeight() {
-        return getFilterAttributes().getHeight();
+        return get(FE_HEIGHT);
     }
 
     default void setHeight(String value) {
-        getFilterAttributes().setHeight(value);
+        set(FE_HEIGHT, value);
     }
 
     default String getResult() {
-        return getFilterAttributes().getResult();
+        return get(FE_RESULT);
     }
 
     default void setResult(String value) {
-        getFilterAttributes().setResult(value);
+        set(FE_RESULT, value);
     }
 
-    SvgFilterAttributes getFilterAttributes();
+    default void toStringDetail(ToStringHelper builder) {
+        builder.add(FE_X, getX());
+        builder.add(FE_Y, getY());
+        builder.add(FE_WIDTH, getWidth());
+        builder.add(FE_HEIGHT, getHeight());
+        builder.add(FE_RESULT, getResult());
+    }
 
 }

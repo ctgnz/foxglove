@@ -19,7 +19,7 @@ import jakarta.xml.bind.annotation.XmlType;
     "content"
 })
 @XmlRootElement(name = "font-face-src")
-public class SvgFontFaceSrc extends AbstractSvgElement {
+public class SvgFontFaceSrc extends AbstractSvgElement implements ISvgElement {
 
     @XmlElements({
         @XmlElement(name = "font-face-uri", required = true, type = SvgFontFaceUri.class, namespace = "http://www.w3.org/2000/svg"),

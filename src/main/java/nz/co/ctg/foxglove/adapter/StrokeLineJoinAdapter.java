@@ -1,4 +1,4 @@
-package nz.co.ctg.foxglove.parser;
+package nz.co.ctg.foxglove.adapter;
 
 import javafx.scene.shape.StrokeLineJoin;
 

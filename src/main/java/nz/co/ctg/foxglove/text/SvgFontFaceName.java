@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.text;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgElement;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -16,7 +17,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "font-face-name")
-public class SvgFontFaceName extends AbstractSvgElement {
+public class SvgFontFaceName extends AbstractSvgElement implements ISvgElement {
 
     @XmlAttribute(name = "name")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -31,7 +32,7 @@ public class SvgFontFaceName extends AbstractSvgElement {
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("name", name);
         super.toStringDetail(builder);
     }

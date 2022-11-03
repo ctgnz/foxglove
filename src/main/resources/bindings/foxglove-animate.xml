@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-bindings xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/oxm http://www.eclipse.org/eclipselink/xsds/eclipselink_oxm_2_6.xsd"
+	package-name="nz.co.ctg.foxglove.animate" xml-mapping-metadata-complete="false" >
+  <java-types>
+  	<java-type name="nz.co.ctg.foxglove.animate.SvgMotionPath">
+  		<xml-virtual-access-methods/>
+  		<java-attributes>
+  			<!-- ISvgLinkable -->
+  			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<!-- ISvgExternalResources -->
+  			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
+  		</java-attributes>
+  	</java-type>
+  	<java-type name="nz.co.ctg.foxglove.animate.SvgAnimateAttribute">
+  		<xml-virtual-access-methods/>
+  		<java-attributes>
+  			<!-- ISvgAnimationElement -->
+  			<xml-attribute java-attribute="onBegin" name="onbegin" type="java.lang.String" />
+  			<xml-attribute java-attribute="onEnd" name="onend" type="java.lang.String" />
+  			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
+  			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
+  			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
+  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
+  			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
+  			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
+  			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
+  			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
+  			<!-- ISvgConditionalFeatures -->
+  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
+  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
+  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
+  			<!-- ISvgLinkable -->
+  			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<!-- ISvgExternalResources -->
+  			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
+  		</java-attributes>
+  	</java-type>
+  	<java-type name="nz.co.ctg.foxglove.animate.SvgAnimateColor">
+  		<xml-virtual-access-methods/>
+  		<java-attributes>
+  			<!-- ISvgAnimationElement -->
+  			<xml-attribute java-attribute="onBegin" name="onbegin" type="java.lang.String" />
+  			<xml-attribute java-attribute="onEnd" name="onend" type="java.lang.String" />
+  			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
+  			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
+  			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
+  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
+  			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
+  			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
+  			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
+  			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
+  			<!-- ISvgConditionalFeatures -->
+  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
+  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
+  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
+  			<!-- ISvgLinkable -->
+  			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<!-- ISvgExternalResources -->
+  			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
+  		</java-attributes>
+  	</java-type>
+  	<java-type name="nz.co.ctg.foxglove.animate.SvgAnimateMotion">
+  		<xml-virtual-access-methods/>
+  		<java-attributes>
+  			<!-- ISvgAnimationElement -->
+  			<xml-attribute java-attribute="onBegin" name="onbegin" type="java.lang.String" />
+  			<xml-attribute java-attribute="onEnd" name="onend" type="java.lang.String" />
+  			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
+  			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
+  			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
+  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
+  			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
+  			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
+  			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
+  			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
+  			<!-- ISvgConditionalFeatures -->
+  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
+  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
+  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
+  			<!-- ISvgLinkable -->
+  			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<!-- ISvgExternalResources -->
+  			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
+  		</java-attributes>
+  	</java-type>
+  	<java-type name="nz.co.ctg.foxglove.animate.SvgAnimateTransform">
+  		<xml-virtual-access-methods/>
+  		<java-attributes>
+  			<!-- ISvgAnimationElement -->
+  			<xml-attribute java-attribute="onBegin" name="onbegin" type="java.lang.String" />
+  			<xml-attribute java-attribute="onEnd" name="onend" type="java.lang.String" />
+  			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
+  			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
+  			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
+  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
+  			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
+  			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
+  			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
+  			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
+  			<!-- ISvgConditionalFeatures -->
+  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
+  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
+  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
+  			<!-- ISvgLinkable -->
+  			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<!-- ISvgExternalResources -->
+  			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
+  		</java-attributes>
+  	</java-type>
+  	<java-type name="nz.co.ctg.foxglove.animate.SvgSetAttribute">
+  		<xml-virtual-access-methods/>
+  		<java-attributes>
+  			<!-- ISvgAnimationElement -->
+  			<xml-attribute java-attribute="onBegin" name="onbegin" type="java.lang.String" />
+  			<xml-attribute java-attribute="onEnd" name="onend" type="java.lang.String" />
+  			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
+  			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
+  			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
+  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
+  			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
+  			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
+  			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
+  			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
+  			<!-- ISvgConditionalFeatures -->
+  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
+  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
+  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
+  			<!-- ISvgLinkable -->
+  			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<!-- ISvgExternalResources -->
+  			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
+  		</java-attributes>
+  	</java-type>
+  </java-types>
+  <xml-java-type-adapters>
+  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.SvgPaintAdapter" type="javafx.scene.paint.Paint"/>
+  </xml-java-type-adapters>
+</xml-bindings>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgElement;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -18,7 +19,7 @@ import jakarta.xml.bind.annotation.XmlType;
     "glyphItems"
 })
 @XmlRootElement(name = "altGlyphDef")
-public class SvgAltGlyphDef extends AbstractSvgElement {
+public class SvgAltGlyphDef extends AbstractSvgElement implements ISvgElement {
 
     @XmlElements({
         @XmlElement(name = "glyphRef", required = true, type = SvgGlyphRef.class, namespace = "http://www.w3.org/2000/svg"),

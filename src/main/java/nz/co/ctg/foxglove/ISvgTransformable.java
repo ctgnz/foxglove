@@ -12,18 +12,43 @@
 
 package nz.co.ctg.foxglove;
 
-import nz.co.ctg.foxglove.attributes.SvgTransformAttribute;
+import java.util.Collections;
+import java.util.List;
 
-public interface ISvgTransformable {
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.adapter.SvgTransformListHandler;
+
+import javafx.scene.Node;
+import javafx.scene.transform.Transform;
+
+public interface ISvgTransformable extends ISvgAttributes {
+    String ATTR_TRANSFORM = "transform";
+    SvgTransformListHandler adapter = new SvgTransformListHandler();
 
     default String getTransform() {
-        return getTransformAttribute().getTransform();
+        return get(ATTR_TRANSFORM);
     }
 
     default void setTransform(String value) {
-        getTransformAttribute().setTransform(value);
+        set(ATTR_TRANSFORM, value);
     }
 
-    SvgTransformAttribute getTransformAttribute();
+    default void toStringDetail(ToStringHelper builder) {
+        builder.add(ATTR_TRANSFORM, getTransform());
+    }
+
+    default List<Transform> getTransformList() {
+        if (StringUtils.isBlank(getTransform())) {
+            return Collections.emptyList();
+        }
+        return adapter.parse(getTransform());
+    }
+
+    default void applyTransforms(Node node) {
+        node.getTransforms().addAll(getTransformList());
+    }
 
 }

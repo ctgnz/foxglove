@@ -5,6 +5,7 @@ import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgValueElement;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -17,7 +18,7 @@ import jakarta.xml.bind.annotation.XmlType;
     "value"
 })
 @XmlRootElement(name = "metadata")
-public class SvgMetadata extends AbstractSvgElement implements ISvgDescriptiveElement {
+public class SvgMetadata extends AbstractSvgElement implements ISvgDescriptiveElement, ISvgValueElement {
 
     @XmlValueExtension
     protected String value;
@@ -36,7 +37,7 @@ public class SvgMetadata extends AbstractSvgElement implements ISvgDescriptiveEl
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
         builder.add("value", value);
     }

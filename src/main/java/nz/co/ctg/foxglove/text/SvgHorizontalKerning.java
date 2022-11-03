@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.text;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.ISvgElement;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -16,7 +17,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "hkern")
-public class SvgHorizontalKerning extends AbstractSvgElement {
+public class SvgHorizontalKerning extends AbstractSvgElement implements ISvgElement {
 
     @XmlAttribute(name = "u1")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -79,7 +80,7 @@ public class SvgHorizontalKerning extends AbstractSvgElement {
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("unicodeChars1", unicodeChars1);
         builder.add("glyphs1", glyphs1);
         builder.add("unicodeChars2", unicodeChars2);

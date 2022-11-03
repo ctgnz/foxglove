@@ -1,13 +1,30 @@
 package nz.co.ctg.foxglove;
 
-public interface ISvgFitToViewBox {
+import com.google.common.base.MoreObjects.ToStringHelper;
 
-    String getViewBox();
+public interface ISvgFitToViewBox extends ISvgAttributes {
+    String VB_VIEW_BOX = "viewBox";
+    String VB_PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
 
-    void setViewBox(String value);
+    default String getViewBox() {
+        return get(VB_VIEW_BOX);
+    }
 
-    String getPreserveAspectRatio();
+    default void setViewBox(String value) {
+        set(VB_VIEW_BOX, value);
+    }
 
-    void setPreserveAspectRatio(String value);
+    default String getPreserveAspectRatio() {
+        return get(VB_PRESERVE_ASPECT_RATIO);
+    }
+
+    default void setPreserveAspectRatio(String value) {
+        set(VB_PRESERVE_ASPECT_RATIO, value);
+    }
+
+    default void toStringDetail(ToStringHelper builder) {
+        builder.add(VB_VIEW_BOX, getViewBox());
+        builder.add(VB_PRESERVE_ASPECT_RATIO, getPreserveAspectRatio());
+    }
 
 }

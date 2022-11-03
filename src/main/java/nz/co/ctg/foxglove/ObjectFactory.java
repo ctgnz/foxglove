@@ -60,7 +60,6 @@ import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.style.SvgStyle;
 import nz.co.ctg.foxglove.text.SvgAltGlyph;
 import nz.co.ctg.foxglove.text.SvgAltGlyphDef;
 import nz.co.ctg.foxglove.text.SvgAltGlyphItem;

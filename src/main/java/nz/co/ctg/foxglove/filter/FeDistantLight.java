@@ -67,7 +67,7 @@ public class FeDistantLight extends AbstractSvgElement implements ISvgFilterLigh
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("", azimuth);
         super.toStringDetail(builder);
     }

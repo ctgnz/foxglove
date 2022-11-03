@@ -8,7 +8,6 @@ import org.junit.Test;
 import nz.co.ctg.foxglove.element.SvgAnchor;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.paint.SvgPattern;
-import nz.co.ctg.foxglove.parser.FoxgloveParser;
 import nz.co.ctg.foxglove.shape.SvgLine;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 
@@ -38,6 +37,7 @@ public class FoxgloveParserTest {
     public void testParse() throws Exception {
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
         assertThat(svg, notNullValue());
+        assertThat(svg.isExternalResourcesRequired(), is(true));
         printElement(svg);
         svg.getContent().forEach(this::printElement);
     }
@@ -46,7 +46,7 @@ public class FoxgloveParserTest {
     public void testParseTransform() throws Exception {
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
         SvgGroup group = (SvgGroup) svg.getContent().get(4);
-        List<Transform> transformList = group.getTransformAttribute().getTransformList();
+        List<Transform> transformList = group.getTransformList();
         assertThat(transformList, hasSize(1));
     }
 
@@ -98,13 +98,14 @@ public class FoxgloveParserTest {
     @Test
     public void testWrite() throws Exception {
         SvgGraphic svg = new SvgGraphic();
-        svg.setRequiredFeatures("foobar");
-        svg.setRequiredExtensions("barqux");
-        svg.setSystemLanguage("quxfoo");
+        svg.setRequiredFeatures("foo bar");
+        svg.setRequiredExtensions("bar qux");
+        svg.setSystemLanguage("qux");
         svg.setExternalResourcesRequired(true);
         svg.setOnFocusIn("foo");
         svg.setOnFocusOut("bar");
         SvgGroup group = new SvgGroup();
+        group.setExternalResourcesRequired(true);
         group.setId("g1");
         SvgGroup subGroup = new SvgGroup();
         subGroup.setId("g2");

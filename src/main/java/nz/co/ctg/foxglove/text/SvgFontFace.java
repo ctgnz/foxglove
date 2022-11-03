@@ -27,7 +27,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "font-face")
-public class SvgFontFace extends AbstractSvgElement {
+public class SvgFontFace extends AbstractSvgElement implements ISvgElement {
 
     @XmlAttribute(name = "font-family")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -441,7 +441,7 @@ public class SvgFontFace extends AbstractSvgElement {
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("fontFamily", fontFamily);
         builder.add("fontStyle", fontStyle);
         builder.add("fontVariant", fontVariant);

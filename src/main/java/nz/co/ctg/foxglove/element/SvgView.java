@@ -11,17 +11,12 @@ package nz.co.ctg.foxglove.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.persistence.oxm.annotations.XmlReadTransformer;
-import org.eclipse.persistence.oxm.annotations.XmlTransformation;
-import org.eclipse.persistence.oxm.annotations.XmlWriteTransformer;
-import org.eclipse.persistence.oxm.annotations.XmlWriteTransformers;
-
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgFitToViewBox;
-import nz.co.ctg.foxglove.attributes.SvgExternalResourcesAttributes;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -40,18 +35,10 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "externalResources", "content"
+    "content"
 })
 @XmlRootElement(name = "view")
-public class SvgView extends AbstractSvgElement implements ISvgStructuralElement, ISvgFitToViewBox {
-
-    @XmlAttribute(name = "viewBox")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String viewBox;
-
-    @XmlAttribute(name = "preserveAspectRatio")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String preserveAspectRatio;
+public class SvgView extends AbstractSvgElement implements ISvgElement, ISvgExternalResources, ISvgFitToViewBox {
 
     @XmlAttribute(name = "zoomAndPan")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -61,43 +48,12 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String viewTarget;
 
-    @XmlTransformation
-    @XmlReadTransformer(transformerClass = SvgExternalResourcesAttributes.class)
-    @XmlWriteTransformers({
-        @XmlWriteTransformer(xmlPath = "@externalResourcesRequired", transformerClass = SvgExternalResourcesAttributes.class)
-    })
-    private final SvgExternalResourcesAttributes externalResources = new SvgExternalResourcesAttributes();
-
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg")
     })
     private List<ISvgElement> content;
-
-    @Override
-    public String getViewBox() {
-        return viewBox;
-    }
-
-    @Override
-    public void setViewBox(String value) {
-        this.viewBox = value;
-    }
-
-    @Override
-    public String getPreserveAspectRatio() {
-        if (preserveAspectRatio == null) {
-            return "xMidYMid meet";
-        } else {
-            return preserveAspectRatio;
-        }
-    }
-
-    @Override
-    public void setPreserveAspectRatio(String value) {
-        this.preserveAspectRatio = value;
-    }
 
     public String getZoomAndPan() {
         if (zoomAndPan == null) {
@@ -119,11 +75,6 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
         this.viewTarget = value;
     }
 
-    @Override
-    public SvgExternalResourcesAttributes getExternalResourcesAttributes() {
-        return externalResources;
-    }
-
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -132,13 +83,12 @@ public class SvgView extends AbstractSvgElement implements ISvgStructuralElement
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
-        builder.add("viewBox", viewBox);
-        builder.add("preserveAspectRatio", preserveAspectRatio);
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("zoomAndPan", zoomAndPan);
         builder.add("viewTarget", viewTarget);
         super.toStringDetail(builder);
-        externalResources.toStringDetail(builder);
+        ISvgExternalResources.super.toStringDetail(builder);
+        ISvgFitToViewBox.super.toStringDetail(builder);
     }
 
 }

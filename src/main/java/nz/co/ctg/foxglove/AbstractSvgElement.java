@@ -1,6 +1,9 @@
 package nz.co.ctg.foxglove;
 
+import java.util.Map;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.collect.Maps;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
@@ -15,7 +18,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlTransient
-public abstract class AbstractSvgElement implements ISvgElement {
+public abstract class AbstractSvgElement implements ISvgElement, ISvgAttributes {
 
     @XmlAttribute(name = "id")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -34,7 +37,26 @@ public abstract class AbstractSvgElement implements ISvgElement {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String xmlSpace;
 
+    @XmlTransient
+    private final Map<String, Object> properties = Maps.newLinkedHashMap();
+
     public AbstractSvgElement() {
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T get(String property) {
+        return (T) properties.get(property);
+    }
+
+    @Override
+    public void set(String property, Object value) {
+        properties.put(property, value);
     }
 
     @Override
@@ -84,11 +106,10 @@ public abstract class AbstractSvgElement implements ISvgElement {
         return builder.toString();
     }
 
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("id", id);
         builder.add("xmlBase", xmlBase);
         builder.add("xmlLang", xmlLang);
         builder.add("xmlSpace", xmlSpace);
     }
-
 }

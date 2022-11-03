@@ -1,4 +1,4 @@
-package nz.co.ctg.foxglove.parser;
+package nz.co.ctg.foxglove.adapter;
 
 import org.apache.commons.lang3.StringUtils;
 

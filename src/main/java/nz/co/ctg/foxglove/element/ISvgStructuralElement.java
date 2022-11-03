@@ -1,8 +1,7 @@
 package nz.co.ctg.foxglove.element;
 
-import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgStylable;
 
-public interface ISvgStructuralElement extends ISvgElement, ISvgExternalResources {
+public interface ISvgStructuralElement extends ISvgStylable {
 
 }

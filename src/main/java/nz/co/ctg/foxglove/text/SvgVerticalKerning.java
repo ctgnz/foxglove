@@ -79,7 +79,7 @@ public class SvgVerticalKerning extends AbstractSvgElement {
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("unicodeChars1", unicodeChars1);
         builder.add("glyphs1", glyphs1);
         builder.add("unicodeChars2", unicodeChars2);

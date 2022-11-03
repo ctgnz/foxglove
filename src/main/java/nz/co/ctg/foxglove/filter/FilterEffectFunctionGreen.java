@@ -1,32 +1,46 @@
 package nz.co.ctg.foxglove.filter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "feFuncG", propOrder = {
-    "function"
+    "animations"
 })
 @XmlRootElement(name = "feFuncG")
 public class FilterEffectFunctionGreen extends AbstractSvgElement implements ISvgFilterFunction  {
 
-    private final FilterEffectCompositeFunction function = new FilterEffectCompositeFunction();
+    @XmlElements({
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg")
+    })
+    private List<ISvgAnimationElement> animations;
 
-    @Override
-    public FilterEffectCompositeFunction getFunctionAttributes() {
-        return function;
+    public List<ISvgAnimationElement> getAnimations() {
+        if (animations == null) {
+            animations = new ArrayList<>();
+        }
+        return this.animations;
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
-        function.toStringDetail(builder);
+    public void toStringDetail(ToStringHelper builder) {
+        ISvgFilterFunction.super.toStringDetail(builder);
         super.toStringDetail(builder);
     }
 

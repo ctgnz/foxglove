@@ -79,7 +79,7 @@ public class FePointLight extends AbstractSvgElement implements ISvgFilterLightS
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("x", x);
         builder.add("y", y);
         builder.add("z", z);

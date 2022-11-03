@@ -1,11 +1,8 @@
-package nz.co.ctg.foxglove.style;
+package nz.co.ctg.foxglove;
 
 import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
-
-import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.ISvgElement;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -71,7 +68,7 @@ public class SvgStyle extends AbstractSvgElement implements ISvgElement {
     }
 
     @Override
-    protected void toStringDetail(ToStringHelper builder) {
+    public void toStringDetail(ToStringHelper builder) {
         builder.add("type", type);
         builder.add("media", media);
         builder.add("title", title);
