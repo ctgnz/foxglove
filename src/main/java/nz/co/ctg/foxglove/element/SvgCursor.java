@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
@@ -31,7 +31,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "cursor")
-public class SvgCursor extends AbstractSvgElement implements ISvgElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources {
+public class SvgCursor extends AbstractSvgStylable implements ISvgElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources {
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

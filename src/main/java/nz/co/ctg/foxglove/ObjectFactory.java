@@ -43,10 +43,10 @@ import nz.co.ctg.foxglove.filter.FeSpecularLighting;
 import nz.co.ctg.foxglove.filter.FeSpotLight;
 import nz.co.ctg.foxglove.filter.FeTile;
 import nz.co.ctg.foxglove.filter.FeTurbulence;
-import nz.co.ctg.foxglove.filter.FilterEffectFunctionAlpha;
-import nz.co.ctg.foxglove.filter.FilterEffectFunctionBlue;
-import nz.co.ctg.foxglove.filter.FilterEffectFunctionGreen;
-import nz.co.ctg.foxglove.filter.FilterEffectFunctionRed;
+import nz.co.ctg.foxglove.filter.FeFunctionAlpha;
+import nz.co.ctg.foxglove.filter.FeFunctionBlue;
+import nz.co.ctg.foxglove.filter.FeFunctionGreen;
+import nz.co.ctg.foxglove.filter.FeFunctionRed;
 import nz.co.ctg.foxglove.filter.SvgFilter;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
@@ -284,35 +284,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FilterEffectFunctionAlpha }
+     * Create an instance of {@link FeFunctionAlpha }
      *
      */
-    public FilterEffectFunctionAlpha createFeFuncA() {
-        return new FilterEffectFunctionAlpha();
+    public FeFunctionAlpha createFeFuncA() {
+        return new FeFunctionAlpha();
     }
 
     /**
-     * Create an instance of {@link FilterEffectFunctionBlue }
+     * Create an instance of {@link FeFunctionBlue }
      *
      */
-    public FilterEffectFunctionBlue createFeFuncB() {
-        return new FilterEffectFunctionBlue();
+    public FeFunctionBlue createFeFuncB() {
+        return new FeFunctionBlue();
     }
 
     /**
-     * Create an instance of {@link FilterEffectFunctionGreen }
+     * Create an instance of {@link FeFunctionGreen }
      *
      */
-    public FilterEffectFunctionGreen createFeFuncG() {
-        return new FilterEffectFunctionGreen();
+    public FeFunctionGreen createFeFuncG() {
+        return new FeFunctionGreen();
     }
 
     /**
-     * Create an instance of {@link FilterEffectFunctionRed }
+     * Create an instance of {@link FeFunctionRed }
      *
      */
-    public FilterEffectFunctionRed createFeFuncR() {
-        return new FilterEffectFunctionRed();
+    public FeFunctionRed createFeFuncR() {
+        return new FeFunctionRed();
     }
 
     /**

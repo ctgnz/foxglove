@@ -6,10 +6,6 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
-import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
@@ -31,7 +27,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "contents"
 })
 @XmlRootElement(name = "set")
-public class SvgSetAttribute extends AbstractSvgElement implements ISvgElement, ISvgAnimationElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources {
+public class SvgSetAttribute extends AbstractSvgElement {
 
     @XmlAttribute(name = "attributeName", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -76,10 +72,6 @@ public class SvgSetAttribute extends AbstractSvgElement implements ISvgElement, 
         builder.add("attributeName", attributeName);
         builder.add("attributeType", attributeType);
         super.toStringDetail(builder);
-        ISvgAnimationElement.super.toStringDetail(builder);
-        ISvgConditionalFeatures.super.toStringDetail(builder);
-        ISvgLinkable.super.toStringDetail(builder);
-        ISvgExternalResources.super.toStringDetail(builder);
     }
 
 }

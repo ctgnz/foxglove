@@ -7,6 +7,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.SvgFilter">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -94,6 +97,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeBlend">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -158,10 +164,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -173,6 +175,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeColorMatrix">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -237,10 +242,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -252,6 +253,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeComponentTransfer">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -316,10 +320,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -331,6 +331,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeComposite">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -395,10 +398,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -410,6 +409,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeConvolveMatrix">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -474,10 +476,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -489,6 +487,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeDiffuseLighting">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -553,10 +554,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -568,6 +565,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeDisplacementMap">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -632,10 +632,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -647,6 +643,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeFlood">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -711,10 +710,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -726,6 +721,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeGaussianBlur">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -790,10 +788,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -805,6 +799,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeImage">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -869,10 +866,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -895,6 +888,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeMerge">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -959,10 +955,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -974,6 +966,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeMorphology">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -1038,10 +1033,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1053,6 +1044,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeOffset">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -1117,10 +1111,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1132,6 +1122,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeSpecularLighting">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -1196,10 +1189,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1211,6 +1200,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeTile">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -1275,10 +1267,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1290,6 +1278,9 @@
   	<java-type name="nz.co.ctg.foxglove.filter.FeTurbulence">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -1354,10 +1345,6 @@
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
   			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
-  			<!-- ISvgConditionalFeatures -->
-  			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
-  			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
-  			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1394,7 +1381,7 @@
 
 	<!-- ISvgFilterFunction -->
 	
-  	<java-type name="nz.co.ctg.foxglove.filter.FilterEffectFunctionAlpha">
+  	<java-type name="nz.co.ctg.foxglove.filter.FeFunctionAlpha">
   		<xml-virtual-access-methods/>
   		<java-attributes>
   			<xml-attribute java-attribute="type" type="java.lang.String" />
@@ -1406,7 +1393,7 @@
   			<xml-attribute java-attribute="offset" type="java.lang.String" />
   		</java-attributes>
   	</java-type>
-  	<java-type name="nz.co.ctg.foxglove.filter.FilterEffectFunctionRed">
+  	<java-type name="nz.co.ctg.foxglove.filter.FeFunctionRed">
   		<xml-virtual-access-methods/>
   		<java-attributes>
   			<xml-attribute java-attribute="type" type="java.lang.String" />
@@ -1418,7 +1405,7 @@
   			<xml-attribute java-attribute="offset" type="java.lang.String" />
   		</java-attributes>
   	</java-type>
-  	<java-type name="nz.co.ctg.foxglove.filter.FilterEffectFunctionGreen">
+  	<java-type name="nz.co.ctg.foxglove.filter.FeFunctionGreen">
   		<xml-virtual-access-methods/>
   		<java-attributes>
   			<xml-attribute java-attribute="type" type="java.lang.String" />
@@ -1430,7 +1417,7 @@
   			<xml-attribute java-attribute="offset" type="java.lang.String" />
   		</java-attributes>
   	</java-type>
-  	<java-type name="nz.co.ctg.foxglove.filter.FilterEffectFunctionBlue">
+  	<java-type name="nz.co.ctg.foxglove.filter.FeFunctionBlue">
   		<xml-virtual-access-methods/>
   		<java-attributes>
   			<xml-attribute java-attribute="type" type="java.lang.String" />

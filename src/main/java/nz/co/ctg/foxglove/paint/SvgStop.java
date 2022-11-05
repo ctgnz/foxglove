@@ -5,11 +5,7 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
-import nz.co.ctg.foxglove.ISvgStylable;
-import nz.co.ctg.foxglove.ISvgTextAttributes;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -31,7 +27,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "stop")
-public class SvgStop extends AbstractSvgElement implements ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgStylable {
+public class SvgStop extends AbstractSvgStylable {
 
     @XmlAttribute(name = "offset", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -44,40 +40,12 @@ public class SvgStop extends AbstractSvgElement implements ISvgPresentationAttri
     })
     private List<ISvgDescriptiveElement> content;
 
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
-
     public String getOffset() {
         return offset;
     }
 
     public void setOffset(String value) {
         this.offset = value;
-    }
-
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
     }
 
     public List<ISvgDescriptiveElement> getContent() {
@@ -91,11 +59,6 @@ public class SvgStop extends AbstractSvgElement implements ISvgPresentationAttri
     public void toStringDetail(ToStringHelper builder) {
         builder.add("offset", offset);
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
     }
 
 }

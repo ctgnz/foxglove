@@ -276,7 +276,4 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         }
     }
 
-    default void parseGraphicsStyle(String style) {
-    }
-
 }

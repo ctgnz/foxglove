@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove.paint;
 
-import nz.co.ctg.foxglove.ISvgStylable;
+import nz.co.ctg.foxglove.ISvgElement;
 
-public interface ISvgGradientElement extends ISvgStylable {
+public interface ISvgGradientElement extends ISvgElement {
 
 }

@@ -11,6 +11,9 @@
   	<java-type name="nz.co.ctg.foxglove.element.SvgGroup">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -99,6 +102,9 @@
   	<java-type name="nz.co.ctg.foxglove.element.SvgAnchor">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -216,6 +222,9 @@
   	<java-type name="nz.co.ctg.foxglove.element.SvgDefinitions">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -304,6 +313,9 @@
   	<java-type name="nz.co.ctg.foxglove.element.SvgForeignObject">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -425,6 +437,9 @@
   	<java-type name="nz.co.ctg.foxglove.element.SvgMarker">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -519,6 +534,9 @@
   	<java-type name="nz.co.ctg.foxglove.element.SvgSwitch">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -607,6 +625,9 @@
   	<java-type name="nz.co.ctg.foxglove.element.SvgSymbol">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -696,6 +717,9 @@
   	<java-type name="nz.co.ctg.foxglove.element.SvgUse">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />

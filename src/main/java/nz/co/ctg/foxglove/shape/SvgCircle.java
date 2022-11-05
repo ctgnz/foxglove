@@ -5,14 +5,11 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
-import nz.co.ctg.foxglove.ISvgTextAttributes;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -30,8 +27,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javafx.scene.shape.Circle;
 
 
@@ -40,7 +35,7 @@ import javafx.scene.shape.Circle;
     "content"
 })
 @XmlRootElement(name = "circle")
-public class SvgCircle extends AbstractSvgElement implements ISvgShape<Circle>, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable  {
+public class SvgCircle extends AbstractSvgStylable implements ISvgShape<Circle>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable  {
 
     @XmlAttribute(name = "cx")
     private double centreX;
@@ -62,18 +57,9 @@ public class SvgCircle extends AbstractSvgElement implements ISvgShape<Circle>, 
     })
     private List<ISvgElement> content;
 
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
-
     @Override
     public Circle createShape() {
-        parseTextStyle(style);
-        parseGraphicsStyle(getStyle());
+        parseStyle();
         Circle circle = new Circle(centreX, centreY, radius);
         applyGraphicsProperties(circle);
         applyTransforms(circle);
@@ -104,26 +90,6 @@ public class SvgCircle extends AbstractSvgElement implements ISvgShape<Circle>, 
         this.radius = value;
     }
 
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -137,11 +103,6 @@ public class SvgCircle extends AbstractSvgElement implements ISvgShape<Circle>, 
         builder.add("cy", centreY);
         builder.add("r", radius);
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
         ISvgConditionalFeatures.super.toStringDetail(builder);
         ISvgEventListener.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);

@@ -10,26 +10,19 @@ import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
 
-
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "feFuncA", propOrder = {
-    "animations"
-})
-@XmlRootElement(name = "feFuncA")
-public class FilterEffectFunctionAlpha extends AbstractSvgElement implements ISvgFilterFunction  {
+public abstract class AbstractFeFunction extends AbstractSvgElement implements ISvgFilterFunction {
 
     @XmlElements({
         @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg")
     })
     private List<ISvgAnimationElement> animations;
+
+    public AbstractFeFunction() {
+    }
 
     public List<ISvgAnimationElement> getAnimations() {
         if (animations == null) {

@@ -5,13 +5,10 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgFitToViewBox;
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
-import nz.co.ctg.foxglove.ISvgTextAttributes;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.SvgStyle;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
@@ -58,7 +55,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "marker")
-public class SvgMarker extends AbstractSvgElement implements ISvgStructuralElement, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgExternalResources, ISvgFitToViewBox {
+public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgFitToViewBox {
 
     @XmlAttribute(name = "refX")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -128,14 +125,6 @@ public class SvgMarker extends AbstractSvgElement implements ISvgStructuralEleme
     })
     private List<ISvgElement> content;
 
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
-
     public String getRefX() {
         return refX;
     }
@@ -184,26 +173,6 @@ public class SvgMarker extends AbstractSvgElement implements ISvgStructuralEleme
         this.orient = value;
     }
 
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -220,11 +189,6 @@ public class SvgMarker extends AbstractSvgElement implements ISvgStructuralEleme
         builder.add("markerHeight", markerHeight);
         builder.add("orient", orient);
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);
         ISvgFitToViewBox.super.toStringDetail(builder);
     }

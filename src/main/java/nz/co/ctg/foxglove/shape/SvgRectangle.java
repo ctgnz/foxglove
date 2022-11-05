@@ -5,14 +5,11 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
-import nz.co.ctg.foxglove.ISvgTextAttributes;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -30,8 +27,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javafx.scene.shape.Rectangle;
 
 
@@ -40,7 +35,7 @@ import javafx.scene.shape.Rectangle;
     "content"
 })
 @XmlRootElement(name = "rect")
-public class SvgRectangle extends AbstractSvgElement implements ISvgShape<Rectangle>, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Rectangle>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
 
     @XmlAttribute(name = "x")
     private double x;
@@ -71,21 +66,12 @@ public class SvgRectangle extends AbstractSvgElement implements ISvgShape<Rectan
     })
     private List<ISvgElement> content;
 
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
-
     public SvgRectangle() {
     }
 
     @Override
     public Rectangle createShape() {
-        parseTextStyle(style);
-        parseGraphicsStyle(getStyle());
+        parseStyle();
         Rectangle rect = new Rectangle(x, y, width, height);
         rect.setArcWidth(radiusX);
         rect.setArcHeight(radiusY);
@@ -142,26 +128,6 @@ public class SvgRectangle extends AbstractSvgElement implements ISvgShape<Rectan
         this.radiusY = value;
     }
 
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -178,11 +144,6 @@ public class SvgRectangle extends AbstractSvgElement implements ISvgShape<Rectan
         builder.add("rx", radiusX);
         builder.add("ry", radiusY);
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
         ISvgConditionalFeatures.super.toStringDetail(builder);
         ISvgEventListener.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);

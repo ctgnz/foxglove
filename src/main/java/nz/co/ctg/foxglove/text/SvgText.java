@@ -5,13 +5,10 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
-import nz.co.ctg.foxglove.ISvgTextAttributes;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.shape.ISvgShape;
 
@@ -32,7 +29,7 @@ import javafx.scene.text.Text;
     "text", "content"
 })
 @XmlRootElement(name = "text")
-public class SvgText extends AbstractSvgElement implements ISvgTextPositioningElement, ISvgShape<Text>, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgShape<Text>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
 
     @XmlAttribute(name = "x")
     private double x;
@@ -66,18 +63,9 @@ public class SvgText extends AbstractSvgElement implements ISvgTextPositioningEl
     })
     private List<ISvgTextContentElement> content;
 
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
-
     @Override
     public Text createShape() {
-        parseTextStyle(getStyle());
-        parseGraphicsStyle(getStyle());
+        parseStyle();
         Text svgText = new Text(x, y, getValue());
         applyGraphicsProperties(svgText);
         applyTextProperties(svgText);
@@ -146,26 +134,6 @@ public class SvgText extends AbstractSvgElement implements ISvgTextPositioningEl
         this.lengthAdjust = value;
     }
 
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
     public List<ISvgTextContentElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -183,11 +151,6 @@ public class SvgText extends AbstractSvgElement implements ISvgTextPositioningEl
         builder.add("textLength", textLength);
         builder.add("lengthAdjust", lengthAdjust);
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
         ISvgConditionalFeatures.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);
         ISvgEventListener.super.toStringDetail(builder);

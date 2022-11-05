@@ -5,7 +5,12 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class FoxgloveParserPreview extends Application {
@@ -35,7 +40,9 @@ public class FoxgloveParserPreview extends Application {
     private Node createGraphic() throws Exception {
         FoxgloveParser parser = new FoxgloveParser();
         SvgGraphic svgElement = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
-        return svgElement.createGraphic();
+        Region graphic = svgElement.createGraphic();
+        graphic.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DOTTED, null, BorderStroke.THIN)));
+        return graphic;
     }
 
 }

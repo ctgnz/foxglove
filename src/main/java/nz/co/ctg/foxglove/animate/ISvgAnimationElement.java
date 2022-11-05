@@ -20,116 +20,116 @@ public interface ISvgAnimationElement extends ISvgAttributes {
     String ANIM_FILL = "fill";
     String ANIM_TO = "to";
 
-    default void setTo(String value) {
-        set(ANIM_TO, value);
-    }
-
-    default String getTo() {
-        return get(ANIM_TO);
-    }
-
-    default void setFill(String value) {
-        set(ANIM_FILL, value);
-    }
-
-    default String getFill() {
-        return get(ANIM_FILL);
-    }
-
-    default void setRepeatDuration(String value) {
-        set(ANIM_REPEAT_DUR, value);
-    }
-
-    default String getRepeatDuration() {
-        return get(ANIM_REPEAT_DUR);
-    }
-
-    default void setRepeatCount(String value) {
-        set(ANIM_REPEAT_COUNT, value);
-    }
-
-    default String getRepeatCount() {
-        return get(ANIM_REPEAT_COUNT);
-    }
-
-    default void setRestart(String value) {
-        set(ANIM_RESTART, value);
-    }
-
-    default String getRestart() {
-        return get(ANIM_RESTART);
-    }
-
-    default void setMax(String value) {
-        set(ANIM_MAX, value);
-    }
-
-    default String getMax() {
-        return get(ANIM_MAX);
-    }
-
-    default void setMin(String value) {
-        set(ANIM_MIN, value);
-    }
-
-    default String getMin() {
-        return get(ANIM_MIN);
-    }
-
-    default void setEnd(String value) {
-        set(ANIM_END, value);
-    }
-
-    default String getEnd() {
-        return get(ANIM_END);
-    }
-
-    default void setDuration(String value) {
-        set(ANIM_DUR, value);
-    }
-
-    default String getDuration() {
-        return get(ANIM_DUR);
-    }
-
-    default void setBegin(String value) {
-        set(ANIM_BEGIN, value);
-    }
-
-    default String getBegin() {
-        return get(ANIM_BEGIN);
-    }
-
-    default void setOnLoad(String value) {
-        set(ANIM_ONLOAD, value);
-    }
-
-    default String getOnLoad() {
-        return get(ANIM_ONLOAD);
-    }
-
-    default void setOnRepeat(String value) {
-        set(ANIM_ONREPEAT, value);
-    }
-
-    default String getOnRepeat() {
-        return get(ANIM_ONREPEAT);
-    }
-
-    default void setOnEnd(String value) {
-        set(ANIM_ONEND, value);
-    }
-
-    default String getOnEnd() {
-        return get(ANIM_ONEND);
+    default String getOnBegin() {
+        return get(ANIM_ONBEGIN);
     }
 
     default void setOnBegin(String value) {
         set(ANIM_ONBEGIN, value);
     }
 
-    default String getOnBegin() {
-        return get(ANIM_ONBEGIN);
+    default String getOnEnd() {
+        return get(ANIM_ONEND);
+    }
+
+    default void setOnEnd(String value) {
+        set(ANIM_ONEND, value);
+    }
+
+    default String getOnRepeat() {
+        return get(ANIM_ONREPEAT);
+    }
+
+    default void setOnRepeat(String value) {
+        set(ANIM_ONREPEAT, value);
+    }
+
+    default String getOnLoad() {
+        return get(ANIM_ONLOAD);
+    }
+
+    default void setOnLoad(String value) {
+        set(ANIM_ONLOAD, value);
+    }
+
+    default String getBegin() {
+        return get(ANIM_BEGIN);
+    }
+
+    default void setBegin(String value) {
+        set(ANIM_BEGIN, value);
+    }
+
+    default String getDuration() {
+        return get(ANIM_DUR);
+    }
+
+    default void setDuration(String value) {
+        set(ANIM_DUR, value);
+    }
+
+    default String getEnd() {
+        return get(ANIM_END);
+    }
+
+    default void setEnd(String value) {
+        set(ANIM_END, value);
+    }
+
+    default String getMin() {
+        return get(ANIM_MIN);
+    }
+
+    default void setMin(String value) {
+        set(ANIM_MIN, value);
+    }
+
+    default String getMax() {
+        return get(ANIM_MAX);
+    }
+
+    default void setMax(String value) {
+        set(ANIM_MAX, value);
+    }
+
+    default String getRestart() {
+        return get(ANIM_RESTART);
+    }
+
+    default void setRestart(String value) {
+        set(ANIM_RESTART, value);
+    }
+
+    default String getRepeatCount() {
+        return get(ANIM_REPEAT_COUNT);
+    }
+
+    default void setRepeatCount(String value) {
+        set(ANIM_REPEAT_COUNT, value);
+    }
+
+    default String getRepeatDuration() {
+        return get(ANIM_REPEAT_DUR);
+    }
+
+    default void setRepeatDuration(String value) {
+        set(ANIM_REPEAT_DUR, value);
+    }
+
+    default String getFill() {
+        return get(ANIM_FILL);
+    }
+
+    default void setFill(String value) {
+        set(ANIM_FILL, value);
+    }
+
+    default String getTo() {
+        return get(ANIM_TO);
+    }
+
+    default void setTo(String value) {
+        set(ANIM_TO, value);
     }
 
 //    SVGElement getTargetElement();

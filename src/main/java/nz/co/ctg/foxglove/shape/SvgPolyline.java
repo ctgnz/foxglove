@@ -6,14 +6,11 @@ import java.util.stream.Stream;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
-import nz.co.ctg.foxglove.ISvgTextAttributes;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.adapter.PointListAdapter;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
@@ -32,7 +29,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polyline;
@@ -43,7 +39,7 @@ import javafx.scene.shape.Polyline;
     "content"
 })
 @XmlRootElement(name = "polyline")
-public class SvgPolyline extends AbstractSvgElement implements ISvgShape<Polyline>, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public class SvgPolyline extends AbstractSvgStylable implements ISvgShape<Polyline>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
 
     @XmlAttribute(name = "points", required = true)
     @XmlJavaTypeAdapter(PointListAdapter.class)
@@ -60,18 +56,9 @@ public class SvgPolyline extends AbstractSvgElement implements ISvgShape<Polylin
     })
     private List<ISvgElement> content;
 
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
-
     @Override
     public Polyline createShape() {
-        parseTextStyle(style);
-        parseGraphicsStyle(getStyle());
+        parseStyle();
         Polyline polyline = new Polyline(getPointList());
         applyGraphicsProperties(polyline);
         applyTransforms(polyline);
@@ -86,26 +73,6 @@ public class SvgPolyline extends AbstractSvgElement implements ISvgShape<Polylin
         this.points = value;
     }
 
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -116,11 +83,6 @@ public class SvgPolyline extends AbstractSvgElement implements ISvgShape<Polylin
     @Override
     public void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
         ISvgConditionalFeatures.super.toStringDetail(builder);
         ISvgEventListener.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);

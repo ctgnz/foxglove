@@ -5,13 +5,10 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
 import nz.co.ctg.foxglove.ISvgLinkable;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
-import nz.co.ctg.foxglove.ISvgTextAttributes;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -36,7 +33,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "linearGradient")
-public class SvgLinearGradient extends AbstractSvgElement implements ISvgGradientElement, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgExternalResources, ISvgLinkable {
+public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradientElement, ISvgExternalResources, ISvgLinkable {
 
     @XmlAttribute(name = "x1")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -76,14 +73,6 @@ public class SvgLinearGradient extends AbstractSvgElement implements ISvgGradien
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
     private List<ISvgElement> content;
-
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
 
     public String getX1() {
         return x1;
@@ -141,26 +130,6 @@ public class SvgLinearGradient extends AbstractSvgElement implements ISvgGradien
         this.spreadMethod = value;
     }
 
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -178,11 +147,6 @@ public class SvgLinearGradient extends AbstractSvgElement implements ISvgGradien
         builder.add("gradientTransform", gradientTransform);
         builder.add("spreadMethod", spreadMethod);
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
         ISvgLinkable.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);
     }

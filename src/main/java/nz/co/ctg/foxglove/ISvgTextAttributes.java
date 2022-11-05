@@ -1,7 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import java.util.Arrays;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -220,27 +218,4 @@ public interface ISvgTextAttributes extends ISvgAttributes {
         svgText.setFont(font);
     }
 
-    default void parseTextStyle(String style) {
-        if (StringUtils.isNotBlank(style)) {
-            Arrays.stream(StringUtils.split(style, ';')).forEach(stylePair -> {
-                String[] values = StringUtils.split(stylePair, ':');
-                String name = values[0].toLowerCase().trim();
-                String value = values[1].toLowerCase().trim();
-                switch (name) {
-                    case TEXT_FONT_FAMILY:
-                        setFontFamily(value);
-                        break;
-                    case TEXT_FONT_SIZE:
-                        setFontSize(value);
-                        break;
-                    case TEXT_FONT_STYLE:
-                        setFontStyle(value);
-                        break;
-                    case TEXT_FONT_WEIGHT:
-                        setFontWeight(value);
-                        break;
-                }
-            });
-        }
-    }
 }

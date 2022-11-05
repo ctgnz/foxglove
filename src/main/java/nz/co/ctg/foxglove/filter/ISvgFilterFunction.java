@@ -3,9 +3,8 @@ package nz.co.ctg.foxglove.filter;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgAttributes;
-import nz.co.ctg.foxglove.ISvgElement;
 
-public interface ISvgFilterFunction extends ISvgElement, ISvgAttributes {
+public interface ISvgFilterFunction extends ISvgAttributes {
     String FUNC_TYPE = "type";
     String FUNC_TABLE_VALUES = "tableValues";
     String FUNC_SLOPE = "slope";

@@ -2,11 +2,7 @@ package nz.co.ctg.foxglove.filter;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
-import nz.co.ctg.foxglove.ISvgStylable;
-import nz.co.ctg.foxglove.ISvgTextAttributes;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -23,31 +19,23 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "feFuncR", "feFuncG", "feFuncB", "feFuncA"
 })
 @XmlRootElement(name = "feComponentTransfer")
-public class FeComponentTransfer extends AbstractSvgElement implements ISvgStylable, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgFilterPrimitive {
+public class FeComponentTransfer extends AbstractSvgStylable implements ISvgFilterPrimitive {
 
     @XmlAttribute(name = "in")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String in;
 
     @XmlElement(name = "feFuncR")
-    private FilterEffectFunctionRed feFuncR;
+    private FeFunctionRed feFuncR;
 
     @XmlElement(name = "feFuncG")
-    private FilterEffectFunctionGreen feFuncG;
+    private FeFunctionGreen feFuncG;
 
     @XmlElement(name = "feFuncB")
-    private FilterEffectFunctionBlue feFuncB;
+    private FeFunctionBlue feFuncB;
 
     @XmlElement(name = "feFuncA")
-    private FilterEffectFunctionAlpha feFuncA;
-
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
+    private FeFunctionAlpha feFuncA;
 
     public String getIn() {
         return in;
@@ -57,55 +45,35 @@ public class FeComponentTransfer extends AbstractSvgElement implements ISvgStyla
         this.in = value;
     }
 
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
-    public FilterEffectFunctionRed getFeFuncR() {
+    public FeFunctionRed getFeFuncR() {
         return feFuncR;
     }
 
-    public void setFeFuncR(FilterEffectFunctionRed value) {
+    public void setFeFuncR(FeFunctionRed value) {
         this.feFuncR = value;
     }
 
-    public FilterEffectFunctionGreen getFeFuncG() {
+    public FeFunctionGreen getFeFuncG() {
         return feFuncG;
     }
 
-    public void setFeFuncG(FilterEffectFunctionGreen value) {
+    public void setFeFuncG(FeFunctionGreen value) {
         this.feFuncG = value;
     }
 
-    public FilterEffectFunctionBlue getFeFuncB() {
+    public FeFunctionBlue getFeFuncB() {
         return feFuncB;
     }
 
-    public void setFeFuncB(FilterEffectFunctionBlue value) {
+    public void setFeFuncB(FeFunctionBlue value) {
         this.feFuncB = value;
     }
 
-    public FilterEffectFunctionAlpha getFeFuncA() {
+    public FeFunctionAlpha getFeFuncA() {
         return feFuncA;
     }
 
-    public void setFeFuncA(FilterEffectFunctionAlpha value) {
+    public void setFeFuncA(FeFunctionAlpha value) {
         this.feFuncA = value;
     }
 
@@ -113,11 +81,6 @@ public class FeComponentTransfer extends AbstractSvgElement implements ISvgStyla
     public void toStringDetail(ToStringHelper builder) {
         builder.add("in", in);
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
         ISvgFilterPrimitive.super.toStringDetail(builder);
         builder.add("feFuncR", feFuncR);
         builder.add("feFuncG", feFuncG);

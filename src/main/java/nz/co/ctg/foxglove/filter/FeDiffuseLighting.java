@@ -5,11 +5,7 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
-import nz.co.ctg.foxglove.ISvgStylable;
-import nz.co.ctg.foxglove.ISvgTextAttributes;
+import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -31,7 +27,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "lightSources", "animations"
 })
 @XmlRootElement(name = "feDiffuseLighting")
-public class FeDiffuseLighting extends AbstractSvgElement implements ISvgStylable, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgFilterPrimitive {
+public class FeDiffuseLighting extends AbstractSvgStylable implements ISvgFilterPrimitive {
 
     @XmlAttribute(name = "in")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -62,14 +58,6 @@ public class FeDiffuseLighting extends AbstractSvgElement implements ISvgStylabl
         @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg")
     })
     private List<ISvgAnimationElement> animations;
-
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
 
     public String getIn() {
         return in;
@@ -103,26 +91,6 @@ public class FeDiffuseLighting extends AbstractSvgElement implements ISvgStylabl
         this.kernelUnitLength = value;
     }
 
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
     public List<ISvgFilterLightSource> getLightSources() {
         if (lightSources == null) {
             lightSources = new ArrayList<>();
@@ -144,11 +112,6 @@ public class FeDiffuseLighting extends AbstractSvgElement implements ISvgStylabl
         builder.add("diffuseConstant", diffuseConstant);
         builder.add("kernelUnitLength", kernelUnitLength);
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
         ISvgFilterPrimitive.super.toStringDetail(builder);
     }
 

@@ -21,6 +21,9 @@
   	<java-type name="nz.co.ctg.foxglove.paint.SvgLinearGradient">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -105,6 +108,9 @@
   	<java-type name="nz.co.ctg.foxglove.paint.SvgPattern">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -192,6 +198,9 @@
   	<java-type name="nz.co.ctg.foxglove.paint.SvgRadialGradient">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -276,6 +285,9 @@
   	<java-type name="nz.co.ctg.foxglove.paint.SvgStop">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />

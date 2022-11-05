@@ -5,11 +5,7 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -31,7 +27,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "contents"
 })
 @XmlRootElement(name = "animateMotion")
-public class SvgAnimateMotion extends AbstractSvgElement implements ISvgElement, ISvgAnimationElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources {
+public class SvgAnimateMotion extends AbstractSvgAnimationElement {
 
     @XmlAttribute(name = "additive")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -219,10 +215,6 @@ public class SvgAnimateMotion extends AbstractSvgElement implements ISvgElement,
         builder.add("rotate", rotate);
         builder.add("origin", origin);
         super.toStringDetail(builder);
-        ISvgAnimationElement.super.toStringDetail(builder);
-        ISvgConditionalFeatures.super.toStringDetail(builder);
-        ISvgLinkable.super.toStringDetail(builder);
-        ISvgExternalResources.super.toStringDetail(builder);
     }
 
 }

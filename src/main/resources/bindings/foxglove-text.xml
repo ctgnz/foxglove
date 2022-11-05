@@ -9,6 +9,9 @@
   	<java-type name="nz.co.ctg.foxglove.text.SvgTextPath">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -107,6 +110,9 @@
   	<java-type name="nz.co.ctg.foxglove.text.SvgAltGlyph">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -202,6 +208,9 @@
   	<java-type name="nz.co.ctg.foxglove.text.SvgText">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -290,6 +299,9 @@
   	<java-type name="nz.co.ctg.foxglove.text.SvgTextReference">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -385,6 +397,9 @@
   	<java-type name="nz.co.ctg.foxglove.text.SvgTextSpan">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -473,6 +488,9 @@
   	<java-type name="nz.co.ctg.foxglove.text.SvgFont">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -592,6 +610,9 @@
   	<java-type name="nz.co.ctg.foxglove.text.SvgGlyph">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -665,6 +686,9 @@
   	<java-type name="nz.co.ctg.foxglove.text.SvgGlyphRef">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />
@@ -747,6 +771,9 @@
   	<java-type name="nz.co.ctg.foxglove.text.SvgMissingGlyph">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgStylable -->
+  			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
+  			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
   			<!-- ISvgPresentationAttributes -->
   			<xml-attribute java-attribute="floodColor" name="flood-color" type="java.lang.String" />
   			<xml-attribute java-attribute="floodOpacity" name="flood-opacity" type="java.lang.String" />

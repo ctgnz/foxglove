@@ -65,7 +65,7 @@ import javafx.scene.layout.Region;
     "content"
 })
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
-public class SvgGraphic extends AbstractSvgElement implements ISvgStylable, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgEventListener, ISvgConditionalFeatures, ISvgFitToViewBox, ISvgExternalResources {
+public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgEventListener, ISvgConditionalFeatures, ISvgFitToViewBox, ISvgExternalResources {
 
     @XmlAttribute(name = "onunload")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -170,14 +170,6 @@ public class SvgGraphic extends AbstractSvgElement implements ISvgStylable, ISvg
         @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
     })
     protected List<ISvgElement> content;
-
-    @XmlAttribute(name = "style")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String style;
-
-    @XmlAttribute(name = "class")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String className;
 
     public String getOnUnload() {
         return onUnload;
@@ -315,26 +307,6 @@ public class SvgGraphic extends AbstractSvgElement implements ISvgStylable, ISvg
         this.contentStyleType = value;
     }
 
-    @Override
-    public String getStyle() {
-        return style;
-    }
-
-    @Override
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -362,11 +334,6 @@ public class SvgGraphic extends AbstractSvgElement implements ISvgStylable, ISvg
     @Override
     public void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
-        builder.add("style", style);
-        builder.add("className", className);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
         ISvgConditionalFeatures.super.toStringDetail(builder);
         ISvgEventListener.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);
