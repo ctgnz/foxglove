@@ -17,6 +17,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -32,6 +33,7 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     private String target;
 
+    @XmlValue
     @XmlValueExtension
     private String value;
 

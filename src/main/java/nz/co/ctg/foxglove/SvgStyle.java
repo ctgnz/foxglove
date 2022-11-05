@@ -9,6 +9,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -32,6 +33,7 @@ public class SvgStyle extends AbstractSvgElement implements ISvgElement {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String title;
 
+    @XmlValue
     @XmlValueExtension
     protected String value;
 

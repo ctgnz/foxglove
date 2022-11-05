@@ -15,6 +15,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -55,6 +56,7 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     private String lengthAdjust;
 
+    @XmlValue
     @XmlValueExtension
     private String value;
 

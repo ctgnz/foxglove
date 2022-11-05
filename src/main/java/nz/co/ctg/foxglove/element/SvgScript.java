@@ -15,6 +15,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -30,6 +31,7 @@ public class SvgScript extends AbstractSvgElement implements ISvgElement, ISvgLi
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String type;
 
+    @XmlValue
     @XmlValueExtension
     private String value;
 

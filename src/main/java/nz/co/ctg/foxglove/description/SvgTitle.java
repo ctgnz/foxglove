@@ -11,6 +11,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -20,6 +21,7 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "title")
 public class SvgTitle extends AbstractSvgStylable implements ISvgDescriptiveElement, ISvgValueElement {
 
+    @XmlValue
     @XmlValueExtension
     protected String value;
 
