@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.adapter.DoubleListAdapter;
+import nz.co.ctg.foxglove.adapter.FontPostureAdapter;
+import nz.co.ctg.foxglove.adapter.FontWeightAdapter;
 import nz.co.ctg.foxglove.adapter.StrokeLineCapAdapter;
 import nz.co.ctg.foxglove.adapter.StrokeLineJoinAdapter;
 import nz.co.ctg.foxglove.adapter.SvgPaintAdapter;
@@ -18,6 +20,8 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlTransient
@@ -26,6 +30,8 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
     private static final StrokeLineCapAdapter strokeLineCapAdapter = new StrokeLineCapAdapter();
     private static final StrokeLineJoinAdapter strokeLineJoinAdapter = new StrokeLineJoinAdapter();
     private static final DoubleListAdapter doubleListAdapter = new DoubleListAdapter();
+    private static final FontWeightAdapter fontWeightAdapter = new FontWeightAdapter();
+    private static final FontPostureAdapter fontPostureAdapter = new FontPostureAdapter();
 
     public AbstractSvgStylable() {
     }
@@ -44,10 +50,10 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
                         setFontSize(value);
                         break;
                     case TEXT_FONT_STYLE:
-                        setFontStyle(value);
+                        setFontStyle(parseFontPosture(value));
                         break;
                     case TEXT_FONT_WEIGHT:
-                        setFontWeight(value);
+                        setFontWeight(parseFontWeight(value));
                         break;
                     case GRAPHX_FILL:
                         setFill(parsePaint(value));
@@ -107,6 +113,22 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
     private StrokeLineJoin parseStrokeLineJoin(String value) {
         try {
             return strokeLineJoinAdapter.unmarshal(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private FontWeight parseFontWeight(String value) {
+        try {
+            return fontWeightAdapter.unmarshal(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private FontPosture parseFontPosture(String value) {
+        try {
+            return fontPostureAdapter.unmarshal(value);
         } catch (Exception e) {
             return null;
         }

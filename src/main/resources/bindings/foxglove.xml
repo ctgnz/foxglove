@@ -9,6 +9,7 @@
   </xml-schema>
   <java-types>
   	<java-type name="nz.co.ctg.foxglove.SvgGraphic">
+  		<xml-root-element name="svg" />
   		<xml-virtual-access-methods/>
   		<java-attributes>
   			<!-- ISvgStylable -->
@@ -77,7 +78,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgConditionalFeatures -->
   			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
   			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
@@ -108,5 +109,7 @@
   </java-types>
   <xml-java-type-adapters>
   	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.SvgPaintAdapter" type="javafx.scene.paint.Paint"/>
+  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.FontWeightAdapter" type="javafx.scene.text.FontWeight"/>
+  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.FontPostureAdapter" type="javafx.scene.text.FontPosture"/>
   </xml-java-type-adapters>
 </xml-bindings>

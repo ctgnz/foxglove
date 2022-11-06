@@ -37,7 +37,7 @@
         <rect y="547.46027" x="179.45253" height="97.141968" width="253.54138" id="amplifierR" style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:2.43953;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
         <path style="fill:#0000ff;stroke:#0000ff;stroke-width:1.999;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" d="m 306.85589,644.52992 v 52.02633" id="amplifierQ" />
     </g>
-    <text id="text5051" y="540" x="465" style="font-style:normal;font-weight:normal;font-size:36px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none" xml:space="preserve">
+    <text id="text5051" y="540" x="465" style="font-style:italic;font-weight:normal;font-size:36px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none" xml:space="preserve">
         <tspan y="540" x="465" id="tspan5049" sodipodi:role="line">WO1</tspan>
     </text>
     <g transform="matrix(1.4,0,0,1.4,838.15603,-42.096406)" id="g14521">

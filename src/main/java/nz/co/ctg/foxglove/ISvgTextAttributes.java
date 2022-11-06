@@ -4,7 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public interface ISvgTextAttributes extends ISvgAttributes {
@@ -165,11 +169,11 @@ public interface ISvgTextAttributes extends ISvgAttributes {
         set(TEXT_FONT_STRETCH, value);
     }
 
-    default String getFontStyle() {
+    default FontPosture getFontStyle() {
         return get(TEXT_FONT_STYLE);
     }
 
-    default void setFontStyle(String value) {
+    default void setFontStyle(FontPosture value) {
         set(TEXT_FONT_STYLE, value);
     }
 
@@ -181,11 +185,11 @@ public interface ISvgTextAttributes extends ISvgAttributes {
         set(TEXT_FONT_VARIANT, value);
     }
 
-    default String getFontWeight() {
+    default FontWeight getFontWeight() {
         return get(TEXT_FONT_WEIGHT);
     }
 
-    default void setFontWeight(String value) {
+    default void setFontWeight(FontWeight value) {
         set(TEXT_FONT_WEIGHT, value);
     }
 
@@ -214,7 +218,23 @@ public interface ISvgTextAttributes extends ISvgAttributes {
 
     default void applyTextProperties(Text svgText) {
         Double size = StringUtils.isNotBlank(getFontSize()) ? Double.valueOf(StringUtils.strip(getFontSize(), "px")) : Font.getDefault().getSize();
-        Font font = new Font(getFontFamily(), size);
+        String fontFamily = getFontFamily();
+        switch (fontFamily) {
+            case "monospace":
+                fontFamily = "Monospaced";
+                break;
+            case "fantasy": // fall through
+            case "serif":
+                fontFamily = "Serif";
+                break;
+            case "cursive": // fall through
+            case "sans-serif":
+                fontFamily = "SansSerif";
+                break;
+        }
+        FontWeight fontWeight = defaultIfNull(getFontWeight(), FontWeight.NORMAL);
+        FontPosture fontPosture = defaultIfNull(getFontStyle(), FontPosture.REGULAR);
+        Font font = Font.font(fontFamily, fontWeight, fontPosture, size);
         svgText.setFont(font);
     }
 

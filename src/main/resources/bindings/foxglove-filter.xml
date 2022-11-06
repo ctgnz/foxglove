@@ -73,7 +73,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgConditionalFeatures -->
   			<xml-attribute java-attribute="requiredFeatures" type="java.lang.String" />
   			<xml-attribute java-attribute="requiredExtensions" type="java.lang.String" />
@@ -163,7 +163,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -241,7 +241,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -319,7 +319,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -397,7 +397,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -475,7 +475,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -553,7 +553,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -631,7 +631,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -709,7 +709,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -787,7 +787,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -865,7 +865,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -954,7 +954,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1032,7 +1032,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1110,7 +1110,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1188,7 +1188,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1266,7 +1266,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
@@ -1344,7 +1344,7 @@
   			<xml-attribute java-attribute="fontStretch" name="font-stretch" type="java.lang.String" />
   			<xml-attribute java-attribute="fontStyle" name="font-style" type="java.lang.String" />
   			<xml-attribute java-attribute="fontVariant" name="font-variant" type="java.lang.String" />
-  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="java.lang.String" />
+  			<xml-attribute java-attribute="fontWeight" name="font-weight" type="javafx.scene.text.FontWeight" />
   			<!-- ISvgFilterPrimitive -->
   			<xml-attribute java-attribute="x" type="java.lang.String" />
   			<xml-attribute java-attribute="y" type="java.lang.String" />
