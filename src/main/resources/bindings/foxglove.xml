@@ -8,10 +8,25 @@
     <xml-ns prefix="xlink" namespace-uri="http://www.w3.org/1999/xlink" />
   </xml-schema>
   <java-types>
-  	<java-type name="nz.co.ctg.foxglove.SvgGraphic">
-  		<xml-root-element name="svg" />
+  	<java-type name="nz.co.ctg.foxglove.SvgGraphic" xml-accessor-type="NONE">
+  		<xml-root-element name="svg" namespace="http://www.w3.org/2000/svg" />
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<xml-attribute java-attribute="x" name="x" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="y" name="y" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="width" name="width" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="height" name="height" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="version" name="version" type="java.lang.String" />
+  			<xml-attribute java-attribute="zoomAndPan" name="zoomAndPan" type="java.lang.String" />
+  			<xml-attribute java-attribute="baseProfile" name="baseProfile" type="java.lang.String" />
+  			<xml-attribute java-attribute="contentScriptType" name="contentScriptType" type="java.lang.String" />
+  			<xml-attribute java-attribute="contentStyleType" name="contentStyleType" type="java.lang.String" />
+  			<xml-attribute java-attribute="onUnload" name="onunload" type="java.lang.String" />
+  			<xml-attribute java-attribute="onAbort" name="onabort" type="java.lang.String" />
+  			<xml-attribute java-attribute="onError" name="onerror" type="java.lang.String" />
+  			<xml-attribute java-attribute="onResize" name="onresize" type="java.lang.String" />
+  			<xml-attribute java-attribute="onScroll" name="onscroll" type="java.lang.String" />
+  			<xml-attribute java-attribute="onZoom" name="onzoom" type="java.lang.String" />
   			<!-- ISvgStylable -->
   			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
   			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />
@@ -99,6 +114,49 @@
   			<!-- ISvgFitToViewBox -->
   			<xml-attribute java-attribute="viewBox" />
   			<xml-attribute java-attribute="preserveAspectRatio" />
+  			<!-- Content -->
+  			<xml-elements java-attribute="content">
+              <xml-element name="svg" type="nz.co.ctg.foxglove.SvgGraphic" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="style" type="nz.co.ctg.foxglove.SvgStyle" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="desc" type="nz.co.ctg.foxglove.description.SvgDescription" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="title" type="nz.co.ctg.foxglove.description.SvgTitle" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="metadata" type="nz.co.ctg.foxglove.description.SvgMetadata" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="animate" type="nz.co.ctg.foxglove.animate.SvgAnimateAttribute" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="set" type="nz.co.ctg.foxglove.animate.SvgSetAttribute" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="animateMotion" type="nz.co.ctg.foxglove.animate.SvgAnimateMotion" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="animateColor" type="nz.co.ctg.foxglove.animate.SvgAnimateColor" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="animateTransform" type="nz.co.ctg.foxglove.animate.SvgAnimateTransform" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="g" type="nz.co.ctg.foxglove.element.SvgGroup" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="a" type="nz.co.ctg.foxglove.element.SvgAnchor" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="cursor" type="nz.co.ctg.foxglove.element.SvgCursor" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="defs" type="nz.co.ctg.foxglove.element.SvgDefinitions" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="foreignObject" type="nz.co.ctg.foxglove.element.SvgForeignObject" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="image" type="nz.co.ctg.foxglove.element.SvgImage" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="marker" type="nz.co.ctg.foxglove.element.SvgMarker" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="script" type="nz.co.ctg.foxglove.element.SvgScript" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="switch" type="nz.co.ctg.foxglove.element.SvgSwitch" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="symbol" type="nz.co.ctg.foxglove.element.SvgSymbol" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="view" type="nz.co.ctg.foxglove.element.SvgView" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="use" type="nz.co.ctg.foxglove.element.SvgUse" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="path" type="nz.co.ctg.foxglove.shape.SvgPath" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="rect" type="nz.co.ctg.foxglove.shape.SvgRectangle" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="circle" type="nz.co.ctg.foxglove.shape.SvgCircle" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="line" type="nz.co.ctg.foxglove.shape.SvgLine" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="ellipse" type="nz.co.ctg.foxglove.shape.SvgEllipse" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="polyline" type="nz.co.ctg.foxglove.shape.SvgPolyline" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="polygon" type="nz.co.ctg.foxglove.shape.SvgPolygon" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="clipPath" type="nz.co.ctg.foxglove.clip.SvgClipPath" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="mask" type="nz.co.ctg.foxglove.clip.SvgMask" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="filter" type="nz.co.ctg.foxglove.filter.SvgFilter" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="color-profile" type="nz.co.ctg.foxglove.paint.SvgColorProfile" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="linearGradient" type="nz.co.ctg.foxglove.paint.SvgLinearGradient" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="radialGradient" type="nz.co.ctg.foxglove.paint.SvgRadialGradient" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="pattern" type="nz.co.ctg.foxglove.paint.SvgPattern" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="text" type="nz.co.ctg.foxglove.text.SvgText" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="altGlyphDef" type="nz.co.ctg.foxglove.text.SvgAltGlyphDef" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="font" type="nz.co.ctg.foxglove.text.SvgFont" namespace="http://www.w3.org/2000/svg" />
+              <xml-element name="font-face" type="nz.co.ctg.foxglove.text.SvgFontFace" namespace="http://www.w3.org/2000/svg" />
+  			</xml-elements>
   		</java-attributes>
   	</java-type>
   	<java-type name="nz.co.ctg.foxglove.SvgStyle">
@@ -107,9 +165,4 @@
   		</java-attributes>
   	</java-type>
   </java-types>
-  <xml-java-type-adapters>
-  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.SvgPaintAdapter" type="javafx.scene.paint.Paint"/>
-  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.FontWeightAdapter" type="javafx.scene.text.FontWeight"/>
-  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.FontPostureAdapter" type="javafx.scene.text.FontPosture"/>
-  </xml-java-type-adapters>
 </xml-bindings>

@@ -69,6 +69,13 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
     public SvgRectangle() {
     }
 
+    public SvgRectangle(double x, double y, double width, double height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
     @Override
     public Rectangle createShape() {
         parseStyle();

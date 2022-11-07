@@ -33,12 +33,6 @@
             <version>28.2-jre</version>
         </dependency>
         
-        <dependency>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>javax.activation</artifactId>
-            <version>${javax.activation.version}</version>
-        </dependency>
-        
 		<dependency>
 		    <groupId>org.eclipse.persistence</groupId>
 		    <artifactId>org.eclipse.persistence.moxy</artifactId>

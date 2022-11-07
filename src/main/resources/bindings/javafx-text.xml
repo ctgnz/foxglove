@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-bindings xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/oxm http://www.eclipse.org/eclipselink/xsds/eclipselink_oxm_2_6.xsd"
+	package-name="javafx.scene.text" xml-mapping-metadata-complete="true">
+  <java-types>
+    <java-type name="FontWeight">
+      <xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.FontWeightAdapter"/>
+    </java-type>
+    <java-type name="FontPosture">
+      <xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.FontPostureAdapter"/>
+    </java-type>
+  </java-types>
+</xml-bindings>
