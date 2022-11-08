@@ -60,6 +60,7 @@ public class SvgPolyline extends AbstractSvgStylable implements ISvgShape<Polyli
     public Polyline createShape() {
         parseStyle();
         Polyline polyline = new Polyline(getPointList());
+        installTooltip(polyline);
         applyGraphicsProperties(polyline);
         applyTransforms(polyline);
         return polyline;
@@ -73,6 +74,7 @@ public class SvgPolyline extends AbstractSvgStylable implements ISvgShape<Polyli
         this.points = value;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

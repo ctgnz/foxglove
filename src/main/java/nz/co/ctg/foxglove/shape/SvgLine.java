@@ -64,6 +64,7 @@ public class SvgLine extends AbstractSvgStylable implements ISvgShape<Line>, ISv
     public Line createShape() {
         parseStyle();
         Line line = new Line(startX, startY, endX, endY);
+        installTooltip(line);
         applyGraphicsProperties(line);
         applyTransforms(line);
         return line;
@@ -101,6 +102,7 @@ public class SvgLine extends AbstractSvgStylable implements ISvgShape<Line>, ISv
         this.startY = value;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

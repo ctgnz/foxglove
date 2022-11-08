@@ -64,6 +64,7 @@ public class SvgEllipse extends AbstractSvgStylable implements ISvgShape<Ellipse
     public Ellipse createShape() {
         parseStyle();
         Ellipse ellipse = new Ellipse(centreY, centreX, radiusX, radiusY);
+        installTooltip(ellipse);
         applyGraphicsProperties(ellipse);
         applyTransforms(ellipse);
         return ellipse;
@@ -101,6 +102,7 @@ public class SvgEllipse extends AbstractSvgStylable implements ISvgShape<Ellipse
         this.radiusY = value;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

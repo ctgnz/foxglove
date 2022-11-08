@@ -61,6 +61,7 @@ public class SvgCircle extends AbstractSvgStylable implements ISvgShape<Circle>,
     public Circle createShape() {
         parseStyle();
         Circle circle = new Circle(centreX, centreY, radius);
+        installTooltip(circle);
         applyGraphicsProperties(circle);
         applyTransforms(circle);
         return circle;
@@ -90,6 +91,7 @@ public class SvgCircle extends AbstractSvgStylable implements ISvgShape<Circle>,
         this.radius = value;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

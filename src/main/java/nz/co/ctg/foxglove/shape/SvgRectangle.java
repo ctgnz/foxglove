@@ -82,6 +82,7 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
         Rectangle rect = new Rectangle(x, y, width, height);
         rect.setArcWidth(radiusX);
         rect.setArcHeight(radiusY);
+        installTooltip(rect);
         applyGraphicsProperties(rect);
         applyTransforms(rect);
         return rect;
@@ -135,6 +136,7 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
         this.radiusY = value;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

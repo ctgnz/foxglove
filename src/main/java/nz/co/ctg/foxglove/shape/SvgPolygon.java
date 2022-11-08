@@ -60,6 +60,7 @@ public class SvgPolygon extends AbstractSvgStylable implements ISvgShape<Polygon
     public Polygon createShape() {
         parseStyle();
         Polygon polygon = new Polygon(getPointList());
+        installTooltip(polygon);
         applyGraphicsProperties(polygon);
         applyTransforms(polygon);
         return polygon;
@@ -73,6 +74,7 @@ public class SvgPolygon extends AbstractSvgStylable implements ISvgShape<Polygon
         this.points = value;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

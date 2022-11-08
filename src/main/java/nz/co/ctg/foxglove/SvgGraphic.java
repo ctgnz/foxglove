@@ -10,12 +10,14 @@ import nz.co.ctg.foxglove.shape.ISvgShape;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 import javafx.css.Size;
+import javafx.css.SizeUnits;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
-public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes, ISvgEventListener, ISvgConditionalFeatures, ISvgFitToViewBox, ISvgExternalResources {
+public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes,
+    ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgDescribable {
 
     private String onUnload;
     private String onAbort;
@@ -83,6 +85,9 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     }
 
     public Size getX() {
+        if (x == null) {
+            x = new Size(0, SizeUnits.PX);
+        }
         return x;
     }
 
@@ -91,6 +96,9 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     }
 
     public Size getY() {
+        if (y == null) {
+            y = new Size(0, SizeUnits.PX);
+        }
         return y;
     }
 
@@ -99,6 +107,9 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     }
 
     public Size getWidth() {
+        if (width == null) {
+            width = new Size(0, SizeUnits.PX);
+        }
         return width;
     }
 
@@ -107,6 +118,9 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     }
 
     public Size getHeight() {
+        if (height == null) {
+            height = new Size(0, SizeUnits.PX);
+        }
         return height;
     }
 
@@ -170,6 +184,7 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         this.contentStyleType = value;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -178,34 +193,28 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     }
 
     public Region createGraphic() {
-        Pane baseGroup = new Pane();
-        baseGroup.setTranslateX(x != null ? x.pixels() : 0.0);
-        baseGroup.setTranslateY(y != null ? y.pixels() : 0.0);
-        baseGroup.setMaxWidth(getWidthPixels());
-        baseGroup.setMaxHeight(getHeightPixels());
+        Pane pane = new Pane();
+        pane.setTranslateX(getX().pixels());
+        pane.setTranslateY(getY().pixels());
+        pane.setMaxWidth(getWidth().pixels());
+        pane.setMaxHeight(getHeight().pixels());
         content.forEach(child -> {
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;
-                baseGroup.getChildren().add(group.createGroup());
+                pane.getChildren().add(group.createGroup());
             }
             if (child instanceof ISvgShape<?>) {
                 ISvgShape<?> shape = (ISvgShape<?>) child;
-                baseGroup.getChildren().add(shape.createShape());
+                pane.getChildren().add(shape.createShape());
             }
         });
-        return baseGroup;
-    }
-
-    public double getHeightPixels() {
-        return height != null ? height.pixels() : 0.0;
-    }
-
-    public double getWidthPixels() {
-        return width != null ? width.pixels() : 0.0;
+        return pane;
     }
 
     public Group createGroup() {
         Group baseGroup = new Group();
+        baseGroup.setTranslateX(getX().pixels());
+        baseGroup.setTranslateY(getY().pixels());
         content.forEach(child -> {
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;
@@ -221,6 +230,10 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
 
     @Override
     public void toStringDetail(ToStringHelper builder) {
+        builder.add("x", x);
+        builder.add("y", y);
+        builder.add("width", width);
+        builder.add("height", height);
         super.toStringDetail(builder);
         ISvgConditionalFeatures.super.toStringDetail(builder);
         ISvgEventListener.super.toStringDetail(builder);

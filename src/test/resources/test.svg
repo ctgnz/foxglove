@@ -13,29 +13,63 @@
             </cc:Work>
         </rdf:RDF>
     </metadata>
+    <title id="title123">This is a title</title>
+    <desc id="desc456">This is a description</desc>
     <defs id="defs850" />
     <sodipodi:namedview inkscape:current-layer="Version_1.0" inkscape:window-maximized="1" inkscape:window-y="-8" inkscape:window-x="1912" inkscape:cy="410.35767" inkscape:cx="326.23173" inkscape:zoom="1.0959596" inkscape:document-rotation="0" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="1017" id="namedview848" showgrid="false" />
-    <g id="octagon" display="none">
-        <polygon fill="none" stroke="#0000FF" stroke-width="2" points="305,516.5 218.733,480.768 183,394.5 218.733,308.233 305,272.5    391.268,308.233 427,394.5 391.268,480.768  " id="octagonOutline" />
+    <g id="octagon" display="inline">
+        <path id="amplifierD" style="fill:ffffff;stroke:#0000ff;stroke-width:1.999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m 179.56,317.5 126.44,-73 127.44223,72.99999 m -253.88223,0 v 0 -80.26865 0 h 253.88223 v 80.26865 0">
+          <title>D</title>
+        </path>
+        <polygon fill="#ffffff" stroke="#0000FF" stroke-width="2" points="305,516.5 218.733,480.768 183,394.5 218.733,308.233 305,272.5    391.268,308.233 427,394.5 391.268,480.768  " id="octagonOutline">
+            <title>Octagon</title>
+        </polygon>
         <line fill="none" stroke="#0000FF" stroke-width="2" x1="202.5" y1="345.7" x2="407.5" y2="345.7" id="mod1">
-            <title>Foobar</title>
+            <title>Mod 1</title>
             <metadata id="metadata852">Deez Metadata</metadata>
         </line>
-        <line fill="none" stroke="#0000FF" stroke-width="2" x1="202.5" y1="443.3" x2="407.5" y2="443.3" id="mod2" />
-        <path id="amplifierD" style="fill:none;stroke:#0000ff;stroke-width:1.999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m 179.56,317.5 126.44,-73 127.44223,72.99999 m -253.88223,0 v 0 -80.26865 0 h 253.88223 v 80.26865 0" />
-        <rect style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierAC" width="168.22823" height="97.589767" x="441.47321" y="150.52045" />
-        <rect y="248.11023" x="441.47321" height="97.589767" width="168.22823" id="amplifierG" style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
-        <rect style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierH" width="168.22823" height="97.589767" x="441.47321" y="345.70001" />
-        <rect y="443.28979" x="441.47321" height="97.589767" width="168.22823" id="amplifierM" style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
-        <rect style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierJKP" width="168.22823" height="97.589767" x="441.47321" y="540.87958" />
-        <rect y="150.52045" x="2.8270514" height="97.589767" width="168.22823" id="amplifierW" style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
-        <rect style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierXY" width="168.22823" height="97.589767" x="2.8270514" y="248.11021" />
-        <rect y="345.69998" x="2.8270514" height="97.589767" width="168.22823" id="amplifierVAF" style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
-        <rect style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierT" width="168.22823" height="97.589767" x="2.8270514" y="443.28973" />
-        <rect y="540.87952" x="2.8270514" height="97.589767" width="168.22823" id="amplifierZ" style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
-        <rect style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:2.43953;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierAB" width="253.54138" height="97.141968" x="179.78391" y="139.86548" />
-        <rect y="547.46027" x="179.45253" height="97.141968" width="253.54138" id="amplifierR" style="fill:none;fill-opacity:1;stroke:#0000ff;stroke-width:2.43953;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
-        <path style="fill:#0000ff;stroke:#0000ff;stroke-width:1.999;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" d="m 306.85589,644.52992 v 52.02633" id="amplifierQ" />
+        <line fill="none" stroke="#0000FF" stroke-width="2" x1="202.5" y1="443.3" x2="407.5" y2="443.3" id="mod2">
+            <title>Mod 2</title>
+        </line>
+        <rect style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierAC" width="168.22823" height="97.589767" x="441.47321" y="150.52045">
+          <title>AC</title>
+        </rect>
+        <rect y="248.11023" x="441.47321" height="97.589767" width="168.22823" id="amplifierG" style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke">
+          <title>G</title>
+        </rect>
+        <rect style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierH" width="168.22823" height="97.589767" x="441.47321" y="345.70001" >
+          <title>H</title>
+        </rect>
+        <rect y="443.28979" x="441.47321" height="97.589767" width="168.22823" id="amplifierM" style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke">
+          <title>M</title>
+        </rect>
+        <rect style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierJKP" width="168.22823" height="97.589767" x="441.47321" y="540.87958">
+          <title>J/K/P</title>
+        </rect>
+        <rect y="150.52045" x="2.8270514" height="97.589767" width="168.22823" id="amplifierW" style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke">
+          <title>W</title>
+        </rect>
+        <rect style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierXY" width="168.22823" height="97.589767" x="2.8270514" y="248.11021">
+          <title>X/Y</title>
+        </rect>
+        <rect y="345.69998" x="2.8270514" height="97.589767" width="168.22823" id="amplifierVAF" style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke">
+          <title>V/AF</title>
+        </rect>
+        <rect style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierT" width="168.22823" height="97.589767" x="2.8270514" y="443.28973">
+          <title>T</title>
+        </rect>
+        <rect y="540.87952" x="2.8270514" height="97.589767" width="168.22823" id="amplifierZ" style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.99172;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke">
+          <title>Z</title>
+        </rect>
+        <rect style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:2.43953;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" id="amplifierAB" width="253.54138" height="97.141968" x="179.78391" y="139.86548">
+          <title>AB</title>
+        </rect>
+        <rect y="547.46027" x="179.45253" height="97.141968" width="253.54138" id="amplifierR" style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:2.43953;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke">
+          <title>R</title>
+        </rect>
+        <path style="fill:#0000ff;stroke:#0000ff;stroke-width:1.999;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" d="m 306.85589,644.52992 v 52.02633" id="amplifierQ">
+          <title>Q</title>
+        </path>
     </g>
     <text id="text5051" y="540" x="465" style="font-style:italic;font-weight:normal;font-size:36px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none" xml:space="preserve">
         <tspan y="540" x="465" id="tspan5049" sodipodi:role="line">WO1</tspan>

@@ -63,6 +63,7 @@ public class SvgPath extends AbstractSvgStylable implements ISvgShape<SVGPath>, 
         parseStyle();
         SVGPath svgPath = new SVGPath();
         svgPath.setContent(pathData);
+        installTooltip(svgPath);
         applyGraphicsProperties(svgPath);
         applyTransforms(svgPath);
         return svgPath;
@@ -84,6 +85,7 @@ public class SvgPath extends AbstractSvgStylable implements ISvgShape<SVGPath>, 
         this.pathLength = value;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();

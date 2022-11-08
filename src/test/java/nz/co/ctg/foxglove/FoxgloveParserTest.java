@@ -40,12 +40,13 @@ public class FoxgloveParserTest {
         assertThat(svg.isExternalResourcesRequired(), is(true));
         printElement(svg);
         svg.getContent().forEach(this::printElement);
+        assertThat(svg.getMetadata().isPresent(), is(true));
     }
 
     @Test
     public void testParseTransform() throws Exception {
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
-        SvgGroup group = (SvgGroup) svg.getContent().get(4);
+        SvgGroup group = (SvgGroup) svg.getContent().get(6);
         List<Transform> transformList = group.getTransformList();
         assertThat(transformList, hasSize(1));
     }
@@ -53,7 +54,7 @@ public class FoxgloveParserTest {
     @Test
     public void testParseLine() throws Exception {
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
-        SvgGroup group = (SvgGroup) svg.getContent().get(2);
+        SvgGroup group = (SvgGroup) svg.getContent().get(4);
         SvgLine line = (SvgLine) group.getContent().get(1);
         printElement(line);
         Line fxLine = line.createShape();
