@@ -1,6 +1,6 @@
 # Foxglove SVG/JavaFX
 
-Native support for SVG in JavaFX
+Native support for [SVG 1.1](https://www.w3.org/TR/SVG11/) in JavaFX
 
 This library provides an XML binding of the SVG schema, and a binding to create JavaFX components from the parsed SVG objects.
 

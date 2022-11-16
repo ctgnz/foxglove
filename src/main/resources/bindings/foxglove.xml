@@ -49,7 +49,7 @@
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
   			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
-  			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="java.lang.String" />
+  			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
   			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>

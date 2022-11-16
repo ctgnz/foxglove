@@ -4,6 +4,10 @@
 	xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/oxm http://www.eclipse.org/eclipselink/xsds/eclipselink_oxm_2_6.xsd"
 	package-name="javafx.scene.shape" xml-mapping-metadata-complete="true" >
   <xml-enums>
+  	<xml-enum java-enum="javafx.scene.shape.FillRule">
+  		<xml-enum-value java-enum-value="EVEN_ODD">evenodd</xml-enum-value>
+  		<xml-enum-value java-enum-value="NON_ZERO">nonzero</xml-enum-value>
+  	</xml-enum>
   	<xml-enum java-enum="javafx.scene.shape.StrokeLineCap">
   		<xml-enum-value java-enum-value="SQUARE">square</xml-enum-value>
   		<xml-enum-value java-enum-value="BUTT">butt</xml-enum-value>

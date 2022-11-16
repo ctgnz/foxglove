@@ -25,7 +25,7 @@ import javafx.scene.text.FontWeight;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlTransient
-public abstract class AbstractSvgStylable extends AbstractSvgElement implements ISvgStylable, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes {
+public abstract class AbstractSvgStylable extends AbstractSvgElement implements ISvgStylable {
     private static final SvgPaintAdapter paintAdapter = new SvgPaintAdapter();
     private static final StrokeLineCapAdapter strokeLineCapAdapter = new StrokeLineCapAdapter();
     private static final StrokeLineJoinAdapter strokeLineJoinAdapter = new StrokeLineJoinAdapter();
@@ -86,12 +86,8 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
 
     @Override
     public void toStringDetail(ToStringHelper builder) {
-        builder.add("style", getStyle());
-        builder.add("className", getClassName());
         super.toStringDetail(builder);
-        ISvgPresentationAttributes.super.toStringDetail(builder);
-        ISvgGraphicsAttributes.super.toStringDetail(builder);
-        ISvgTextAttributes.super.toStringDetail(builder);
+        ISvgStylable.super.toStringDetail(builder);
     }
 
     private Paint parsePaint(String value) {

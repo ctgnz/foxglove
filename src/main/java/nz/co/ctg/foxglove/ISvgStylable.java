@@ -15,7 +15,9 @@ package nz.co.ctg.foxglove;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 
-public interface ISvgStylable extends ISvgAttributes {
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+public interface ISvgStylable extends ISvgAttributes, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes {
     String STYLE_ATTR = "style";
     String STYLE_CLASS_NAME = "class";
 
@@ -43,4 +45,12 @@ public interface ISvgStylable extends ISvgAttributes {
         set(STYLE_ATTR, style);
     }
 
+    @Override
+    default void toStringDetail(ToStringHelper builder) {
+        builder.add(STYLE_ATTR, getStyle());
+        builder.add(STYLE_CLASS_NAME, getClassName());
+        ISvgGraphicsAttributes.super.toStringDetail(builder);
+        ISvgPresentationAttributes.super.toStringDetail(builder);
+        ISvgTextAttributes.super.toStringDetail(builder);
+    }
 }

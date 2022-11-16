@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
@@ -43,11 +44,11 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         set(GRAPHX_FILL, value);
     }
 
-    default String getFillRule() {
+    default FillRule getFillRule() {
         return get(GRAPHX_FILL_RULE);
     }
 
-    default void setFillRule(String value) {
+    default void setFillRule(FillRule value) {
         set(GRAPHX_FILL_RULE, value);
     }
 
