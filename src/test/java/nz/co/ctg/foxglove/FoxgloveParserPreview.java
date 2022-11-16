@@ -31,9 +31,11 @@ public class FoxgloveParserPreview extends Application {
     private Stage mainStage;
     private ScrollPane scrollPane;
     private Path defaultFile;
+    private FoxgloveParser parser;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.parser = new FoxgloveParser();
         this.mainStage = primaryStage;
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(12));
@@ -75,7 +77,6 @@ public class FoxgloveParserPreview extends Application {
     }
 
     private Node createGraphic(Path filePath) throws Exception {
-        FoxgloveParser parser = new FoxgloveParser();
         SvgGraphic svgElement = parser.parse(Files.newInputStream(filePath));
         Region graphic = svgElement.createGraphic();
         graphic.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DOTTED, null, BorderStroke.THIN)));

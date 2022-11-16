@@ -46,7 +46,8 @@ public class FoxgloveParser {
 
     public FoxgloveParser() {
         try {
-            context = JAXBContext.newInstance(new Class[] { SvgGraphic.class }, Collections.singletonMap(JAXBContextProperties.OXM_METADATA_SOURCE, getBindings()));
+            Map<String, Object> properties = Collections.singletonMap(JAXBContextProperties.OXM_METADATA_SOURCE, getBindings());
+            context = JAXBContext.newInstance(new Class[] { SvgGraphic.class }, properties);
             xmlInputFactory = XMLInputFactory.newFactory();
             Catalog catalog = CatalogManager.catalog(CatalogFeatures.builder().with(Feature.RESOLVE, "ignore").build(),
                 FoxgloveParser.class.getResource("/catalog.xml").toURI());
