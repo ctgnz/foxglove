@@ -14,8 +14,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
-public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISvgBounded,
-    ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgDescribable {
+public class SvgGraphic extends AbstractSvgStylable
+    implements ISvgStylable, ISvgBounded, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgDescribable {
 
     private String onUnload;
     private String onAbort;
@@ -29,6 +29,42 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
     private String contentScriptType;
     private String contentStyleType;
     private List<ISvgElement> content;
+
+    public Region createGraphic() {
+        Pane pane = new Pane();
+        pane.setTranslateX(getPixelsX());
+        pane.setTranslateY(getPixelsY());
+        pane.setMaxWidth(getPixelsWidth());
+        pane.setMaxHeight(getPixelsHeight());
+        content.forEach(child -> {
+            if (child instanceof SvgGroup) {
+                SvgGroup group = (SvgGroup) child;
+                pane.getChildren().add(group.createGroup());
+            }
+            if (child instanceof ISvgShape<?>) {
+                ISvgShape<?> shape = (ISvgShape<?>) child;
+                pane.getChildren().add(shape.createShape());
+            }
+        });
+        return pane;
+    }
+
+    public Group createGroup() {
+        Group baseGroup = new Group();
+        baseGroup.setTranslateX(getX().pixels());
+        baseGroup.setTranslateY(getY().pixels());
+        content.forEach(child -> {
+            if (child instanceof SvgGroup) {
+                SvgGroup group = (SvgGroup) child;
+                baseGroup.getChildren().add(group.createGroup());
+            }
+            if (child instanceof ISvgShape<?>) {
+                ISvgShape<?> shape = (ISvgShape<?>) child;
+                baseGroup.getChildren().add(shape.createShape());
+            }
+        });
+        return baseGroup;
+    }
 
     public String getOnUnload() {
         return onUnload;
@@ -140,42 +176,6 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
             content = new ArrayList<>();
         }
         return this.content;
-    }
-
-    public Region createGraphic() {
-        Pane pane = new Pane();
-        pane.setTranslateX(getPixelsX());
-        pane.setTranslateY(getPixelsY());
-        pane.setMaxWidth(getPixelsWidth());
-        pane.setMaxHeight(getPixelsHeight());
-        content.forEach(child -> {
-            if (child instanceof SvgGroup) {
-                SvgGroup group = (SvgGroup) child;
-                pane.getChildren().add(group.createGroup());
-            }
-            if (child instanceof ISvgShape<?>) {
-                ISvgShape<?> shape = (ISvgShape<?>) child;
-                pane.getChildren().add(shape.createShape());
-            }
-        });
-        return pane;
-    }
-
-    public Group createGroup() {
-        Group baseGroup = new Group();
-        baseGroup.setTranslateX(getX().pixels());
-        baseGroup.setTranslateY(getY().pixels());
-        content.forEach(child -> {
-            if (child instanceof SvgGroup) {
-                SvgGroup group = (SvgGroup) child;
-                baseGroup.getChildren().add(group.createGroup());
-            }
-            if (child instanceof ISvgShape<?>) {
-                ISvgShape<?> shape = (ISvgShape<?>) child;
-                baseGroup.getChildren().add(shape.createShape());
-            }
-        });
-        return baseGroup;
     }
 
     @Override

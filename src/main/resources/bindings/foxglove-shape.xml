@@ -649,5 +649,6 @@
   </java-types>
   <xml-java-type-adapters>
   	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.SvgPaintAdapter" type="javafx.scene.paint.Paint"/>
+  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.ViewBoxAdapter" type="nz.co.ctg.foxglove.type.ViewBox" />
   </xml-java-type-adapters>
 </xml-bindings>

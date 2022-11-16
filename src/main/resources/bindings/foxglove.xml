@@ -113,7 +113,7 @@
   			<xml-attribute java-attribute="onmouseout" />
   			<xml-attribute java-attribute="onload" />
   			<!-- ISvgFitToViewBox -->
-  			<xml-attribute java-attribute="viewBox" />
+  			<xml-attribute java-attribute="viewBox" type="nz.co.ctg.foxglove.type.ViewBox" />
   			<xml-attribute java-attribute="preserveAspectRatio" />
   			<!-- Content -->
   			<xml-elements java-attribute="content">
@@ -166,4 +166,8 @@
   		</java-attributes>
   	</java-type>
   </java-types>
+  <xml-java-type-adapters>
+  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.SvgPaintAdapter" type="javafx.scene.paint.Paint"/>
+  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.ViewBoxAdapter" type="nz.co.ctg.foxglove.type.ViewBox" />
+  </xml-java-type-adapters>
 </xml-bindings>

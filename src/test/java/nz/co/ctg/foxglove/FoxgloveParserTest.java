@@ -47,6 +47,8 @@ public class FoxgloveParserTest {
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
         assertThat(svg, notNullValue());
         assertThat(svg.isExternalResourcesRequired(), is(true));
+        assertThat(svg.getViewBox().getWidth().pixels(), is(612.0));
+        assertThat(svg.getViewBox().getHeight().pixels(), is(792.0));
         printElement(svg);
         svg.getContent().forEach(this::printElement);
         assertThat(svg.getMetadata().isPresent(), is(true));
