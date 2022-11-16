@@ -6,13 +6,8 @@ import java.util.stream.Stream;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgTransformable;
-import nz.co.ctg.foxglove.shape.ISvgShape;
+import nz.co.ctg.foxglove.shape.AbstractSvgShape;
 
 import static java.util.stream.Collectors.toList;
 
@@ -34,7 +29,7 @@ import javafx.scene.text.Text;
     "text", "content"
 })
 @XmlRootElement(name = "text")
-public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgShape<Text>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public class SvgText extends AbstractSvgShape<Text> implements ISvgTextPositioningElement {
 
     @XmlAttribute(name = "x")
     private double x;
@@ -69,13 +64,18 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     private List<ISvgElement> content;
 
     @Override
-    public Text createShape() {
+    public Text createGraphic() {
         parseStyle();
-        Text svgText = new Text(x, y, getTextValue());
+        Text svgText = createShape();
         applyGraphicsProperties(svgText);
         applyTextProperties(svgText);
         applyTransforms(svgText);
         return svgText;
+    }
+
+    @Override
+    protected Text createShape() {
+        return new Text(x, y, getTextValue());
     }
 
     public double getX() {
@@ -134,6 +134,7 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
         this.lengthAdjust = value;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
@@ -167,10 +168,6 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
         builder.add("textLength", textLength);
         builder.add("lengthAdjust", lengthAdjust);
         super.toStringDetail(builder);
-        ISvgConditionalFeatures.super.toStringDetail(builder);
-        ISvgExternalResources.super.toStringDetail(builder);
-        ISvgEventListener.super.toStringDetail(builder);
-        ISvgTransformable.super.toStringDetail(builder);
         builder.add("value", getTextValue());
     }
 

@@ -5,13 +5,8 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgBounded;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -36,7 +31,7 @@ import javafx.scene.shape.Rectangle;
     "content"
 })
 @XmlRootElement(name = "rect")
-public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Rectangle>, ISvgBounded, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public class SvgRectangle extends AbstractSvgShape<Rectangle> implements ISvgBounded {
 
     @XmlAttribute(name = "rx")
     private double radiusX;
@@ -66,14 +61,10 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
     }
 
     @Override
-    public Rectangle createShape() {
-        parseStyle();
+    protected Rectangle createShape() {
         Rectangle rect = new Rectangle(getPixelsX(), getPixelsY(), getPixelsWidth(), getPixelsHeight());
         rect.setArcWidth(radiusX);
         rect.setArcHeight(radiusY);
-        installTooltip(rect);
-        applyGraphicsProperties(rect);
-        applyTransforms(rect);
         return rect;
     }
 
@@ -107,10 +98,6 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
         builder.add("rx", radiusX);
         builder.add("ry", radiusY);
         super.toStringDetail(builder);
-        ISvgConditionalFeatures.super.toStringDetail(builder);
-        ISvgEventListener.super.toStringDetail(builder);
-        ISvgExternalResources.super.toStringDetail(builder);
-        ISvgTransformable.super.toStringDetail(builder);
     }
 
 }

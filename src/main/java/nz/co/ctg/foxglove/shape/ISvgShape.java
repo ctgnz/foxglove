@@ -7,6 +7,6 @@ import javafx.scene.shape.Shape;
 
 public interface ISvgShape<S extends Shape> extends ISvgElement, ISvgDescribable {
 
-    S createShape();
+    S createGraphic();
 
 }

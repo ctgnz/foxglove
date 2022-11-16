@@ -6,12 +6,7 @@ import java.util.stream.Stream;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.adapter.PointListAdapter;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -39,7 +34,7 @@ import javafx.scene.shape.Polygon;
     "content"
 })
 @XmlRootElement(name = "polygon")
-public class SvgPolygon extends AbstractSvgStylable implements ISvgShape<Polygon>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public class SvgPolygon extends AbstractSvgShape<Polygon> {
 
     @XmlAttribute(name = "points", required = true)
     @XmlJavaTypeAdapter(PointListAdapter.class)
@@ -57,13 +52,8 @@ public class SvgPolygon extends AbstractSvgStylable implements ISvgShape<Polygon
     private List<ISvgElement> content;
 
     @Override
-    public Polygon createShape() {
-        parseStyle();
-        Polygon polygon = new Polygon(getPointList());
-        installTooltip(polygon);
-        applyGraphicsProperties(polygon);
-        applyTransforms(polygon);
-        return polygon;
+    protected Polygon createShape() {
+        return new Polygon(getPointList());
     }
 
     public List<Point2D> getPoints() {
@@ -85,10 +75,6 @@ public class SvgPolygon extends AbstractSvgStylable implements ISvgShape<Polygon
     @Override
     public void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
-        ISvgConditionalFeatures.super.toStringDetail(builder);
-        ISvgEventListener.super.toStringDetail(builder);
-        ISvgExternalResources.super.toStringDetail(builder);
-        ISvgTransformable.super.toStringDetail(builder);
         builder.add("points", points);
     }
 

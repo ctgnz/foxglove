@@ -5,12 +5,7 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -35,7 +30,7 @@ import javafx.scene.shape.Circle;
     "content"
 })
 @XmlRootElement(name = "circle")
-public class SvgCircle extends AbstractSvgStylable implements ISvgShape<Circle>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable  {
+public class SvgCircle extends AbstractSvgShape<Circle> {
 
     @XmlAttribute(name = "cx")
     private double centreX;
@@ -58,13 +53,8 @@ public class SvgCircle extends AbstractSvgStylable implements ISvgShape<Circle>,
     private List<ISvgElement> content;
 
     @Override
-    public Circle createShape() {
-        parseStyle();
-        Circle circle = new Circle(centreX, centreY, radius);
-        installTooltip(circle);
-        applyGraphicsProperties(circle);
-        applyTransforms(circle);
-        return circle;
+    protected Circle createShape() {
+        return new Circle(centreX, centreY, radius);
     }
 
     public double getCentreX() {
@@ -105,10 +95,6 @@ public class SvgCircle extends AbstractSvgStylable implements ISvgShape<Circle>,
         builder.add("cy", centreY);
         builder.add("r", radius);
         super.toStringDetail(builder);
-        ISvgConditionalFeatures.super.toStringDetail(builder);
-        ISvgEventListener.super.toStringDetail(builder);
-        ISvgExternalResources.super.toStringDetail(builder);
-        ISvgTransformable.super.toStringDetail(builder);
     }
 
 }

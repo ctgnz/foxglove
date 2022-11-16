@@ -5,12 +5,7 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -35,7 +30,7 @@ import javafx.scene.shape.Ellipse;
     "content"
 })
 @XmlRootElement(name = "ellipse")
-public class SvgEllipse extends AbstractSvgStylable implements ISvgShape<Ellipse>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public class SvgEllipse extends AbstractSvgShape<Ellipse> {
 
     @XmlAttribute(name = "cx")
     private double centreX;
@@ -61,13 +56,8 @@ public class SvgEllipse extends AbstractSvgStylable implements ISvgShape<Ellipse
     private List<ISvgElement> content;
 
     @Override
-    public Ellipse createShape() {
-        parseStyle();
-        Ellipse ellipse = new Ellipse(centreY, centreX, radiusX, radiusY);
-        installTooltip(ellipse);
-        applyGraphicsProperties(ellipse);
-        applyTransforms(ellipse);
-        return ellipse;
+    protected Ellipse createShape() {
+        return new Ellipse(centreY, centreX, radiusX, radiusY);
     }
 
     public double getCentreX() {
@@ -117,10 +107,6 @@ public class SvgEllipse extends AbstractSvgStylable implements ISvgShape<Ellipse
         builder.add("rx", radiusX);
         builder.add("ry", radiusY);
         super.toStringDetail(builder);
-        ISvgConditionalFeatures.super.toStringDetail(builder);
-        ISvgEventListener.super.toStringDetail(builder);
-        ISvgExternalResources.super.toStringDetail(builder);
-        ISvgTransformable.super.toStringDetail(builder);
     }
 
 }

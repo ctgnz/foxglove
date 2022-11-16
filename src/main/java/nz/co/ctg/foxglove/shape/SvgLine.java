@@ -5,12 +5,7 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -35,7 +30,7 @@ import javafx.scene.shape.Line;
     "content"
 })
 @XmlRootElement(name = "line")
-public class SvgLine extends AbstractSvgStylable implements ISvgShape<Line>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public class SvgLine extends AbstractSvgShape<Line> {
 
     @XmlAttribute(name = "x1")
     private double startX;
@@ -61,13 +56,8 @@ public class SvgLine extends AbstractSvgStylable implements ISvgShape<Line>, ISv
     private List<ISvgElement> content;
 
     @Override
-    public Line createShape() {
-        parseStyle();
-        Line line = new Line(startX, startY, endX, endY);
-        installTooltip(line);
-        applyGraphicsProperties(line);
-        applyTransforms(line);
-        return line;
+    protected Line createShape() {
+        return new Line(startX, startY, endX, endY);
     }
 
     public double getEndX() {
@@ -117,10 +107,6 @@ public class SvgLine extends AbstractSvgStylable implements ISvgShape<Line>, ISv
         builder.add("x2", endX);
         builder.add("y2", endY);
         super.toStringDetail(builder);
-        ISvgConditionalFeatures.super.toStringDetail(builder);
-        ISvgEventListener.super.toStringDetail(builder);
-        ISvgExternalResources.super.toStringDetail(builder);
-        ISvgTransformable.super.toStringDetail(builder);
     }
 
 }

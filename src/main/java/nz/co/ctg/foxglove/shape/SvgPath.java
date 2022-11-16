@@ -5,12 +5,7 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
-import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.ISvgEventListener;
-import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -37,7 +32,7 @@ import javafx.scene.shape.SVGPath;
     "content"
 })
 @XmlRootElement(name = "path")
-public class SvgPath extends AbstractSvgStylable implements ISvgShape<SVGPath>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public class SvgPath extends AbstractSvgShape<SVGPath> {
 
     @XmlAttribute(name = "d", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -59,13 +54,9 @@ public class SvgPath extends AbstractSvgStylable implements ISvgShape<SVGPath>, 
     private List<ISvgElement> content;
 
     @Override
-    public SVGPath createShape() {
-        parseStyle();
+    protected SVGPath createShape() {
         SVGPath svgPath = new SVGPath();
         svgPath.setContent(pathData);
-        installTooltip(svgPath);
-        applyGraphicsProperties(svgPath);
-        applyTransforms(svgPath);
         return svgPath;
     }
 
@@ -97,10 +88,6 @@ public class SvgPath extends AbstractSvgStylable implements ISvgShape<SVGPath>, 
     public void toStringDetail(ToStringHelper builder) {
         builder.add("pathLength", pathLength);
         super.toStringDetail(builder);
-        ISvgConditionalFeatures.super.toStringDetail(builder);
-        ISvgEventListener.super.toStringDetail(builder);
-        ISvgExternalResources.super.toStringDetail(builder);
-        ISvgTransformable.super.toStringDetail(builder);
         builder.add("d", pathData);
     }
 

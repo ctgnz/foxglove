@@ -39,11 +39,11 @@ public class SvgGraphic extends AbstractSvgStylable
         content.forEach(child -> {
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;
-                pane.getChildren().add(group.createGroup());
+                pane.getChildren().add(group.createGraphic());
             }
             if (child instanceof ISvgShape<?>) {
                 ISvgShape<?> shape = (ISvgShape<?>) child;
-                pane.getChildren().add(shape.createShape());
+                pane.getChildren().add(shape.createGraphic());
             }
         });
         return pane;
@@ -56,11 +56,11 @@ public class SvgGraphic extends AbstractSvgStylable
         content.forEach(child -> {
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;
-                baseGroup.getChildren().add(group.createGroup());
+                baseGroup.getChildren().add(group.createGraphic());
             }
             if (child instanceof ISvgShape<?>) {
                 ISvgShape<?> shape = (ISvgShape<?>) child;
-                baseGroup.getChildren().add(shape.createShape());
+                baseGroup.getChildren().add(shape.createGraphic());
             }
         });
         return baseGroup;

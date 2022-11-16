@@ -101,7 +101,7 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
     })
     private List<ISvgElement> content;
 
-    public Group createGroup() {
+    public Group createGraphic() {
         Group group = new Group();
         if ("none".equals(getDisplay())) {
             group.setVisible(false);
@@ -111,13 +111,11 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
             content.forEach(child -> {
                 if (child instanceof SvgGroup) {
                     SvgGroup childGroup = (SvgGroup) child;
-                    group.getChildren()
-                        .add(childGroup.createGroup());
+                    group.getChildren().add(childGroup.createGraphic());
                 }
                 if (child instanceof ISvgShape<?>) {
                     ISvgShape<?> shape = (ISvgShape<?>) child;
-                    group.getChildren()
-                        .add(shape.createShape());
+                    group.getChildren().add(shape.createGraphic());
                 }
             });
         }
