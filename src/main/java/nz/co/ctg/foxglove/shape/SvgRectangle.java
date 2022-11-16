@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgBounded;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
@@ -35,19 +36,7 @@ import javafx.scene.shape.Rectangle;
     "content"
 })
 @XmlRootElement(name = "rect")
-public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Rectangle>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
-
-    @XmlAttribute(name = "x")
-    private double x;
-
-    @XmlAttribute(name = "y")
-    private double y;
-
-    @XmlAttribute(name = "width", required = true)
-    private double width;
-
-    @XmlAttribute(name = "height", required = true)
-    private double height;
+public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Rectangle>, ISvgBounded, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
 
     @XmlAttribute(name = "rx")
     private double radiusX;
@@ -70,54 +59,22 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
     }
 
     public SvgRectangle(double x, double y, double width, double height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        setPixelsX(x);
+        setPixelsY(y);
+        setPixelsWidth(width);
+        setPixelsHeight(height);
     }
 
     @Override
     public Rectangle createShape() {
         parseStyle();
-        Rectangle rect = new Rectangle(x, y, width, height);
+        Rectangle rect = new Rectangle(getPixelsX(), getPixelsY(), getPixelsWidth(), getPixelsHeight());
         rect.setArcWidth(radiusX);
         rect.setArcHeight(radiusY);
         installTooltip(rect);
         applyGraphicsProperties(rect);
         applyTransforms(rect);
         return rect;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double value) {
-        this.x = value;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double value) {
-        this.y = value;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public void setWidth(double value) {
-        this.width = value;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double value) {
-        this.height = value;
     }
 
     public double getRadiusX() {
@@ -146,10 +103,7 @@ public class SvgRectangle extends AbstractSvgStylable implements ISvgShape<Recta
 
     @Override
     public void toStringDetail(ToStringHelper builder) {
-        builder.add("x", x);
-        builder.add("y", y);
-        builder.add("width", width);
-        builder.add("height", height);
+        ISvgBounded.super.toStringDetail(builder);
         builder.add("rx", radiusX);
         builder.add("ry", radiusY);
         super.toStringDetail(builder);

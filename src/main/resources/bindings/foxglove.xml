@@ -12,10 +12,6 @@
   		<xml-root-element name="svg" namespace="http://www.w3.org/2000/svg" />
   		<xml-virtual-access-methods/>
   		<java-attributes>
-  			<xml-attribute java-attribute="x" name="x" type="javafx.css.Size" />
-  			<xml-attribute java-attribute="y" name="y" type="javafx.css.Size" />
-  			<xml-attribute java-attribute="width" name="width" type="javafx.css.Size" />
-  			<xml-attribute java-attribute="height" name="height" type="javafx.css.Size" />
   			<xml-attribute java-attribute="version" name="version" type="java.lang.String" />
   			<xml-attribute java-attribute="zoomAndPan" name="zoomAndPan" type="java.lang.String" />
   			<xml-attribute java-attribute="baseProfile" name="baseProfile" type="java.lang.String" />
@@ -27,6 +23,11 @@
   			<xml-attribute java-attribute="onResize" name="onresize" type="java.lang.String" />
   			<xml-attribute java-attribute="onScroll" name="onscroll" type="java.lang.String" />
   			<xml-attribute java-attribute="onZoom" name="onzoom" type="java.lang.String" />
+  			<!-- ISvgBounded -->
+  			<xml-attribute java-attribute="x" name="x" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="y" name="y" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="width" name="width" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="height" name="height" type="javafx.css.Size" />
   			<!-- ISvgStylable -->
   			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
   			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />

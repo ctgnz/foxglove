@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import nz.co.ctg.foxglove.element.SvgAnchor;
@@ -10,6 +11,7 @@ import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.paint.SvgPattern;
 import nz.co.ctg.foxglove.shape.SvgLine;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -17,9 +19,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
+import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Transform;
@@ -27,6 +31,11 @@ import javafx.scene.transform.Transform;
 public class FoxgloveParserTest {
 
     private FoxgloveParser parser;
+
+    @BeforeClass
+    public static void initJFX() {
+        Platform.startup(() -> {});
+    }
 
     @Before
     public void setup() throws Exception {
@@ -55,7 +64,7 @@ public class FoxgloveParserTest {
     public void testParseLine() throws Exception {
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
         SvgGroup group = (SvgGroup) svg.getContent().get(4);
-        SvgLine line = (SvgLine) group.getContent().get(1);
+        SvgLine line = (SvgLine) group.getContent().get(2);
         printElement(line);
         Line fxLine = line.createShape();
         assertThat(fxLine.getStartX(), closeTo(202.5, 0.05));
@@ -64,6 +73,21 @@ public class FoxgloveParserTest {
         assertThat(fxLine.getEndY(), closeTo(345.7, 0.05));
         assertThat(fxLine.getStroke(), is(Color.BLUE));
         assertThat(fxLine.getStrokeWidth(), is(2.0));
+    }
+
+    @Test
+    public void testParseRectangle() throws Exception {
+        SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/test.svg"));
+        SvgGroup group = (SvgGroup) svg.getContent().get(4);
+        SvgRectangle rect = (SvgRectangle) group.getContent().get(5);
+        printElement(rect);
+        Rectangle fxRect = rect.createShape();
+        assertThat(fxRect.getX(), closeTo(441.47, 0.05));
+        assertThat(fxRect.getY(), closeTo(248.11, 0.05));
+        assertThat(fxRect.getWidth(), closeTo(168.23, 0.05));
+        assertThat(fxRect.getHeight(), closeTo(97.59, 0.05));
+        assertThat(fxRect.getStroke(), is(Color.BLUE));
+        assertThat(fxRect.getStrokeWidth(), is(1.99172));
     }
 
     @Test

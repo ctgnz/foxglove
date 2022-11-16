@@ -553,6 +553,11 @@
   	<java-type name="nz.co.ctg.foxglove.shape.SvgRectangle">
   		<xml-virtual-access-methods/>
   		<java-attributes>
+  			<!-- ISvgBounded -->
+  			<xml-attribute java-attribute="x" name="x" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="y" name="y" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="width" name="width" type="javafx.css.Size" />
+  			<xml-attribute java-attribute="height" name="height" type="javafx.css.Size" />
   			<!-- ISvgStylable -->
   			<xml-attribute java-attribute="style" name="style" type="java.lang.String" />
   			<xml-attribute java-attribute="className" name="class" type="java.lang.String" />

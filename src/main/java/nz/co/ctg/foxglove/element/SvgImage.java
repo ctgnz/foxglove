@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgBounded;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
@@ -37,23 +38,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "image")
-public class SvgImage extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgTransformable {
-
-    @XmlAttribute(name = "x")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String x;
-
-    @XmlAttribute(name = "y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String y;
-
-    @XmlAttribute(name = "width", required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String width;
-
-    @XmlAttribute(name = "height", required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String height;
+public class SvgImage extends AbstractSvgStylable implements ISvgStructuralElement, ISvgBounded, ISvgEventListener, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgTransformable {
 
     @XmlAttribute(name = "preserveAspectRatio")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -70,38 +55,6 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
     private List<ISvgElement> content;
-
-    public String getX() {
-        return x;
-    }
-
-    public void setX(String value) {
-        this.x = value;
-    }
-
-    public String getY() {
-        return y;
-    }
-
-    public void setY(String value) {
-        this.y = value;
-    }
-
-    public String getWidth() {
-        return width;
-    }
-
-    public void setWidth(String value) {
-        this.width = value;
-    }
-
-    public String getHeight() {
-        return height;
-    }
-
-    public void setHeight(String value) {
-        this.height = value;
-    }
 
     public String getPreserveAspectRatio() {
         if (preserveAspectRatio == null) {
@@ -124,10 +77,7 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
 
     @Override
     public void toStringDetail(ToStringHelper builder) {
-        builder.add("x", x);
-        builder.add("y", y);
-        builder.add("width", width);
-        builder.add("height", height);
+        ISvgBounded.super.toStringDetail(builder);
         builder.add("preserveAspectRatio", preserveAspectRatio);
         super.toStringDetail(builder);
         ISvgConditionalFeatures.super.toStringDetail(builder);
