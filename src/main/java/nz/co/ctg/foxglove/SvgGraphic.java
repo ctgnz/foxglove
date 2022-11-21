@@ -36,7 +36,7 @@ public class SvgGraphic extends AbstractSvgStylable
         pane.setTranslateY(getPixelsY());
         pane.setMaxWidth(getPixelsWidth());
         pane.setMaxHeight(getPixelsHeight());
-        content.forEach(child -> {
+        getContent().forEach(child -> {
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;
                 pane.getChildren().add(group.createGraphic());
@@ -51,9 +51,9 @@ public class SvgGraphic extends AbstractSvgStylable
 
     public Group createGroup() {
         Group baseGroup = new Group();
-        baseGroup.setTranslateX(getX().pixels());
-        baseGroup.setTranslateY(getY().pixels());
-        content.forEach(child -> {
+        baseGroup.setTranslateX(getPixelsX());
+        baseGroup.setTranslateY(getPixelsY());
+        getContent().forEach(child -> {
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;
                 baseGroup.getChildren().add(group.createGraphic());

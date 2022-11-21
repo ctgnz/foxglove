@@ -26,7 +26,7 @@ public class ViewBoxAdapter extends XmlAdapter<String, ViewBox> {
 
     @Override
     public String marshal(ViewBox value) throws Exception {
-        return String.format("%s %s %s %s", adapter.marshal(value.getMinX()), adapter.marshal(value.getMinY()), adapter.marshal(value.getWidth()), adapter.marshal(value.getHeight()));
+        return String.format("%5.2f %5.2f %5.2f %5.2f", value.getMinX().pixels(), value.getMinY().pixels(), value.getWidth().pixels(), value.getHeight().pixels());
     }
 
 }

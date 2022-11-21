@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +22,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
@@ -31,7 +31,7 @@ import jakarta.xml.bind.Unmarshaller;
 
 public class FoxgloveParser {
 
-    private static final Map<String, SvgGraphic> CACHE = new HashMap<>();
+    private static final Map<String, SvgGraphic> CACHE = Maps.newConcurrentMap();
 
     public static void cacheItem(String key, SvgGraphic graphic) {
         CACHE.put(key, graphic);

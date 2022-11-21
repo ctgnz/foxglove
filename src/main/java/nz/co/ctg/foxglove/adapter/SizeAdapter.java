@@ -32,7 +32,11 @@ public class SizeAdapter extends XmlAdapter<String, Size> {
 
     @Override
     public String marshal(Size value) throws Exception {
-        return String.format("%s%s", value.getValue(), value.getUnits());
+        if (value.getUnits() == SizeUnits.PX) {
+            return Double.toString(value.getValue());
+        } else {
+            return String.format("%s%s", Double.toString(value.getValue()), value.getUnits());
+        }
     }
 
 }

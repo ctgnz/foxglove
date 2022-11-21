@@ -218,7 +218,7 @@ public interface ISvgTextAttributes extends ISvgAttributes {
 
     default void applyTextProperties(Text svgText) {
         Double size = StringUtils.isNotBlank(getFontSize()) ? Double.valueOf(StringUtils.strip(getFontSize(), "px")) : Font.getDefault().getSize();
-        String fontFamily = getFontFamily();
+        String fontFamily = StringUtils.defaultIfBlank(getFontFamily(), "sans-serif");
         switch (fontFamily) {
             case "monospace":
                 fontFamily = "Monospaced";

@@ -172,7 +172,7 @@ public class SvgText extends AbstractSvgShape<Text> implements ISvgTextPositioni
     }
 
     private Stream<ISvgTextContentElement> streamTextContent() {
-        return content.stream()
+        return getContent().stream()
             .filter(ISvgTextContentElement.class::isInstance)
             .map(ISvgTextContentElement.class::cast);
     }
