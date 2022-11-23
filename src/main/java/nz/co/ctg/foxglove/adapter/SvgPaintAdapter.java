@@ -10,8 +10,11 @@ public class SvgPaintAdapter extends XmlAdapter<String, Paint> {
 
     @Override
     public Paint unmarshal(String value) throws Exception {
-        if (StringUtils.isBlank(value) || "none".equals(value)) {
+        if (StringUtils.isBlank(value)) {
             return null;
+        }
+        if ("none".equals(value)) {
+            return Color.TRANSPARENT;
         }
         return Paint.valueOf(value);
     }
@@ -24,6 +27,9 @@ public class SvgPaintAdapter extends XmlAdapter<String, Paint> {
     private String toString(Paint value) {
         if (value instanceof Color) {
             Color color = (Color) value;
+            if (color == Color.TRANSPARENT) {
+                return "none";
+            }
             int r = (int) (color.getRed() * 255);
             int g = (int) (color.getGreen() * 255);
             int b = (int) (color.getBlue() * 255);
