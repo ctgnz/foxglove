@@ -36,6 +36,11 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
     public AbstractSvgStylable() {
     }
 
+    public boolean isVisible() {
+        String display = getDisplay();
+        return display == null || StringUtils.equalsIgnoreCase("none", display);
+    }
+
     public void parseStyle() {
         if (StringUtils.isNotBlank(getStyle())) {
             Arrays.stream(StringUtils.split(getStyle(), ';')).forEach(stylePair -> {

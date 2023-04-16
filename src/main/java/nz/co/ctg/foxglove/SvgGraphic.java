@@ -5,10 +5,14 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.shape.ISvgShape;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
+import javafx.css.Size;
+import javafx.css.SizeUnits;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -29,6 +33,12 @@ public class SvgGraphic extends AbstractSvgStylable
     private String contentScriptType;
     private String contentStyleType;
     private List<ISvgElement> content;
+
+    public void addContent(ISvgElement element) {
+        if (element != null) {
+            content.add(element);
+        }
+    }
 
     public Region createGraphic() {
         Pane pane = new Pane();
@@ -66,84 +76,23 @@ public class SvgGraphic extends AbstractSvgStylable
         return baseGroup;
     }
 
-    public String getOnUnload() {
-        return onUnload;
-    }
-
-    public void setOnUnload(String value) {
-        this.onUnload = value;
-    }
-
-    public String getOnAbort() {
-        return onAbort;
-    }
-
-    public void setOnAbort(String value) {
-        this.onAbort = value;
-    }
-
-    public String getOnError() {
-        return onError;
-    }
-
-    public void setOnError(String value) {
-        this.onError = value;
-    }
-
-    public String getOnResize() {
-        return onResize;
-    }
-
-    public void setOnResize(String value) {
-        this.onResize = value;
-    }
-
-    public String getOnScroll() {
-        return onScroll;
-    }
-
-    public void setOnScroll(String value) {
-        this.onScroll = value;
-    }
-
-    public String getOnZoom() {
-        return onZoom;
-    }
-
-    public void setOnZoom(String value) {
-        this.onZoom = value;
-    }
-
-    public String getZoomAndPan() {
-        if (zoomAndPan == null) {
-            return "magnify";
-        } else {
-            return zoomAndPan;
+    public SvgGroup getBaseGroup() {
+        if (content == null || content.isEmpty()) {
+            return null;
         }
-    }
-
-    public void setZoomAndPan(String value) {
-        this.zoomAndPan = value;
-    }
-
-    public String getVersion() {
-        if (version == null) {
-            return "1.1";
-        } else {
-            return version;
-        }
-    }
-
-    public void setVersion(String value) {
-        this.version = value;
+        return content.stream().filter(SvgGroup.class::isInstance).map(SvgGroup.class::cast).filter(SvgGroup::isVisible).findFirst().orElse(null);
     }
 
     public String getBaseProfile() {
         return baseProfile;
     }
 
-    public void setBaseProfile(String value) {
-        this.baseProfile = value;
+    @Override
+    public List<ISvgElement> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
+        }
+        return this.content;
     }
 
     public String getContentScriptType() {
@@ -154,10 +103,6 @@ public class SvgGraphic extends AbstractSvgStylable
         }
     }
 
-    public void setContentScriptType(String value) {
-        this.contentScriptType = value;
-    }
-
     public String getContentStyleType() {
         if (contentStyleType == null) {
             return "text/css";
@@ -166,16 +111,101 @@ public class SvgGraphic extends AbstractSvgStylable
         }
     }
 
+    public String getOnAbort() {
+        return onAbort;
+    }
+
+    public String getOnError() {
+        return onError;
+    }
+
+    public String getOnResize() {
+        return onResize;
+    }
+
+    public String getOnScroll() {
+        return onScroll;
+    }
+
+    public String getOnUnload() {
+        return onUnload;
+    }
+
+    public String getOnZoom() {
+        return onZoom;
+    }
+
+    public String getVersion() {
+        if (version == null) {
+            return "1.1";
+        } else {
+            return version;
+        }
+    }
+
+    public String getZoomAndPan() {
+        if (zoomAndPan == null) {
+            return "magnify";
+        } else {
+            return zoomAndPan;
+        }
+    }
+
+    public void setBaseProfile(String value) {
+        this.baseProfile = value;
+    }
+
+    public void setBounds(Bounds bounds) {
+        setX(new Size(bounds.getMinX(), SizeUnits.PX));
+        setY(new Size(bounds.getMinY(), SizeUnits.PX));
+        setWidth(new Size(bounds.getWidth(), SizeUnits.PX));
+        setHeight(new Size(bounds.getHeight(), SizeUnits.PX));
+    }
+
+    public void setContentScriptType(String value) {
+        this.contentScriptType = value;
+    }
+
     public void setContentStyleType(String value) {
         this.contentStyleType = value;
     }
 
-    @Override
-    public List<ISvgElement> getContent() {
-        if (content == null) {
-            content = new ArrayList<>();
-        }
-        return this.content;
+    public void setOnAbort(String value) {
+        this.onAbort = value;
+    }
+
+    public void setOnError(String value) {
+        this.onError = value;
+    }
+
+    public void setOnResize(String value) {
+        this.onResize = value;
+    }
+
+    public void setOnScroll(String value) {
+        this.onScroll = value;
+    }
+
+    public void setOnUnload(String value) {
+        this.onUnload = value;
+    }
+
+    public void setOnZoom(String value) {
+        this.onZoom = value;
+    }
+
+    public void setTitle(String title) {
+        SvgTitle svgTitle = new SvgTitle();
+        svgTitle.setValue(title);
+        getContent().add(svgTitle);
+    }
+
+    public void setVersion(String value) {
+        this.version = value;
+    }
+
+    public void setZoomAndPan(String value) {
+        this.zoomAndPan = value;
     }
 
     @Override
