@@ -57,7 +57,7 @@ public class SvgEllipse extends AbstractSvgShape<Ellipse> {
 
     @Override
     protected Ellipse createShape() {
-        return new Ellipse(centreY, centreX, radiusX, radiusY);
+        return new Ellipse(centreX, centreY, radiusX, radiusY);
     }
 
     public double getCentreX() {

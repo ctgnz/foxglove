@@ -19,14 +19,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.adapter.SvgTransformListHandler;
+import nz.co.ctg.foxglove.adapter.SvgTransformListAdapter;
 
 import javafx.scene.Node;
 import javafx.scene.transform.Transform;
 
 public interface ISvgTransformable extends ISvgAttributes {
     String ATTR_TRANSFORM = "transform";
-    SvgTransformListHandler adapter = new SvgTransformListHandler();
+    SvgTransformListAdapter adapter = new SvgTransformListAdapter();
 
     default String getTransform() {
         return get(ATTR_TRANSFORM);

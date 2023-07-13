@@ -8,8 +8,12 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.shape.ISvgShape;
+import nz.co.ctg.foxglove.text.SvgText;
+
+import static java.util.stream.Collectors.toList;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Bounds;
@@ -53,6 +57,10 @@ public class SvgGraphic extends AbstractSvgStylable
             }
             if (child instanceof ISvgShape<?>) {
                 ISvgShape<?> shape = (ISvgShape<?>) child;
+                pane.getChildren().add(shape.createGraphic());
+            }
+            if (child instanceof SvgText) {
+                SvgText shape = (SvgText) child;
                 pane.getChildren().add(shape.createGraphic());
             }
         });
@@ -141,6 +149,15 @@ public class SvgGraphic extends AbstractSvgStylable
         } else {
             return version;
         }
+    }
+
+    @XmlTransient
+    public List<? extends ISvgElement> getVisibleContent() {
+        return content.stream()
+            .filter(AbstractSvgStylable.class::isInstance)
+            .map(AbstractSvgStylable.class::cast)
+            .filter(AbstractSvgStylable::isVisible)
+            .collect(toList());
     }
 
     public String getZoomAndPan() {

@@ -2,8 +2,11 @@ package nz.co.ctg.foxglove;
 
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Shape;
@@ -37,11 +40,11 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     String GRAPHX_STOP_OPACITY = "stop-opacity";
 
     default Paint getFill() {
-        return get(GRAPHX_FILL);
+        return ObjectUtils.defaultIfNull(get(GRAPHX_FILL), Color.BLACK);
     }
 
     default void setFill(Paint value) {
-        set(GRAPHX_FILL, value);
+        set(GRAPHX_FILL, ObjectUtils.defaultIfNull(value, Color.BLACK));
     }
 
     default FillRule getFillRule() {

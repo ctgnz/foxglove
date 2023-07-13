@@ -4,8 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.adapter.SizeAdapter;
+
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
+import javafx.css.Size;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -26,7 +29,7 @@ public interface ISvgTextAttributes extends ISvgAttributes {
     String TEXT_UNICODE_BIDI = "unicode-bidi";
     String TEXT_WORD_SPACING = "word-spacing";
     String TEXT_FONT_FAMILY = "font-family";
-    String TEXT_FONT_SIZE = "font-size";
+    String TEXT_FONT_SIZE = "fontSize";
     String TEXT_FONT_SIZE_ADJUST = "font-size-adjust";
     String TEXT_FONT_STRETCH = "font-stretch";
     String TEXT_FONT_STYLE = "font-style";
@@ -217,7 +220,7 @@ public interface ISvgTextAttributes extends ISvgAttributes {
     }
 
     default void applyTextProperties(Text svgText) {
-        Double size = StringUtils.isNotBlank(getFontSize()) ? Double.valueOf(StringUtils.strip(getFontSize(), "px")) : Font.getDefault().getSize();
+        Size size = SizeAdapter.parse(getFontSize());
         String fontFamily = StringUtils.defaultIfBlank(getFontFamily(), "sans-serif");
         switch (fontFamily) {
             case "monospace":
@@ -234,7 +237,7 @@ public interface ISvgTextAttributes extends ISvgAttributes {
         }
         FontWeight fontWeight = defaultIfNull(getFontWeight(), FontWeight.NORMAL);
         FontPosture fontPosture = defaultIfNull(getFontStyle(), FontPosture.REGULAR);
-        Font font = Font.font(fontFamily, fontWeight, fontPosture, size);
+        Font font = Font.font(fontFamily, fontWeight, fontPosture, size.pixels());
         svgText.setFont(font);
     }
 

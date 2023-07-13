@@ -13,8 +13,26 @@ import javafx.css.Size;
 import javafx.css.SizeUnits;
 
 public class SizeAdapter extends XmlAdapter<String, Size> {
+    private static final SizeAdapter INST = new SizeAdapter();
     // The toString() method in SizeUnits is used for the XML representation, so can be used to make a reverse lookup map of the SizeUnits values
     private static final Map<String, SizeUnits> SIZE_UNITS = Maps.uniqueIndex(Arrays.asList(SizeUnits.values()), SizeUnits::toString);
+
+    public static Size parse(String value) {
+        try {
+            return INST.unmarshal(value);
+        } catch (Exception e) {
+            return new Size(0, SizeUnits.PX);
+        }
+    }
+
+    @Override
+    public String marshal(Size value) throws Exception {
+        if (value.getUnits() == SizeUnits.PX) {
+            return Double.toString(value.getValue());
+        } else {
+            return String.format("%s%s", Double.toString(value.getValue()), value.getUnits());
+        }
+    }
 
     @Override
     public Size unmarshal(String value) throws Exception {
@@ -29,14 +47,4 @@ public class SizeAdapter extends XmlAdapter<String, Size> {
             return new Size(NumberUtils.toDouble(numberPart), SIZE_UNITS.getOrDefault(unitPart, SizeUnits.PX));
         }
     }
-
-    @Override
-    public String marshal(Size value) throws Exception {
-        if (value.getUnits() == SizeUnits.PX) {
-            return Double.toString(value.getValue());
-        } else {
-            return String.format("%s%s", Double.toString(value.getValue()), value.getUnits());
-        }
-    }
-
 }

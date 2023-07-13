@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.adapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,18 +17,23 @@ import javafx.scene.transform.Shear;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 
-public class SvgTransformListHandler {
-    private static final Pattern WHITESPACE = Pattern.compile("\\s");
+public class SvgTransformListAdapter {
+    private static final Pattern WHITESPACE = Pattern.compile("[,\\s]");
+    private static final Pattern TRANSFORM = Pattern.compile("([^\\(\\s]+\\([^\\)]+\\))");
 
     public List<Transform> parse(String transformText) {
         try {
             List<Transform> transforms = new ArrayList<>();
-            Splitter.on(WHITESPACE).split(transformText.trim()).forEach(val -> {
-                if (StringUtils.isNotBlank(val)) {
-                    String transformName = val.substring(0, val.indexOf('('));
-                    String values = val.substring(val.indexOf('(') + 1, val.indexOf(')')).trim();
+            Matcher matcher = TRANSFORM.matcher(transformText);
+            int groupCount = matcher.groupCount();
+            for (int i = 0; i < groupCount; i++) {
+                matcher.find();
+                String transform = matcher.group(i + 1);
+                if (StringUtils.isNotBlank(transform)) {
+                    String transformName = transform.substring(0, transform.indexOf('('));
+                    String values = transform.substring(transform.indexOf('(') + 1, transform.indexOf(')')).trim();
                     List<Double> numericValues = new ArrayList<>();
-                    Splitter.on(',').split(values).forEach(numVal -> {
+                    Splitter.on(WHITESPACE).split(values).forEach(numVal -> {
                         numericValues.add(Double.valueOf(numVal));
                     });
                     switch (transformName) {
@@ -64,9 +70,10 @@ public class SvgTransformListHandler {
                             break;
                     }
                 }
-             });
+            }
             return transforms;
         } catch (Exception e) {
+            System.out.format("Transform parse error [%s]%n", transformText);
             return Collections.emptyList();
         }
     }

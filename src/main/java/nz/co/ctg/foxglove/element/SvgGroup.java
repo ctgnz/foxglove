@@ -117,6 +117,10 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
                     ISvgShape<?> shape = (ISvgShape<?>) child;
                     group.getChildren().add(shape.createGraphic());
                 }
+                if (child instanceof SvgText) {
+                    SvgText shape = (SvgText) child;
+                    group.getChildren().add(shape.createGraphic());
+                }
             });
         }
         return group;
