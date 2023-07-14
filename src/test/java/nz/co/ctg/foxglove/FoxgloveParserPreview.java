@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
@@ -18,7 +19,7 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -78,9 +79,10 @@ public class FoxgloveParserPreview extends Application {
 
     private Node createGraphic(Path filePath) throws Exception {
         SvgGraphic svgElement = parser.parse(Files.newInputStream(filePath));
-        Region graphic = svgElement.createGraphic();
-        graphic.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DOTTED, null, BorderStroke.THIN)));
-        return graphic;
+        Group graphic = svgElement.createGroup();
+        Pane region = new Pane(graphic);
+        region.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DOTTED, null, BorderStroke.THIN)));
+        return region;
     }
 
 }

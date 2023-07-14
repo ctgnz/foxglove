@@ -41,7 +41,12 @@ public class FoxgloveParser {
         CACHE.clear();
     }
 
+    public static void clearCache(File selectedFile) {
+        CACHE.remove(selectedFile.getAbsolutePath());
+    }
+
     private JAXBContext context;
+
     private XMLInputFactory xmlInputFactory;
 
     public FoxgloveParser() {
@@ -57,6 +62,13 @@ public class FoxgloveParser {
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to create JAXB context: " + e.getMessage(), e);
         }
+    }
+
+    public SvgGraphic parse(InputStream input) throws Exception {
+        Unmarshaller u = context.createUnmarshaller();
+        XMLStreamReader xsr = xmlInputFactory.createXMLStreamReader(new StreamSource(input));
+        JAXBElement<SvgGraphic> element = u.unmarshal(xsr, SvgGraphic.class);
+        return element.getValue();
     }
 
     public SvgGraphic parseFile(File selectedFile) {
@@ -79,24 +91,17 @@ public class FoxgloveParser {
         });
     }
 
-    public SvgGraphic parse(InputStream input) throws Exception {
-        Unmarshaller u = context.createUnmarshaller();
-        XMLStreamReader xsr = xmlInputFactory.createXMLStreamReader(new StreamSource(input));
-        JAXBElement<SvgGraphic> element = u.unmarshal(xsr, SvgGraphic.class);
-        return element.getValue();
+    public String write(SvgGraphic svg) throws Exception {
+        Marshaller m = context.createMarshaller();
+        StringWriter out = new StringWriter();
+        m.marshal(svg, out);
+        return out.toString();
     }
 
     public void writeFile(Path directoryPath, String fileName, SvgGraphic graphic) throws Exception {
         Path filePath = directoryPath.resolve(fileName);
         String output = write(graphic);
         Files.write(filePath, output.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-    }
-
-    public String write(SvgGraphic svg) throws Exception {
-        Marshaller m = context.createMarshaller();
-        StringWriter out = new StringWriter();
-        m.marshal(svg, out);
-        return out.toString();
     }
 
     private List<InputStream> getBindings() {

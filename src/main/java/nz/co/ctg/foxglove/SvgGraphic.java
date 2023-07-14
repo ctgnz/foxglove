@@ -8,7 +8,6 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.shape.ISvgShape;
-import nz.co.ctg.foxglove.text.SvgText;
 
 import static java.util.stream.Collectors.toList;
 
@@ -18,8 +17,6 @@ import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
 public class SvgGraphic extends AbstractSvgStylable
@@ -44,29 +41,6 @@ public class SvgGraphic extends AbstractSvgStylable
         }
     }
 
-    public Region createGraphic() {
-        Pane pane = new Pane();
-        pane.setTranslateX(getPixelsX());
-        pane.setTranslateY(getPixelsY());
-        pane.setMaxWidth(getPixelsWidth());
-        pane.setMaxHeight(getPixelsHeight());
-        getContent().forEach(child -> {
-            if (child instanceof SvgGroup) {
-                SvgGroup group = (SvgGroup) child;
-                pane.getChildren().add(group.createGraphic());
-            }
-            if (child instanceof ISvgShape<?>) {
-                ISvgShape<?> shape = (ISvgShape<?>) child;
-                pane.getChildren().add(shape.createGraphic());
-            }
-            if (child instanceof SvgText) {
-                SvgText shape = (SvgText) child;
-                pane.getChildren().add(shape.createGraphic());
-            }
-        });
-        return pane;
-    }
-
     public Group createGroup() {
         Group baseGroup = new Group();
         baseGroup.setTranslateX(getPixelsX());
@@ -74,11 +48,15 @@ public class SvgGraphic extends AbstractSvgStylable
         getContent().forEach(child -> {
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;
-                baseGroup.getChildren().add(group.createGraphic());
+                if (group.isVisible()) {
+                    baseGroup.getChildren().add(group.createGraphic());
+                }
             }
             if (child instanceof ISvgShape<?>) {
                 ISvgShape<?> shape = (ISvgShape<?>) child;
-                baseGroup.getChildren().add(shape.createGraphic());
+                if (shape.isVisible()) {
+                    baseGroup.getChildren().add(shape.createGraphic());
+                }
             }
         });
         return baseGroup;

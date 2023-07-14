@@ -12,14 +12,23 @@
 
 package nz.co.ctg.foxglove;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import jakarta.xml.bind.annotation.XmlTransient;
+
 public interface ISvgStylable extends ISvgAttributes, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes {
     String STYLE_ATTR = "style";
     String STYLE_CLASS_NAME = "class";
+
+    @XmlTransient
+    default boolean isVisible() {
+        String display = getDisplay();
+        return display == null || !StringUtils.equalsIgnoreCase("none", display);
+    }
 
     default CSSStyleDeclaration getStyleDeclaration() {
         return null;

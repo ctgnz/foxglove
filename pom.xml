@@ -38,6 +38,12 @@
 		    <artifactId>org.eclipse.persistence.moxy</artifactId>
 		    <version>4.0.0</version>
 		</dependency>
+
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-metrics</artifactId>
+            <version>4.0.1</version>
+        </dependency>
         
         <dependency>
             <groupId>junit</groupId>
