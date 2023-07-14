@@ -5,6 +5,8 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import static com.google.common.base.MoreObjects.toStringHelper;
 
 import javafx.css.Size;
+import javafx.css.SizeUnits;
+import javafx.geometry.Bounds;
 
 public class ViewBox {
     private Size minX;
@@ -20,6 +22,13 @@ public class ViewBox {
         this.minY = minY;
         this.width = width;
         this.height = height;
+    }
+
+    public ViewBox(Bounds bounds) {
+        this.minX = new Size(bounds.getMinX(), SizeUnits.PX);
+        this.minY = new Size(bounds.getMinY(), SizeUnits.PX);
+        this.width = new Size(bounds.getWidth(), SizeUnits.PX);
+        this.height = new Size(bounds.getHeight(), SizeUnits.PX);
     }
 
     public Size getMinX() {

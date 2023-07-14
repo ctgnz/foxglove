@@ -3,7 +3,6 @@ package nz.co.ctg.foxglove.adapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,19 +18,14 @@ import javafx.scene.transform.Translate;
 
 public class SvgTransformListAdapter {
     private static final Pattern WHITESPACE = Pattern.compile("[,\\s]");
-    private static final Pattern TRANSFORM = Pattern.compile("([^\\(\\s]+\\([^\\)]+\\))");
 
     public List<Transform> parse(String transformText) {
         try {
             List<Transform> transforms = new ArrayList<>();
-            Matcher matcher = TRANSFORM.matcher(transformText);
-            int groupCount = matcher.groupCount();
-            for (int i = 0; i < groupCount; i++) {
-                matcher.find();
-                String transform = matcher.group(i + 1);
+            Splitter.on(")").split(transformText).forEach(transform -> {
                 if (StringUtils.isNotBlank(transform)) {
-                    String transformName = transform.substring(0, transform.indexOf('('));
-                    String values = transform.substring(transform.indexOf('(') + 1, transform.indexOf(')')).trim();
+                    String transformName = transform.substring(0, transform.indexOf('(')).trim();
+                    String values = transform.substring(transform.indexOf('(') + 1).trim();
                     List<Double> numericValues = new ArrayList<>();
                     Splitter.on(WHITESPACE).split(values).forEach(numVal -> {
                         numericValues.add(Double.valueOf(numVal));
@@ -70,7 +64,7 @@ public class SvgTransformListAdapter {
                             break;
                     }
                 }
-            }
+            });
             return transforms;
         } catch (Exception e) {
             System.out.format("Transform parse error [%s]%n", transformText);

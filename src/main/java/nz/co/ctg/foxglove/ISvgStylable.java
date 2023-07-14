@@ -53,4 +53,5 @@ public interface ISvgStylable extends ISvgAttributes, ISvgPresentationAttributes
         ISvgPresentationAttributes.super.toStringDetail(builder);
         ISvgTextAttributes.super.toStringDetail(builder);
     }
+
 }

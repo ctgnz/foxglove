@@ -39,6 +39,10 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     String GRAPHX_STOP_COLOR = "stop-color";
     String GRAPHX_STOP_OPACITY = "stop-opacity";
 
+    default boolean isFilled() {
+        return getFill() != null && getFill() != Color.TRANSPARENT;
+    }
+
     default Paint getFill() {
         return ObjectUtils.defaultIfNull(get(GRAPHX_FILL), Color.BLACK);
     }
