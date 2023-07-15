@@ -81,15 +81,15 @@ public class SizeAdapterTest {
     }
 
     @Test
-    public void testMarshalNoUnitsAsPixels() throws Exception {
-        assertThat(candidate.marshal(new Size(120, null)), is("120.0px"));
-        assertThat(candidate.marshal(new Size(12.345, null)), is("12.345px"));
+    public void testMarshalNoUnits() throws Exception {
+        assertThat(candidate.marshal(new Size(120, null)), is("120.0"));
+        assertThat(candidate.marshal(new Size(12.345, null)), is("12.345"));
     }
 
     @Test
     public void testMarshalPixels() throws Exception {
-        assertThat(candidate.marshal(new Size(120, SizeUnits.PX)), is("120.0px"));
-        assertThat(candidate.marshal(new Size(12.345, SizeUnits.PX)), is("12.345px"));
+        assertThat(candidate.marshal(new Size(120, SizeUnits.PX)), is("120.0"));
+        assertThat(candidate.marshal(new Size(12.345, SizeUnits.PX)), is("12.345"));
     }
 
     @Test
