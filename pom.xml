@@ -1,13 +1,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
->
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <groupId>nz.co.ctg</groupId>
     <artifactId>foxglove</artifactId>
     <version>0.9-SNAPSHOT</version>
-    <name>JavaFX SVG Model</name>
-    <description>Native support for SVG in JavaFX</description>
+    <packaging>jar</packaging>
     
+    <name>Foxglove SVG/JavaFX</name>
+    <description>Native support for SVG in JavaFX</description>
+    <url>https://www.ctg.co.nz/foxglove</url>
+    
+    <licenses>
+        <license>
+            <name>Eclipse Public License - v 2.0</name>
+            <url>https://www.eclipse.org/legal/epl-2.0/</url>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <name>Colin Sharples</name>
+            <email>ctg@ctg.co.nz</email>
+            <organization>CTG Games Ltd</organization>
+            <organizationUrl>http://www.ctg.co.nz</organizationUrl>
+        </developer>
+    </developers>
+    
+    <scm>
+        <connection>scm:git:git://github.com/ctgnz/foxglove.git</connection>
+        <developerConnection>scm:git:ssh://github.com:ctgnz/foxglove.git</developerConnection>
+        <url>http://github.com/ctgnz/foxglove/tree/master</url>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javax.activation.version>1.2.0</javax.activation.version>

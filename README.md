@@ -9,8 +9,10 @@ Current status: Under development
 ### Basic Usage
 
 ```java
-BorderPane parent = new BorderPane();
+// The parser should be created once in the application and injected wherever needed
 FoxgloveParser parser = new FoxgloveParser();
-SvgGraphic graphic = parser.parse(Files.newInputStream("myfile.svg");
+...
+BorderPane parent = new BorderPane();
+SvgGraphic graphic = parser.parse(Files.newInputStream("myfile.svg"));
 parent.setCenter(graphic.createGraphic());
 ```

@@ -28,7 +28,9 @@ public class SvgTransformListAdapter {
                     String values = transform.substring(transform.indexOf('(') + 1).trim();
                     List<Double> numericValues = new ArrayList<>();
                     Splitter.on(WHITESPACE).split(values).forEach(numVal -> {
-                        numericValues.add(Double.valueOf(numVal));
+                        if (StringUtils.isNotBlank(numVal)) {
+                            numericValues.add(Double.valueOf(numVal));
+                        }
                     });
                     switch (transformName) {
                         case "matrix" :
