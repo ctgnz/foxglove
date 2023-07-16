@@ -10,9 +10,10 @@ name: Java CI with Maven
 
 on:
   push:
-    tags: 
-      - '*'
-
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,16 +25,5 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: 'maven'
-        server-id: ossrh
-        server-username: MAVEN_USERNAME
-        server-password: MAVEN_PASSWORD
-        gpg-private-key: ${{secrets.OSSRH_GPG_SECRET_KEY}}
-        gpg-passphrase: MAVEN_GPG_PASSPHRASE
     - name: Build with Maven
-      run: mvn -B clean package --file pom.xml
-    - name: Create release
-      uses: ncipollo/release-action@v1
-      with:
-        allowUpdates: true
-        artifacts: "${{ github.workspace }}/target/*.jar"
-        token: ${{ secrets.GITHUB_TOKEN }}
+      run: mvn -B clean verify
