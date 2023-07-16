@@ -29,15 +29,6 @@ jobs:
         server-password: MAVEN_PASSWORD
         gpg-private-key: ${{secrets.OSSRH_GPG_SECRET_KEY}}
         gpg-passphrase: MAVEN_GPG_PASSPHRASE
-    - name: Create Maven settings
-      uses: s4u/maven-settings-action@v2.8.0
-      with:
-        servers: |
-          [{
-              "id": "ossrh",
-              "username": "${{ secrets.OSSRH_USERNAME }}",
-              "password": "${{ secrets.OSSRH_PASSWORD }}"
-          }]
     - name: Build with Maven
       run: mvn -B clean package
     - name: Create release
@@ -54,5 +45,5 @@ jobs:
           deploy
       env:
         MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-        MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+        MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
