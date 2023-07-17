@@ -21,7 +21,7 @@ public class SvgPaintAdapter extends XmlAdapter<String, Paint> {
 
     @Override
     public String marshal(Paint value) throws Exception {
-        return value != null ? toString(value) : toString(Color.BLACK);
+        return value != null ? toString(value) : null;
     }
 
     private String toString(Paint value) {
@@ -33,8 +33,7 @@ public class SvgPaintAdapter extends XmlAdapter<String, Paint> {
             int r = (int) (color.getRed() * 255);
             int g = (int) (color.getGreen() * 255);
             int b = (int) (color.getBlue() * 255);
-            int a = (int) (color.getOpacity() * 255);
-            return String.format("#%02X%02X%02X%02X", r, g, b, a);
+            return String.format("#%02X%02X%02X", r, g, b);
         }
         return value.toString();
     }
