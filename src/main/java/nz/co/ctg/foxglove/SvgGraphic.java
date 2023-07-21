@@ -3,11 +3,14 @@ package nz.co.ctg.foxglove;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.shape.ISvgShape;
+import nz.co.ctg.foxglove.text.SvgText;
 
 import static java.util.stream.Collectors.toList;
 
@@ -45,6 +48,7 @@ public class SvgGraphic extends AbstractSvgStylable
         Group baseGroup = new Group();
         baseGroup.setTranslateX(getPixelsX());
         baseGroup.setTranslateY(getPixelsY());
+        baseGroup.setId(StringUtils.defaultIfBlank(getId(), "svg"));
         getContent().forEach(child -> {
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;
@@ -57,6 +61,10 @@ public class SvgGraphic extends AbstractSvgStylable
                 if (shape.isVisible()) {
                     baseGroup.getChildren().add(shape.createGraphic());
                 }
+            }
+            if (child instanceof SvgText) {
+                SvgText shape = (SvgText) child;
+                baseGroup.getChildren().add(shape.createGraphic());
             }
         });
         return baseGroup;

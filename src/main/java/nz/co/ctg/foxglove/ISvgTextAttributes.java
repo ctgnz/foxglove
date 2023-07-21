@@ -29,7 +29,7 @@ public interface ISvgTextAttributes extends ISvgAttributes {
     String TEXT_UNICODE_BIDI = "unicode-bidi";
     String TEXT_WORD_SPACING = "word-spacing";
     String TEXT_FONT_FAMILY = "font-family";
-    String TEXT_FONT_SIZE = "fontSize";
+    String TEXT_FONT_SIZE = "font-size";
     String TEXT_FONT_SIZE_ADJUST = "font-size-adjust";
     String TEXT_FONT_STRETCH = "font-stretch";
     String TEXT_FONT_STYLE = "font-style";

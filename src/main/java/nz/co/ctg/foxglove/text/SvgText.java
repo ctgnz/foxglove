@@ -68,11 +68,12 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
 
     public Text createGraphic() {
         parseStyle();
-        Text svgText = createShape();
-        applyGraphicsProperties(svgText);
-        applyTextProperties(svgText);
-        applyTransforms(svgText);
-        return svgText;
+        Text fxText = createShape();
+        fxText.setId(getId());
+        applyGraphicsProperties(fxText);
+        applyTextProperties(fxText);
+        applyTransforms(fxText);
+        return fxText;
     }
 
     protected Text createShape() {

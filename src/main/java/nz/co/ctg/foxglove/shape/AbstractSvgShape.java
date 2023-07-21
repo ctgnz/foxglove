@@ -16,11 +16,12 @@ public abstract class AbstractSvgShape<S extends Shape> extends AbstractSvgStyla
     @Override
     public S createGraphic() {
         parseStyle();
-        S circle = createShape();
-        installTooltip(circle);
-        applyGraphicsProperties(circle);
-        applyTransforms(circle);
-        return circle;
+        S shape = createShape();
+        shape.setId(getId());
+        installTooltip(shape);
+        applyGraphicsProperties(shape);
+        applyTransforms(shape);
+        return shape;
     }
 
     protected abstract S createShape();
