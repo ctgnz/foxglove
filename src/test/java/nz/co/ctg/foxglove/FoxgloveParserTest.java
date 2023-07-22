@@ -70,7 +70,7 @@ public class FoxgloveParserTest {
         SvgGroup group = (SvgGroup) svg.getContent().get(4);
         SvgLine line = (SvgLine) group.getContent().get(2);
         printElement(line);
-        Line fxLine = line.createGraphic();
+        Line fxLine = line.createGraphic(group);
         assertThat(fxLine.getStartX(), closeTo(202.5, 0.05));
         assertThat(fxLine.getStartY(), closeTo(345.7, 0.05));
         assertThat(fxLine.getEndX(), closeTo(407.5, 0.05));
@@ -85,7 +85,7 @@ public class FoxgloveParserTest {
         SvgGroup group = (SvgGroup) svg.getContent().get(4);
         SvgRectangle rect = (SvgRectangle) group.getContent().get(5);
         printElement(rect);
-        Rectangle fxRect = rect.createGraphic();
+        Rectangle fxRect = rect.createGraphic(group);
         assertThat(fxRect.getX(), closeTo(441.47, 0.05));
         assertThat(fxRect.getY(), closeTo(248.11, 0.05));
         assertThat(fxRect.getWidth(), closeTo(168.23, 0.05));
@@ -102,7 +102,7 @@ public class FoxgloveParserTest {
         group = (SvgGroup) group.getContent().get(0);
         SvgPolyline polyline = (SvgPolyline) group.getContent().get(3);
         printElement(polyline);
-        Polyline fxPolyline = polyline.createGraphic();
+        Polyline fxPolyline = polyline.createGraphic(group);
         assertThat(fxPolyline.getPoints(), hasSize(6));
     }
 
@@ -116,7 +116,7 @@ public class FoxgloveParserTest {
         printElement(group);
         SvgLine line = (SvgLine) group.getContent().get(0);
         printElement(line);
-        Line fxLine = line.createGraphic();
+        Line fxLine = line.createGraphic(group);
         assertThat(fxLine.getStrokeLineCap(), is(StrokeLineCap.ROUND));
         assertThat(fxLine.getStrokeLineJoin(), is(StrokeLineJoin.ROUND));
         assertThat(fxLine.getStroke(), is(Color.BLACK));

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg width="500px" height="300px" viewBox="0 0 500 300" version="1.1" id="svg5" inkscape:version="1.2.2 (732a01da63, 2022-12-09)" sodipodi:docname="fill-stroke.svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview id="namedview7" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" inkscape:deskcolor="#d1d1d1" inkscape:document-units="mm" showgrid="false" inkscape:zoom="1.9547997" inkscape:cx="178.53492" inkscape:cy="156.53778" inkscape:window-width="1920" inkscape:window-height="1009" inkscape:window-x="1912" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="layer1" />
+  <defs id="defs2" />
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+    <rect style="fill:none;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="style-stroke-only" width="40" height="40" x="20" y="20" />
+    <rect style="fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="style-fill-only" width="40" height="40" x="80" y="20" />
+    <rect style="fill:#ff0000;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="style-fill-stroke" width="40" height="40" x="140" y="20" />
+    <rect id="attr-stroke-only" width="40" height="40" x="20" y="80" stroke-width="2.64583" stroke="#0000ff" fill="none" />
+    <rect id="attr-fill-only" width="40" height="40" x="80" y="80" fill="#0000ff" stroke="none" />
+    <rect id="attr-fill-stroke" width="40" height="40" x="140" y="80" stroke="#0000ff" fill="#ff0000" stroke-width="2.64583" />
+    <ellipse style="fill:#0000ff;fill-opacity:1;stroke:#ff0000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" id="path2032" cx="360" cy="40" rx="40" ry="20" />
+    <circle style="fill:#ff0000;fill-opacity:1;stroke:#0000ff;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" id="path2092" cx="280" cy="40" r="20" />
+    <path sodipodi:type="star" style="fill:#0000ff;fill-opacity:1;stroke:#ff0000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" id="path2161" inkscape:flatsided="false" sodipodi:sides="5" sodipodi:cx="271.12753" sodipodi:cy="93.61573" sodipodi:r1="35.714165" sodipodi:r2="12.877778" sodipodi:arg1="0.9072406" sodipodi:arg2="1.5355591" inkscape:rounded="0" inkscape:randomized="0" d="m 293.12467,121.75161 -21.54345,-15.2661 -20.415,16.74521 7.86162,-25.206529 -22.23422,-14.241268 26.40221,-0.312398 6.6735,-25.546789 8.45583,25.013452 26.35867,-1.547516 -21.17621,15.771562 z" inkscape:transform-center-x="0.38880723" inkscape:transform-center-y="-3.0385046" transform="translate(10.231227,10.231227)" />
+    <path sodipodi:type="star" style="fill:#0000ff;fill-opacity:1;stroke:#ff0000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" id="path2851" inkscape:flatsided="true" sodipodi:sides="5" sodipodi:cx="187.23146" sodipodi:cy="165.7459" sodipodi:r1="39.957497" sodipodi:r2="32.326294" sodipodi:arg1="-0.32579912" sodipodi:arg2="0.30251942" inkscape:rounded="0" inkscape:randomized="0" d="m 225.087,152.95686 -13.99444,44.83977 -46.96967,0.54674 -15.03441,-44.50186 37.67789,-28.0504 z" inkscape:transform-center-x="0.12130617" inkscape:transform-center-y="-2.9210868" transform="matrix(0.84404248,0,0,0.79406337,205.15416,-30.593026)" />
+  </g>
+</svg>

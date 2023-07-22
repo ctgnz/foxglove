@@ -59,10 +59,10 @@ public class SvgTransformListAdapter {
                             }
                             break;
                         case "skewX" :
-                            transforms.add(new Shear(numericValues.get(0), 0));
+                            transforms.add(new Shear(Math.tan(Math.toRadians(numericValues.get(0))), 0));
                             break;
                         case "skewY" :
-                            transforms.add(new Shear(0, numericValues.get(0)));
+                            transforms.add(new Shear(0, Math.tan(Math.toRadians(numericValues.get(0)))));
                             break;
                     }
                 }

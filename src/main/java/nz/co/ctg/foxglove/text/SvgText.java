@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.FxGraphic;
+import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
 
 import static java.util.stream.Collectors.joining;
@@ -31,7 +33,7 @@ import javafx.scene.text.Text;
     "text", "content"
 })
 @XmlRootElement(name = "text")
-public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgTransformable {
+public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgTransformable, FxGraphic<Text> {
 
     @XmlAttribute(name = "x")
     private double x;
@@ -66,11 +68,12 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     })
     private List<Object> content;
 
-    public Text createGraphic() {
+    @Override
+    public Text createGraphic(ISvgStylable parent) {
         parseStyle();
         Text fxText = createShape();
         fxText.setId(getId());
-        applyGraphicsProperties(fxText);
+        applyGraphicsProperties(parent, fxText);
         applyTextProperties(fxText);
         applyTransforms(fxText);
         return fxText;

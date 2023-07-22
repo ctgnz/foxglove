@@ -6,10 +6,12 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.FxGraphic;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.SvgStyle;
@@ -55,7 +57,7 @@ import javafx.scene.Group;
     "content"
 })
 @XmlRootElement(name = "g", namespace = "http://www.w3.org/2000/svg")
-public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures {
+public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures, FxGraphic<Group> {
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -101,7 +103,8 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
     })
     private List<ISvgElement> content;
 
-    public Group createGraphic() {
+    @Override
+    public Group createGraphic(ISvgStylable parent) {
         Group group = new Group();
         if ("none".equals(getDisplay())) {
             group.setVisible(false);
@@ -112,15 +115,15 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
             content.forEach(child -> {
                 if (child instanceof SvgGroup) {
                     SvgGroup childGroup = (SvgGroup) child;
-                    group.getChildren().add(childGroup.createGraphic());
+                    group.getChildren().add(childGroup.createGraphic(this));
                 }
                 if (child instanceof ISvgShape<?>) {
                     ISvgShape<?> shape = (ISvgShape<?>) child;
-                    group.getChildren().add(shape.createGraphic());
+                    group.getChildren().add(shape.createGraphic(this));
                 }
                 if (child instanceof SvgText) {
                     SvgText shape = (SvgText) child;
-                    group.getChildren().add(shape.createGraphic());
+                    group.getChildren().add(shape.createGraphic(this));
                 }
             });
         }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg width="500px" height="300px" viewBox="0 0 500 300" version="1.1" id="svg5" inkscape:version="1.2.2 (732a01da63, 2022-12-09)" sodipodi:docname="transforms.svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview id="namedview7" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" inkscape:deskcolor="#d1d1d1" inkscape:document-units="mm" showgrid="false" inkscape:zoom="1.3822521" inkscape:cx="421.77545" inkscape:cy="180.1408" inkscape:window-width="1920" inkscape:window-height="1009" inkscape:window-x="1912" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="layer1" />
+  <defs id="defs2" />
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+    <rect style="fill:#ff0000;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="translate-base" width="40" height="40" x="20" y="20" />
+    <rect style="fill:#ff0000;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="translate-both" width="40" height="40" x="20" y="20" transform="translate(50, 50)" />
+    <rect style="fill:#ff0000;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="translate-y" width="40" height="40" x="20" y="20" transform="translate(0, 50)" />
+    <rect style="fill:#ff0000;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="translate-x" width="40" height="40" x="20" y="20" transform="translate(50)" />
+    <rect style="fill:#ffff00;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="rotate-base" width="40" height="40" x="80" y="150" />
+    <rect style="fill:#ffff00;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="rotate-center" width="40" height="40" x="80" y="150" transform="rotate(45, 100, 170)" />
+    <rect style="fill:#ffff00;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="rotate-origin" width="40" height="40" x="80" y="150" transform="rotate(340)" />
+    <rect style="fill:#ffff00;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="rotate-corner" width="40" height="40" x="80" y="150" transform="rotate(135,80,150)" />
+    <rect style="fill:#00ffff;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="scale-base" width="40" height="40" x="200" y="20" />
+    <rect style="fill:#00ffff;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="scale-both" width="40" height="40" x="200" y="20" transform="scale(2.0)" />
+    <rect style="fill:#00ffff;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="scale-x" width="40" height="40" x="200" y="20" transform="scale(1.5, 1.0)" />
+    <rect style="fill:#00ffff;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="scale-y" width="40" height="40" x="200" y="20" transform="scale(1.0, 3.0)" />
+    <rect style="fill:#00ff00;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="skew-base" width="40" height="40" x="280" y="150" />
+    <rect style="fill:#00ff00;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="skew-x" width="40" height="40" x="280" y="150" transform="skewX(25)" />
+    <rect style="fill:#00ff00;fill-opacity:1;stroke:#0000ff;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1" id="skew-y" width="40" height="40" x="280" y="150" transform="skewY(15)" />
+  </g>
+</svg>

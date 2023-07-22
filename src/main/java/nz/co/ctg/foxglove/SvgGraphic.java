@@ -53,18 +53,18 @@ public class SvgGraphic extends AbstractSvgStylable
             if (child instanceof SvgGroup) {
                 SvgGroup group = (SvgGroup) child;
                 if (group.isVisible()) {
-                    baseGroup.getChildren().add(group.createGraphic());
+                    baseGroup.getChildren().add(group.createGraphic(this));
                 }
             }
             if (child instanceof ISvgShape<?>) {
                 ISvgShape<?> shape = (ISvgShape<?>) child;
                 if (shape.isVisible()) {
-                    baseGroup.getChildren().add(shape.createGraphic());
+                    baseGroup.getChildren().add(shape.createGraphic(this));
                 }
             }
             if (child instanceof SvgText) {
                 SvgText shape = (SvgText) child;
-                baseGroup.getChildren().add(shape.createGraphic());
+                baseGroup.getChildren().add(shape.createGraphic(this));
             }
         });
         return baseGroup;

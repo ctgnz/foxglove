@@ -2,9 +2,9 @@ package nz.co.ctg.foxglove;
 
 import java.util.List;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import com.google.common.base.MoreObjects.ToStringHelper;
+
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -44,11 +44,11 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     default Paint getFill() {
-        return ObjectUtils.defaultIfNull(get(GRAPHX_FILL), Color.BLACK);
+        return defaultIfNull(get(GRAPHX_FILL), Color.BLACK);
     }
 
     default void setFill(Paint value) {
-        set(GRAPHX_FILL, ObjectUtils.defaultIfNull(value, Color.BLACK));
+        set(GRAPHX_FILL, value);
     }
 
     default FillRule getFillRule() {
@@ -84,9 +84,6 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     default Double getStrokeDashOffset() {
-        if (!getProperties().containsKey(GRAPHX_STROKE_DASHOFFSET)) {
-            return 0.0;
-        }
         return get(GRAPHX_STROKE_DASHOFFSET);
     }
 
@@ -111,9 +108,6 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     default Double getStrokeMiterLimit() {
-        if (!getProperties().containsKey(GRAPHX_STROKE_MITERLIMIT)) {
-            return 0.0;
-        }
         return get(GRAPHX_STROKE_MITERLIMIT);
     }
 
@@ -122,9 +116,6 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     default Double getStrokeWidth() {
-        if (!getProperties().containsKey(GRAPHX_STROKE_WIDTH)) {
-            return 0.0;
-        }
         return get(GRAPHX_STROKE_WIDTH);
     }
 
@@ -271,16 +262,18 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         builder.add(GRAPHX_STOP_OPACITY, getStopOpacity());
     }
 
-    default void applyGraphicsProperties(Shape shape) {
-        shape.setFill(getFill());
-        shape.setStroke(getStroke());
-        shape.setStrokeWidth(getStrokeWidth());
-        shape.setStrokeMiterLimit(getStrokeMiterLimit());
-        shape.setStrokeLineCap(getStrokeLineCap());
-        shape.setStrokeLineJoin(getStrokeLineJoin());
-        shape.setStrokeDashOffset(getStrokeDashOffset());
+    default void applyGraphicsProperties(ISvgStylable parent, Shape shape) {
+        shape.setFill(defaultIfNull(getFill(), parent.getFill()));
+        shape.setStroke(defaultIfNull(getStroke(), parent.getStroke()));
+        shape.setStrokeWidth(defaultIfNull(defaultIfNull(getStrokeWidth(), parent.getStrokeWidth()), 0.0));
+        shape.setStrokeMiterLimit(defaultIfNull(defaultIfNull(getStrokeMiterLimit(), parent.getStrokeMiterLimit()), 0.0));
+        shape.setStrokeLineCap(defaultIfNull(getStrokeLineCap(), parent.getStrokeLineCap()));
+        shape.setStrokeLineJoin(defaultIfNull(getStrokeLineJoin(), parent.getStrokeLineJoin()));
+        shape.setStrokeDashOffset(defaultIfNull(defaultIfNull(getStrokeDashOffset(), parent.getStrokeDashOffset()), 0.0));
         if (getStrokeDashArray() != null) {
             shape.getStrokeDashArray().addAll(getStrokeDashArray());
+        } else if (parent.getStrokeDashArray() != null) {
+            shape.getStrokeDashArray().addAll(parent.getStrokeDashArray());
         }
     }
 
