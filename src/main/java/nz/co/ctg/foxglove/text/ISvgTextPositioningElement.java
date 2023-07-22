@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove.text;
 
-public interface ISvgTextPositioningElement extends ISvgTextContentElement {
+import nz.co.ctg.foxglove.ISvgStylable;
+
+public interface ISvgTextPositioningElement extends ISvgTextContentElement, ISvgStylable {
 
 }
