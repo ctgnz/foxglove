@@ -8,6 +8,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
@@ -129,7 +130,8 @@ public class SvgTransformListAdapterTest {
         assertThat(result, hasSize(1));
         assertThat(result.get(0), is(instanceOf(Shear.class)));
         Shear shear = (Shear) result.get(0);
-        assertThat(shear.getX(), is(42.0));
+        // skewX takes a value in degrees, and applies a shear equivalent to tan(a) where a is the value in radians
+        assertThat(shear.getX(), closeTo(0.9004, 0.0001));
         assertThat(shear.getY(), is(0.0));
     }
 
@@ -140,7 +142,8 @@ public class SvgTransformListAdapterTest {
         assertThat(result.get(0), is(instanceOf(Shear.class)));
         Shear shear = (Shear) result.get(0);
         assertThat(shear.getX(), is(0.0));
-        assertThat(shear.getY(), is(42.0));
+        // skewY takes a value in degrees, and applies a shear equivalent to tan(a) where a is the value in radians
+        assertThat(shear.getY(), closeTo(0.9004, 0.0001));
     }
 
 }

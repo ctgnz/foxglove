@@ -9,6 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Splitter;
 
+import static java.lang.Math.tan;
+import static java.lang.Math.toRadians;
+
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
@@ -59,10 +62,10 @@ public class SvgTransformListAdapter {
                             }
                             break;
                         case "skewX" :
-                            transforms.add(new Shear(Math.tan(Math.toRadians(numericValues.get(0))), 0));
+                            transforms.add(new Shear(tan(toRadians(numericValues.get(0))), 0));
                             break;
                         case "skewY" :
-                            transforms.add(new Shear(0, Math.tan(Math.toRadians(numericValues.get(0)))));
+                            transforms.add(new Shear(0, tan(toRadians(numericValues.get(0)))));
                             break;
                     }
                 }
