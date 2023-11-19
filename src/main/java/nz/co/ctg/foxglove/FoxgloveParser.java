@@ -45,6 +45,10 @@ public class FoxgloveParser {
         CACHE.remove(selectedFile.getAbsolutePath());
     }
 
+    public static void clearCache(String selectedResource) {
+        CACHE.remove(selectedResource);
+    }
+
     private JAXBContext context;
 
     private XMLInputFactory xmlInputFactory;
@@ -85,6 +89,16 @@ public class FoxgloveParser {
         return CACHE.computeIfAbsent(filePath, key -> {
             try (InputStream in = FoxgloveParser.class.getResourceAsStream(filePath)) {
                 return parse(in);
+            } catch (Exception e) {
+                return new SvgGraphic();
+            }
+        });
+    }
+
+    public SvgGraphic parseResource(String resourcePath, InputStream inputStream) {
+        return CACHE.computeIfAbsent(resourcePath, key -> {
+            try {
+                return parse(inputStream);
             } catch (Exception e) {
                 return new SvgGraphic();
             }
