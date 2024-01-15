@@ -105,8 +105,9 @@ public class FoxgloveParser {
         });
     }
 
-    public String write(SvgGraphic svg) throws Exception {
+    public String write(SvgGraphic svg, Boolean prettyPrint) throws Exception {
         Marshaller m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, prettyPrint);
         StringWriter out = new StringWriter();
         m.marshal(svg, out);
         return out.toString();
@@ -114,7 +115,7 @@ public class FoxgloveParser {
 
     public void writeFile(Path directoryPath, String fileName, SvgGraphic graphic) throws Exception {
         Path filePath = directoryPath.resolve(fileName);
-        String output = write(graphic);
+        String output = write(graphic, true);
         Files.write(filePath, output.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 

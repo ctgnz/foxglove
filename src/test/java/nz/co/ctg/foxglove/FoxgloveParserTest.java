@@ -148,7 +148,7 @@ public class FoxgloveParserTest {
         subGroup.getContent().add(pattern);
         group.getContent().add(subGroup);
         svg.getContent().add(group);
-        System.out.println(parser.write(svg));
+        System.out.println(parser.write(svg, Boolean.TRUE));
     }
 
     private void printElement(Object el) {

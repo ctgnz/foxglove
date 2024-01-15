@@ -8,6 +8,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.FxGraphic;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
+import nz.co.ctg.foxglove.ISvgDescribable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
@@ -57,7 +58,7 @@ import javafx.scene.Group;
     "content"
 })
 @XmlRootElement(name = "g", namespace = "http://www.w3.org/2000/svg")
-public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures, FxGraphic<Group> {
+public class SvgGroup extends AbstractSvgStylable implements ISvgDescribable, ISvgStructuralElement, ISvgExternalResources, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures, FxGraphic<Group> {
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -130,6 +131,7 @@ public class SvgGroup extends AbstractSvgStylable implements ISvgStructuralEleme
         return group;
     }
 
+    @Override
     public List<ISvgElement> getContent() {
         if (content == null) {
             content = new ArrayList<>();
