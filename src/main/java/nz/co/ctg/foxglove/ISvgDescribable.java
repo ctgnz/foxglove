@@ -12,6 +12,18 @@ import javafx.scene.control.Tooltip;
 
 public interface ISvgDescribable extends ISvgContent {
 
+    default void createDescription(String descriptionText) {
+        SvgDescription desc = new SvgDescription();
+        desc.setValue(descriptionText);
+        getContent().add(desc);
+    }
+
+    default void createTitle(String titleText) {
+        SvgTitle title = new SvgTitle();
+        title.setValue(titleText);
+        getContent().add(title);
+    }
+
     @XmlTransient
     default Optional<SvgDescription> getDescription() {
         return getOptionalContent(SvgDescription.class);
@@ -28,9 +40,9 @@ public interface ISvgDescribable extends ISvgContent {
     }
 
     default void installTooltip(Node node) {
-        getTitle().ifPresent(desc -> {
+        getTitle().ifPresentOrElse(desc -> {
             Tooltip.install(node, new Tooltip(desc.getValue()));
-        });
+        }, () -> node.setMouseTransparent(true));
     }
 
 }
