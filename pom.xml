@@ -4,7 +4,7 @@
     
     <groupId>io.github.ctgnz</groupId>
     <artifactId>foxglove</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.9.9-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <name>Foxglove SVG/JavaFX</name>
@@ -196,8 +196,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>25</source>
+                    <target>25</target>
                     <encoding>ISO-8859-1</encoding>
                 </configuration>
             </plugin>
