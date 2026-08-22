@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove.adapter;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,12 +40,25 @@ public class SizeAdapter extends XmlAdapter<String, Size> {
         if (NumberUtils.isParsable(value)) {
             return new Size(NumberUtils.toDouble(value), SizeUnits.PX);
         } else {
-            // if the string value is not parsable as a number, it must contain size units,
-            // which will be the last component returned by splitByCharacterType
-            String[] parts = StringUtils.splitByCharacterType(value);
-            String unitPart = parts[parts.length - 1];
-            String numberPart = StringUtils.substring(value, 0, value.indexOf(unitPart));
+            // if the string value is not parsable as a number, it must contain size units, which are the
+            // trailing run of unit characters
+            int unitStart = indexOfUnits(value);
+            String numberPart = StringUtils.substring(value, 0, unitStart);
+            // SIZE_UNITS is keyed on the lower case SizeUnits.toString(), but unit names are case insensitive
+            String unitPart = StringUtils.substring(value, unitStart).toLowerCase(Locale.ROOT);
             return new Size(NumberUtils.toDouble(numberPart), SIZE_UNITS.getOrDefault(unitPart, SizeUnits.PX));
         }
+    }
+
+    private static int indexOfUnits(String value) {
+        int index = value.length();
+        while (index > 0 && isUnitCharacter(value.charAt(index - 1))) {
+            index--;
+        }
+        return index;
+    }
+
+    private static boolean isUnitCharacter(char character) {
+        return Character.isLetter(character) || character == '%';
     }
 }
