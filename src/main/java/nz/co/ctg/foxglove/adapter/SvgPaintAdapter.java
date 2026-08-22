@@ -13,7 +13,7 @@ public class SvgPaintAdapter extends XmlAdapter<String, Paint> {
         if (StringUtils.isBlank(value)) {
             return Color.BLACK;
         }
-        if ("none".equals(value)) {
+        if ("none".equalsIgnoreCase(value)) {
             return Color.TRANSPARENT;
         }
         return Paint.valueOf(value);

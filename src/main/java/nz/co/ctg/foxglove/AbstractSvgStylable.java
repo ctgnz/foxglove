@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,50 +42,59 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
     }
 
     public void parseStyle() {
-        if (StringUtils.isNotBlank(getStyle())) {
-            Arrays.stream(StringUtils.split(getStyle(), ';')).forEach(stylePair -> {
-                String[] values = StringUtils.split(stylePair, ':');
-                String name = values[0].toLowerCase().trim();
-                String value = values[1].toLowerCase().trim();
-                switch (name) {
-                    case TEXT_FONT_FAMILY:
-                        setFontFamily(value);
-                        break;
-                    case TEXT_FONT_SIZE:
-                        setFontSize(value);
-                        break;
-                    case TEXT_FONT_STYLE:
-                        setFontStyle(parseFontPosture(value));
-                        break;
-                    case TEXT_FONT_WEIGHT:
-                        setFontWeight(parseFontWeight(value));
-                        break;
-                    case GRAPHX_FILL:
-                        setFill(parsePaint(value));
-                        break;
-                    case GRAPHX_STROKE:
-                        setStroke(parsePaint(value));
-                        break;
-                    case GRAPHX_STROKE_WIDTH:
-                        setStrokeWidth(parseDouble(value));
-                        break;
-                    case GRAPHX_STROKE_LINECAP:
-                        setStrokeLineCap(parseStrokeLineCap(value));
-                        break;
-                    case GRAPHX_STROKE_LINEJOIN:
-                        setStrokeLineJoin(parseStrokeLineJoin(value));
-                        break;
-                    case GRAPHX_STROKE_MITERLIMIT:
-                        setStrokeMiterLimit(parseDouble(value));
-                        break;
-                    case GRAPHX_STROKE_DASHOFFSET:
-                        setStrokeDashOffset(parseDouble(value));
-                        break;
-                    case GRAPHX_STROKE_DASHARRAY:
-                        setStrokeDashArray(parseDoubleList(value));
-                        break;
-                }
-            });
+        if (StringUtils.isBlank(getStyle())) {
+            return;
+        }
+        for (String declaration : StringUtils.split(getStyle(), ';')) {
+            // Split on the first colon only, as a value may legitimately contain further colons
+            String[] values = StringUtils.split(declaration, ":", 2);
+            if (values.length < 2) {
+                continue;
+            }
+            // Property names are case insensitive, values are not - each parser lowercases its own keywords
+            String name = values[0].trim().toLowerCase(Locale.ROOT);
+            String value = values[1].trim();
+            if (value.isEmpty()) {
+                continue;
+            }
+            switch (name) {
+                case TEXT_FONT_FAMILY:
+                    setFontFamily(value);
+                    break;
+                case TEXT_FONT_SIZE:
+                    setFontSize(value);
+                    break;
+                case TEXT_FONT_STYLE:
+                    setFontStyle(parseFontPosture(value));
+                    break;
+                case TEXT_FONT_WEIGHT:
+                    setFontWeight(parseFontWeight(value));
+                    break;
+                case GRAPHX_FILL:
+                    setFill(parsePaint(value));
+                    break;
+                case GRAPHX_STROKE:
+                    setStroke(parsePaint(value));
+                    break;
+                case GRAPHX_STROKE_WIDTH:
+                    setStrokeWidth(parseDouble(value));
+                    break;
+                case GRAPHX_STROKE_LINECAP:
+                    setStrokeLineCap(parseStrokeLineCap(value));
+                    break;
+                case GRAPHX_STROKE_LINEJOIN:
+                    setStrokeLineJoin(parseStrokeLineJoin(value));
+                    break;
+                case GRAPHX_STROKE_MITERLIMIT:
+                    setStrokeMiterLimit(parseDouble(value));
+                    break;
+                case GRAPHX_STROKE_DASHOFFSET:
+                    setStrokeDashOffset(parseDouble(value));
+                    break;
+                case GRAPHX_STROKE_DASHARRAY:
+                    setStrokeDashArray(parseDoubleList(value));
+                    break;
+            }
         }
     }
 

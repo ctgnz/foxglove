@@ -26,7 +26,7 @@ public abstract class SvgEnumAdapter<E extends Enum<E>> extends XmlAdapter<Strin
 
     @Override
     public E unmarshal(String value) throws Exception {
-        if (StringUtils.isBlank(value) || "none".equals(value)) {
+        if (StringUtils.isBlank(value) || "none".equalsIgnoreCase(value)) {
             return null;
         }
         try {

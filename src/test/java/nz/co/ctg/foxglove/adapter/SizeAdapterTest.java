@@ -82,6 +82,14 @@ public class SizeAdapterTest {
     }
 
     @Test
+    public void testUnmarshalUnitsAreCaseInsensitive() throws Exception {
+        assertThat(candidate.unmarshal("120PX").pixels(), is(120.0));
+        assertThat(candidate.unmarshal("12CM").pixels(), closeTo(453.54, 0.01));
+        assertThat(candidate.unmarshal("12In").pixels(), is(1152.0));
+        assertThat(candidate.unmarshal("120Pt").pixels(), is(160.0));
+    }
+
+    @Test
     public void testMarshalNoUnits() throws Exception {
         assertThat(candidate.marshal(new Size(120, null)), is("120.0"));
         assertThat(candidate.marshal(new Size(12.345, null)), is("12.345"));
