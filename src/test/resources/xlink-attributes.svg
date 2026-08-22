@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="100" height="100">
+
+  <defs>
+    <linearGradient id="base"/>
+    <linearGradient id="derived" xlink:href="#base"/>
+    <path id="curve" d="M0 0 L100 0"/>
+  </defs>
+
+  <!-- every xlink attribute, to prove each binds to the key its getter reads -->
+  <use id="user"
+       xlink:href="#box"
+       xlink:type="simple"
+       xlink:role="http://example.com/role"
+       xlink:arcrole="http://example.com/arcrole"
+       xlink:title="a reused box"
+       xlink:show="embed"
+       xlink:actuate="onLoad"/>
+
+  <text id="label"><textPath id="onpath" xlink:href="#curve">Hello</textPath></text>
+
+  <image id="pic" xlink:href="pic.png" width="10" height="10"/>
+
+</svg>
