@@ -38,10 +38,34 @@ public class SvgGraphic extends AbstractSvgStylable
     private String contentStyleType;
     private List<ISvgElement> content;
 
+    @XmlTransient
+    private SvgElementIndex elementIndex;
+
     public void addContent(ISvgElement element) {
         if (element != null) {
             content.add(element);
         }
+    }
+
+    /**
+     * The index used to resolve {@code url(#id)} and {@code xlink:href="#id"} references within this document, built
+     * on first use and cached thereafter. Call {@link #rebuildElementIndex()} after modifying the document, as the
+     * index is a snapshot rather than a live view.
+     */
+    @XmlTransient
+    public SvgElementIndex getElementIndex() {
+        if (elementIndex == null) {
+            elementIndex = SvgElementIndex.of(this);
+        }
+        return elementIndex;
+    }
+
+    /**
+     * Rebuilds the element index to pick up changes made to the document since it was last built.
+     */
+    public SvgElementIndex rebuildElementIndex() {
+        elementIndex = SvgElementIndex.of(this);
+        return elementIndex;
     }
 
     public Group createGroup() {
