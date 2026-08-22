@@ -175,13 +175,13 @@
   			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgLinkable -->
   			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:type" name="type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:href" name="href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:role" name="role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:arcrole" name="arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:title" name="title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:show" name="show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:actuate" name="actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
   			<!-- ISvgExternalResources -->
   			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
   			<!-- ISvgEventListener -->
@@ -208,13 +208,13 @@
   			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgLinkable -->
   			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:type" name="type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:href" name="href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:role" name="role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:arcrole" name="arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:title" name="title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:show" name="show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:actuate" name="actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
   			<!-- ISvgExternalResources -->
   			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
   		</java-attributes>
@@ -410,13 +410,13 @@
   			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgLinkable -->
   			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:type" name="type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:href" name="href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:role" name="role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:arcrole" name="arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:title" name="title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:show" name="show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:actuate" name="actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
   			<!-- ISvgExternalResources -->
   			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
   			<!-- ISvgEventListener -->
@@ -520,13 +520,13 @@
   		<java-attributes>
   			<!-- ISvgLinkable -->
   			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:type" name="type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:href" name="href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:role" name="role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:arcrole" name="arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:title" name="title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:show" name="show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:actuate" name="actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
   			<!-- ISvgExternalResources -->
   			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
   		</java-attributes>
@@ -790,13 +790,13 @@
   			<xml-attribute java-attribute="systemLanguage" type="java.lang.String" />
   			<!-- ISvgLinkable -->
   			<xml-attribute java-attribute="xmlnsXlink" name="xmlns:xlink" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkType" name="xlink:type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkHref" name="xlink:href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkRole" name="xlink:role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkArcrole" name="xlink:arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkTitle" name="xlink:title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkShow" name="xlink:show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
-  			<xml-attribute java-attribute="xlinkActuate" name="xlink:actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:type" name="type" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:href" name="href" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:role" name="role" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:arcrole" name="arcrole" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:title" name="title" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:show" name="show" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
+  			<xml-attribute java-attribute="xlink:actuate" name="actuate" type="java.lang.String" namespace="http://www.w3.org/1999/xlink" />
   			<!-- ISvgExternalResources -->
   			<xml-attribute java-attribute="externalResourcesRequired" type="java.lang.Boolean"></xml-attribute>
   			<!-- ISvgEventListener -->
