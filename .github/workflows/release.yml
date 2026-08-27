@@ -28,7 +28,7 @@ jobs:
         server-id: central
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
-        gpg-private-key: ${{secrets.OSSRH_GPG_SECRET_KEY}}
+        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
         gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
     # 0.9.5 was tagged with -SNAPSHOT still in the pom, so it built snapshot artifacts, failed to deploy, and still
@@ -54,7 +54,7 @@ jobs:
       env:
         MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
-        MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
     # After the publish, so a failed deploy cannot leave a release announcing a version that is not on Central.
     - name: Create release
