@@ -33,14 +33,6 @@
         <url>http://github.com/ctgnz/foxglove/tree/master</url>
     </scm>
 
-    <distributionManagement>
-        <repository>
-            <id>ossrh</id>
-            <name>Central Repository OSSRH</name>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -168,15 +160,21 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.13</version>
+                        <!--
+                            Publishes to the Central Portal, which replaced OSSRH. The plugin uploads directly, so
+                            no distributionManagement repository is needed.
+
+                            autoPublish is false, so a tag stages a validated deployment on the Portal and
+                            publishing to Central stays a deliberate step. Set it to true to publish automatically,
+                            which is what the previous nexus-staging autoReleaseAfterClose did.
+                        -->
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.11.0</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <goals>deploy nexus-staging:release</goals>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>false</autoPublish>
                         </configuration>
                     </plugin>
                 </plugins>
