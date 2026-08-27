@@ -9,8 +9,6 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgGroup;
-import nz.co.ctg.foxglove.shape.ISvgShape;
-import nz.co.ctg.foxglove.text.SvgText;
 
 import static java.util.stream.Collectors.toList;
 
@@ -23,7 +21,7 @@ import javafx.scene.Group;
 
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
 public class SvgGraphic extends AbstractSvgStylable
-    implements ISvgStylable, ISvgBounded, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgDescribable {
+    implements ISvgStylable, ISvgBounded, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgDescribable, ISvgContainer {
 
     private String onUnload;
     private String onAbort;
@@ -73,24 +71,7 @@ public class SvgGraphic extends AbstractSvgStylable
         baseGroup.setTranslateX(getPixelsX());
         baseGroup.setTranslateY(getPixelsY());
         baseGroup.setId(StringUtils.defaultIfBlank(getId(), "svg"));
-        getContent().forEach(child -> {
-            if (child instanceof SvgGroup) {
-                SvgGroup group = (SvgGroup) child;
-                if (group.isVisible()) {
-                    baseGroup.getChildren().add(group.createGraphic(this));
-                }
-            }
-            if (child instanceof ISvgShape<?>) {
-                ISvgShape<?> shape = (ISvgShape<?>) child;
-                if (shape.isVisible()) {
-                    baseGroup.getChildren().add(shape.createGraphic(this));
-                }
-            }
-            if (child instanceof SvgText) {
-                SvgText shape = (SvgText) child;
-                baseGroup.getChildren().add(shape.createGraphic(this));
-            }
-        });
+        appendContent(baseGroup);
         return baseGroup;
     }
 
