@@ -41,7 +41,7 @@ public final class SvgInheritedStyle implements ISvgStylable {
         TEXT_FONT_FAMILY, TEXT_FONT_SIZE, TEXT_FONT_SIZE_ADJUST, TEXT_FONT_STRETCH, TEXT_FONT_STYLE,
         TEXT_FONT_VARIANT, TEXT_FONT_WEIGHT);
 
-    private static final SvgInheritedStyle ROOT = new SvgInheritedStyle(Collections.emptyMap());
+    private static final SvgInheritedStyle ROOT = new SvgInheritedStyle(Collections.emptyMap(), null);
 
     /**
      * The style in force outside any element, where nothing has been specified and every property falls back to its
@@ -49,6 +49,16 @@ public final class SvgInheritedStyle implements ISvgStylable {
      */
     public static SvgInheritedStyle root() {
         return ROOT;
+    }
+
+    /**
+     * The style in force outside any element, carrying the index used to resolve {@code url(#id)} references.
+     * <p>
+     * The index rides along with the style because the style is already what descends through rendering. When the
+     * rendering context of #13 exists it should own this instead.
+     */
+    public static SvgInheritedStyle root(SvgElementIndex index) {
+        return new SvgInheritedStyle(Collections.emptyMap(), index);
     }
 
     /**
@@ -76,13 +86,27 @@ public final class SvgInheritedStyle implements ISvgStylable {
                 }
             }
         }
-        return new SvgInheritedStyle(resolved);
+        return new SvgInheritedStyle(resolved, indexOf(parent));
+    }
+
+    private static SvgElementIndex indexOf(ISvgAttributes parent) {
+        return parent instanceof SvgInheritedStyle inherited ? inherited.elementIndex : null;
     }
 
     private final Map<String, Object> properties;
+    private final SvgElementIndex elementIndex;
 
-    private SvgInheritedStyle(Map<String, Object> properties) {
+    private SvgInheritedStyle(Map<String, Object> properties, SvgElementIndex elementIndex) {
         this.properties = properties;
+        this.elementIndex = elementIndex;
+    }
+
+    /**
+     * The index for the document being rendered, used to resolve paint and other references, or null when the style
+     * was built without one.
+     */
+    public SvgElementIndex getElementIndex() {
+        return elementIndex;
     }
 
     @Override

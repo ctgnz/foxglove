@@ -16,6 +16,10 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -77,6 +81,36 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
     private List<ISvgElement> content;
+
+    /**
+     * The initial values centre the gradient on the target and give it a radius half its width, with the focal point
+     * at the centre.
+     * <p>
+     * SVG places the focal point in cartesian coordinates, while JavaFX takes an angle and a distance as a fraction
+     * of the radius, so the offset from the centre is converted to polar form. A radius of zero paints the last stop
+     * flat, per the specification.
+     */
+    @Override
+    public Paint createPaint() {
+        List<Stop> stops = getGradientStops();
+        if (stops.size() < 2) {
+            return getDegeneratePaint(stops);
+        }
+        double centreX = ISvgGradientElement.coordinate(cx, 0.5);
+        double centreY = ISvgGradientElement.coordinate(cy, 0.5);
+        double radius = ISvgGradientElement.coordinate(r, 0.5);
+        if (radius <= 0.0) {
+            return stops.get(stops.size() - 1).getColor();
+        }
+        double focusX = ISvgGradientElement.coordinate(fx, centreX);
+        double focusY = ISvgGradientElement.coordinate(fy, centreY);
+        double offsetX = focusX - centreX;
+        double offsetY = focusY - centreY;
+        double focusDistance = Math.clamp(Math.hypot(offsetX, offsetY) / radius, 0.0, 1.0);
+        double focusAngle = Math.toDegrees(Math.atan2(offsetY, offsetX));
+        return new RadialGradient(focusAngle, focusDistance, centreX, centreY, radius,
+            isProportional(), getCycleMethod(), stops);
+    }
 
     public String getCx() {
         return cx;

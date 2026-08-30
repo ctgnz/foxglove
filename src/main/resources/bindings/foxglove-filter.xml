@@ -27,9 +27,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -117,9 +117,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -195,9 +195,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -273,9 +273,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -351,9 +351,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -429,9 +429,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -507,9 +507,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -585,8 +585,8 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -662,9 +662,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -740,9 +740,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -818,9 +818,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -907,9 +907,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -985,9 +985,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -1063,9 +1063,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -1141,9 +1141,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -1219,9 +1219,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -1297,9 +1297,9 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="javafx.scene.paint.Paint" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
   				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
   			</xml-attribute>
@@ -1430,7 +1430,7 @@
   	</java-type>
   </java-types>
   <xml-java-type-adapters>
-  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.SvgPaintAdapter" type="javafx.scene.paint.Paint"/>
+  	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.SvgPaintAdapter" type="nz.co.ctg.foxglove.type.SvgPaint"/>
   	<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.ViewBoxAdapter" type="nz.co.ctg.foxglove.type.ViewBox" />
   </xml-java-type-adapters>
 </xml-bindings>

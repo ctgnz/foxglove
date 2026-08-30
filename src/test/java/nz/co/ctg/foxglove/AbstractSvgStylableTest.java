@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.type.SvgPaint;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -29,8 +30,8 @@ public class AbstractSvgStylableTest {
     public void testParseStyleAppliesEachDeclaration() throws Exception {
         candidate.setStyle("fill:red;stroke:blue;stroke-width:2.5;stroke-miterlimit:8;stroke-dashoffset:3");
         candidate.parseStyle();
-        assertThat(candidate.getFill(), is(Color.RED));
-        assertThat(candidate.getStroke(), is(Color.BLUE));
+        assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
+        assertThat(candidate.getStroke(), is(SvgPaint.of(Color.BLUE)));
         assertThat(candidate.getStrokeWidth(), is(2.5));
         assertThat(candidate.getStrokeMiterLimit(), is(8.0));
         assertThat(candidate.getStrokeDashOffset(), is(3.0));
@@ -40,8 +41,8 @@ public class AbstractSvgStylableTest {
     public void testParseStyleToleratesWhitespace() throws Exception {
         candidate.setStyle("  fill : red ; stroke : blue  ");
         candidate.parseStyle();
-        assertThat(candidate.getFill(), is(Color.RED));
-        assertThat(candidate.getStroke(), is(Color.BLUE));
+        assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
+        assertThat(candidate.getStroke(), is(SvgPaint.of(Color.BLUE)));
     }
 
     @Test
@@ -58,7 +59,7 @@ public class AbstractSvgStylableTest {
     public void testPropertyNamesAreCaseInsensitive() throws Exception {
         candidate.setStyle("FILL:red;Stroke-Width:2.5");
         candidate.parseStyle();
-        assertThat(candidate.getFill(), is(Color.RED));
+        assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
         assertThat(candidate.getStrokeWidth(), is(2.5));
     }
 
@@ -89,8 +90,8 @@ public class AbstractSvgStylableTest {
     public void testKeywordValuesAreCaseInsensitive() throws Exception {
         candidate.setStyle("fill:NONE;stroke:Blue;stroke-linecap:ROUND;stroke-linejoin:Bevel;font-weight:BOLD;font-style:Italic");
         candidate.parseStyle();
-        assertThat(candidate.getFill(), is(Color.TRANSPARENT));
-        assertThat(candidate.getStroke(), is(Color.BLUE));
+        assertThat(candidate.getFill(), is(SvgPaint.none()));
+        assertThat(candidate.getStroke(), is(SvgPaint.of(Color.BLUE)));
         assertThat(candidate.getStrokeLineCap(), is(StrokeLineCap.ROUND));
         assertThat(candidate.getStrokeLineJoin(), is(StrokeLineJoin.BEVEL));
         assertThat(candidate.getFontWeight(), is(FontWeight.BOLD));
@@ -136,7 +137,7 @@ public class AbstractSvgStylableTest {
     public void testMalformedDeclarationsDoNotPreventOthersApplying() throws Exception {
         candidate.setStyle("fill:red;;stroke;stroke-width:2.5; ;");
         candidate.parseStyle();
-        assertThat(candidate.getFill(), is(Color.RED));
+        assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
         assertThat(candidate.getStroke(), is(nullValue()));
         assertThat(candidate.getStrokeWidth(), is(2.5));
     }
