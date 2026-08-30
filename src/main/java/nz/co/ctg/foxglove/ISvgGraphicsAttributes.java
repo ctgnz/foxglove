@@ -2,13 +2,18 @@ package nz.co.ctg.foxglove;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.FillRule;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
@@ -39,12 +44,30 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     String GRAPHX_STOP_COLOR = "stop-color";
     String GRAPHX_STOP_OPACITY = "stop-opacity";
 
+    /*
+     * The SVG initial values, which apply when neither the element nor any ancestor specifies the property. Several
+     * differ from the JavaFX defaults - JavaFX starts a stroke SQUARE with a miter limit of 10, where SVG starts it
+     * butt with a limit of 4 - so they are applied explicitly rather than left to the node.
+     */
+    Paint INITIAL_FILL = Color.BLACK;
+    double INITIAL_STROKE_WIDTH = 1.0;
+    double INITIAL_STROKE_MITER_LIMIT = 4.0;
+    double INITIAL_STROKE_DASH_OFFSET = 0.0;
+    StrokeLineCap INITIAL_STROKE_LINE_CAP = StrokeLineCap.BUTT;
+    StrokeLineJoin INITIAL_STROKE_LINE_JOIN = StrokeLineJoin.MITER;
+
     default boolean isFilled() {
-        return getFill() != null && getFill() != Color.TRANSPARENT;
+        // an unspecified fill is not an absent one - black is the initial value
+        return getFill() != Color.TRANSPARENT;
     }
 
+    /**
+     * The fill this element specifies, or null if it specifies none. Absence matters: it is what lets the value be
+     * inherited from an ancestor, so this deliberately does not substitute the initial value. Initial values are
+     * applied once, at the end of resolution, in {@link #applyGraphicsProperties}.
+     */
     default Paint getFill() {
-        return defaultIfNull(get(GRAPHX_FILL), Color.BLACK);
+        return get(GRAPHX_FILL);
     }
 
     default void setFill(Paint value) {
@@ -262,18 +285,106 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         builder.add(GRAPHX_STOP_OPACITY, getStopOpacity());
     }
 
+    /**
+     * Applies the resolved paint and stroke properties to a shape, along with the properties that apply to any node.
+     *
+     * @param parent the style inherited from the ancestors, already resolved - see {@link SvgInheritedStyle}
+     */
     default void applyGraphicsProperties(ISvgStylable parent, Shape shape) {
-        shape.setFill(defaultIfNull(getFill(), parent.getFill()));
-        shape.setStroke(defaultIfNull(getStroke(), parent.getStroke()));
-        shape.setStrokeWidth(defaultIfNull(defaultIfNull(getStrokeWidth(), parent.getStrokeWidth()), 0.0));
-        shape.setStrokeMiterLimit(defaultIfNull(defaultIfNull(getStrokeMiterLimit(), parent.getStrokeMiterLimit()), 0.0));
-        shape.setStrokeLineCap(defaultIfNull(getStrokeLineCap(), parent.getStrokeLineCap()));
-        shape.setStrokeLineJoin(defaultIfNull(getStrokeLineJoin(), parent.getStrokeLineJoin()));
-        shape.setStrokeDashOffset(defaultIfNull(defaultIfNull(getStrokeDashOffset(), parent.getStrokeDashOffset()), 0.0));
-        if (getStrokeDashArray() != null) {
-            shape.getStrokeDashArray().addAll(getStrokeDashArray());
-        } else if (parent.getStrokeDashArray() != null) {
-            shape.getStrokeDashArray().addAll(parent.getStrokeDashArray());
+        ISvgStylable style = SvgInheritedStyle.resolve(parent, this);
+
+        shape.setFill(withOpacity(defaultIfNull(style.getFill(), INITIAL_FILL), style.getFillOpacity()));
+        shape.setStroke(withOpacity(style.getStroke(), style.getStrokeOpacity()));
+        shape.setStrokeWidth(defaultIfNull(style.getStrokeWidth(), INITIAL_STROKE_WIDTH));
+        shape.setStrokeMiterLimit(defaultIfNull(style.getStrokeMiterLimit(), INITIAL_STROKE_MITER_LIMIT));
+        shape.setStrokeDashOffset(defaultIfNull(style.getStrokeDashOffset(), INITIAL_STROKE_DASH_OFFSET));
+        shape.setStrokeLineCap(defaultIfNull(style.getStrokeLineCap(), INITIAL_STROKE_LINE_CAP));
+        shape.setStrokeLineJoin(defaultIfNull(style.getStrokeLineJoin(), INITIAL_STROKE_LINE_JOIN));
+        if (style.getStrokeDashArray() != null) {
+            shape.getStrokeDashArray().addAll(style.getStrokeDashArray());
+        }
+        applyFillRule(style.getFillRule(), shape);
+        applyOpacity(shape);
+        applyVisibility(style, shape);
+    }
+
+    /**
+     * Applies the properties that apply to any node rather than to a shape's geometry, for elements such as
+     * {@code <g>} that render to a container rather than to a {@link Shape}.
+     * <p>
+     * Deliberately does not apply {@code visibility}. A hidden element still takes part in rendering, and a
+     * descendant may set itself visible again - but an invisible JavaFX parent hides its children unconditionally,
+     * so hiding the group node would make that override impossible. Instead {@code visibility} travels down as an
+     * inherited property and each leaf decides for itself.
+     */
+    default void applyNodeProperties(ISvgStylable parent, Node node) {
+        applyOpacity(node);
+    }
+
+    /**
+     * {@code opacity} is not inherited - it applies to the element that declares it, and on a group it composites
+     * the whole subtree, which is what SVG group opacity means and what JavaFX already does for a {@code Group}.
+     */
+    private void applyOpacity(Node node) {
+        Double opacity = parseOpacity(getOpacity());
+        if (opacity != null) {
+            node.setOpacity(opacity);
+        }
+    }
+
+    /**
+     * {@code visibility} is inherited, so it comes from the resolved style rather than from this element alone.
+     * Unlike {@code display}, a hidden element keeps its place in the scene graph.
+     */
+    private static void applyVisibility(ISvgStylable style, Node node) {
+        String visibility = style.getVisibility();
+        if (visibility != null) {
+            node.setVisible(!"hidden".equalsIgnoreCase(visibility) && !"collapse".equalsIgnoreCase(visibility));
+        }
+    }
+
+    /**
+     * JavaFX exposes a fill rule on {@code Path} and {@code SVGPath} only, so {@code fill-rule} cannot be honoured
+     * on a {@code <polygon>} even though SVG defines it there.
+     */
+    private static void applyFillRule(FillRule fillRule, Shape shape) {
+        if (fillRule == null) {
+            return;
+        }
+        if (shape instanceof SVGPath svgPath) {
+            svgPath.setFillRule(fillRule);
+        } else if (shape instanceof Path path) {
+            path.setFillRule(fillRule);
+        }
+    }
+
+    /**
+     * Folds {@code fill-opacity} or {@code stroke-opacity} into the paint, which is where JavaFX carries alpha. The
+     * value multiplies any alpha the colour already has, per the specification. A gradient or pattern is returned
+     * unchanged, as only a {@code Color} exposes a derivable opacity.
+     */
+    private static Paint withOpacity(Paint paint, String opacity) {
+        Double alpha = parseOpacity(opacity);
+        if (alpha != null && paint instanceof Color color) {
+            return color.deriveColor(0, 1, 1, alpha);
+        }
+        return paint;
+    }
+
+    /**
+     * Parses an opacity, accepting a number or a percentage, and clamping to the range the specification allows.
+     */
+    static Double parseOpacity(String value) {
+        if (StringUtils.isBlank(value)) {
+            return null;
+        }
+        String text = value.trim();
+        try {
+            boolean percentage = text.endsWith("%");
+            double parsed = Double.parseDouble(percentage ? text.substring(0, text.length() - 1) : text);
+            return Math.clamp(percentage ? parsed / 100.0 : parsed, 0.0, 1.0);
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 
