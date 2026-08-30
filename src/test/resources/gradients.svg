@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paint references and gradients. Laid out as a grid so the cases can be told apart in FoxgloveParserPreview.
+
+  Row 1: linear gradient by attribute | radial gradient by style | unresolvable with a fallback | unresolvable without one
+  Row 2: currentColor                 | explicit none            | gradient on the stroke
+
+  The two that paint nothing carry a dashed outline so their position is still visible.
+-->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="200" height="200" color="green">
+     width="300" height="160" viewBox="0 0 300 160" color="green">
 
   <defs>
     <linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="reflect">
@@ -14,12 +22,16 @@
     </radialGradient>
   </defs>
 
-  <rect id="viaAttribute" width="10" height="10" fill="url(#linear)"/>
-  <rect id="viaStyle" width="10" height="10" style="fill:url(#radial)"/>
-  <rect id="withFallback" width="10" height="10" fill="url(#missing) red"/>
-  <rect id="noFallback" width="10" height="10" fill="url(#missing)"/>
-  <rect id="currentColour" width="10" height="10" fill="currentColor"/>
-  <rect id="explicitNone" width="10" height="10" fill="none"/>
-  <rect id="strokedWithGradient" width="10" height="10" stroke="url(#linear)"/>
+  <rect id="viaAttribute" x="20" y="20" width="50" height="50" fill="url(#linear)"/>
+  <rect id="viaStyle" x="90" y="20" width="50" height="50" style="fill:url(#radial)"/>
+  <rect id="withFallback" x="160" y="20" width="50" height="50" fill="url(#missing) red"/>
+  <rect id="noFallback" x="230" y="20" width="50" height="50" fill="url(#missing)"
+        stroke="gray" stroke-dasharray="4 4"/>
+
+  <rect id="currentColour" x="20" y="90" width="50" height="50" fill="currentColor"/>
+  <rect id="explicitNone" x="90" y="90" width="50" height="50" fill="none"
+        stroke="gray" stroke-dasharray="4 4"/>
+  <rect id="strokedWithGradient" x="160" y="90" width="50" height="50" fill="white"
+        stroke="url(#linear)" stroke-width="6"/>
 
 </svg>
