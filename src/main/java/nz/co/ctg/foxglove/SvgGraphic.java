@@ -67,11 +67,12 @@ public class SvgGraphic extends AbstractSvgStylable
     }
 
     public Group createGroup() {
+        parseStyle();
         Group baseGroup = new Group();
         baseGroup.setTranslateX(getPixelsX());
         baseGroup.setTranslateY(getPixelsY());
         baseGroup.setId(StringUtils.defaultIfBlank(getId(), "svg"));
-        appendContent(baseGroup);
+        appendContent(baseGroup, null);
         return baseGroup;
     }
 

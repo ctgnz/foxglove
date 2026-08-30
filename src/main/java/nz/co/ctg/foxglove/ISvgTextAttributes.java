@@ -219,9 +219,18 @@ public interface ISvgTextAttributes extends ISvgAttributes {
         builder.add(TEXT_FONT_WEIGHT, getFontWeight());
     }
 
-    default void applyTextProperties(Text svgText) {
-        Size size = SizeAdapter.parse(getFontSize());
-        String fontFamily = StringUtils.defaultIfBlank(getFontFamily(), "sans-serif");
+    /**
+     * Applies the resolved font properties to a text node.
+     * <p>
+     * The font properties are inherited, so they are read from the style resolved against the ancestors rather than
+     * from this element alone - otherwise {@code <g font-family="serif"><text/></g>} would draw in the default font.
+     *
+     * @param parent the style inherited from the ancestors, already resolved - see {@link SvgInheritedStyle}
+     */
+    default void applyTextProperties(ISvgStylable parent, Text svgText) {
+        ISvgStylable style = SvgInheritedStyle.resolve(parent, this);
+        Size size = SizeAdapter.parse(style.getFontSize());
+        String fontFamily = StringUtils.defaultIfBlank(style.getFontFamily(), "sans-serif");
         switch (fontFamily) {
             case "monospace":
                 fontFamily = "Monospaced";
@@ -235,8 +244,8 @@ public interface ISvgTextAttributes extends ISvgAttributes {
                 fontFamily = "SansSerif";
                 break;
         }
-        FontWeight fontWeight = defaultIfNull(getFontWeight(), FontWeight.NORMAL);
-        FontPosture fontPosture = defaultIfNull(getFontStyle(), FontPosture.REGULAR);
+        FontWeight fontWeight = defaultIfNull(style.getFontWeight(), FontWeight.NORMAL);
+        FontPosture fontPosture = defaultIfNull(style.getFontStyle(), FontPosture.REGULAR);
         Font font = Font.font(fontFamily, fontWeight, fontPosture, size.pixels());
         svgText.setFont(font);
     }

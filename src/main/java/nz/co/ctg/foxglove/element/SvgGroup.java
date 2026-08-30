@@ -107,10 +107,12 @@ public class SvgGroup extends AbstractSvgStylable
 
     @Override
     public Group createGraphic(ISvgStylable parent) {
+        parseStyle();
         Group group = new Group();
         group.setId(getId());
+        applyNodeProperties(parent, group);
         applyTransforms(group);
-        appendContent(group);
+        appendContent(group, parent);
         return group;
     }
 

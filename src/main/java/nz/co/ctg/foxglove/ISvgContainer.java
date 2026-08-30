@@ -15,11 +15,19 @@ public interface ISvgContainer extends ISvgContent, ISvgStylable {
 
     /**
      * Builds a graphic for each renderable child and appends it to the given node, in document order.
+     * <p>
+     * Children are handed this container's own style resolved against what it inherited, rather than the container
+     * element itself. SVG inheritance walks the whole ancestor chain, but an element is only ever passed its
+     * immediate parent, so the accumulated style has to descend with the traversal for a grandparent's fill to
+     * reach a grandchild.
+     *
+     * @param inherited the style in force outside this container, or null at the root of the document
      */
-    default void appendContent(Group target) {
+    default void appendContent(Group target, ISvgStylable inherited) {
+        SvgInheritedStyle style = SvgInheritedStyle.resolve(inherited, this);
         for (ISvgElement child : getContent()) {
             if (child instanceof FxGraphic<?> graphic && isRendered(child)) {
-                Node node = graphic.createGraphic(this);
+                Node node = graphic.createGraphic(style);
                 if (node != null) {
                     target.getChildren().add(node);
                 }
