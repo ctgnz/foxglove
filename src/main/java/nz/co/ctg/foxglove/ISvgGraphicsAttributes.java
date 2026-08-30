@@ -6,6 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.type.SvgPaint;
+
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import javafx.scene.Node;
@@ -58,7 +60,8 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
 
     default boolean isFilled() {
         // an unspecified fill is not an absent one - black is the initial value
-        return getFill() != Color.TRANSPARENT;
+        SvgPaint fill = getFill();
+        return fill == null || !fill.isNone();
     }
 
     /**
@@ -66,12 +69,19 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
      * inherited from an ancestor, so this deliberately does not substitute the initial value. Initial values are
      * applied once, at the end of resolution, in {@link #applyGraphicsProperties}.
      */
-    default Paint getFill() {
+    default SvgPaint getFill() {
         return get(GRAPHX_FILL);
     }
 
-    default void setFill(Paint value) {
+    default void setFill(SvgPaint value) {
         set(GRAPHX_FILL, value);
+    }
+
+    /**
+     * Convenience for setting a fill that is already a resolved paint.
+     */
+    default void setFill(Paint value) {
+        set(GRAPHX_FILL, SvgPaint.of(value));
     }
 
     default FillRule getFillRule() {
@@ -90,12 +100,19 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         set(GRAPHX_FILL_OPACITY, value);
     }
 
-    default Paint getStroke() {
+    default SvgPaint getStroke() {
         return get(GRAPHX_STROKE);
     }
 
-    default void setStroke(Paint value) {
+    default void setStroke(SvgPaint value) {
         set(GRAPHX_STROKE, value);
+    }
+
+    /**
+     * Convenience for setting a stroke that is already a resolved paint.
+     */
+    default void setStroke(Paint value) {
+        set(GRAPHX_STROKE, SvgPaint.of(value));
     }
 
     default List<Double> getStrokeDashArray() {
@@ -293,8 +310,12 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     default void applyGraphicsProperties(ISvgStylable parent, Shape shape) {
         ISvgStylable style = SvgInheritedStyle.resolve(parent, this);
 
-        shape.setFill(withOpacity(defaultIfNull(style.getFill(), INITIAL_FILL), style.getFillOpacity()));
-        shape.setStroke(withOpacity(style.getStroke(), style.getStrokeOpacity()));
+        // An unspecified paint takes its initial value - black for fill, none for stroke - while an explicit "none"
+        // resolves to no paint. Both arrive here as null from the resolver, so they are separated before it is called.
+        SvgPaint fill = style.getFill();
+        SvgPaint stroke = style.getStroke();
+        shape.setFill(withOpacity(fill == null ? INITIAL_FILL : SvgPaintResolver.resolve(fill, style), style.getFillOpacity()));
+        shape.setStroke(withOpacity(stroke == null ? null : SvgPaintResolver.resolve(stroke, style), style.getStrokeOpacity()));
         shape.setStrokeWidth(defaultIfNull(style.getStrokeWidth(), INITIAL_STROKE_WIDTH));
         shape.setStrokeMiterLimit(defaultIfNull(style.getStrokeMiterLimit(), INITIAL_STROKE_MITER_LIMIT));
         shape.setStrokeDashOffset(defaultIfNull(style.getStrokeDashOffset(), INITIAL_STROKE_DASH_OFFSET));

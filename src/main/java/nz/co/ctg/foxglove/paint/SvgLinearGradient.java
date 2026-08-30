@@ -16,6 +16,10 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.Stop;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -73,6 +77,24 @@ public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradie
         @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
     private List<ISvgElement> content;
+
+    /**
+     * The initial values run the gradient left to right across the target: x1 and y1 at the origin, x2 at the far
+     * edge and y2 level with the start.
+     */
+    @Override
+    public Paint createPaint() {
+        List<Stop> stops = getGradientStops();
+        if (stops.size() < 2) {
+            return getDegeneratePaint(stops);
+        }
+        return new LinearGradient(
+            ISvgGradientElement.coordinate(x1, 0.0),
+            ISvgGradientElement.coordinate(y1, 0.0),
+            ISvgGradientElement.coordinate(x2, 1.0),
+            ISvgGradientElement.coordinate(y2, 0.0),
+            isProportional(), getCycleMethod(), stops);
+    }
 
     public String getX1() {
         return x1;

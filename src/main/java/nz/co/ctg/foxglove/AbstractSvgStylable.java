@@ -13,11 +13,11 @@ import nz.co.ctg.foxglove.adapter.FontWeightAdapter;
 import nz.co.ctg.foxglove.adapter.StrokeLineCapAdapter;
 import nz.co.ctg.foxglove.adapter.StrokeLineJoinAdapter;
 import nz.co.ctg.foxglove.adapter.SvgPaintAdapter;
+import nz.co.ctg.foxglove.type.SvgPaint;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.FontPosture;
@@ -104,7 +104,7 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
         ISvgStylable.super.toStringDetail(builder);
     }
 
-    private Paint parsePaint(String value) {
+    private SvgPaint parsePaint(String value) {
         try {
             return paintAdapter.unmarshal(value);
         } catch (Exception e) {

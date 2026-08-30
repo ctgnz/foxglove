@@ -130,8 +130,8 @@ public class FoxgloveParser {
             .add(getClass().getResourceAsStream("/bindings/foxglove-paint.xml"))
             .add(getClass().getResourceAsStream("/bindings/foxglove-shape.xml"))
             .add(getClass().getResourceAsStream("/bindings/foxglove-text.xml"))
+            .add(getClass().getResourceAsStream("/bindings/foxglove-type.xml"))
             .add(getClass().getResourceAsStream("/bindings/javafx-css.xml"))
-            .add(getClass().getResourceAsStream("/bindings/javafx-paint.xml"))
             .add(getClass().getResourceAsStream("/bindings/javafx-shape.xml"))
             .add(getClass().getResourceAsStream("/bindings/javafx-text.xml"))
             .build();

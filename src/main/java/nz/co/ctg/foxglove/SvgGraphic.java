@@ -72,7 +72,7 @@ public class SvgGraphic extends AbstractSvgStylable
         baseGroup.setTranslateX(getPixelsX());
         baseGroup.setTranslateY(getPixelsY());
         baseGroup.setId(StringUtils.defaultIfBlank(getId(), "svg"));
-        appendContent(baseGroup, null);
+        appendContent(baseGroup, SvgInheritedStyle.root(getElementIndex()));
         return baseGroup;
     }
 

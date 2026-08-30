@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.type.SvgPaint;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -27,7 +28,7 @@ public class SvgInheritedStyleTest {
         group.setStrokeWidth(3.0);
 
         SvgInheritedStyle style = SvgInheritedStyle.resolve(null, group);
-        assertThat(style.getFill(), is(Color.RED));
+        assertThat(style.getFill(), is(SvgPaint.of(Color.RED)));
         assertThat(style.getStrokeWidth(), is(3.0));
     }
 
@@ -37,7 +38,7 @@ public class SvgInheritedStyleTest {
         outer.setFill(Color.RED);
 
         SvgInheritedStyle style = SvgInheritedStyle.resolve(SvgInheritedStyle.resolve(null, outer), new SvgGroup());
-        assertThat(style.getFill(), is(Color.RED));
+        assertThat(style.getFill(), is(SvgPaint.of(Color.RED)));
     }
 
     @Test
@@ -48,7 +49,7 @@ public class SvgInheritedStyleTest {
         inner.setFill(Color.BLUE);
 
         SvgInheritedStyle style = SvgInheritedStyle.resolve(SvgInheritedStyle.resolve(null, outer), inner);
-        assertThat(style.getFill(), is(Color.BLUE));
+        assertThat(style.getFill(), is(SvgPaint.of(Color.BLUE)));
     }
 
     /**
@@ -66,9 +67,9 @@ public class SvgInheritedStyleTest {
 
         SvgInheritedStyle style = SvgInheritedStyle.resolve(
             SvgInheritedStyle.resolve(SvgInheritedStyle.resolve(null, a), b), c);
-        assertThat(style.getFill(), is(Color.RED));
+        assertThat(style.getFill(), is(SvgPaint.of(Color.RED)));
         assertThat(style.getStrokeWidth(), is(2.0));
-        assertThat(style.getStroke(), is(Color.GREEN));
+        assertThat(style.getStroke(), is(SvgPaint.of(Color.GREEN)));
     }
 
     /**
