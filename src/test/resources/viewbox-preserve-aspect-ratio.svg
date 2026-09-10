@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Demonstrates #13: nested <svg> viewports, and the viewBox/preserveAspectRatio transform (meet vs slice, across the
+  three horizontal alignments). Each cell is a nested <svg width="50" height="30" viewBox="0 0 30 40" ...> - a
+  viewport wider than it is tall, fitted with a viewBox taller than it is wide, so meet/slice/alignment all produce
+  visibly different results from the same content.
+
+  The dashed rectangle behind each cell marks the nested <svg>'s own x/y/width/height - the nominal viewport - drawn
+  as a sibling in the outer coordinate system rather than relying on the renderer to clip to it: overflow clipping
+  for viewport-establishing elements is a separate, not-yet-implemented concern (there is no <svg>/<symbol>/
+  <marker>/<pattern> equivalent of Node.setClip() yet), so under "slice" the content visibly overflows the dashed
+  frame instead of being cropped to it. The scale/translate math itself (what #13 actually implements) is what the
+  corner dots line up against the frame under "meet", and what pushes past it under "slice".
+
+  Each nested viewBox contains the same four corner dots plus a centre dot, so alignment is easy to read visually:
+  meet letterboxes inside the dashed frame (all four dots stay visible, with slack space on two sides); slice fills
+  the frame exactly on one axis and overflows on the other, with which corners get pushed outside depending on the
+  alignment keyword.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="290" height="200">
+
+  <text x="10" y="16" font-size="13" font-weight="bold">meet</text>
+  <text x="10" y="106" font-size="13" font-weight="bold">slice</text>
+
+  <!-- meet row -->
+  <text x="20" y="28" font-size="11">xMinYMin</text>
+  <rect x="20" y="34" width="50" height="30" fill="none" stroke="#999" stroke-dasharray="3,2"/>
+  <svg x="20" y="34" width="50" height="30" viewBox="0 0 30 40" preserveAspectRatio="xMinYMin meet">
+    <rect x="0" y="0" width="30" height="40" fill="#eef3ff" stroke="#335"/>
+    <circle cx="3" cy="3" r="2.2" fill="crimson"/>
+    <circle cx="27" cy="3" r="2.2" fill="seagreen"/>
+    <circle cx="3" cy="37" r="2.2" fill="royalblue"/>
+    <circle cx="27" cy="37" r="2.2" fill="darkorange"/>
+    <circle cx="15" cy="20" r="3" fill="black"/>
+  </svg>
+
+  <text x="120" y="28" font-size="11">xMidYMid</text>
+  <rect x="120" y="34" width="50" height="30" fill="none" stroke="#999" stroke-dasharray="3,2"/>
+  <svg x="120" y="34" width="50" height="30" viewBox="0 0 30 40" preserveAspectRatio="xMidYMid meet">
+    <rect x="0" y="0" width="30" height="40" fill="#eef3ff" stroke="#335"/>
+    <circle cx="3" cy="3" r="2.2" fill="crimson"/>
+    <circle cx="27" cy="3" r="2.2" fill="seagreen"/>
+    <circle cx="3" cy="37" r="2.2" fill="royalblue"/>
+    <circle cx="27" cy="37" r="2.2" fill="darkorange"/>
+    <circle cx="15" cy="20" r="3" fill="black"/>
+  </svg>
+
+  <text x="220" y="28" font-size="11">xMaxYMax</text>
+  <rect x="220" y="34" width="50" height="30" fill="none" stroke="#999" stroke-dasharray="3,2"/>
+  <svg x="220" y="34" width="50" height="30" viewBox="0 0 30 40" preserveAspectRatio="xMaxYMax meet">
+    <rect x="0" y="0" width="30" height="40" fill="#eef3ff" stroke="#335"/>
+    <circle cx="3" cy="3" r="2.2" fill="crimson"/>
+    <circle cx="27" cy="3" r="2.2" fill="seagreen"/>
+    <circle cx="3" cy="37" r="2.2" fill="royalblue"/>
+    <circle cx="27" cy="37" r="2.2" fill="darkorange"/>
+    <circle cx="15" cy="20" r="3" fill="black"/>
+  </svg>
+
+  <!-- slice row -->
+  <text x="20" y="118" font-size="11">xMinYMin</text>
+  <rect x="20" y="124" width="50" height="30" fill="none" stroke="#999" stroke-dasharray="3,2"/>
+  <svg x="20" y="124" width="50" height="30" viewBox="0 0 30 40" preserveAspectRatio="xMinYMin slice">
+    <rect x="0" y="0" width="30" height="40" fill="#eef3ff" stroke="#335"/>
+    <circle cx="3" cy="3" r="2.2" fill="crimson"/>
+    <circle cx="27" cy="3" r="2.2" fill="seagreen"/>
+    <circle cx="3" cy="37" r="2.2" fill="royalblue"/>
+    <circle cx="27" cy="37" r="2.2" fill="darkorange"/>
+    <circle cx="15" cy="20" r="3" fill="black"/>
+  </svg>
+
+  <text x="120" y="118" font-size="11">xMidYMid</text>
+  <rect x="120" y="124" width="50" height="30" fill="none" stroke="#999" stroke-dasharray="3,2"/>
+  <svg x="120" y="124" width="50" height="30" viewBox="0 0 30 40" preserveAspectRatio="xMidYMid slice">
+    <rect x="0" y="0" width="30" height="40" fill="#eef3ff" stroke="#335"/>
+    <circle cx="3" cy="3" r="2.2" fill="crimson"/>
+    <circle cx="27" cy="3" r="2.2" fill="seagreen"/>
+    <circle cx="3" cy="37" r="2.2" fill="royalblue"/>
+    <circle cx="27" cy="37" r="2.2" fill="darkorange"/>
+    <circle cx="15" cy="20" r="3" fill="black"/>
+  </svg>
+
+  <text x="220" y="118" font-size="11">xMaxYMax</text>
+  <rect x="220" y="124" width="50" height="30" fill="none" stroke="#999" stroke-dasharray="3,2"/>
+  <svg x="220" y="124" width="50" height="30" viewBox="0 0 30 40" preserveAspectRatio="xMaxYMax slice">
+    <rect x="0" y="0" width="30" height="40" fill="#eef3ff" stroke="#335"/>
+    <circle cx="3" cy="3" r="2.2" fill="crimson"/>
+    <circle cx="27" cy="3" r="2.2" fill="seagreen"/>
+    <circle cx="3" cy="37" r="2.2" fill="royalblue"/>
+    <circle cx="27" cy="37" r="2.2" fill="darkorange"/>
+    <circle cx="15" cy="20" r="3" fill="black"/>
+  </svg>
+
+  <text x="10" y="190" font-size="10" fill="#666">Root: width=290 height=200, no viewBox - a 1:1 viewport, unscaled.</text>
+
+</svg>

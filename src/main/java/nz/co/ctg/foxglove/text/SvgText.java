@@ -8,8 +8,8 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.FxGraphic;
-import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
+import nz.co.ctg.foxglove.RenderContext;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -69,12 +69,12 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     private List<Object> content;
 
     @Override
-    public Text createGraphic(ISvgStylable parent) {
+    public Text createGraphic(RenderContext context) {
         parseStyle();
         Text fxText = createShape();
         fxText.setId(getId());
-        applyGraphicsProperties(parent, fxText);
-        applyTextProperties(parent, fxText);
+        applyGraphicsProperties(context, fxText);
+        applyTextProperties(context, fxText);
         applyTransforms(fxText);
         return fxText;
     }

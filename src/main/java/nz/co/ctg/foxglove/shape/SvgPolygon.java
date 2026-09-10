@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.adapter.PointListAdapter;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -52,7 +53,7 @@ public class SvgPolygon extends AbstractSvgShape<Polygon> {
     private List<ISvgElement> content;
 
     @Override
-    protected Polygon createShape() {
+    protected Polygon createShape(RenderContext context) {
         return new Polygon(getPointList());
     }
 

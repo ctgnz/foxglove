@@ -9,6 +9,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgGroup;
+import nz.co.ctg.foxglove.type.ViewBox;
 
 import static java.util.stream.Collectors.toList;
 
@@ -18,10 +19,21 @@ import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
+import javafx.scene.transform.Transform;
+
+import static nz.co.ctg.foxglove.RenderContext.Axis;
 
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
 public class SvgGraphic extends AbstractSvgStylable
-    implements ISvgStylable, ISvgBounded, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgDescribable, ISvgContainer {
+    implements ISvgStylable, ISvgBounded, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgDescribable, ISvgContainer,
+    FxGraphic<Group> {
+
+    /**
+     * The CSS/SVG UA fallback intrinsic size when neither {@code width}/{@code height} nor {@code viewBox} give one -
+     * relevant only at the document root, since a nested {@code <svg>} always resolves against its parent viewport.
+     */
+    private static final double DEFAULT_WIDTH = 300;
+    private static final double DEFAULT_HEIGHT = 150;
 
     private String onUnload;
     private String onAbort;
@@ -66,14 +78,75 @@ public class SvgGraphic extends AbstractSvgStylable
         return elementIndex;
     }
 
+    /**
+     * Renders this element as the root of the document, establishing the initial viewport from its own
+     * {@code width}/{@code height} (falling back to its {@code viewBox}, then to the standard 300x150 default).
+     */
     public Group createGroup() {
+        return createGraphic(RenderContext.root(getElementIndex(), 0, 0));
+    }
+
+    /**
+     * Renders this element - root or nested - establishing the viewport its content and descendants resolve
+     * percentages and {@code viewBox} against.
+     */
+    @Override
+    public Group createGraphic(RenderContext parentContext) {
         parseStyle();
-        Group baseGroup = new Group();
-        baseGroup.setTranslateX(getPixelsX());
-        baseGroup.setTranslateY(getPixelsY());
-        baseGroup.setId(StringUtils.defaultIfBlank(getId(), "svg"));
-        appendContent(baseGroup, SvgInheritedStyle.root(getElementIndex()));
-        return baseGroup;
+        Group group = new Group();
+        group.setId(StringUtils.defaultIfBlank(getId(), "svg"));
+
+        // x/y position this element within its parent, so - unlike width/height/viewBox below - they resolve
+        // against the parent's viewport rather than the one this element is about to establish.
+        group.setTranslateX(parentContext.resolveLength(getX(), Axis.HORIZONTAL));
+        group.setTranslateY(parentContext.resolveLength(getY(), Axis.VERTICAL));
+
+        double width = resolveIntrinsicLength(getWidth(), parentContext, Axis.HORIZONTAL, DEFAULT_WIDTH);
+        double height = resolveIntrinsicLength(getHeight(), parentContext, Axis.VERTICAL, DEFAULT_HEIGHT);
+
+        // Content resolves percentages against the viewBox's own width/height, not the pixel viewport, once a
+        // viewBox has switched descendants into its coordinate system - the pixel size only matters for computing
+        // the viewBox-to-viewport transform itself.
+        double childViewportWidth = width;
+        double childViewportHeight = height;
+        ViewBox viewBox = getViewBox();
+        if (viewBox != null) {
+            Transform viewBoxTransform = createViewportTransform(width, height);
+            if (viewBoxTransform != null) {
+                group.getTransforms().add(viewBoxTransform);
+            }
+            if (viewBox.getWidth() != null) {
+                childViewportWidth = viewBox.getWidth().pixels();
+            }
+            if (viewBox.getHeight() != null) {
+                childViewportHeight = viewBox.getHeight().pixels();
+            }
+        }
+
+        appendContent(group, parentContext.withViewport(childViewportWidth, childViewportHeight));
+        return group;
+    }
+
+    /**
+     * Resolves {@code width}/{@code height} against the parent viewport when set to a usable length, falling back
+     * to the {@code viewBox} dimension along the same axis, then to {@code fallbackDefault} - the standard UA
+     * behaviour when a viewport-establishing element gives no intrinsic size of its own.
+     */
+    private double resolveIntrinsicLength(Size size, RenderContext parentContext, Axis axis, double fallbackDefault) {
+        if (size != null) {
+            double resolved = parentContext.resolveLength(size, axis);
+            if (resolved > 0) {
+                return resolved;
+            }
+        }
+        ViewBox viewBox = getViewBox();
+        if (viewBox != null) {
+            Size viewBoxLength = axis == Axis.HORIZONTAL ? viewBox.getWidth() : viewBox.getHeight();
+            if (viewBoxLength != null && viewBoxLength.pixels() > 0) {
+                return viewBoxLength.pixels();
+            }
+        }
+        return fallbackDefault;
     }
 
     public SvgGroup getBaseGroup() {

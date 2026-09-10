@@ -4,5 +4,5 @@ import javafx.scene.Node;
 
 public interface FxGraphic<T extends Node> {
 
-    T createGraphic(ISvgStylable parent);
+    T createGraphic(RenderContext context);
 }

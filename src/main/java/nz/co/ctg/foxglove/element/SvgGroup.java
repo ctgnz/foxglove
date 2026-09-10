@@ -13,7 +13,7 @@ import nz.co.ctg.foxglove.ISvgDescribable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgStylable;
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.SvgStyle;
@@ -106,13 +106,13 @@ public class SvgGroup extends AbstractSvgStylable
     private List<ISvgElement> content;
 
     @Override
-    public Group createGraphic(ISvgStylable parent) {
+    public Group createGraphic(RenderContext context) {
         parseStyle();
         Group group = new Group();
         group.setId(getId());
-        applyNodeProperties(parent, group);
+        applyNodeProperties(context, group);
         applyTransforms(group);
-        appendContent(group, parent);
+        appendContent(group, context);
         return group;
     }
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Demonstrates #13's other half: percentage lengths resolving against the enclosing viewport, plus the root
+  viewBox/preserveAspectRatio="none" case (also closing #3 - the root pane resizing/stretching from viewBox).
+
+  The root establishes a 400x200 pixel viewport over a square 0..100 x 0..100 viewBox with preserveAspectRatio=
+  "none", so it stretches non-uniformly (2x wide, 4x tall would be needed for a square to stay square; here it's
+  4x/2x, so the inscribed circle below renders as a visibly wide ellipse - proof the transform scales each axis
+  independently rather than falling back to a single uniform scale).
+
+  Percentages are resolved twice over in this file, at two different reference lengths, to show the reference
+  length is whatever the *current* viewport actually is:
+    - the two "50%" bars are children of the root - they resolve against the viewBox's own 100x100 user-unit space
+      (not the 400x200 pixel size), so "50%" is 50 user units, not 200 pixels.
+    - the nested <svg width="50%" height="50%"> establishes its own viewport at 50% of *its parent's* 100x100
+      user-unit viewport (i.e. 50x50 user units), and the rectangle inside it is in turn sized as a percentage of
+      that 50x50 viewport - two independent percentage resolutions chained through two viewport boundaries.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 100 100" preserveAspectRatio="none">
+
+  <rect x="0" y="0" width="100" height="100" fill="none" stroke="#ccc"/>
+  <circle cx="50" cy="50" r="40" fill="#bcd4ff" stroke="#335"/>
+
+  <!-- 50% of the root's own 100x100 viewBox viewport: bars 50 user units long, not 200 -->
+  <rect x="5" y="5" width="50%" height="4" fill="crimson"/>
+  <rect x="5" y="12" height="50%" width="4" fill="seagreen"/>
+
+  <!-- nested viewport at 50% of its parent (the root)'s 100x100 -> 50x50 user units -->
+  <svg x="25" y="25" width="50%" height="50%" viewBox="0 0 10 10">
+    <rect x="0" y="0" width="10" height="10" fill="none" stroke="#960"/>
+    <!-- 50% of *this* nested svg's own viewBox (0 0 10 10), i.e. 5x5, not 25x25 -->
+    <rect x="2.5" y="2.5" width="50%" height="50%" fill="darkorange"/>
+  </svg>
+
+</svg>

@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -54,7 +55,7 @@ public class SvgPath extends AbstractSvgShape<SVGPath> {
     private List<ISvgElement> content;
 
     @Override
-    protected SVGPath createShape() {
+    protected SVGPath createShape(RenderContext context) {
         SVGPath svgPath = new SVGPath();
         svgPath.setContent(pathData);
         return svgPath;

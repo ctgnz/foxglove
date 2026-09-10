@@ -305,17 +305,18 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     /**
      * Applies the resolved paint and stroke properties to a shape, along with the properties that apply to any node.
      *
-     * @param parent the style inherited from the ancestors, already resolved - see {@link SvgInheritedStyle}
+     * @param parent the rendering context inherited from the ancestors
      */
-    default void applyGraphicsProperties(ISvgStylable parent, Shape shape) {
+    default void applyGraphicsProperties(RenderContext parent, Shape shape) {
         ISvgStylable style = SvgInheritedStyle.resolve(parent, this);
+        SvgElementIndex elementIndex = parent.getElementIndex();
 
         // An unspecified paint takes its initial value - black for fill, none for stroke - while an explicit "none"
         // resolves to no paint. Both arrive here as null from the resolver, so they are separated before it is called.
         SvgPaint fill = style.getFill();
         SvgPaint stroke = style.getStroke();
-        shape.setFill(withOpacity(fill == null ? INITIAL_FILL : SvgPaintResolver.resolve(fill, style), style.getFillOpacity()));
-        shape.setStroke(withOpacity(stroke == null ? null : SvgPaintResolver.resolve(stroke, style), style.getStrokeOpacity()));
+        shape.setFill(withOpacity(fill == null ? INITIAL_FILL : SvgPaintResolver.resolve(fill, style, elementIndex), style.getFillOpacity()));
+        shape.setStroke(withOpacity(stroke == null ? null : SvgPaintResolver.resolve(stroke, style, elementIndex), style.getStrokeOpacity()));
         shape.setStrokeWidth(defaultIfNull(style.getStrokeWidth(), INITIAL_STROKE_WIDTH));
         shape.setStrokeMiterLimit(defaultIfNull(style.getStrokeMiterLimit(), INITIAL_STROKE_MITER_LIMIT));
         shape.setStrokeDashOffset(defaultIfNull(style.getStrokeDashOffset(), INITIAL_STROKE_DASH_OFFSET));

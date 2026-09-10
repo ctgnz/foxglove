@@ -7,6 +7,8 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Bounds;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Transform;
 
 public class ViewBox {
     private Size minX;
@@ -71,6 +73,38 @@ public class ViewBox {
         builder.add("width", width);
         builder.add("height", height);
         return builder.toString();
+    }
+
+    /**
+     * The transform that maps this viewBox onto a viewport of the given size, per the standard SVG viewBox-to-
+     * viewport algorithm: scale to fit (uniformly, unless {@code preserveAspectRatio} is {@code none}), then
+     * translate to align the leftover space per {@code preserveAspectRatio}.
+     * <p>
+     * Returns null when the viewBox has no positive area, since no transform can sensibly map it onto anything.
+     */
+    public Transform createTransform(double viewportWidth, double viewportHeight, PreserveAspectRatio preserveAspectRatio) {
+        double vbMinX = minX == null ? 0 : minX.pixels();
+        double vbMinY = minY == null ? 0 : minY.pixels();
+        double vbWidth = width == null ? 0 : width.pixels();
+        double vbHeight = height == null ? 0 : height.pixels();
+        if (vbWidth <= 0 || vbHeight <= 0) {
+            return null;
+        }
+
+        double scaleX = viewportWidth / vbWidth;
+        double scaleY = viewportHeight / vbHeight;
+        PreserveAspectRatio.Align align = preserveAspectRatio.getAlign();
+        if (align != PreserveAspectRatio.Align.NONE) {
+            double scale = preserveAspectRatio.getMeetOrSlice() == PreserveAspectRatio.MeetOrSlice.SLICE
+                ? Math.max(scaleX, scaleY)
+                : Math.min(scaleX, scaleY);
+            scaleX = scale;
+            scaleY = scale;
+        }
+
+        double translateX = -vbMinX * scaleX + align.getAlignX() * (viewportWidth - vbWidth * scaleX);
+        double translateY = -vbMinY * scaleY + align.getAlignY() * (viewportHeight - vbHeight * scaleY);
+        return new Affine(scaleX, 0, translateX, 0, scaleY, translateY);
     }
 
 }

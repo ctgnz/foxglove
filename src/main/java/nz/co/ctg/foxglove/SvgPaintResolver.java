@@ -26,11 +26,12 @@ public final class SvgPaintResolver {
      * Resolves a paint value.
      *
      * @param value the parsed value, or null if the property was not specified
-     * @param style the style in force, which supplies {@code color} and the document index
+     * @param style the style in force, which supplies {@code color}
+     * @param index the document's element index, used to resolve a {@code url(#id)} reference, or null if unavailable
      * @return the paint to use, or null for no paint - which covers an explicit {@code none}, an unspecified value,
      *         and a reference that resolves to a gradient with no stops
      */
-    public static Paint resolve(SvgPaint value, ISvgStylable style) {
+    public static Paint resolve(SvgPaint value, ISvgStylable style, SvgElementIndex index) {
         if (value == null || value.isNone()) {
             return null;
         }
@@ -40,7 +41,6 @@ public final class SvgPaintResolver {
         if (value.isCurrentColor()) {
             return currentColor(style);
         }
-        SvgElementIndex index = indexOf(style);
         if (index != null) {
             ISvgGradientElement gradient = index.resolve(value.getReference(), ISvgGradientElement.class).orElse(null);
             if (gradient != null) {
@@ -49,7 +49,7 @@ public final class SvgPaintResolver {
         }
         // The specification says an unresolvable reference falls back to the colour given after it, and to none when
         // there is not one - notably not to black, which is what silently dropping the value used to produce.
-        return resolve(value.getFallback(), style);
+        return resolve(value.getFallback(), style, index);
     }
 
     /**
@@ -66,10 +66,6 @@ public final class SvgPaintResolver {
         } catch (RuntimeException e) {
             return INITIAL_COLOR;
         }
-    }
-
-    private static SvgElementIndex indexOf(ISvgStylable style) {
-        return style instanceof SvgInheritedStyle inherited ? inherited.getElementIndex() : null;
     }
 
     private SvgPaintResolver() {

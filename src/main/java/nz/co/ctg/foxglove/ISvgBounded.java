@@ -13,6 +13,26 @@ public interface ISvgBounded extends ISvgAttributes {
     String BOUNDS_WIDTH = "width";
     String BOUNDS_HEIGHT = "height";
 
+    /**
+     * {@code x}, resolved against {@code context}'s viewport - unlike {@link #getPixelsX()}, a percentage resolves
+     * correctly rather than however {@link Size#pixels()} happens to treat it.
+     */
+    default double resolveX(RenderContext context) {
+        return context.resolveLength(getX(), RenderContext.Axis.HORIZONTAL);
+    }
+
+    default double resolveY(RenderContext context) {
+        return context.resolveLength(getY(), RenderContext.Axis.VERTICAL);
+    }
+
+    default double resolveWidth(RenderContext context) {
+        return context.resolveLength(getWidth(), RenderContext.Axis.HORIZONTAL);
+    }
+
+    default double resolveHeight(RenderContext context) {
+        return context.resolveLength(getHeight(), RenderContext.Axis.VERTICAL);
+    }
+
     default double getPixelsX() {
         return Optional.ofNullable(getX()).map(Size::pixels).orElse(0.0);
     }
