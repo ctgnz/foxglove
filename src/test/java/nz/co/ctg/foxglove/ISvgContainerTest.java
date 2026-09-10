@@ -189,7 +189,7 @@ public class ISvgContainerTest {
     private static class CustomGraphic extends AbstractSvgStylable implements FxGraphic<Rectangle> {
 
         @Override
-        public Rectangle createGraphic(ISvgStylable parent) {
+        public Rectangle createGraphic(RenderContext context) {
             Rectangle rectangle = new Rectangle(1, 1);
             rectangle.setId("custom");
             return rectangle;

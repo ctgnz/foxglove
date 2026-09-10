@@ -21,13 +21,13 @@ public interface ISvgContainer extends ISvgContent, ISvgStylable {
      * immediate parent, so the accumulated style has to descend with the traversal for a grandparent's fill to
      * reach a grandchild.
      *
-     * @param inherited the style in force outside this container, or null at the root of the document
+     * @param inherited the rendering context in force outside this container
      */
-    default void appendContent(Group target, ISvgStylable inherited) {
-        SvgInheritedStyle style = SvgInheritedStyle.resolve(inherited, this);
+    default void appendContent(Group target, RenderContext inherited) {
+        RenderContext context = inherited.resolveChild(this);
         for (ISvgElement child : getContent()) {
             if (child instanceof FxGraphic<?> graphic && isRendered(child)) {
-                Node node = graphic.createGraphic(style);
+                Node node = graphic.createGraphic(context);
                 if (node != null) {
                     target.getChildren().add(node);
                 }

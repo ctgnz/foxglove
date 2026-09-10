@@ -7,6 +7,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgBounded;
 import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -61,8 +62,8 @@ public class SvgRectangle extends AbstractSvgShape<Rectangle> implements ISvgBou
     }
 
     @Override
-    protected Rectangle createShape() {
-        Rectangle rect = new Rectangle(getPixelsX(), getPixelsY(), getPixelsWidth(), getPixelsHeight());
+    protected Rectangle createShape(RenderContext context) {
+        Rectangle rect = new Rectangle(resolveX(context), resolveY(context), resolveWidth(context), resolveHeight(context));
         rect.setArcWidth(radiusX);
         rect.setArcHeight(radiusY);
         return rect;

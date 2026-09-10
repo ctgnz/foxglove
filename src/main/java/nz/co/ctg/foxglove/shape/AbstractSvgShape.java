@@ -6,8 +6,8 @@ import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgStylable;
 import nz.co.ctg.foxglove.ISvgTransformable;
+import nz.co.ctg.foxglove.RenderContext;
 
 import javafx.scene.shape.Shape;
 
@@ -15,17 +15,17 @@ public abstract class AbstractSvgShape<S extends Shape> extends AbstractSvgStyla
     implements ISvgShape<S>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
 
     @Override
-    public S createGraphic(ISvgStylable parent) {
+    public S createGraphic(RenderContext context) {
         parseStyle();
-        S shape = createShape();
+        S shape = createShape(context);
         shape.setId(getId());
         installTooltip(shape);
-        applyGraphicsProperties(parent, shape);
+        applyGraphicsProperties(context, shape);
         applyTransforms(shape);
         return shape;
     }
 
-    protected abstract S createShape();
+    protected abstract S createShape(RenderContext context);
 
     @Override
     public void toStringDetail(ToStringHelper builder) {

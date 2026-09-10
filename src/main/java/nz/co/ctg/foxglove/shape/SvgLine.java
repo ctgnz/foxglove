@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -56,7 +57,7 @@ public class SvgLine extends AbstractSvgShape<Line> {
     private List<ISvgElement> content;
 
     @Override
-    protected Line createShape() {
+    protected Line createShape(RenderContext context) {
         return new Line(startX, startY, endX, endY);
     }
 
