@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  <marker> on <line>, <polyline> and <polygon> (#21). Laid out as a grid so the cases can be told apart in
+  FoxgloveParserPreview.
+
+  Row 1: a line with an arrowhead marker-end | a polyline with a dot marker-start/mid and an arrowhead marker-end,
+         showing orient="auto" bisecting correctly at the interior corners | a triangle (polygon) with a dot at
+         every vertex, including the closing-edge bisection at its first/last point
+  Row 2: markerUnits="strokeWidth" (default) vs "userSpaceOnUse" - two lines with very different stroke widths,
+         same marker: the left pair's arrowheads scale with the stroke, the right pair's don't | a line with its
+         own rotate transform, showing the arrowhead rotates and moves together with it
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="440" height="240" viewBox="0 0 440 240">
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 Z" fill="crimson"/>
+    </marker>
+    <marker id="dot" markerWidth="6" markerHeight="6" refX="3" refY="3" markerUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="3" fill="steelblue"/>
+    </marker>
+  </defs>
+
+  <!-- Row 1: line with an arrowhead -->
+  <line x1="20" y1="40" x2="100" y2="40" stroke="black" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Row 1: polyline with dots at start/mid, arrowhead at end - corners exercise orient="auto" bisection -->
+  <polyline points="150,60 190,20 230,60 270,20" fill="none" stroke="black" stroke-width="2"
+            marker-start="url(#dot)" marker-mid="url(#dot)" marker-end="url(#arrow)"/>
+
+  <!-- Row 1: triangle with a dot at every vertex, including the wraparound bisection at the first/last point -->
+  <polygon points="340,20 400,20 370,70" fill="none" stroke="black" stroke-width="2"
+           marker-start="url(#dot)" marker-mid="url(#dot)" marker-end="url(#dot)"/>
+
+  <!-- Row 2: markerUnits comparison - same arrow marker, very different stroke widths -->
+  <line x1="20" y1="130" x2="100" y2="130" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="20" y1="160" x2="100" y2="160" stroke="black" stroke-width="6" marker-end="url(#arrow)"/>
+
+  <line x1="150" y1="130" x2="230" y2="130" stroke="black" stroke-width="1" marker-end="url(#dot)"/>
+  <line x1="150" y1="160" x2="230" y2="160" stroke="black" stroke-width="6" marker-end="url(#dot)"/>
+
+  <!-- Row 2: the line's own transform applies to its marker too -->
+  <line x1="0" y1="0" x2="70" y2="0" stroke="black" stroke-width="3" marker-end="url(#arrow)"
+        transform="translate(320,150) rotate(-30)"/>
+
+</svg>
