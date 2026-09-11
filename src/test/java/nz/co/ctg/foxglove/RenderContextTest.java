@@ -98,4 +98,21 @@ public class RenderContextTest {
         assertThat(viewport(1, 1).getFill(), is(nullValue()));
     }
 
+    // --- resolveFraction (objectBoundingBox coordinates) --------------------
+
+    @Test
+    public void testResolveFractionOfNullIsZero() throws Exception {
+        assertThat(RenderContext.resolveFraction(null), is(0.0));
+    }
+
+    @Test
+    public void testResolveFractionOfABareNumberIsTheNumberItself() throws Exception {
+        assertThat(RenderContext.resolveFraction(new Size(0.25, SizeUnits.PX)), closeTo(0.25, DELTA));
+    }
+
+    @Test
+    public void testResolveFractionOfAPercentDividesByOneHundred() throws Exception {
+        assertThat(RenderContext.resolveFraction(new Size(25, SizeUnits.PERCENT)), closeTo(0.25, DELTA));
+    }
+
 }

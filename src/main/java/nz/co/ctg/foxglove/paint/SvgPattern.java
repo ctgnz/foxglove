@@ -8,10 +8,14 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgBounded;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
+import nz.co.ctg.foxglove.ISvgContainer;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgFitToViewBox;
 import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.RenderContext.Axis;
+import nz.co.ctg.foxglove.RenderContext.UnitsMode;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.SvgStyle;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
@@ -59,6 +63,17 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javafx.geometry.Bounds;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Transform;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -66,7 +81,15 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "pattern")
-public class SvgPattern extends AbstractSvgStylable implements ISvgBounded, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgFitToViewBox {
+public class SvgPattern extends AbstractSvgStylable
+    implements ISvgBounded, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgFitToViewBox, ISvgContainer {
+
+    /**
+     * Supersampling factor applied when rasterising a tile, so a pattern fill still looks crisp when the shape it
+     * fills is scaled up - at a proportional memory cost. Adjustable at runtime; there is no configuration system in
+     * this codebase to hang it off instead.
+     */
+    public static double rasterScale = 2.0;
 
     @XmlAttribute(name = "patternUnits")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -140,6 +163,11 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgBounded, ISvg
         this.patternContentUnits = value;
     }
 
+    /**
+     * Parsed, but not applied - like {@code gradientTransform} ({@link ISvgGradientElement#getGradientTransform()}),
+     * a JavaFX {@link ImagePattern} has nowhere to put a transform, only an anchor rectangle. Baking a rotation or a
+     * skew into the rasterised tile itself is possible but is its own piece of follow-on work.
+     */
     public String getPatternTransform() {
         return patternTransform;
     }
@@ -153,6 +181,72 @@ public class SvgPattern extends AbstractSvgStylable implements ISvgBounded, ISvg
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    /**
+     * Builds the tiling paint for this pattern, or null when it resolves to no usable tile.
+     * <p>
+     * Rasterises the pattern's content via {@code Node.snapshot(...)}, which requires the JavaFX Application
+     * Thread and throws {@link IllegalStateException} otherwise - the one place in this renderer with that
+     * requirement. A repeated call at the same resolved tile size reuses the cached image rather than rendering
+     * again.
+     *
+     * @param context the rendering context, carrying the current viewport for {@code userSpaceOnUse} lengths and,
+     *        for the default {@code objectBoundingBox} mode, the referencing shape's own bounding box
+     */
+    public Paint createPaint(RenderContext context) {
+        Bounds bbox = context.getObjectBoundingBox().orElse(null);
+        UnitsMode unitsMode = RenderContext.parseUnits(getPatternUnits(), UnitsMode.OBJECT_BOUNDING_BOX);
+
+        double tileX;
+        double tileY;
+        double tileWidth;
+        double tileHeight;
+        if (unitsMode == UnitsMode.OBJECT_BOUNDING_BOX) {
+            if (bbox == null) {
+                return null;
+            }
+            tileX = bbox.getMinX() + RenderContext.resolveFraction(getX()) * bbox.getWidth();
+            tileY = bbox.getMinY() + RenderContext.resolveFraction(getY()) * bbox.getHeight();
+            tileWidth = RenderContext.resolveFraction(getWidth()) * bbox.getWidth();
+            tileHeight = RenderContext.resolveFraction(getHeight()) * bbox.getHeight();
+        } else {
+            tileX = context.resolveLength(getX(), Axis.HORIZONTAL);
+            tileY = context.resolveLength(getY(), Axis.VERTICAL);
+            tileWidth = context.resolveLength(getWidth(), Axis.HORIZONTAL);
+            tileHeight = context.resolveLength(getHeight(), Axis.VERTICAL);
+        }
+        if (tileWidth <= 0 || tileHeight <= 0) {
+            return null;
+        }
+
+        Image image = PatternTileCache.getOrRasterize(this, tileWidth, tileHeight, () -> rasterize(context, tileWidth, tileHeight, bbox));
+        return new ImagePattern(image, tileX, tileY, tileWidth, tileHeight, false);
+    }
+
+    private Image rasterize(RenderContext context, double tileWidth, double tileHeight, Bounds bbox) {
+        Group tileContent = new Group();
+        appendContent(tileContent, context.withViewport(tileWidth, tileHeight));
+
+        Transform viewBoxTransform = createViewportTransform(tileWidth, tileHeight);
+        if (viewBoxTransform != null) {
+            tileContent.getTransforms().add(viewBoxTransform);
+        } else if (bbox != null && RenderContext.parseUnits(getPatternContentUnits(), UnitsMode.USER_SPACE_ON_USE) == UnitsMode.OBJECT_BOUNDING_BOX) {
+            // Content coordinates are fractions of the bounding box: scaling the whole subtree by its dimensions is
+            // equivalent to, and far simpler than, teaching every shape class a bounding-box-relative coordinate mode.
+            tileContent.getTransforms().add(new Scale(bbox.getWidth(), bbox.getHeight()));
+        }
+
+        Group root = new Group(tileContent);
+        new Scene(root);
+        SnapshotParameters params = new SnapshotParameters();
+        params.setFill(Color.TRANSPARENT);
+        params.setTransform(new Scale(rasterScale, rasterScale));
+        // Content need not fill the whole declared tile (a pattern can be smaller than its own width/height, the
+        // rest left transparent) - without an explicit viewport, snapshot sizes the image to the content's own
+        // bounds instead of the tile, so a sparse tile would rasterise far smaller than it declares.
+        params.setViewport(new Rectangle2D(0, 0, tileWidth, tileHeight));
+        return root.snapshot(params, null);
     }
 
     @Override

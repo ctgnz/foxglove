@@ -133,6 +133,19 @@ public final class RenderContext implements ISvgStylable {
         return size.pixels();
     }
 
+    /**
+     * Resolves a coordinate under {@code objectBoundingBox} units, where a bare number and a percentage both mean a
+     * fraction of the bounding box (0.5 and 50% are the same fraction) - unlike {@link #resolveLength}, there is no
+     * reference length to multiply by here, since the caller multiplies the returned fraction by the bounding box
+     * dimension itself. A null size resolves to zero.
+     */
+    public static double resolveFraction(Size size) {
+        if (size == null) {
+            return 0;
+        }
+        return size.getUnits() == SizeUnits.PERCENT ? size.getValue() / 100.0 : size.getValue();
+    }
+
     private double referenceLength(Axis axis) {
         switch (axis) {
             case HORIZONTAL:
