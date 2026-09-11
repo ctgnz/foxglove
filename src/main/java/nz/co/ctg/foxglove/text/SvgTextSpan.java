@@ -1,21 +1,22 @@
 package nz.co.ctg.foxglove.text;
 
-import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgValueElement;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementRefs;
+import jakarta.xml.bind.annotation.XmlMixed;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -23,10 +24,10 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "value"
+    "content"
 })
 @XmlRootElement(name = "tspan")
-public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgValueElement {
+public class SvgTextSpan extends AbstractSvgTextContentElement implements ISvgTextPositioningElement, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener {
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -56,9 +57,13 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     private String lengthAdjust;
 
-    @XmlValue
-    @XmlValueExtension
-    private String value;
+    @XmlMixed
+    @XmlElementRefs({
+        @XmlElementRef(name = "tspan", type = SvgTextSpan.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElementRef(name = "tref", type = SvgTextReference.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElementRef(name = "altGlyph", type = SvgAltGlyph.class, namespace = "http://www.w3.org/2000/svg")
+    })
+    private List<Object> content;
 
     public String getX() {
         return x;
@@ -117,13 +122,11 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
     }
 
     @Override
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
+    public List<Object> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
+        }
+        return content;
     }
 
     @Override
@@ -139,7 +142,7 @@ public class SvgTextSpan extends AbstractSvgStylable implements ISvgTextPosition
         ISvgConditionalFeatures.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);
         ISvgEventListener.super.toStringDetail(builder);
-        builder.add("value", value);
+        builder.add("value", getValue());
     }
 
 }

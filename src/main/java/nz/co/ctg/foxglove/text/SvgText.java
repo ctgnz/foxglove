@@ -2,17 +2,12 @@ package nz.co.ctg.foxglove.text;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.FxGraphic;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.RenderContext;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -21,7 +16,6 @@ import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementRefs;
 import jakarta.xml.bind.annotation.XmlMixed;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
@@ -33,7 +27,7 @@ import javafx.scene.text.Text;
     "text", "content"
 })
 @XmlRootElement(name = "text")
-public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgTransformable, FxGraphic<Text> {
+public class SvgText extends AbstractSvgTextContentElement implements ISvgTextPositioningElement, ISvgTransformable, FxGraphic<Text> {
 
     @XmlAttribute(name = "x")
     private double x;
@@ -80,7 +74,7 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
     }
 
     protected Text createShape() {
-        return new Text(x, y, getTextValue());
+        return new Text(x, y, getValue());
     }
 
     public double getX() {
@@ -139,30 +133,12 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
         this.lengthAdjust = value;
     }
 
+    @Override
     public List<Object> getContent() {
         if (content == null) {
             content = new ArrayList<>();
         }
         return content;
-    }
-
-    @XmlTransient
-    public List<ISvgTextContentElement> getTextContent() {
-        return streamTextContent().collect(toList());
-    }
-
-    @XmlTransient
-    public String getTextValue() {
-        if (getContent().stream().allMatch(String.class::isInstance)) {
-            return getContent().stream().map(String.class::cast).collect(joining(" "));
-        }
-        return streamTextContent().findFirst().map(ISvgTextContentElement::getValue).orElse(null);
-    }
-
-    @Override
-    @XmlTransient
-    public String getValue() {
-        return getTextValue();
     }
 
     @Override
@@ -175,13 +151,7 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
         builder.add("textLength", textLength);
         builder.add("lengthAdjust", lengthAdjust);
         super.toStringDetail(builder);
-        builder.add("value", getTextValue());
-    }
-
-    private Stream<ISvgTextContentElement> streamTextContent() {
-        return getContent().stream()
-            .filter(ISvgTextContentElement.class::isInstance)
-            .map(ISvgTextContentElement.class::cast);
+        builder.add("value", getValue());
     }
 
 }

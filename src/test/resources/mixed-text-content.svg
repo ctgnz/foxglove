@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200">
+  <text id="plain-text" x="10" y="20">Hello world</text>
+  <text id="mixed-text" x="10" y="40">Hello <tspan id="bold-span">bold <tspan id="inner-span">inner</tspan> tail</tspan> and <tref id="ref-span" xlink:href="#plain-text"/> and <textPath id="path-span" xlink:href="#somePath">path text <tspan id="path-nested-span">nested</tspan></textPath> end</text>
+</svg>
