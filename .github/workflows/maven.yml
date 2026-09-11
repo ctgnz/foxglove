@@ -25,5 +25,9 @@ jobs:
         java-version: '25'
         distribution: 'temurin'
         cache: 'maven'
+    - name: Install Xvfb
+      # Some tests (pattern rasterisation) start the JavaFX toolkit, which hangs rather than failing fast when no
+      # display is available, as on a bare ubuntu-latest runner.
+      run: sudo apt-get update && sudo apt-get install -y xvfb
     - name: Build with Maven
-      run: mvn -B clean verify
+      run: xvfb-run --auto-servernum mvn -B clean verify
