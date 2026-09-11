@@ -39,6 +39,7 @@ import javafx.css.Size;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -78,6 +79,12 @@ public class SvgUse extends AbstractSvgStylable
      * Resolves to an empty {@link Group} - never {@code null} - when the reference is missing, invisible, or would
      * reuse one of this element's own ancestors, which the specification declares an error and which would
      * otherwise expand forever.
+     * <p>
+     * Per the specification, {@code translate(x,y)} is appended to the end of this element's own {@code transform}
+     * list rather than applied separately - so both go into the JavaFX {@code transforms} list, in that order, and
+     * neither uses the {@code translateX}/{@code translateY} node properties. Those properties are always the
+     * outermost operation in JavaFX regardless of call order, which would apply this element's own {@code transform}
+     * attribute - meant to wrap the translated result - before the translation instead of after it.
      */
     @Override
     public Group createGraphic(RenderContext context) {
@@ -85,9 +92,8 @@ public class SvgUse extends AbstractSvgStylable
         Group group = new Group();
         group.setId(getId());
         applyNodeProperties(context, group);
-        group.setTranslateX(resolveX(context));
-        group.setTranslateY(resolveY(context));
         applyTransforms(group);
+        group.getTransforms().add(new Translate(resolveX(context), resolveY(context)));
 
         SvgElementIndex index = context.getElementIndex();
         RenderContext childContext = context.resolveChild(this);

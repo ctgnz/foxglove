@@ -14,11 +14,11 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import javafx.css.Size;
 import javafx.css.SizeUnits;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Affine;
-import javafx.scene.transform.Scale;
 
 /**
  * Exercises #19's acceptance criteria: {@code <use>} of a shape, a group, a {@code <symbol>} and a nested
@@ -51,15 +51,43 @@ public class SvgUseRenderingTest {
         Group renderedRoot = render(root);
         assertThat(renderedRoot.getChildren(), hasSize(1));
         Group renderedUse = (Group) renderedRoot.getChildren().get(0);
-        assertThat(renderedUse.getTranslateX(), closeTo(10, 1e-9));
-        assertThat(renderedUse.getTranslateY(), closeTo(20, 1e-9));
-        assertThat(renderedUse.getTransforms(), hasSize(1));
-        Scale scale = (Scale) renderedUse.getTransforms().get(0);
-        assertThat(scale.getX(), closeTo(2, 1e-9));
-        assertThat(scale.getY(), closeTo(2, 1e-9));
+        // per spec, translate(x,y) is appended to the end of <use>'s own transform list, so it applies to the
+        // content first (inner) and <use>'s own transform - here scale(2) - wraps around that result (outer):
+        // (0,0) -> translate(10,20) -> (10,20) -> scale(2) -> (20,40)
+        Point2D origin = renderedUse.localToParent(0, 0);
+        assertThat(origin.getX(), closeTo(20, 1e-9));
+        assertThat(origin.getY(), closeTo(40, 1e-9));
 
         Rectangle renderedShape = (Rectangle) renderedUse.getChildren().get(0);
         assertThat(renderedShape.getId(), is("r"));
+    }
+
+    /**
+     * A regression case for a bug caught by visual inspection: rotating around a pivot that names the same point
+     * {@code x}/{@code y} translates content to should be a no-op, since the content ends up centred exactly on
+     * that pivot - {@code translate(x,y)} has to apply before the rotation, not after, or the content flies off to
+     * wherever rotating the origin around a distant pivot happens to land.
+     */
+    @Test
+    public void testRotateAroundTheUsesOwnPivotIsANoOp() throws Exception {
+        SvgRectangle target = rect("dot");
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(target);
+
+        SvgUse use = new SvgUse();
+        use.setXlinkHref("#dot");
+        use.setX(px(130));
+        use.setY(px(40));
+        use.setTransform("rotate(45 130 40)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(use);
+
+        Group renderedUse = (Group) render(root).getChildren().get(0);
+        Point2D origin = renderedUse.localToParent(0, 0);
+        assertThat(origin.getX(), closeTo(130, 1e-9));
+        assertThat(origin.getY(), closeTo(40, 1e-9));
     }
 
     @Test
