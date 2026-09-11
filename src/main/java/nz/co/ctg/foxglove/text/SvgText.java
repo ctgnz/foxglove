@@ -20,6 +20,8 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.text.Text;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -27,7 +29,7 @@ import javafx.scene.text.Text;
     "text", "content"
 })
 @XmlRootElement(name = "text")
-public class SvgText extends AbstractSvgTextContentElement implements ISvgTextPositioningElement, ISvgTransformable, FxGraphic<Text> {
+public class SvgText extends AbstractSvgTextContentElement implements ISvgTextPositioningElement, ISvgTransformable, FxGraphic<Node> {
 
     @XmlAttribute(name = "x")
     private double x;
@@ -63,18 +65,40 @@ public class SvgText extends AbstractSvgTextContentElement implements ISvgTextPo
     private List<Object> content;
 
     @Override
-    public Text createGraphic(RenderContext context) {
-        applyStyle(context);
-        Text fxText = createShape();
-        fxText.setId(getId());
-        applyGraphicsProperties(context, fxText);
-        applyTextProperties(context, fxText);
-        applyTransforms(fxText);
-        return fxText;
+    public Node createGraphic(RenderContext context) {
+        List<TextRunBuilder.Run> runs = TextRunBuilder.build(this, context);
+        List<Text> nodes = new ArrayList<>();
+        for (TextRunBuilder.Run run : runs) {
+            Text node = new Text(run.text());
+            run.owner().applyGraphicsProperties(run.ownerContext(), node);
+            run.owner().applyTextProperties(run.ownerContext(), node);
+            nodes.add(node);
+        }
+        positionRuns(nodes);
+        Node result = nodes.size() == 1 ? nodes.get(0) : groupOf(nodes);
+        result.setId(getId());
+        applyTransforms(result);
+        return result;
     }
 
-    protected Text createShape() {
-        return new Text(x, y, getValue());
+    /**
+     * Lays out each run left to right along one baseline, starting at this element's own {@code x}/{@code y} - the
+     * absolute repositioning a nested run's own {@code x}/{@code y}/{@code dx}/{@code dy} would cause is #28's
+     * concern, not this one.
+     */
+    private void positionRuns(List<Text> nodes) {
+        double cursorX = x;
+        for (Text node : nodes) {
+            node.setX(cursorX);
+            node.setY(y);
+            cursorX += node.getLayoutBounds().getWidth();
+        }
+    }
+
+    private static Group groupOf(List<Text> nodes) {
+        Group group = new Group();
+        group.getChildren().addAll(nodes);
+        return group;
     }
 
     public double getX() {
