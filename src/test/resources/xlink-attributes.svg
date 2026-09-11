@@ -21,6 +21,6 @@
 
   <text id="label"><textPath id="onpath" xlink:href="#curve">Hello</textPath></text>
 
-  <image id="pic" xlink:href="pic.png" width="10" height="10"/>
+  <image id="pic" x="5" y="6" xlink:href="pic.png" width="10" height="10" display="none"/>
 
 </svg>
