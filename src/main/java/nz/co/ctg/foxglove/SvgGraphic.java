@@ -92,6 +92,15 @@ public class SvgGraphic extends AbstractSvgStylable
      */
     @Override
     public Group createGraphic(RenderContext parentContext) {
+        return createGraphic(parentContext, null, null);
+    }
+
+    /**
+     * Renders this element with its {@code width}/{@code height} overridden by the given sizes where non-null,
+     * falling back to this element's own attributes otherwise - what a {@code <use>} referencing an {@code <svg>}
+     * needs, since per the specification {@code <use>}'s own width/height take precedence over the target's.
+     */
+    public Group createGraphic(RenderContext parentContext, Size overrideWidth, Size overrideHeight) {
         applyStyle(parentContext);
         Group group = new Group();
         group.setId(StringUtils.defaultIfBlank(getId(), "svg"));
@@ -101,8 +110,8 @@ public class SvgGraphic extends AbstractSvgStylable
         group.setTranslateX(parentContext.resolveLength(getX(), Axis.HORIZONTAL));
         group.setTranslateY(parentContext.resolveLength(getY(), Axis.VERTICAL));
 
-        double width = resolveIntrinsicLength(getWidth(), parentContext, Axis.HORIZONTAL, DEFAULT_WIDTH);
-        double height = resolveIntrinsicLength(getHeight(), parentContext, Axis.VERTICAL, DEFAULT_HEIGHT);
+        double width = resolveIntrinsicLength(overrideWidth != null ? overrideWidth : getWidth(), parentContext, Axis.HORIZONTAL, DEFAULT_WIDTH);
+        double height = resolveIntrinsicLength(overrideHeight != null ? overrideHeight : getHeight(), parentContext, Axis.VERTICAL, DEFAULT_HEIGHT);
 
         // Content resolves percentages against the viewBox's own width/height, not the pixel viewport, once a
         // viewBox has switched descendants into its coordinate system - the pixel size only matters for computing
