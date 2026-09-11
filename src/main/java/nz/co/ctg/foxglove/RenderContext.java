@@ -1,5 +1,6 @@
 package nz.co.ctg.foxglove;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public final class RenderContext implements ISvgStylable {
      * initial viewport.
      */
     public static RenderContext root(SvgElementIndex elementIndex, double viewportWidth, double viewportHeight) {
-        return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null);
+        return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null, null);
     }
 
     private final SvgInheritedStyle style;
@@ -67,30 +68,33 @@ public final class RenderContext implements ISvgStylable {
     private final double viewportWidth;
     private final double viewportHeight;
     private final Bounds objectBoundingBox;
+    private final URI baseUri;
 
     private RenderContext(SvgInheritedStyle style, SvgElementIndex elementIndex, double viewportWidth, double viewportHeight,
-        Bounds objectBoundingBox) {
+        Bounds objectBoundingBox, URI baseUri) {
         this.style = style;
         this.elementIndex = elementIndex;
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
         this.objectBoundingBox = objectBoundingBox;
+        this.baseUri = baseUri;
     }
 
     /**
      * The context a container hands to one of its children: the container's own style resolved one level further,
-     * same viewport, index and object bounding box.
+     * same viewport, index, object bounding box and base URI.
      */
     public RenderContext resolveChild(ISvgAttributes element) {
-        return new RenderContext(SvgInheritedStyle.resolve(style, element), elementIndex, viewportWidth, viewportHeight, objectBoundingBox);
+        return new RenderContext(SvgInheritedStyle.resolve(style, element), elementIndex, viewportWidth, viewportHeight, objectBoundingBox,
+            baseUri);
     }
 
     /**
-     * The context inside a newly established viewport - a nested {@code <svg>} - with the same style and index, the
-     * new viewport size, and no object bounding box (a new viewport is not itself bound to a shape).
+     * The context inside a newly established viewport - a nested {@code <svg>} - with the same style, index and base
+     * URI, the new viewport size, and no object bounding box (a new viewport is not itself bound to a shape).
      */
     public RenderContext withViewport(double width, double height) {
-        return new RenderContext(style, elementIndex, width, height, null);
+        return new RenderContext(style, elementIndex, width, height, null, baseUri);
     }
 
     /**
@@ -99,7 +103,16 @@ public final class RenderContext implements ISvgStylable {
      * will call it.
      */
     public RenderContext withObjectBoundingBox(Bounds bbox) {
-        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox);
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox, baseUri);
+    }
+
+    /**
+     * The context with the document's base URI established - what a relative {@code xlink:href}, such as on
+     * {@code <image>}, resolves against. Set once at the root from wherever the document was parsed from (see
+     * {@link FoxgloveParser#parseFile}); absent when parsed from a bare stream with no known source.
+     */
+    public RenderContext withBaseUri(URI baseUri) {
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri);
     }
 
     public double getViewportWidth() {
@@ -116,6 +129,10 @@ public final class RenderContext implements ISvgStylable {
 
     public Optional<Bounds> getObjectBoundingBox() {
         return Optional.ofNullable(objectBoundingBox);
+    }
+
+    public Optional<URI> getBaseUri() {
+        return Optional.ofNullable(baseUri);
     }
 
     /**

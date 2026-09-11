@@ -1,5 +1,6 @@
 package nz.co.ctg.foxglove;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,9 @@ public class SvgGraphic extends AbstractSvgStylable
     @XmlTransient
     private SvgElementIndex elementIndex;
 
+    @XmlTransient
+    private URI baseUri;
+
     public void addContent(ISvgElement element) {
         if (element != null) {
             content.add(element);
@@ -79,11 +83,25 @@ public class SvgGraphic extends AbstractSvgStylable
     }
 
     /**
+     * The location this document was parsed from, if known - what a relative {@code xlink:href} (such as on
+     * {@code <image>}) resolves against. Set by {@link FoxgloveParser#parseFile}; absent when parsed from a bare
+     * stream, since there is then nowhere to resolve a relative reference against.
+     */
+    @XmlTransient
+    public URI getBaseUri() {
+        return baseUri;
+    }
+
+    public void setBaseUri(URI baseUri) {
+        this.baseUri = baseUri;
+    }
+
+    /**
      * Renders this element as the root of the document, establishing the initial viewport from its own
      * {@code width}/{@code height} (falling back to its {@code viewBox}, then to the standard 300x150 default).
      */
     public Group createGroup() {
-        return createGraphic(RenderContext.root(getElementIndex(), 0, 0));
+        return createGraphic(RenderContext.root(getElementIndex(), 0, 0).withBaseUri(baseUri));
     }
 
     /**
