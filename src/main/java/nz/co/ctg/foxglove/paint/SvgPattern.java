@@ -2,6 +2,7 @@ package nz.co.ctg.foxglove.paint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -16,8 +17,11 @@ import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.RenderContext.Axis;
 import nz.co.ctg.foxglove.RenderContext.UnitsMode;
+import nz.co.ctg.foxglove.SvgElementIndex;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.SvgStyle;
+import nz.co.ctg.foxglove.type.PreserveAspectRatio;
+import nz.co.ctg.foxglove.type.ViewBox;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -190,13 +194,18 @@ public class SvgPattern extends AbstractSvgStylable
      * Thread and throws {@link IllegalStateException} otherwise - the one place in this renderer with that
      * requirement. A repeated call at the same resolved tile size reuses the cached image rather than rendering
      * again.
+     * <p>
+     * Any attribute this element does not specify, and its content if it declares none, are taken from its
+     * {@code xlink:href} chain (#18).
      *
-     * @param context the rendering context, carrying the current viewport for {@code userSpaceOnUse} lengths and,
-     *        for the default {@code objectBoundingBox} mode, the referencing shape's own bounding box
+     * @param context the rendering context, carrying the current viewport for {@code userSpaceOnUse} lengths, the
+     *        document's element index (used to resolve the {@code xlink:href} chain) and, for the default
+     *        {@code objectBoundingBox} mode, the referencing shape's own bounding box
      */
     public Paint createPaint(RenderContext context) {
+        SvgElementIndex index = context.getElementIndex();
         Bounds bbox = context.getObjectBoundingBox().orElse(null);
-        UnitsMode unitsMode = RenderContext.parseUnits(getPatternUnits(), UnitsMode.OBJECT_BOUNDING_BOX);
+        UnitsMode unitsMode = RenderContext.parseUnits(effective(index, SvgPattern::getPatternUnits), UnitsMode.OBJECT_BOUNDING_BOX);
 
         double tileX;
         double tileY;
@@ -206,15 +215,15 @@ public class SvgPattern extends AbstractSvgStylable
             if (bbox == null) {
                 return null;
             }
-            tileX = bbox.getMinX() + RenderContext.resolveFraction(getX()) * bbox.getWidth();
-            tileY = bbox.getMinY() + RenderContext.resolveFraction(getY()) * bbox.getHeight();
-            tileWidth = RenderContext.resolveFraction(getWidth()) * bbox.getWidth();
-            tileHeight = RenderContext.resolveFraction(getHeight()) * bbox.getHeight();
+            tileX = bbox.getMinX() + RenderContext.resolveFraction(effective(index, SvgPattern::getX)) * bbox.getWidth();
+            tileY = bbox.getMinY() + RenderContext.resolveFraction(effective(index, SvgPattern::getY)) * bbox.getHeight();
+            tileWidth = RenderContext.resolveFraction(effective(index, SvgPattern::getWidth)) * bbox.getWidth();
+            tileHeight = RenderContext.resolveFraction(effective(index, SvgPattern::getHeight)) * bbox.getHeight();
         } else {
-            tileX = context.resolveLength(getX(), Axis.HORIZONTAL);
-            tileY = context.resolveLength(getY(), Axis.VERTICAL);
-            tileWidth = context.resolveLength(getWidth(), Axis.HORIZONTAL);
-            tileHeight = context.resolveLength(getHeight(), Axis.VERTICAL);
+            tileX = context.resolveLength(effective(index, SvgPattern::getX), Axis.HORIZONTAL);
+            tileY = context.resolveLength(effective(index, SvgPattern::getY), Axis.VERTICAL);
+            tileWidth = context.resolveLength(effective(index, SvgPattern::getWidth), Axis.HORIZONTAL);
+            tileHeight = context.resolveLength(effective(index, SvgPattern::getHeight), Axis.VERTICAL);
         }
         if (tileWidth <= 0 || tileHeight <= 0) {
             return null;
@@ -225,13 +234,21 @@ public class SvgPattern extends AbstractSvgStylable
     }
 
     private Image rasterize(RenderContext context, double tileWidth, double tileHeight, Bounds bbox) {
+        SvgElementIndex index = context.getElementIndex();
         Group tileContent = new Group();
-        appendContent(tileContent, context.withViewport(tileWidth, tileHeight));
+        // The content is rendered from whichever pattern in the chain first declares any - not necessarily this one
+        // - since appendContent is a plain instance method (from ISvgContainer, #17) callable on any SvgPattern.
+        SvgPattern contentSource = effectiveContentSource(index);
+        contentSource.appendContent(tileContent, context.withViewport(tileWidth, tileHeight));
 
-        Transform viewBoxTransform = createViewportTransform(tileWidth, tileHeight);
+        ViewBox viewBox = effective(index, SvgPattern::getViewBox);
+        Transform viewBoxTransform = viewBox == null
+            ? null
+            : viewBox.createTransform(tileWidth, tileHeight, PreserveAspectRatio.parse(effective(index, SvgPattern::getPreserveAspectRatio)));
         if (viewBoxTransform != null) {
             tileContent.getTransforms().add(viewBoxTransform);
-        } else if (bbox != null && RenderContext.parseUnits(getPatternContentUnits(), UnitsMode.USER_SPACE_ON_USE) == UnitsMode.OBJECT_BOUNDING_BOX) {
+        } else if (bbox != null
+            && RenderContext.parseUnits(effective(index, SvgPattern::getPatternContentUnits), UnitsMode.USER_SPACE_ON_USE) == UnitsMode.OBJECT_BOUNDING_BOX) {
             // Content coordinates are fractions of the bounding box: scaling the whole subtree by its dimensions is
             // equivalent to, and far simpler than, teaching every shape class a bounding-box-relative coordinate mode.
             tileContent.getTransforms().add(new Scale(bbox.getWidth(), bbox.getHeight()));
@@ -252,6 +269,41 @@ public class SvgPattern extends AbstractSvgStylable
         // size from the viewport - comes out at exactly that resolution.
         params.setViewport(new Rectangle2D(0, 0, tileWidth * rasterScale, tileHeight * rasterScale));
         return root.snapshot(params, null);
+    }
+
+    /**
+     * The {@code xlink:href} chain starting at this element, in reference order. A null index resolves to a chain
+     * of just this element, so a caller that does not have one still gets its own declared values.
+     */
+    private List<SvgPattern> hrefChain(SvgElementIndex index) {
+        return index == null ? List.of(this) : index.resolveChain(this, SvgPattern::getXlinkHref, SvgPattern.class);
+    }
+
+    /**
+     * The first non-null value of an attribute, walking the {@code xlink:href} chain.
+     */
+    private <T> T effective(SvgElementIndex index, Function<SvgPattern, T> getter) {
+        for (SvgPattern current : hrefChain(index)) {
+            T value = getter.apply(current);
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The first pattern in the {@code xlink:href} chain that declares any content of its own, per the specification
+     * - this element's own content if it has any, otherwise the first ancestor's. Always resolves to at least this
+     * element, even if nothing in the chain has content, so there is always something to render (nothing).
+     */
+    private SvgPattern effectiveContentSource(SvgElementIndex index) {
+        for (SvgPattern current : hrefChain(index)) {
+            if (!current.getContent().isEmpty()) {
+                return current;
+            }
+        }
+        return this;
     }
 
     @Override

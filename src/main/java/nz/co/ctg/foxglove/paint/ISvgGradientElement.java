@@ -2,10 +2,15 @@ package nz.co.ctg.foxglove.paint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.SvgElementIndex;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -20,11 +25,21 @@ import javafx.scene.paint.Stop;
  * box is not needed; under {@code userSpaceOnUse} a percentage would have to resolve against the viewport, which
  * needs the rendering context from #13 and is not supported yet.
  */
-public interface ISvgGradientElement extends ISvgElement {
+public interface ISvgGradientElement extends ISvgElement, ISvgLinkable {
 
     String USER_SPACE_ON_USE = "userSpaceOnUse";
 
     List<ISvgElement> getContent();
+
+    /**
+     * Forwards to {@link ISvgLinkable#toStringDetail} - a concrete gradient class calls this via
+     * {@code ISvgGradientElement.super.toStringDetail(builder)} rather than {@code ISvgLinkable.super...} directly,
+     * since extending {@code ISvgLinkable} here makes a class's own {@code implements ISvgLinkable} redundant, and
+     * javac rejects a super call naming an interface that is only reachable transitively.
+     */
+    default void toStringDetail(ToStringHelper builder) {
+        ISvgLinkable.super.toStringDetail(builder);
+    }
 
     String getGradientUnits();
 
@@ -37,27 +52,86 @@ public interface ISvgGradientElement extends ISvgElement {
      * gradient axis could be baked into the computed coordinates, but a rotation or a skew changes the shape of the
      * gradient itself and cannot be represented at all. Rather than support a subset that silently produces the
      * wrong picture for everything else, this is left unimplemented and recorded as its own issue.
+     * <p>
+     * Not inherited via {@code xlink:href} for the same reason - there would be nothing for the effective value to
+     * do.
      */
     String getGradientTransform();
 
     /**
-     * Builds the JavaFX paint for this gradient, or null when it has no stops and so paints nothing.
+     * Builds the JavaFX paint for this gradient, resolving any attribute the element itself does not specify - and,
+     * absent stops of its own, the stops themselves - via its {@code xlink:href} chain (#18). Returns null when
+     * there are no stops anywhere in the chain, so it paints nothing.
+     *
+     * @param index the document's element index, used to resolve the {@code xlink:href} chain, or null to resolve
+     *        only this element's own attributes
      */
-    Paint createPaint();
+    Paint createPaint(SvgElementIndex index);
 
     /**
-     * Whether coordinates are fractions of the target's bounding box, which is the SVG default and what JavaFX calls
-     * proportional, rather than absolute user units.
+     * The {@code xlink:href} chain starting at this element, in reference order - unlike the concrete gradient
+     * classes' own chains, this follows through a change of gradient type, since {@code gradientUnits},
+     * {@code spreadMethod} and stops are inherited across a linear/radial boundary even though geometry is not. A
+     * null index resolves to a chain of just this element, so a caller that does not have one still gets its own
+     * declared values.
      */
-    default boolean isProportional() {
-        return !USER_SPACE_ON_USE.equalsIgnoreCase(StringUtils.trimToEmpty(getGradientUnits()));
+    default List<ISvgGradientElement> resolveHrefChain(SvgElementIndex index) {
+        return index == null ? List.of(this) : index.resolveChain(this, ISvgGradientElement::getXlinkHref, ISvgGradientElement.class);
     }
 
     /**
-     * {@code spreadMethod} maps directly onto the JavaFX cycle method. The initial value is {@code pad}.
+     * The first non-empty set of stops in the {@code xlink:href} chain - the referencing element's own stops if it
+     * has any, per the specification, otherwise the first ancestor's.
+     */
+    default List<Stop> getEffectiveGradientStops(SvgElementIndex index) {
+        for (ISvgGradientElement current : resolveHrefChain(index)) {
+            List<Stop> stops = current.getGradientStops();
+            if (!stops.isEmpty()) {
+                return stops;
+            }
+        }
+        return List.of();
+    }
+
+    /**
+     * Whether coordinates are fractions of the target's bounding box, which is the SVG default and what JavaFX calls
+     * proportional, rather than absolute user units - considering only this element's own {@code gradientUnits}.
+     */
+    default boolean isProportional() {
+        return parseProportional(getGradientUnits());
+    }
+
+    /**
+     * As {@link #isProportional()}, but resolving {@code gradientUnits} via the {@code xlink:href} chain first -
+     * this is one of the attributes common to both gradient types, so it is inherited even across a linear/radial
+     * boundary.
+     */
+    default boolean isEffectivelyProportional(SvgElementIndex index) {
+        return parseProportional(effectiveCommon(index, ISvgGradientElement::getGradientUnits));
+    }
+
+    private static boolean parseProportional(String gradientUnits) {
+        return !USER_SPACE_ON_USE.equalsIgnoreCase(StringUtils.trimToEmpty(gradientUnits));
+    }
+
+    /**
+     * {@code spreadMethod} maps directly onto the JavaFX cycle method. The initial value is {@code pad}. Considers
+     * only this element's own {@code spreadMethod}.
      */
     default CycleMethod getCycleMethod() {
-        String spread = StringUtils.trimToEmpty(getSpreadMethod());
+        return parseCycleMethod(getSpreadMethod());
+    }
+
+    /**
+     * As {@link #getCycleMethod()}, but resolving {@code spreadMethod} via the {@code xlink:href} chain first - the
+     * other attribute common to both gradient types.
+     */
+    default CycleMethod getEffectiveCycleMethod(SvgElementIndex index) {
+        return parseCycleMethod(effectiveCommon(index, ISvgGradientElement::getSpreadMethod));
+    }
+
+    private static CycleMethod parseCycleMethod(String spreadMethod) {
+        String spread = StringUtils.trimToEmpty(spreadMethod);
         if ("reflect".equalsIgnoreCase(spread)) {
             return CycleMethod.REFLECT;
         }
@@ -65,6 +139,20 @@ public interface ISvgGradientElement extends ISvgElement {
             return CycleMethod.REPEAT;
         }
         return CycleMethod.NO_CYCLE;
+    }
+
+    /**
+     * The first non-null value of an attribute common to both gradient types, walking the (cross-type)
+     * {@code xlink:href} chain.
+     */
+    private <T> T effectiveCommon(SvgElementIndex index, Function<ISvgGradientElement, T> getter) {
+        for (ISvgGradientElement current : resolveHrefChain(index)) {
+            T value = getter.apply(current);
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
     }
 
     /**

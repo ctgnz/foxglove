@@ -2,13 +2,14 @@ package nz.co.ctg.foxglove.paint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.SvgElementIndex;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -37,7 +38,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "linearGradient")
-public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradientElement, ISvgExternalResources, ISvgLinkable {
+public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradientElement, ISvgExternalResources {
 
     @XmlAttribute(name = "x1")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -81,19 +82,47 @@ public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradie
     /**
      * The initial values run the gradient left to right across the target: x1 and y1 at the origin, x2 at the far
      * edge and y2 level with the start.
+     * <p>
+     * Any of the four coordinates this element does not specify, and its stops if it declares none, are taken from
+     * its {@code xlink:href} chain (#18) - stopping at the first element that is not itself a {@code linearGradient},
+     * since geometry is not one of the attributes a cross-type reference inherits.
      */
     @Override
-    public Paint createPaint() {
-        List<Stop> stops = getGradientStops();
+    public Paint createPaint(SvgElementIndex index) {
+        List<Stop> stops = getEffectiveGradientStops(index);
         if (stops.size() < 2) {
             return getDegeneratePaint(stops);
         }
         return new LinearGradient(
-            ISvgGradientElement.coordinate(x1, 0.0),
-            ISvgGradientElement.coordinate(y1, 0.0),
-            ISvgGradientElement.coordinate(x2, 1.0),
-            ISvgGradientElement.coordinate(y2, 0.0),
-            isProportional(), getCycleMethod(), stops);
+            ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getX1), 0.0),
+            ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getY1), 0.0),
+            ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getX2), 1.0),
+            ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getY2), 0.0),
+            isEffectivelyProportional(index), getEffectiveCycleMethod(index), stops);
+    }
+
+    /**
+     * The {@code xlink:href} chain starting at this element, bound to {@code SvgLinearGradient} rather than the
+     * shared {@link ISvgGradientElement} interface - unlike stops and the common attributes, geometry is not
+     * inherited across a change of gradient type, and {@link SvgElementIndex#resolveChain} already stops a chain the
+     * moment the referenced element is not an instance of the bound type.
+     */
+    private List<SvgLinearGradient> hrefChain(SvgElementIndex index) {
+        return index == null ? List.of(this) : index.resolveChain(this, SvgLinearGradient::getXlinkHref, SvgLinearGradient.class);
+    }
+
+    /**
+     * The first non-null value of a linear-gradient-specific attribute, walking the (same-type-only) {@code
+     * xlink:href} chain.
+     */
+    private <T> T effective(SvgElementIndex index, Function<SvgLinearGradient, T> getter) {
+        for (SvgLinearGradient current : hrefChain(index)) {
+            T value = getter.apply(current);
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
     }
 
     public String getX1() {
@@ -169,7 +198,7 @@ public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradie
         builder.add("gradientTransform", gradientTransform);
         builder.add("spreadMethod", spreadMethod);
         super.toStringDetail(builder);
-        ISvgLinkable.super.toStringDetail(builder);
+        ISvgGradientElement.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);
     }
 

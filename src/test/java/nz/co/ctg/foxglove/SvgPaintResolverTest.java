@@ -141,13 +141,13 @@ public class SvgPaintResolverTest {
         SvgLinearGradient userSpace = linearGradient("b");
         userSpace.setGradientUnits("userSpaceOnUse");
 
-        assertThat(((LinearGradient) objectBoundingBox.createPaint()).isProportional(), is(true));
-        assertThat(((LinearGradient) userSpace.createPaint()).isProportional(), is(false));
+        assertThat(((LinearGradient) objectBoundingBox.createPaint(null)).isProportional(), is(true));
+        assertThat(((LinearGradient) userSpace.createPaint(null)).isProportional(), is(false));
     }
 
     @Test
     public void testLinearGradientCoordinatesDefaultToLeftToRight() throws Exception {
-        LinearGradient gradient = (LinearGradient) linearGradient("g").createPaint();
+        LinearGradient gradient = (LinearGradient) linearGradient("g").createPaint(null);
         assertThat(gradient.getStartX(), is(0.0));
         assertThat(gradient.getStartY(), is(0.0));
         assertThat(gradient.getEndX(), is(1.0));
@@ -160,7 +160,7 @@ public class SvgPaintResolverTest {
         svg.setX1("25%");
         svg.setX2("75%");
 
-        LinearGradient gradient = (LinearGradient) svg.createPaint();
+        LinearGradient gradient = (LinearGradient) svg.createPaint(null);
         assertThat(gradient.getStartX(), closeTo(0.25, 1e-9));
         assertThat(gradient.getEndX(), closeTo(0.75, 1e-9));
     }
@@ -172,7 +172,7 @@ public class SvgPaintResolverTest {
         svg.getContent().add(stop("0", "red", "0.5"));
         svg.getContent().add(stop("1", "blue", null));
 
-        LinearGradient gradient = (LinearGradient) svg.createPaint();
+        LinearGradient gradient = (LinearGradient) svg.createPaint(null);
         assertThat(gradient.getStops().get(0).getColor().getRed(), is(1.0));
         assertThat(gradient.getStops().get(0).getColor().getOpacity(), closeTo(0.5, 1e-9));
         assertThat(gradient.getStops().get(1).getColor(), is(Color.BLUE));
@@ -190,7 +190,7 @@ public class SvgPaintResolverTest {
         svg.getContent().add(stop("0.2", "blue", null));
         svg.getContent().add(stop("5", "white", null));
 
-        LinearGradient gradient = (LinearGradient) svg.createPaint();
+        LinearGradient gradient = (LinearGradient) svg.createPaint(null);
         assertThat(gradient.getStops().get(0).getOffset(), is(0.0));
         assertThat(gradient.getStops().get(1).getOffset(), closeTo(0.6, 1e-9));
         assertThat(gradient.getStops().get(2).getOffset(), closeTo(0.6, 1e-9));
@@ -201,7 +201,7 @@ public class SvgPaintResolverTest {
     public void testGradientWithNoStopsPaintsNothing() throws Exception {
         SvgLinearGradient svg = new SvgLinearGradient();
         svg.setId("g");
-        assertThat(svg.createPaint(), is(nullValue()));
+        assertThat(svg.createPaint(null), is(nullValue()));
     }
 
     @Test
@@ -209,14 +209,14 @@ public class SvgPaintResolverTest {
         SvgLinearGradient svg = new SvgLinearGradient();
         svg.setId("g");
         svg.getContent().add(stop("0", "red", null));
-        assertThat(svg.createPaint(), is(Color.RED));
+        assertThat(svg.createPaint(null), is(Color.RED));
     }
 
     // --- radial ------------------------------------------------------------
 
     @Test
     public void testRadialGradientDefaults() throws Exception {
-        RadialGradient gradient = (RadialGradient) radialGradient("g").createPaint();
+        RadialGradient gradient = (RadialGradient) radialGradient("g").createPaint(null);
         assertThat(gradient.getCenterX(), is(0.5));
         assertThat(gradient.getCenterY(), is(0.5));
         assertThat(gradient.getRadius(), is(0.5));
@@ -236,7 +236,7 @@ public class SvgPaintResolverTest {
         svg.setFx("0.7");
         svg.setFy("0.5");
 
-        RadialGradient gradient = (RadialGradient) svg.createPaint();
+        RadialGradient gradient = (RadialGradient) svg.createPaint(null);
         assertThat(gradient.getFocusDistance(), closeTo(0.5, 1e-9));
         assertThat(gradient.getFocusAngle(), closeTo(0.0, 1e-9));
     }
@@ -250,7 +250,7 @@ public class SvgPaintResolverTest {
         svg.setFx("0.5");
         svg.setFy("0.25");
 
-        RadialGradient gradient = (RadialGradient) svg.createPaint();
+        RadialGradient gradient = (RadialGradient) svg.createPaint(null);
         assertThat(gradient.getFocusDistance(), closeTo(0.5, 1e-9));
         assertThat(gradient.getFocusAngle(), closeTo(-90.0, 1e-9));
     }
@@ -259,7 +259,97 @@ public class SvgPaintResolverTest {
     public void testRadialGradientWithZeroRadiusPaintsTheLastStop() throws Exception {
         SvgRadialGradient svg = radialGradient("g");
         svg.setR("0");
-        assertThat(svg.createPaint(), is(Color.BLUE));
+        assertThat(svg.createPaint(null), is(Color.BLUE));
+    }
+
+    // --- xlink:href inheritance (#18) ---------------------------------------
+
+    @Test
+    public void testAttributeInheritanceAcrossAChainOfThree() throws Exception {
+        SvgLinearGradient base = linearGradient("base");
+        base.setX1("0.1");
+        SvgLinearGradient middle = new SvgLinearGradient();
+        middle.setId("middle");
+        middle.setXlinkHref("#base");
+        middle.setX2("0.9");
+        SvgLinearGradient top = new SvgLinearGradient();
+        top.setId("top");
+        top.setXlinkHref("#middle");
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(base);
+        svg.getContent().add(middle);
+        svg.getContent().add(top);
+
+        LinearGradient gradient = (LinearGradient) top.createPaint(svg.getElementIndex());
+        assertThat(gradient.getStops(), hasSize(2)); // base's stops, through middle
+        assertThat(gradient.getStartX(), closeTo(0.1, 1e-9)); // base's x1
+        assertThat(gradient.getEndX(), closeTo(0.9, 1e-9)); // middle's x2
+    }
+
+    @Test
+    public void testStopsInheritOnlyWhenTheReferencingGradientDeclaresNone() throws Exception {
+        SvgLinearGradient base = linearGradient("base"); // red, blue
+        SvgLinearGradient own = new SvgLinearGradient();
+        own.setId("own");
+        own.setXlinkHref("#base");
+        own.getContent().add(stop("0", "green", null));
+        own.getContent().add(stop("1", "yellow", null));
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(base);
+        svg.getContent().add(own);
+
+        LinearGradient gradient = (LinearGradient) own.createPaint(svg.getElementIndex());
+        assertThat(gradient.getStops().get(0).getColor(), is(Color.GREEN));
+    }
+
+    /**
+     * A linear gradient may legally reference a radial one, and vice versa - only the attributes common to both
+     * (here, {@code spreadMethod} and {@code gradientUnits}) and the stops transfer; geometry specific to one type
+     * has nothing type-compatible to come from, so it falls back to its own initial value.
+     */
+    @Test
+    public void testCrossTypeReferenceInheritsStopsAndCommonAttributesButNotGeometry() throws Exception {
+        SvgRadialGradient base = radialGradient("base"); // red, blue
+        base.setSpreadMethod("reflect");
+        base.setGradientUnits("userSpaceOnUse");
+        SvgLinearGradient linear = new SvgLinearGradient();
+        linear.setId("linear");
+        linear.setXlinkHref("#base");
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(base);
+        svg.getContent().add(linear);
+
+        LinearGradient gradient = (LinearGradient) linear.createPaint(svg.getElementIndex());
+        assertThat(gradient.getStops(), hasSize(2));
+        assertThat(gradient.getCycleMethod(), is(CycleMethod.REFLECT));
+        assertThat(gradient.isProportional(), is(false));
+        // the initial values, not anything derived from the radial gradient's cx/cy/r
+        assertThat(gradient.getStartX(), is(0.0));
+        assertThat(gradient.getEndX(), is(1.0));
+    }
+
+    /**
+     * Neither gradient in the cycle ever declares stops, so this must terminate with "nothing to paint" rather than
+     * hang or overflow the stack - exercised through {@code createPaint} itself, the path a real document takes,
+     * rather than {@code SvgElementIndex.resolveChain} directly (already covered in {@code SvgElementIndexTest}).
+     */
+    @Test
+    public void testACycleResolvesWithoutHangingOrOverflowing() throws Exception {
+        SvgLinearGradient a = new SvgLinearGradient();
+        a.setId("a");
+        a.setXlinkHref("#b");
+        SvgLinearGradient b = new SvgLinearGradient();
+        b.setId("b");
+        b.setXlinkHref("#a");
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(a);
+        svg.getContent().add(b);
+
+        assertThat(a.createPaint(svg.getElementIndex()), is(nullValue()));
     }
 
     // --- helpers -----------------------------------------------------------
@@ -267,7 +357,7 @@ public class SvgPaintResolverTest {
     private static CycleMethod cycleMethodFor(String spreadMethod) {
         SvgLinearGradient svg = linearGradient("g");
         svg.setSpreadMethod(spreadMethod);
-        return ((LinearGradient) svg.createPaint()).getCycleMethod();
+        return ((LinearGradient) svg.createPaint(null)).getCycleMethod();
     }
 
     private static SvgStop stop(String offset, String color, String opacity) {
