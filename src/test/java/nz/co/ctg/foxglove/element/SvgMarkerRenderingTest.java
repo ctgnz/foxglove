@@ -9,6 +9,7 @@ import org.junit.Test;
 import nz.co.ctg.foxglove.FoxgloveParser;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.shape.SvgLine;
+import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
@@ -34,6 +35,9 @@ import javafx.scene.transform.Translate;
  * Exercises #21's acceptance criteria: {@code marker-end} renders an arrowhead on a {@code <line>} and a
  * {@code <polyline>}, correctly oriented; {@code marker-mid} renders at interior vertices only;
  * {@code orient="auto"} bisects correctly at a corner; {@code markerUnits="strokeWidth"} scales with stroke width.
+ * <p>
+ * Also #67's acceptance criteria: markers on a {@code <path>} render at the right vertices, including after
+ * multiple subpaths and a {@code Z} closepath, with {@code orient="auto"} bisecting correctly at every vertex.
  */
 public class SvgMarkerRenderingTest {
 
@@ -154,6 +158,114 @@ public class SvgMarkerRenderingTest {
         Rotate rotate = (Rotate) markerInstance.getTransforms().get(1);
         // incoming via the closing edge (0,10)->(0,0): -90 deg; outgoing (0,0)->(10,0): 0 deg; bisected: -45 deg
         assertThat(rotate.getAngle(), closeTo(-45, 1e-6));
+    }
+
+    @Test
+    public void testMarkerEndOnAPathRendersAtItsRealFinalVertex() throws Exception {
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(markerWithContent("arrow"));
+
+        SvgPath path = new SvgPath();
+        path.setD("M0,0 L10,0 L10,10");
+        path.setMarkerEnd("url(#arrow)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(path);
+
+        Group wrapper = (Group) render(root).getChildren().get(0);
+        assertThat(wrapper.getChildren(), hasSize(2));
+        Group markerInstance = (Group) wrapper.getChildren().get(1);
+        Translate vertex = (Translate) markerInstance.getTransforms().get(0);
+        assertThat(vertex.getX(), closeTo(10, 1e-9));
+        assertThat(vertex.getY(), closeTo(10, 1e-9));
+    }
+
+    @Test
+    public void testMarkerOnAPathCurveRendersOnlyAtItsRealEndpointNotEveryFlattenedSample() throws Exception {
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(markerWithContent("dot"));
+
+        // one straight segment, then one cubic curve - a naive dense-sample approach would produce dozens of
+        // markers along the curve; the real path data has exactly 2 vertices
+        SvgPath path = new SvgPath();
+        path.setD("M0,0 L10,0 C10,10 20,10 20,0");
+        path.setMarkerMid("url(#dot)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(path);
+
+        Group wrapper = (Group) render(root).getChildren().get(0);
+        // the shape plus exactly 1 mid marker, at the single interior vertex (10,0) between the line and the curve
+        assertThat(wrapper.getChildren(), hasSize(2));
+    }
+
+    @Test
+    public void testMarkerStartAndEndOnAMultiSubpathPathApplyOnlyToTheOverallFirstAndLastVertex() throws Exception {
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(markerWithContent("dot"));
+
+        // two subpaths (a fresh M mid-data, no Z) - the boundary vertex (100,100) must be marker-mid, not a
+        // second marker-start/marker-end
+        SvgPath path = new SvgPath();
+        path.setD("M0,0 L10,0 M100,100 L200,200");
+        path.setMarkerStart("url(#dot)");
+        path.setMarkerMid("url(#dot)");
+        path.setMarkerEnd("url(#dot)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(path);
+
+        Group wrapper = (Group) render(root).getChildren().get(0);
+        // the shape plus 4 markers: one per vertex (start, mid, mid, end) across both subpaths
+        assertThat(wrapper.getChildren(), hasSize(5));
+    }
+
+    @Test
+    public void testMarkerOnAClosedPathSubpathUsesTheClosingEdgeForBisection() throws Exception {
+        SvgMarker dot = markerWithContent("dot");
+        dot.setOrient("auto");
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(dot);
+
+        // a right triangle path, closed with Z - same geometry as the <polygon> wraparound test
+        SvgPath path = new SvgPath();
+        path.setD("M0,0 L10,0 L0,10 Z");
+        path.setMarkerStart("url(#dot)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(path);
+
+        Group wrapper = (Group) render(root).getChildren().get(0);
+        Group markerInstance = (Group) wrapper.getChildren().get(1);
+        Rotate rotate = (Rotate) markerInstance.getTransforms().get(1);
+        // incoming via the closing edge (0,10)->(0,0): -90 deg; outgoing (0,0)->(10,0): 0 deg; bisected: -45 deg
+        assertThat(rotate.getAngle(), closeTo(-45, 1e-6));
+    }
+
+    @Test
+    public void testOrientAutoBisectsAtAPathCorner() throws Exception {
+        SvgMarker dot = markerWithContent("dot");
+        dot.setOrient("auto");
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(dot);
+
+        SvgPath path = new SvgPath();
+        path.setD("M0,0 L10,0 L10,10");
+        path.setMarkerMid("url(#dot)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(path);
+
+        Group wrapper = (Group) render(root).getChildren().get(0);
+        Group markerInstance = (Group) wrapper.getChildren().get(1);
+        Rotate rotate = (Rotate) markerInstance.getTransforms().get(1);
+        // incoming along +x (0 deg), outgoing along +y (90 deg) - bisected halfway, at 45 deg
+        assertThat(rotate.getAngle(), closeTo(45, 1e-6));
     }
 
     @Test

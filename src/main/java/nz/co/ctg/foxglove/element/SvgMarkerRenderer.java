@@ -10,7 +10,9 @@ import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgPresentationAttributes;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgElementIndex;
+import nz.co.ctg.foxglove.geometry.SvgPathData;
 import nz.co.ctg.foxglove.shape.SvgLine;
+import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 
@@ -26,7 +28,7 @@ import javafx.scene.transform.Translate;
 
 /**
  * Assembles {@code marker-start}/{@code marker-mid}/{@code marker-end} onto a shape that supports them
- * ({@code <line>}, {@code <polyline>}, {@code <polygon>} - markers on {@code <path>} are tracked separately, #67).
+ * ({@code <line>}, {@code <polyline>}, {@code <polygon>}, {@code <path>}).
  * <p>
  * Applied at the {@link nz.co.ctg.foxglove.ISvgContainer#appendContent} consumer level rather than by changing
  * {@link nz.co.ctg.foxglove.shape.AbstractSvgShape}'s return type: every production caller already treats a built
@@ -54,16 +56,41 @@ public final class SvgMarkerRenderer {
      */
     public static Node applyMarkers(Node node, ISvgElement child, RenderContext context) {
         List<Point2D> vertices;
-        boolean closed;
+        List<Double> angles;
         if (child instanceof SvgLine line) {
             vertices = List.of(new Point2D(line.getStartX(), line.getStartY()), new Point2D(line.getEndX(), line.getEndY()));
-            closed = false;
+            angles = autoAnglesFor(vertices, false);
         } else if (child instanceof SvgPolyline polyline) {
             vertices = polyline.getPoints();
-            closed = false;
+            angles = vertices == null ? List.of() : autoAnglesFor(vertices, false);
         } else if (child instanceof SvgPolygon polygon) {
             vertices = polygon.getPoints();
-            closed = true;
+            angles = vertices == null ? List.of() : autoAnglesFor(vertices, true);
+        } else if (child instanceof SvgPath path) {
+            // marker-start/marker-end apply only to the very first/last vertex of the whole path, not per subpath -
+            // so angles are computed per subpath (respecting each one's own open/closed tangent rules) but roles
+            // are assigned once below, over every subpath's vertices concatenated together
+            vertices = new ArrayList<>();
+            angles = new ArrayList<>();
+            for (SvgPathData.Subpath subpath : SvgPathData.subpaths(path.getD())) {
+                List<Point2D> subVertices = subpath.vertices();
+                if (subpath.closed() && subVertices.size() > 1) {
+                    // Z appends a closing point that duplicates the subpath's own start (matching flatten()'s
+                    // existing convention) - bisecting against that duplicate directly would make vertex 0's
+                    // "incoming" a zero-length vector pointing from itself to itself. Bisect over the distinct
+                    // corners only (the same representation <polygon>'s implicit closing edge already uses), then
+                    // re-append the duplicate closing point with vertex 0's own angle, since it's the same location
+                    List<Point2D> distinct = subVertices.subList(0, subVertices.size() - 1);
+                    List<Double> distinctAngles = autoAnglesFor(distinct, true);
+                    vertices.addAll(distinct);
+                    vertices.add(subVertices.get(subVertices.size() - 1));
+                    angles.addAll(distinctAngles);
+                    angles.add(distinctAngles.get(0));
+                } else {
+                    vertices.addAll(subVertices);
+                    angles.addAll(autoAnglesFor(subVertices, false));
+                }
+            }
         } else {
             return node;
         }
@@ -85,7 +112,7 @@ public final class SvgMarkerRenderer {
         wrapper.getTransforms().addAll(node.getTransforms());
         node.getTransforms().clear();
 
-        for (MarkerPlacement placement : computePlacements(vertices, closed)) {
+        for (MarkerPlacement placement : assignRoles(vertices, angles)) {
             String href = switch (placement.role()) {
                 case START -> startHref;
                 case MID -> midHref;
@@ -103,20 +130,18 @@ public final class SvgMarkerRenderer {
     }
 
     /**
-     * One placement per vertex, in order: the first is {@link MarkerRole#START}, the last {@link MarkerRole#END},
-     * everything between {@link MarkerRole#MID} - so a 2-point line never gets a {@code MID} placement. The
-     * bisected angle is computed for every vertex unconditionally; a marker only consults it when its own
-     * {@code orient} is {@code auto}.
+     * The bisected auto-orientation angle at every vertex of one subpath, computed unconditionally - a marker only
+     * consults it when its own {@code orient} is {@code auto}.
      * <p>
-     * When {@code closed} (a {@code <polygon>}'s implicit closing edge back to the first point), the first vertex's
-     * incoming direction and the last vertex's outgoing direction wrap around through that closing edge, per the
-     * specification's closed-path bisection rule - not merely approximated as open-path start/end.
+     * When {@code closed} (a {@code <polygon>}'s implicit closing edge back to the first point, or a {@code <path>}
+     * subpath ending in {@code Z}), the first vertex's incoming direction and the last vertex's outgoing direction
+     * wrap around through that closing edge, per the specification's closed-path bisection rule - not merely
+     * approximated as open-path start/end.
      */
-    private static List<MarkerPlacement> computePlacements(List<Point2D> vertices, boolean closed) {
+    private static List<Double> autoAnglesFor(List<Point2D> vertices, boolean closed) {
         int n = vertices.size();
-        List<MarkerPlacement> placements = new ArrayList<>(n);
+        List<Double> angles = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
-            MarkerRole role = i == 0 ? MarkerRole.START : (i == n - 1 ? MarkerRole.END : MarkerRole.MID);
             Point2D point = vertices.get(i);
             // plain if/else, not a nested ternary: mixing angleOf's primitive double with a null branch in a
             // ternary forces the whole expression's static type to double, which then throws unboxing null
@@ -132,7 +157,25 @@ public final class SvgMarkerRenderer {
             } else if (closed) {
                 outAngle = angleOf(point, vertices.get(0));
             }
-            placements.add(new MarkerPlacement(point, bisect(inAngle, outAngle), role));
+            angles.add(bisect(inAngle, outAngle));
+        }
+        return angles;
+    }
+
+    /**
+     * One placement per vertex, in order: the first is {@link MarkerRole#START}, the last {@link MarkerRole#END},
+     * everything between {@link MarkerRole#MID} - so a 2-point line never gets a {@code MID} placement, and a
+     * multi-subpath {@code <path>} gets exactly one start and one end overall, with every subpath-boundary vertex
+     * in between (including a fresh {@code M} in the middle of the data) getting {@code MID} - per the
+     * specification, {@code marker-start}/{@code marker-end} apply to the first/last vertex of the whole path, not
+     * per subpath.
+     */
+    private static List<MarkerPlacement> assignRoles(List<Point2D> vertices, List<Double> angles) {
+        int n = vertices.size();
+        List<MarkerPlacement> placements = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            MarkerRole role = i == 0 ? MarkerRole.START : (i == n - 1 ? MarkerRole.END : MarkerRole.MID);
+            placements.add(new MarkerPlacement(vertices.get(i), angles.get(i), role));
         }
         return placements;
     }
@@ -147,6 +190,10 @@ public final class SvgMarkerRenderer {
      * (the sum is then near zero), where this falls back to the outgoing angle alone.
      */
     private static double bisect(Double inAngle, Double outAngle) {
+        if (inAngle == null && outAngle == null) {
+            // a subpath consisting of a single bare moveto with nothing drawn has no tangent at all
+            return 0.0;
+        }
         if (inAngle == null) {
             return outAngle;
         }
