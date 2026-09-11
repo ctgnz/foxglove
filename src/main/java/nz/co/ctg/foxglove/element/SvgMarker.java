@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgContainer;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgFitToViewBox;
@@ -54,8 +55,13 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlType(name = "", propOrder = {
     "content"
 })
+/**
+ * Never rendered directly - only through the {@code marker-start}/{@code marker-mid}/{@code marker-end} presentation
+ * attributes on a shape that references it (see {@link SvgMarkerRenderer}), the same way {@code <symbol>} is only
+ * ever rendered through {@code <use>}. Deliberately does not implement {@link nz.co.ctg.foxglove.FxGraphic}.
+ */
 @XmlRootElement(name = "marker")
-public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgFitToViewBox {
+public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgFitToViewBox, ISvgContainer {
 
     @XmlAttribute(name = "refX")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)

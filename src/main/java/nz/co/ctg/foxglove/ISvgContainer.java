@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove;
 
+import nz.co.ctg.foxglove.element.SvgMarkerRenderer;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 
@@ -29,7 +31,7 @@ public interface ISvgContainer extends ISvgContent, ISvgStylable {
             if (child instanceof FxGraphic<?> graphic && isRendered(child)) {
                 Node node = graphic.createGraphic(context);
                 if (node != null) {
-                    target.getChildren().add(node);
+                    target.getChildren().add(SvgMarkerRenderer.applyMarkers(node, child, context));
                 }
             }
         }
