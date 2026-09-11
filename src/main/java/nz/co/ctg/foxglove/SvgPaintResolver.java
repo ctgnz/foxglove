@@ -51,7 +51,7 @@ public final class SvgPaintResolver {
         if (index != null) {
             ISvgGradientElement gradient = index.resolve(value.getReference(), ISvgGradientElement.class).orElse(null);
             if (gradient != null) {
-                return gradient.createPaint();
+                return gradient.createPaint(index);
             }
             SvgPattern pattern = index.resolve(value.getReference(), SvgPattern.class).orElse(null);
             if (pattern != null) {

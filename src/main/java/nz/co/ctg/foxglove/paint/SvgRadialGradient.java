@@ -2,13 +2,14 @@ package nz.co.ctg.foxglove.paint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.SvgElementIndex;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -37,7 +38,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "radialGradient")
-public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradientElement, ISvgExternalResources, ISvgLinkable {
+public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradientElement, ISvgExternalResources {
 
     @XmlAttribute(name = "cx")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -90,26 +91,54 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
      * of the radius, so the offset from the centre is converted to polar form. A radius of zero paints the last stop
      * flat, per the specification.
      */
+    /**
+     * Any of the five coordinates this element does not specify, and its stops if it declares none, are taken from
+     * its {@code xlink:href} chain (#18) - stopping at the first element that is not itself a {@code radialGradient},
+     * since geometry is not one of the attributes a cross-type reference inherits.
+     */
     @Override
-    public Paint createPaint() {
-        List<Stop> stops = getGradientStops();
+    public Paint createPaint(SvgElementIndex index) {
+        List<Stop> stops = getEffectiveGradientStops(index);
         if (stops.size() < 2) {
             return getDegeneratePaint(stops);
         }
-        double centreX = ISvgGradientElement.coordinate(cx, 0.5);
-        double centreY = ISvgGradientElement.coordinate(cy, 0.5);
-        double radius = ISvgGradientElement.coordinate(r, 0.5);
+        double centreX = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getCx), 0.5);
+        double centreY = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getCy), 0.5);
+        double radius = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getR), 0.5);
         if (radius <= 0.0) {
             return stops.get(stops.size() - 1).getColor();
         }
-        double focusX = ISvgGradientElement.coordinate(fx, centreX);
-        double focusY = ISvgGradientElement.coordinate(fy, centreY);
+        double focusX = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getFx), centreX);
+        double focusY = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getFy), centreY);
         double offsetX = focusX - centreX;
         double offsetY = focusY - centreY;
         double focusDistance = Math.clamp(Math.hypot(offsetX, offsetY) / radius, 0.0, 1.0);
         double focusAngle = Math.toDegrees(Math.atan2(offsetY, offsetX));
         return new RadialGradient(focusAngle, focusDistance, centreX, centreY, radius,
-            isProportional(), getCycleMethod(), stops);
+            isEffectivelyProportional(index), getEffectiveCycleMethod(index), stops);
+    }
+
+    /**
+     * The {@code xlink:href} chain starting at this element, bound to {@code SvgRadialGradient} rather than the
+     * shared {@link ISvgGradientElement} interface - see {@link SvgLinearGradient#hrefChain} for why geometry needs
+     * this rather than the cross-type chain.
+     */
+    private List<SvgRadialGradient> hrefChain(SvgElementIndex index) {
+        return index == null ? List.of(this) : index.resolveChain(this, SvgRadialGradient::getXlinkHref, SvgRadialGradient.class);
+    }
+
+    /**
+     * The first non-null value of a radial-gradient-specific attribute, walking the (same-type-only) {@code
+     * xlink:href} chain.
+     */
+    private <T> T effective(SvgElementIndex index, Function<SvgRadialGradient, T> getter) {
+        for (SvgRadialGradient current : hrefChain(index)) {
+            T value = getter.apply(current);
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
     }
 
     public String getCx() {
@@ -194,7 +223,7 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
         builder.add("gradientTransform", gradientTransform);
         builder.add("spreadMethod", spreadMethod);
         super.toStringDetail(builder);
-        ISvgLinkable.super.toStringDetail(builder);
+        ISvgGradientElement.super.toStringDetail(builder);
         ISvgExternalResources.super.toStringDetail(builder);
     }
 

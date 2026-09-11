@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.type.SvgPaint;
 import nz.co.ctg.foxglove.type.ViewBox;
@@ -222,6 +223,77 @@ public class SvgPatternTest {
         assertThat(colorAt(paint, 7, 2), is(Color.WHITE)); // top-right quadrant
         assertThat(colorAt(paint, 2, 7), is(Color.WHITE)); // bottom-left quadrant
         assertThat(colorAt(paint, 7, 7), is(Color.BLACK)); // bottom-right quadrant
+    }
+
+    // --- xlink:href inheritance (#18) ---------------------------------------
+
+    @Test
+    public void testContentInheritsFromTheReferencedPatternWhenThisOneHasNone() throws Exception {
+        SvgPattern base = new SvgPattern();
+        base.setId("base");
+        base.getContent().add(rect(0, 0, 10, 10, "red"));
+
+        SvgPattern own = new SvgPattern();
+        own.setId("own");
+        own.setXlinkHref("#base");
+        own.setPatternUnits("userSpaceOnUse");
+        own.setWidth(px(10));
+        own.setHeight(px(10));
+        // no content of its own - it comes from "base" instead
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(base);
+        svg.getContent().add(own);
+
+        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
+        Color color = onFxThread(() -> colorAt((ImagePattern) own.createPaint(context), 5, 5));
+        assertThat(color, is(Color.RED));
+    }
+
+    @Test
+    public void testAttributesInheritFromTheReferencedPatternWhenThisOneDoesNotSpecifyThem() throws Exception {
+        SvgPattern base = new SvgPattern();
+        base.setId("base");
+        base.setPatternUnits("userSpaceOnUse");
+        base.setWidth(px(20));
+        base.setHeight(px(20));
+
+        SvgPattern own = new SvgPattern();
+        own.setId("own");
+        own.setXlinkHref("#base");
+        own.getContent().add(rect(0, 0, 20, 20, "red")); // its own content, sized to the inherited tile
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(base);
+        svg.getContent().add(own);
+
+        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
+        ImagePattern paint = onFxThread(() -> (ImagePattern) own.createPaint(context));
+        assertThat(paint.getWidth(), is(20.0));
+        assertThat(paint.getHeight(), is(20.0));
+        assertThat(colorAt(paint, 10, 10), is(Color.RED));
+    }
+
+    /**
+     * Neither pattern in the cycle declares a width or height, so this must terminate as a degenerate (zero-size)
+     * tile rather than hang or overflow the stack.
+     */
+    @Test
+    public void testACycleResolvesWithoutHangingOrOverflowing() throws Exception {
+        SvgPattern a = new SvgPattern();
+        a.setId("a");
+        a.setPatternUnits("userSpaceOnUse");
+        a.setXlinkHref("#b");
+        SvgPattern b = new SvgPattern();
+        b.setId("b");
+        b.setXlinkHref("#a");
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(a);
+        svg.getContent().add(b);
+
+        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
+        assertThat(onFxThread(() -> a.createPaint(context)), is(nullValue()));
     }
 
     /**
