@@ -55,6 +55,7 @@ public class FoxgloveParserPreview extends Application {
         webView = new WebView();
         webView.setMinSize(400, 800);
         root.setRight(webView);
+        loadFile(defaultFile);
 
         Scene scene = new Scene(root);
         mainStage.setScene(scene);
@@ -70,12 +71,7 @@ public class FoxgloveParserPreview extends Application {
         files.setOnAction(evt -> {
             Path filePath = files.getSelectionModel().getSelectedItem();
             if (filePath != null) {
-                try {
-                    scrollPane.setContent(createGraphic(filePath));
-                    webView.getEngine().load(filePath.toUri().toURL().toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                loadFile(filePath);
             }
         });
         Button browse = new Button("Browse...");
@@ -89,6 +85,15 @@ public class FoxgloveParserPreview extends Application {
             }
         });
         return new ToolBar(browse, files);
+    }
+
+    protected void loadFile(Path filePath) {
+        try {
+            scrollPane.setContent(createGraphic(filePath));
+            webView.getEngine().load(filePath.toUri().toURL().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private ObservableList<Path> findSvgFiles() {
