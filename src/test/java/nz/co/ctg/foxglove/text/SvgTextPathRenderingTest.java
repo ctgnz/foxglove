@@ -81,6 +81,34 @@ public class SvgTextPathRenderingTest {
     }
 
     @Test
+    public void testTextAfterATextPathContinuesPastItRatherThanOverlappingWhatCameBefore() throws Exception {
+        SvgText text = new SvgText();
+        text.getContent().add("Before ");
+        SvgTextPath textPath = new SvgTextPath();
+        textPath.setXlinkHref("#p");
+        textPath.getContent().add("on path");
+        text.getContent().add(textPath);
+        text.getContent().add(" after");
+
+        SvgPath path = new SvgPath();
+        path.setId("p");
+        path.setD("M0,0 L1000,0");
+
+        Group rendered = (Group) render(text, path);
+        List<Node> children = rendered.getChildren();
+        // "Before " (1 run) + "on path" (7 glyphs) + " after" (1 run)
+        assertThat(children, hasSize(9));
+
+        Text before = (Text) children.get(0);
+        double afterPathEndX = ((Text) children.get(children.size() - 2)).getX()
+            + ((Text) children.get(children.size() - 2)).getLayoutBounds().getWidth();
+        Text after = (Text) children.get(children.size() - 1);
+
+        assertThat(after.getX() >= before.getX() + before.getLayoutBounds().getWidth(), is(true));
+        assertThat(after.getX(), closeTo(afterPathEndX, 1e-6));
+    }
+
+    @Test
     public void testUnresolvableHrefRendersNothingWithoutThrowing() throws Exception {
         SvgText text = new SvgText();
         SvgTextPath textPath = new SvgTextPath();

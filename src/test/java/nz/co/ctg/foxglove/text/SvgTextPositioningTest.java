@@ -25,6 +25,33 @@ import javafx.scene.transform.Rotate;
 public class SvgTextPositioningTest {
 
     @Test
+    public void testASingleXValueOnlyPositionsTheFirstRunNotEveryRunFromThatOwner() throws Exception {
+        // <text x="10">Hello <tspan>world</tspan> and more</text> - "Hello " and " and more" are two separate
+        // runs both owned directly by SvgText, but x="10" is a single value and must only place the very first
+        // character; the second run has to continue from the flowing cursor, not jump back to x=10 too.
+        SvgText text = new SvgText();
+        text.setX(List.of(10.0));
+        text.getContent().add("Hello ");
+        SvgTextSpan span = new SvgTextSpan();
+        span.getContent().add("world");
+        text.getContent().add(span);
+        text.getContent().add(" and more");
+
+        Group rendered = (Group) render(text);
+        List<Node> children = rendered.getChildren();
+        assertThat(children, hasSize(3));
+        double helloX = ((Text) children.get(0)).getX();
+        double helloWidth = ((Text) children.get(0)).getLayoutBounds().getWidth();
+        double worldX = ((Text) children.get(1)).getX();
+        double worldWidth = ((Text) children.get(1)).getLayoutBounds().getWidth();
+        double andMoreX = ((Text) children.get(2)).getX();
+
+        assertThat(helloX, is(10.0));
+        assertThat(worldX, closeTo(helloX + helloWidth, 1e-6));
+        assertThat(andMoreX, closeTo(worldX + worldWidth, 1e-6));
+    }
+
+    @Test
     public void testSingleXYStaysOnTheSingleNodeFastPath() throws Exception {
         SvgText text = new SvgText();
         text.setX(List.of(10.0));

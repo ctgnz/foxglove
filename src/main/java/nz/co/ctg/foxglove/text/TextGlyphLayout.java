@@ -1,7 +1,9 @@
 package nz.co.ctg.foxglove.text;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,9 +37,10 @@ import javafx.scene.transform.Rotate;
  * A run under a {@code <textPath>} (#29) is laid out differently: always split per code point regardless of its
  * own {@code x}/{@code y}/{@code dx}/{@code dy}/{@code rotate} (not applied while on a path - out of scope), each
  * glyph placed and rotated to match the referenced {@code <path>}'s tangent at an accumulating arc length starting
- * from {@code startOffset}, via {@link nz.co.ctg.foxglove.geometry.PathLengthLookup}. These glyphs neither read
- * nor advance the ordinary linear cursor - text after a {@code </textPath>} resumes wherever the linear flow last
- * left off, not from the path's end.
+ * from {@code startOffset}, via {@link nz.co.ctg.foxglove.geometry.PathLengthLookup}. The ordinary linear cursor is
+ * synced to the last glyph's position afterward (an approximation - it cannot itself follow the curve) so text
+ * after a {@code </textPath>} continues from roughly there rather than jumping back to wherever the linear flow
+ * was before the path started.
  */
 final class TextGlyphLayout {
 
@@ -52,6 +55,10 @@ final class TextGlyphLayout {
         SvgTextPath currentPath = null;
         PathLengthLookup currentPathLookup = null;
         double pathCursor = 0;
+        // How many of an owner's own x/y/dx/dy/rotate list entries have already been consumed - an element can
+        // contribute more than one run (text directly inside it, both before and after a nested child), and the
+        // list indexes that element's *own* characters as a whole, not each run independently.
+        Map<AbstractSvgStylable, Integer> ownerIndex = new IdentityHashMap<>();
 
         for (TextRunBuilder.Run run : runs) {
             if (run.enclosingPath() != null) {
@@ -74,6 +81,11 @@ final class TextGlyphLayout {
                         nodes.add(node);
 
                         pathCursor += node.getLayoutBounds().getWidth();
+                        // Text after </textPath> cannot follow the curve, but leaving the linear cursor where it
+                        // was before the path would make it overlap the path's own text instead - continuing in a
+                        // straight line from the last glyph is only an approximation, but a far less broken one.
+                        cursorX = point.getX() + node.getLayoutBounds().getWidth();
+                        cursorY = point.getY();
                     }
                 }
                 continue;
@@ -88,9 +100,11 @@ final class TextGlyphLayout {
             // which always rotates each character individually rather than the run as one rigid block.
             boolean perGlyph = xs.size() > 1 || ys.size() > 1 || dxs.size() > 1 || dys.size() > 1 || !rotates.isEmpty();
             List<String> pieces = perGlyph ? codePoints(run.text()) : List.of(run.text());
+            int baseIndex = ownerIndex.getOrDefault(run.owner(), 0);
 
-            for (int i = 0; i < pieces.size(); i++) {
-                Text node = new Text(pieces.get(i));
+            for (int k = 0; k < pieces.size(); k++) {
+                int i = baseIndex + k;
+                Text node = new Text(pieces.get(k));
                 run.owner().applyGraphicsProperties(run.ownerContext(), node);
                 run.owner().applyTextProperties(run.ownerContext(), node);
 
@@ -114,6 +128,7 @@ final class TextGlyphLayout {
                 cursorX = flowX + node.getLayoutBounds().getWidth();
                 cursorY = flowY;
             }
+            ownerIndex.put(run.owner(), baseIndex + pieces.size());
         }
 
         Node result = nodes.size() == 1 ? nodes.get(0) : groupOf(nodes);
