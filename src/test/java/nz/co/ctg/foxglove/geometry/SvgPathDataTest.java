@@ -108,4 +108,52 @@ public class SvgPathDataTest {
         assertThat(SvgPathData.flatten(null), hasSize(0));
     }
 
+    // --- subpaths() (#67) ---------------------------------------------------
+
+    @Test
+    public void testSubpathsWalksPastAFurtherMoveto() throws Exception {
+        List<SvgPathData.Subpath> subpaths = SvgPathData.subpaths("M0,0 L10,0 M100,100 L200,200");
+        assertThat(subpaths, hasSize(2));
+        assertThat(subpaths.get(0).vertices(), hasSize(2));
+        assertThat(subpaths.get(0).closed(), is(false));
+        assertThat(subpaths.get(1).vertices(), hasSize(2));
+        assertThat(subpaths.get(1).vertices().get(0), is(new Point2D(100, 100)));
+        assertThat(subpaths.get(1).closed(), is(false));
+    }
+
+    @Test
+    public void testSubpathsWalksPastAClosepath() throws Exception {
+        List<SvgPathData.Subpath> subpaths = SvgPathData.subpaths("M0,0 L10,0 L10,10 Z M50,50 L60,60");
+        assertThat(subpaths, hasSize(2));
+        List<Point2D> first = subpaths.get(0).vertices();
+        assertThat(first, hasSize(4));
+        assertThat(first.get(3), is(new Point2D(0, 0)));
+        assertThat(subpaths.get(0).closed(), is(true));
+        assertThat(subpaths.get(1).vertices(), hasSize(2));
+        assertThat(subpaths.get(1).closed(), is(false));
+    }
+
+    @Test
+    public void testSubpathsOfASingleOpenPathMatchesFlatten() throws Exception {
+        // no curves, so flatten()'s dense sampling and subpaths()'s real-vertices-only output should coincide
+        String d = "M0,0 L10,0 L10,10";
+        assertThat(SvgPathData.subpaths(d), hasSize(1));
+        assertThat(SvgPathData.subpaths(d).get(0).vertices(), is(SvgPathData.flatten(d)));
+    }
+
+    @Test
+    public void testSubpathsOnACurveKeepsOnlyTheRealEndpoint() throws Exception {
+        // flatten() densely samples the curve; subpaths() keeps only its actual endpoint
+        List<Point2D> vertices = SvgPathData.subpaths("M0,0 C0,10 10,10 10,0").get(0).vertices();
+        assertThat(vertices, hasSize(2));
+        assertThat(vertices.get(1).getX(), closeTo(10, 1e-9));
+        assertThat(vertices.get(1).getY(), closeTo(0, 1e-9));
+    }
+
+    @Test
+    public void testSubpathsOfABlankPathIsEmpty() throws Exception {
+        assertThat(SvgPathData.subpaths(""), hasSize(0));
+        assertThat(SvgPathData.subpaths(null), hasSize(0));
+    }
+
 }

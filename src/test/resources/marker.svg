@@ -9,9 +9,13 @@
   Row 2: markerUnits="strokeWidth" (default) vs "userSpaceOnUse" - two lines with very different stroke widths,
          same marker: the left pair's arrowheads scale with the stroke, the right pair's don't | a line with its
          own rotate transform, showing the arrowhead rotates and moves together with it
+  Row 3 (#67): a <path> mixing a straight segment and a curve, with a dot only at the real line/curve junction (not
+         scattered along the curve's interior) | a two-subpath path (a plain M mid-data, no Z) - one marker-start
+         and one marker-end overall, with the subpath-boundary vertex getting marker-mid, not a second start/end |
+         a closed <path> triangle (Z), same wraparound bisection as the <polygon> case in row 1
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="440" height="240" viewBox="0 0 440 240">
+     width="440" height="330" viewBox="0 0 440 330">
 
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
@@ -43,5 +47,16 @@
   <!-- Row 2: the line's own transform applies to its marker too -->
   <line x1="0" y1="0" x2="70" y2="0" stroke="black" stroke-width="3" marker-end="url(#arrow)"
         transform="translate(320,150) rotate(-30)"/>
+
+  <!-- Row 3: a path mixing a line and a curve - one dot at the real junction vertex, none scattered along the curve -->
+  <path d="M20,220 L60,220 C60,260 100,260 100,220" fill="none" stroke="black" stroke-width="2" marker-mid="url(#dot)"/>
+
+  <!-- Row 3: two subpaths, no Z - marker-start/marker-end apply once overall, the boundary vertex gets marker-mid -->
+  <path d="M150,220 L190,220 M190,260 L230,260" fill="none" stroke="black" stroke-width="2"
+        marker-start="url(#dot)" marker-mid="url(#arrow)" marker-end="url(#dot)"/>
+
+  <!-- Row 3: a closed path triangle - same wraparound bisection as the <polygon> above -->
+  <path d="M340,220 L400,220 L370,270 Z" fill="none" stroke="black" stroke-width="2"
+        marker-start="url(#dot)" marker-mid="url(#dot)" marker-end="url(#dot)"/>
 
 </svg>

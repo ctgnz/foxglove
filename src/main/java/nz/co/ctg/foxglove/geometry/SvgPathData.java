@@ -26,6 +26,15 @@ public final class SvgPathData {
     private static final int CURVE_STEPS = 32;
     private static final int ARC_STEPS = 32;
 
+    /**
+     * One subpath's real vertices - each command's endpoint, not the interior samples a curve gets flattened into -
+     * plus whether it was closed with {@code Z}/{@code z}. Built for marker placement (#67), which needs actual
+     * vertex positions across every subpath, unlike {@link #flatten} which serves arc-length purposes over just the
+     * first.
+     */
+    public record Subpath(List<Point2D> vertices, boolean closed) {
+    }
+
     private SvgPathData() {
     }
 
@@ -205,6 +214,208 @@ public final class SvgPathData {
             prevCommand = command;
         }
         return points;
+    }
+
+    /**
+     * Walks every subpath (unlike {@link #flatten}, which stops at the first), returning each one's real vertices -
+     * a command's endpoint, not the dense interior samples a curve gets flattened into - and whether it was closed.
+     * <p>
+     * Structurally a second copy of {@link #flatten}'s command-dispatch loop, sharing all of its per-command math
+     * ({@link #flattenCubic}, {@link #flattenQuadratic}, {@link #flattenArc}) verbatim - only the top-level loop
+     * differs, in three ways: a further {@code M}/{@code m} finalizes the subpath in progress and starts a new one
+     * instead of returning; {@code Z}/{@code z} finalizes the current subpath as closed and continues rather than
+     * returning, guarded so the loop can only continue when the very next token is itself a command letter (in
+     * practice always a fresh {@code M}) - {@code flatten}'s unconditional return on {@code Z} is exactly what
+     * prevents an infinite loop today, since that case consumes no tokens of its own; without an equivalent guard
+     * here, a stray non-command token after {@code Z} would spin forever re-entering it; running out of tokens, or
+     * an unrecognised command, finalizes whatever subpath is in progress before returning.
+     */
+    public static List<Subpath> subpaths(String d) {
+        List<Subpath> subpaths = new ArrayList<>();
+        if (d == null || d.isBlank()) {
+            return subpaths;
+        }
+        List<String> tokens = tokenize(d);
+        int i = 0;
+        double curX = 0;
+        double curY = 0;
+        double subpathStartX = 0;
+        double subpathStartY = 0;
+        double prevControlX = 0;
+        double prevControlY = 0;
+        char prevCommand = 0;
+        char command = 0;
+        List<Point2D> current = null;
+
+        while (i < tokens.size()) {
+            if (isCommand(tokens.get(i))) {
+                command = tokens.get(i).charAt(0);
+                i++;
+            }
+            switch (Character.toUpperCase(command)) {
+                case 'M': {
+                    if (current != null) {
+                        subpaths.add(new Subpath(current, false));
+                    }
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                        y += curY;
+                    }
+                    curX = x;
+                    curY = y;
+                    subpathStartX = x;
+                    subpathStartY = y;
+                    current = new ArrayList<>();
+                    current.add(new Point2D(x, y));
+                    command = Character.isLowerCase(command) ? 'l' : 'L';
+                    break;
+                }
+                case 'L': {
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                        y += curY;
+                    }
+                    current.add(new Point2D(x, y));
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'H': {
+                    double x = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                    }
+                    current.add(new Point2D(x, curY));
+                    curX = x;
+                    break;
+                }
+                case 'V': {
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        y += curY;
+                    }
+                    current.add(new Point2D(curX, y));
+                    curY = y;
+                    break;
+                }
+                case 'C': {
+                    double x1 = parseDouble(tokens.get(i++));
+                    double y1 = parseDouble(tokens.get(i++));
+                    double x2 = parseDouble(tokens.get(i++));
+                    double y2 = parseDouble(tokens.get(i++));
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x1 += curX;
+                        y1 += curY;
+                        x2 += curX;
+                        y2 += curY;
+                        x += curX;
+                        y += curY;
+                    }
+                    current.add(new Point2D(x, y));
+                    prevControlX = x2;
+                    prevControlY = y2;
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'S': {
+                    double x2 = parseDouble(tokens.get(i++));
+                    double y2 = parseDouble(tokens.get(i++));
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x2 += curX;
+                        y2 += curY;
+                        x += curX;
+                        y += curY;
+                    }
+                    current.add(new Point2D(x, y));
+                    prevControlX = x2;
+                    prevControlY = y2;
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'Q': {
+                    double x1 = parseDouble(tokens.get(i++));
+                    double y1 = parseDouble(tokens.get(i++));
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x1 += curX;
+                        y1 += curY;
+                        x += curX;
+                        y += curY;
+                    }
+                    current.add(new Point2D(x, y));
+                    prevControlX = x1;
+                    prevControlY = y1;
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'T': {
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                        y += curY;
+                    }
+                    double x1 = isQuadraticCommand(prevCommand) ? 2 * curX - prevControlX : curX;
+                    double y1 = isQuadraticCommand(prevCommand) ? 2 * curY - prevControlY : curY;
+                    current.add(new Point2D(x, y));
+                    prevControlX = x1;
+                    prevControlY = y1;
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'A': {
+                    double rx = parseDouble(tokens.get(i++));
+                    double ry = parseDouble(tokens.get(i++));
+                    double rotation = parseDouble(tokens.get(i++));
+                    boolean largeArc = parseDouble(tokens.get(i++)) != 0;
+                    boolean sweep = parseDouble(tokens.get(i++)) != 0;
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                        y += curY;
+                    }
+                    current.add(new Point2D(x, y));
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'Z': {
+                    current.add(new Point2D(subpathStartX, subpathStartY));
+                    subpaths.add(new Subpath(current, true));
+                    current = null;
+                    curX = subpathStartX;
+                    curY = subpathStartY;
+                    if (i >= tokens.size() || !isCommand(tokens.get(i)) || Character.toUpperCase(tokens.get(i).charAt(0)) != 'M') {
+                        return subpaths;
+                    }
+                    break;
+                }
+                default:
+                    if (current != null) {
+                        subpaths.add(new Subpath(current, false));
+                    }
+                    return subpaths;
+            }
+            prevCommand = command;
+        }
+        if (current != null) {
+            subpaths.add(new Subpath(current, false));
+        }
+        return subpaths;
     }
 
     private static void flattenCubic(List<Point2D> points, double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3) {
