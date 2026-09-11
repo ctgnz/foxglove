@@ -102,6 +102,7 @@ public class FoxgloveParserPreview extends Application {
 
     private Node createGraphic(Path filePath) throws Exception {
         SvgGraphic svgElement = parser.parse(Files.newInputStream(filePath));
+        svgElement.setBaseUri(filePath.toUri());
         Group graphic = svgElement.createGroup();
         Pane region = new Pane(graphic);
         region.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DOTTED, null, BorderStroke.THIN)));
