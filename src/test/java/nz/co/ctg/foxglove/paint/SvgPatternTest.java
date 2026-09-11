@@ -193,12 +193,45 @@ public class SvgPatternTest {
         assertThat(color, is(Color.TRANSPARENT));
     }
 
+    /**
+     * A single shape somewhere in the tile survived the bug this guards against: the rasterised image came out the
+     * declared tile size, but {@code Node.snapshot} had actually captured a smaller, shifted region of the content
+     * and stretched it to fill that image - invisible with one shape covering most of the frame, but a tile with
+     * several distinctly coloured regions across its full extent comes out uniformly wrong instead of showing all
+     * of them in their right places.
+     */
+    @Test
+    public void testMultipleContentElementsAcrossTheFullTileRasteriseInTheRightPlaces() throws Exception {
+        SvgPattern pattern = new SvgPattern();
+        pattern.setPatternUnits("userSpaceOnUse");
+        pattern.setWidth(px(10));
+        pattern.setHeight(px(10));
+        pattern.getContent().add(rect(0, 0, 10, 10, "white"));
+        pattern.getContent().add(rect(0, 0, 5, 5, "black"));
+        pattern.getContent().add(rect(5, 5, 5, 5, "black"));
+
+        RenderContext context = RenderContext.root(null, 0, 0);
+        ImagePattern paint = onFxThread(() -> (ImagePattern) pattern.createPaint(context));
+
+        // the output image is the declared tile at exactly SvgPattern.rasterScale resolution - not a smaller,
+        // shifted capture stretched to fill an image of that size
+        assertThat(paint.getImage().getWidth(), is(10.0 * SvgPattern.rasterScale));
+        assertThat(paint.getImage().getHeight(), is(10.0 * SvgPattern.rasterScale));
+
+        assertThat(colorAt(paint, 2, 2), is(Color.BLACK)); // top-left quadrant
+        assertThat(colorAt(paint, 7, 2), is(Color.WHITE)); // top-right quadrant
+        assertThat(colorAt(paint, 2, 7), is(Color.WHITE)); // bottom-left quadrant
+        assertThat(colorAt(paint, 7, 7), is(Color.BLACK)); // bottom-right quadrant
+    }
+
+    /**
+     * Independent of whatever the image's actual dimensions turn out to be - unlike the tests above, which measure
+     * the image and scale into it, exactly the blind spot that let the bug this test method's sibling guards
+     * against slip past every other test in this class.
+     */
     private static Color colorAt(ImagePattern paint, double tileX, double tileY) {
-        Image image = paint.getImage();
-        double scaleX = image.getWidth() / paint.getWidth();
-        double scaleY = image.getHeight() / paint.getHeight();
-        PixelReader reader = image.getPixelReader();
-        return reader.getColor((int) Math.round(tileX * scaleX), (int) Math.round(tileY * scaleY));
+        PixelReader reader = paint.getImage().getPixelReader();
+        return reader.getColor((int) Math.round(tileX * SvgPattern.rasterScale), (int) Math.round(tileY * SvgPattern.rasterScale));
     }
 
 }

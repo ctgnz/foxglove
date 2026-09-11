@@ -237,15 +237,20 @@ public class SvgPattern extends AbstractSvgStylable
             tileContent.getTransforms().add(new Scale(bbox.getWidth(), bbox.getHeight()));
         }
 
+        // Supersampling scales the content itself, via a transform on the node being rendered, rather than via
+        // SnapshotParameters.setTransform: that transform explicitly does not affect the viewport below, so it only
+        // ever recaptures a shrunken corner of the tile at 1:1 instead of the whole tile at higher resolution.
         Group root = new Group(tileContent);
+        root.getTransforms().add(new Scale(rasterScale, rasterScale));
         new Scene(root);
         SnapshotParameters params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
-        params.setTransform(new Scale(rasterScale, rasterScale));
         // Content need not fill the whole declared tile (a pattern can be smaller than its own width/height, the
         // rest left transparent) - without an explicit viewport, snapshot sizes the image to the content's own
-        // bounds instead of the tile, so a sparse tile would rasterise far smaller than it declares.
-        params.setViewport(new Rectangle2D(0, 0, tileWidth, tileHeight));
+        // bounds instead of the tile. The viewport is in root's own coordinate space, which the supersampling scale
+        // above already inflated, so it is expressed at that same scale, and the output image - left for JavaFX to
+        // size from the viewport - comes out at exactly that resolution.
+        params.setViewport(new Rectangle2D(0, 0, tileWidth * rasterScale, tileHeight * rasterScale));
         return root.snapshot(params, null);
     }
 
