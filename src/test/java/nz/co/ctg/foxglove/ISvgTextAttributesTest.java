@@ -45,6 +45,18 @@ public class ISvgTextAttributesTest {
     }
 
     @Test
+    public void testUnstyledTextGetsTheInitialFontSizeRatherThanZero() throws Exception {
+        SvgText text = new SvgText();
+        text.getContent().add("Hello");
+        SvgGroup group = new SvgGroup();
+        group.getContent().add(text);
+
+        Text rendered = renderText(group);
+        assertThat(rendered.getFont().getSize(), closeTo(ISvgTextAttributes.INITIAL_FONT_SIZE.pixels(), 1e-9));
+        assertThat(rendered.getBoundsInLocal().getWidth() > 0, is(true));
+    }
+
+    @Test
     public void testTextInheritsFillFromItsGroup() throws Exception {
         SvgText text = new SvgText();
         text.getContent().add("Hello");

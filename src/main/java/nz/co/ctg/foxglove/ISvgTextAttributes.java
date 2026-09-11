@@ -9,12 +9,22 @@ import nz.co.ctg.foxglove.adapter.SizeAdapter;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import javafx.css.Size;
+import javafx.css.SizeUnits;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public interface ISvgTextAttributes extends ISvgAttributes {
+    /**
+     * SVG's initial {@code font-size}, "medium" - a keyword with a browser-dependent absolute size, most commonly
+     * 16px, and what this renders as absent any {@code font-size} anywhere in the ancestor chain. Without this,
+     * {@link nz.co.ctg.foxglove.adapter.SizeAdapter#parse} falls back to a bare {@code 0px} for a blank value - a
+     * font built at size zero has zero-width, zero-height glyphs, so unstyled text would render completely
+     * invisible rather than at a reasonable default size.
+     */
+    Size INITIAL_FONT_SIZE = new Size(16, SizeUnits.PX);
+
     String TEXT_WRITING_MODE = "writing-mode";
     String TEXT_ALIGNMENT_BASELINE = "alignment-baseline";
     String TEXT_BASELINE_SHIFT = "baseline-shift";
@@ -229,7 +239,7 @@ public interface ISvgTextAttributes extends ISvgAttributes {
      */
     default void applyTextProperties(ISvgStylable parent, Text svgText) {
         ISvgStylable style = SvgInheritedStyle.resolve(parent, this);
-        Size size = SizeAdapter.parse(style.getFontSize());
+        Size size = StringUtils.isBlank(style.getFontSize()) ? INITIAL_FONT_SIZE : SizeAdapter.parse(style.getFontSize());
         String fontFamily = StringUtils.defaultIfBlank(style.getFontFamily(), "sans-serif");
         switch (fontFamily) {
             case "monospace":
@@ -248,6 +258,11 @@ public interface ISvgTextAttributes extends ISvgAttributes {
         FontPosture fontPosture = defaultIfNull(style.getFontStyle(), FontPosture.REGULAR);
         Font font = Font.font(fontFamily, fontWeight, fontPosture, size.pixels());
         svgText.setFont(font);
+        // text-decoration is not inherited - like opacity/display, it applies only to the element that declares it,
+        // so it is read from this element directly rather than from the resolved (inherited-only) style.
+        String decoration = StringUtils.defaultString(getTextDecoration());
+        svgText.setUnderline(StringUtils.containsIgnoreCase(decoration, "underline"));
+        svgText.setStrikethrough(StringUtils.containsIgnoreCase(decoration, "line-through"));
     }
 
 }

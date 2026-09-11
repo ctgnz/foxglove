@@ -11,6 +11,7 @@ import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
+import nz.co.ctg.foxglove.adapter.DoubleListAdapter;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgSetAttribute;
@@ -35,27 +36,28 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "content"
 })
 @XmlRootElement(name = "tref")
-public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgEventListener {
+public class SvgTextReference extends AbstractSvgStylable
+    implements ISvgTextPositioningElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgEventListener, ISvgGlyphPositioned {
 
     @XmlAttribute(name = "x")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String x;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> x;
 
     @XmlAttribute(name = "y")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String y;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> y;
 
     @XmlAttribute(name = "dx")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String dx;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> dx;
 
     @XmlAttribute(name = "dy")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String dy;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> dy;
 
     @XmlAttribute(name = "rotate")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String rotate;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> rotate;
 
     @XmlAttribute(name = "textLength")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -75,43 +77,48 @@ public class SvgTextReference extends AbstractSvgStylable implements ISvgTextPos
     })
     private List<ISvgElement> content;
 
-    public String getX() {
-        return x;
+    @Override
+    public List<Double> getX() {
+        return x == null ? List.of() : x;
     }
 
-    public void setX(String value) {
+    public void setX(List<Double> value) {
         this.x = value;
     }
 
-    public String getY() {
-        return y;
+    @Override
+    public List<Double> getY() {
+        return y == null ? List.of() : y;
     }
 
-    public void setY(String value) {
+    public void setY(List<Double> value) {
         this.y = value;
     }
 
-    public String getDx() {
-        return dx;
+    @Override
+    public List<Double> getDx() {
+        return dx == null ? List.of() : dx;
     }
 
-    public void setDx(String value) {
+    public void setDx(List<Double> value) {
         this.dx = value;
     }
 
-    public String getDy() {
-        return dy;
+    @Override
+    public List<Double> getDy() {
+        return dy == null ? List.of() : dy;
     }
 
-    public void setDy(String value) {
+    public void setDy(List<Double> value) {
         this.dy = value;
     }
 
-    public String getRotate() {
-        return rotate;
+    @Override
+    public List<Double> getRotate() {
+        return rotate == null ? List.of() : rotate;
     }
 
-    public void setRotate(String value) {
+    public void setRotate(List<Double> value) {
         this.rotate = value;
     }
 
