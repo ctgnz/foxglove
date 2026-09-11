@@ -9,7 +9,11 @@ import org.apache.commons.lang3.StringUtils;
 import nz.co.ctg.foxglove.AbstractSvgStylable;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgInheritedStyle;
+import nz.co.ctg.foxglove.geometry.PathLengthLookup;
+import nz.co.ctg.foxglove.geometry.SvgPathData;
+import nz.co.ctg.foxglove.shape.SvgPath;
 
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
@@ -27,6 +31,13 @@ import javafx.scene.transform.Rotate;
  * that actually uses per-character positioning is split into one node per Unicode code point. {@code textLength}/
  * {@code lengthAdjust} and {@code letter-spacing}/{@code word-spacing}/{@code kerning} are out of scope - the
  * former is absent from #28's acceptance criteria, the latter would need their own per-glyph advance model.
+ * <p>
+ * A run under a {@code <textPath>} (#29) is laid out differently: always split per code point regardless of its
+ * own {@code x}/{@code y}/{@code dx}/{@code dy}/{@code rotate} (not applied while on a path - out of scope), each
+ * glyph placed and rotated to match the referenced {@code <path>}'s tangent at an accumulating arc length starting
+ * from {@code startOffset}, via {@link nz.co.ctg.foxglove.geometry.PathLengthLookup}. These glyphs neither read
+ * nor advance the ordinary linear cursor - text after a {@code </textPath>} resumes wherever the linear flow last
+ * left off, not from the path's end.
  */
 final class TextGlyphLayout {
 
@@ -38,7 +49,35 @@ final class TextGlyphLayout {
         List<Text> nodes = new ArrayList<>();
         double cursorX = 0;
         double cursorY = 0;
+        SvgTextPath currentPath = null;
+        PathLengthLookup currentPathLookup = null;
+        double pathCursor = 0;
+
         for (TextRunBuilder.Run run : runs) {
+            if (run.enclosingPath() != null) {
+                if (run.enclosingPath() != currentPath) {
+                    currentPath = run.enclosingPath();
+                    currentPathLookup = resolvePathLookup(currentPath, context);
+                    pathCursor = currentPathLookup == null ? 0 : resolveStartOffset(currentPath, currentPathLookup);
+                }
+                if (currentPathLookup != null) {
+                    for (String piece : codePoints(run.text())) {
+                        Text node = new Text(piece);
+                        run.owner().applyGraphicsProperties(run.ownerContext(), node);
+                        run.owner().applyTextProperties(run.ownerContext(), node);
+
+                        Point2D point = currentPathLookup.pointAt(pathCursor);
+                        double angle = currentPathLookup.angleAt(pathCursor);
+                        node.setX(point.getX());
+                        node.setY(point.getY());
+                        node.getTransforms().add(new Rotate(angle, point.getX(), point.getY()));
+                        nodes.add(node);
+
+                        pathCursor += node.getLayoutBounds().getWidth();
+                    }
+                }
+                continue;
+            }
             List<Double> xs = positions(run.owner(), ISvgGlyphPositioned::getX);
             List<Double> ys = positions(run.owner(), ISvgGlyphPositioned::getY);
             List<Double> dxs = positions(run.owner(), ISvgGlyphPositioned::getDx);
@@ -82,6 +121,40 @@ final class TextGlyphLayout {
         result.setId(root.getId());
         root.applyTransforms(result);
         return result;
+    }
+
+    /**
+     * The referenced {@code <path>}'s geometry, flattened and indexed for arc length (#29) - null if the reference
+     * does not resolve to a {@code <path>}, or that path has no usable data, in which case the {@code <textPath>}
+     * simply renders no text rather than guessing a position.
+     */
+    private static PathLengthLookup resolvePathLookup(SvgTextPath path, RenderContext context) {
+        if (context.getElementIndex() == null) {
+            return null;
+        }
+        return context.getElementIndex().resolve(path.getXlinkHref(), SvgPath.class)
+            .map(referenced -> SvgPathData.flatten(referenced.getD()))
+            .filter(points -> !points.isEmpty())
+            .map(PathLengthLookup::of)
+            .orElse(null);
+    }
+
+    /**
+     * {@code startOffset} as an arc length: a bare number is user units along the path, a percentage is a fraction
+     * of the path's total length - the same number-or-percentage idiom used for gradient offsets (see
+     * {@code ISvgGradientElement.parseNumberOrPercentage}).
+     */
+    private static double resolveStartOffset(SvgTextPath path, PathLengthLookup lookup) {
+        String raw = StringUtils.trimToEmpty(path.getStartOffset());
+        if (raw.isEmpty()) {
+            return 0;
+        }
+        boolean percentage = raw.endsWith("%");
+        Double value = parseDouble(percentage ? raw.substring(0, raw.length() - 1) : raw);
+        if (value == null) {
+            return 0;
+        }
+        return percentage ? (value / 100.0) * lookup.getTotalLength() : value;
     }
 
     private static List<Double> positions(AbstractSvgStylable owner, Function<ISvgGlyphPositioned, List<Double>> getter) {

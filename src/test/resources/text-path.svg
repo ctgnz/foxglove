@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="300" height="300">
+  <path id="arc" d="M1000,0 A1000,1000 0 0 1 0,1000"/>
+  <text id="on-path"><textPath xlink:href="#arc" startOffset="50%">Hello</textPath></text>
+</svg>
