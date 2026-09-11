@@ -70,7 +70,7 @@ public class SvgText extends AbstractSvgStylable implements ISvgTextPositioningE
 
     @Override
     public Text createGraphic(RenderContext context) {
-        parseStyle();
+        applyStyle(context);
         Text fxText = createShape();
         fxText.setId(getId());
         applyGraphicsProperties(context, fxText);

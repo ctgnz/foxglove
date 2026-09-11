@@ -16,7 +16,7 @@ public abstract class AbstractSvgShape<S extends Shape> extends AbstractSvgStyla
 
     @Override
     public S createGraphic(RenderContext context) {
-        parseStyle();
+        applyStyle(context);
         S shape = createShape(context);
         shape.setId(getId());
         installTooltip(shape);

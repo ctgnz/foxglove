@@ -107,7 +107,7 @@ public class SvgGroup extends AbstractSvgStylable
 
     @Override
     public Group createGraphic(RenderContext context) {
-        parseStyle();
+        applyStyle(context);
         Group group = new Group();
         group.setId(getId());
         applyNodeProperties(context, group);

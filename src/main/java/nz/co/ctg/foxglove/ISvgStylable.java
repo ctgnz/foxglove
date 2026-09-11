@@ -22,7 +22,11 @@ import jakarta.xml.bind.annotation.XmlTransient;
 
 public interface ISvgStylable extends ISvgAttributes, ISvgPresentationAttributes, ISvgGraphicsAttributes, ISvgTextAttributes {
     String STYLE_ATTR = "style";
-    String STYLE_CLASS_NAME = "class";
+    /**
+     * The property map key for the {@code class} attribute - {@code "class-name"} rather than {@code "class"} to
+     * match the {@code java-attribute} every {@code src/main/resources/bindings/*.xml} binding declares for it.
+     */
+    String STYLE_CLASS_NAME = "class-name";
 
     @XmlTransient
     default boolean isVisible() {
