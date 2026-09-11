@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove;
 
+import java.util.Locale;
+
 import nz.co.ctg.foxglove.element.SvgMarkerRenderer;
 
 import javafx.scene.Group;
@@ -28,7 +30,7 @@ public interface ISvgContainer extends ISvgContent, ISvgStylable {
     default void appendContent(Group target, RenderContext inherited) {
         RenderContext context = inherited.resolveChild(this);
         for (ISvgElement child : getContent()) {
-            if (child instanceof FxGraphic<?> graphic && isRendered(child)) {
+            if (child instanceof FxGraphic<?> graphic && isRendered(child, context.getLocale())) {
                 Node node = graphic.createGraphic(context);
                 if (node != null) {
                     target.getChildren().add(SvgMarkerRenderer.applyMarkers(node, child, context));
@@ -44,9 +46,16 @@ public interface ISvgContainer extends ISvgContent, ISvgStylable {
      * separates {@code display} from {@code visibility} - the latter still occupies its place and contributes to
      * bounds. Because this is a decision about whether to include a child, it belongs to the container: an element's
      * own {@code createGraphic} builds the node it was asked for and does not consult {@code display}.
+     * <p>
+     * A failing conditional processing attribute ({@code requiredFeatures}/{@code requiredExtensions}/
+     * {@code systemLanguage}, see {@link ISvgConditionalFeatures}) suppresses a child the same way - which is also
+     * exactly the test {@code <switch>} uses to pick its first passing child.
      */
-    static boolean isRendered(ISvgElement child) {
-        return !(child instanceof ISvgStylable stylable) || stylable.isVisible();
+    static boolean isRendered(ISvgElement child, Locale locale) {
+        if (child instanceof ISvgStylable stylable && !stylable.isVisible()) {
+            return false;
+        }
+        return !(child instanceof ISvgConditionalFeatures cond) || cond.isConditionSatisfied(locale);
     }
 
 }

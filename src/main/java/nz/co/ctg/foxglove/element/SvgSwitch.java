@@ -6,11 +6,14 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.FxGraphic;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
+import nz.co.ctg.foxglove.ISvgContainer;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgTransformable;
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -35,6 +38,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import javafx.scene.Group;
+import javafx.scene.Node;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -42,7 +47,8 @@ import jakarta.xml.bind.annotation.XmlType;
     "content"
 })
 @XmlRootElement(name = "switch")
-public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable {
+public class SvgSwitch extends AbstractSvgStylable
+    implements ISvgStructuralElement, ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable, FxGraphic<Group> {
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -76,6 +82,34 @@ public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElem
             content = new ArrayList<>();
         }
         return this.content;
+    }
+
+    /**
+     * Renders only the first direct child whose conditional processing attributes all pass (see
+     * {@link ISvgConditionalFeatures#isConditionSatisfied}) and which is itself hidden neither by {@code display}
+     * nor {@code visibility} - reusing {@link ISvgContainer#isRendered}, the exact same test any other element
+     * uses to decide whether it renders at all, which is what makes {@code <switch>} work. An empty {@link Group}
+     * - never {@code null} - when no child passes.
+     */
+    @Override
+    public Group createGraphic(RenderContext context) {
+        applyStyle(context);
+        Group group = new Group();
+        group.setId(getId());
+        applyNodeProperties(context, group);
+        applyTransforms(group);
+
+        RenderContext childContext = context.resolveChild(this);
+        for (ISvgElement child : getContent()) {
+            if (child instanceof FxGraphic<?> graphic && ISvgContainer.isRendered(child, childContext.getLocale())) {
+                Node node = graphic.createGraphic(childContext);
+                if (node != null) {
+                    group.getChildren().add(SvgMarkerRenderer.applyMarkers(node, child, childContext));
+                }
+                break;
+            }
+        }
+        return group;
     }
 
     @Override
