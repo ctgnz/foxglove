@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  <image> (#20). A 4x2 solid red PNG (data: URI) fitted into square and wide boxes under each preserveAspectRatio
+  mode, laid out as a grid so the cases can be told apart in FoxgloveParserPreview.
+
+  Row 1: default (xMidYMid meet) into a square box - letterboxed top/bottom | xMidYMid slice into the same square
+         box - fills it, cropped left/right | none into the same square box - stretched to fill exactly
+  Row 2: the same three modes, into a box shaped like the image's own aspect ratio (meet/slice/none should all
+         look the same here, with no gap or crop) | x/y offset plus its own rotate transform
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="420" height="220" viewBox="0 0 420 220">
+
+  <!-- 4x2 solid red PNG -->
+  <image id="meetSquare" x="20" y="20" width="80" height="80"
+         xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg=="/>
+
+  <image id="sliceSquare" x="120" y="20" width="80" height="80" preserveAspectRatio="xMidYMid slice"
+         xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg=="/>
+
+  <image id="noneSquare" x="220" y="20" width="80" height="80" preserveAspectRatio="none"
+         xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg=="/>
+
+  <!-- same image, box already matching its own 2:1 aspect ratio - meet/slice/none should all look identical -->
+  <image id="matchedAspect" x="320" y="45" width="80" height="40"
+         xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg=="/>
+
+  <!-- x/y offset plus this element's own transform, composed together -->
+  <image id="rotated" x="60" y="140" width="80" height="40" transform="rotate(20 100 160)"
+         xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg=="/>
+
+</svg>

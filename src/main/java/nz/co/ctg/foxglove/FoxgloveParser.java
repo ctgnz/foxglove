@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove;
 import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -78,7 +79,9 @@ public class FoxgloveParser {
     public SvgGraphic parseFile(File selectedFile) {
         return CACHE.computeIfAbsent(selectedFile.getAbsolutePath(), key -> {
             try (InputStream in = Files.newInputStream(selectedFile.toPath())) {
-                return parse(in);
+                SvgGraphic graphic = parse(in);
+                graphic.setBaseUri(selectedFile.toURI());
+                return graphic;
             } catch (Exception e) {
                 return new SvgGraphic();
             }
@@ -88,7 +91,12 @@ public class FoxgloveParser {
     public SvgGraphic parseFile(String filePath) {
         return CACHE.computeIfAbsent(filePath, key -> {
             try (InputStream in = FoxgloveParser.class.getResourceAsStream(filePath)) {
-                return parse(in);
+                SvgGraphic graphic = parse(in);
+                URL resource = FoxgloveParser.class.getResource(filePath);
+                if (resource != null) {
+                    graphic.setBaseUri(resource.toURI());
+                }
+                return graphic;
             } catch (Exception e) {
                 return new SvgGraphic();
             }
