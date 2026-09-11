@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgContainer;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
@@ -51,8 +52,14 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "content"
 })
+/**
+ * Never rendered directly - a {@code <symbol>} only appears through a {@code <use>} that references it, which
+ * instantiates it as if it were an {@code <svg>} using the {@code <use>}'s own width/height and this element's
+ * {@code viewBox}. Deliberately does not implement {@link nz.co.ctg.foxglove.FxGraphic}, so it is excluded from a
+ * container's {@link ISvgContainer#appendContent} the same way {@code <defs>} is.
+ */
 @XmlRootElement(name = "symbol")
-public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox {
+public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgContainer {
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),

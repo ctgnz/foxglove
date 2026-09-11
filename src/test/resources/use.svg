@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  <use> and <defs> (#19). Laid out as a grid so the cases can be told apart in FoxgloveParserPreview.
+
+  Row 1: a shape defined in <defs>, reused via <use> at different positions | the same <use> with its own rotate
+         transform | the shape has no fill of its own, so each <use> takes whatever fill is in force at its own
+         site - proof that referenced content inherits from the <use> site, not from where it was declared
+  Row 2: a <g> of two shapes reused as a unit via <use> | the same <g> reused again with a scale transform
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="320" height="220" viewBox="0 0 320 220">
+
+  <defs>
+    <!-- no fill of its own - each <use> below shows whatever fill is in force at its own site -->
+    <circle id="dot" cx="0" cy="0" r="18" stroke="black" stroke-width="2"/>
+
+    <g id="flag">
+      <rect x="0" y="0" width="4" height="40" fill="#555"/>
+      <polygon points="4,2 34,12 4,22" fill="crimson"/>
+    </g>
+  </defs>
+
+  <!-- Row 1: same shape, different positions, one with its own transform -->
+  <g fill="steelblue">
+    <use xlink:href="#dot" x="30" y="40"/>
+    <use xlink:href="#dot" x="80" y="40" fill="tomato"/>
+    <use xlink:href="#dot" x="130" y="40" transform="rotate(45 130 40)"/>
+  </g>
+
+  <!-- Row 1: inheritance from the <use> site rather than the shape's own (unset) fill -->
+  <g fill="seagreen">
+    <use xlink:href="#dot" x="220" y="40"/>
+  </g>
+  <g fill="purple">
+    <use xlink:href="#dot" x="270" y="40"/>
+  </g>
+
+  <!-- Row 2: a <g> reused as a unit -->
+  <use xlink:href="#flag" x="40" y="100"/>
+  <use xlink:href="#flag" x="160" y="90" transform="scale(2)"/>
+
+</svg>
