@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="300" height="150">
+  <text id="plain" x="10" y="20" fill="black">Hello world</text>
+  <text id="mixed" x="10" y="40" fill="blue">Hello <tspan id="span" fill="red">world</tspan> and <tref id="ref" xlink:href="#plain"/></text>
+</svg>
