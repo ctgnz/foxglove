@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -102,6 +103,15 @@ public class SvgGraphic extends AbstractSvgStylable
      */
     public Group createGroup() {
         return createGraphic(RenderContext.root(getElementIndex(), 0, 0).withBaseUri(baseUri));
+    }
+
+    /**
+     * As {@link #createGroup()}, but evaluating {@code systemLanguage} (see {@link ISvgConditionalFeatures}) against
+     * {@code locale} rather than the JVM default - for a caller that wants to render the same document for a
+     * specific language.
+     */
+    public Group createGroup(Locale locale) {
+        return createGraphic(RenderContext.root(getElementIndex(), 0, 0).withBaseUri(baseUri).withLocale(locale));
     }
 
     /**

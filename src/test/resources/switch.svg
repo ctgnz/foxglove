@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  <switch> and conditional processing attributes (#22). Laid out as a grid so the cases can be told apart in
+  FoxgloveParserPreview.
+
+  Row 1: a <switch> whose first child requires an unsupported feature (skipped) and second child has no
+         conditions (rendered) - a green square, not the crossed-out red square the first child would have been |
+         a <switch> choosing between two systemLanguage candidates - renders whichever matches the render locale
+         (English by default), a blue circle, not the other candidates
+  Row 2: a standalone rectangle with a failing systemLanguage - suppressed the same way display:none would be,
+         leaving only the circle next to it visible | a rectangle with display="none" for comparison - the same
+         suppression mechanism, on an ordinary element rather than inside a <switch>
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="440" height="220" viewBox="0 0 440 220">
+
+  <!-- Row 1: requiredFeatures picks the first child whose feature is actually supported -->
+  <switch>
+    <rect x="20" y="20" width="60" height="60" fill="red"
+          requiredFeatures="http://www.w3.org/TR/SVG11/feature#Animation"/>
+    <rect x="20" y="20" width="60" height="60" fill="seagreen"/>
+  </switch>
+
+  <!-- Row 1: systemLanguage picks the candidate matching the render locale (English, by default) -->
+  <switch>
+    <circle cx="180" cy="50" r="30" fill="crimson" systemLanguage="fr"/>
+    <circle cx="180" cy="50" r="30" fill="steelblue" systemLanguage="en"/>
+    <circle cx="180" cy="50" r="30" fill="gold" systemLanguage="de"/>
+  </switch>
+
+  <!-- Row 2: a standalone element (no <switch>) with a failing systemLanguage - suppressed outright -->
+  <rect x="20" y="120" width="60" height="60" fill="red" systemLanguage="fr"/>
+  <circle cx="150" cy="150" r="30" fill="seagreen"/>
+
+  <!-- Row 2: display="none" for comparison - the same suppression mechanism -->
+  <rect x="250" y="120" width="60" height="60" fill="red" display="none"/>
+  <circle cx="380" cy="150" r="30" fill="seagreen"/>
+
+</svg>

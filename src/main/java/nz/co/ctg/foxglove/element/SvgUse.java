@@ -98,7 +98,7 @@ public class SvgUse extends AbstractSvgStylable
         SvgElementIndex index = context.getElementIndex();
         RenderContext childContext = context.resolveChild(this);
         index.resolve(getXlinkHref())
-            .filter(ISvgContainer::isRendered)
+            .filter(target -> ISvgContainer.isRendered(target, context.getLocale()))
             .filter(target -> !index.isSelfOrAncestor(target, this))
             .map(target -> buildReferenced(target, childContext))
             .ifPresent(node -> group.getChildren().add(node));

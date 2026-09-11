@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove;
 
 import java.net.URI;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -60,7 +61,7 @@ public final class RenderContext implements ISvgStylable {
      * initial viewport.
      */
     public static RenderContext root(SvgElementIndex elementIndex, double viewportWidth, double viewportHeight) {
-        return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null, null);
+        return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null, null, Locale.getDefault());
     }
 
     private final SvgInheritedStyle style;
@@ -69,32 +70,35 @@ public final class RenderContext implements ISvgStylable {
     private final double viewportHeight;
     private final Bounds objectBoundingBox;
     private final URI baseUri;
+    private final Locale locale;
 
     private RenderContext(SvgInheritedStyle style, SvgElementIndex elementIndex, double viewportWidth, double viewportHeight,
-        Bounds objectBoundingBox, URI baseUri) {
+        Bounds objectBoundingBox, URI baseUri, Locale locale) {
         this.style = style;
         this.elementIndex = elementIndex;
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
         this.objectBoundingBox = objectBoundingBox;
         this.baseUri = baseUri;
+        this.locale = locale;
     }
 
     /**
      * The context a container hands to one of its children: the container's own style resolved one level further,
-     * same viewport, index, object bounding box and base URI.
+     * same viewport, index, object bounding box, base URI and locale.
      */
     public RenderContext resolveChild(ISvgAttributes element) {
         return new RenderContext(SvgInheritedStyle.resolve(style, element), elementIndex, viewportWidth, viewportHeight, objectBoundingBox,
-            baseUri);
+            baseUri, locale);
     }
 
     /**
-     * The context inside a newly established viewport - a nested {@code <svg>} - with the same style, index and base
-     * URI, the new viewport size, and no object bounding box (a new viewport is not itself bound to a shape).
+     * The context inside a newly established viewport - a nested {@code <svg>} - with the same style, index, base
+     * URI and locale, the new viewport size, and no object bounding box (a new viewport is not itself bound to a
+     * shape).
      */
     public RenderContext withViewport(double width, double height) {
-        return new RenderContext(style, elementIndex, width, height, null, baseUri);
+        return new RenderContext(style, elementIndex, width, height, null, baseUri, locale);
     }
 
     /**
@@ -103,7 +107,7 @@ public final class RenderContext implements ISvgStylable {
      * will call it.
      */
     public RenderContext withObjectBoundingBox(Bounds bbox) {
-        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox, baseUri);
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox, baseUri, locale);
     }
 
     /**
@@ -112,7 +116,16 @@ public final class RenderContext implements ISvgStylable {
      * {@link FoxgloveParser#parseFile}); absent when parsed from a bare stream with no known source.
      */
     public RenderContext withBaseUri(URI baseUri) {
-        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri);
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale);
+    }
+
+    /**
+     * The context with the locale {@code systemLanguage} (see {@link ISvgConditionalFeatures}) evaluates against
+     * established - defaults to {@link Locale#getDefault()} at {@link #root}, overridable by a caller that wants
+     * to render the same document for a specific language.
+     */
+    public RenderContext withLocale(Locale locale) {
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale);
     }
 
     public double getViewportWidth() {
@@ -133,6 +146,10 @@ public final class RenderContext implements ISvgStylable {
 
     public Optional<URI> getBaseUri() {
         return Optional.ofNullable(baseUri);
+    }
+
+    public Locale getLocale() {
+        return locale;
     }
 
     /**
