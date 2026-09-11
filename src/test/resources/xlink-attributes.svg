@@ -10,6 +10,7 @@
 
   <!-- every xlink attribute, to prove each binds to the key its getter reads -->
   <use id="user"
+       x="1" y="2" width="3" height="4"
        xlink:href="#box"
        xlink:type="simple"
        xlink:role="http://example.com/role"
