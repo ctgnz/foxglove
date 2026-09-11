@@ -17,13 +17,14 @@ import nz.co.ctg.foxglove.RenderContext;
  */
 final class TextRunBuilder {
 
-    /** One run ready to become a {@code Text} node. */
-    record Run(AbstractSvgStylable owner, RenderContext ownerContext, String text) {
+    /** One run ready to become a {@code Text} node. {@code enclosingPath} is non-null when it (or an ancestor) is a
+     * {@code <textPath>}, meaning it lays out along a path (#29) rather than the ordinary linear flow. */
+    record Run(AbstractSvgStylable owner, RenderContext ownerContext, String text, SvgTextPath enclosingPath) {
     }
 
-    private record RawRun(AbstractSvgStylable owner, RenderContext ownerContext, String text, String spaceMode) {
+    private record RawRun(AbstractSvgStylable owner, RenderContext ownerContext, String text, String spaceMode, SvgTextPath enclosingPath) {
         RawRun withText(String replacement) {
-            return new RawRun(owner, ownerContext, replacement, spaceMode);
+            return new RawRun(owner, ownerContext, replacement, spaceMode, enclosingPath);
         }
 
         boolean isPreserve() {
@@ -36,35 +37,39 @@ final class TextRunBuilder {
 
     static List<Run> build(SvgText root, RenderContext context) {
         List<RawRun> raw = new ArrayList<>();
-        walk(root, context, "default", raw);
+        walk(root, context, "default", null, raw);
         List<RawRun> processed = collapseWhitespace(raw);
         if (processed.isEmpty()) {
-            return List.of(new Run(root, context, ""));
+            return List.of(new Run(root, context, "", null));
         }
-        return processed.stream().map(run -> new Run(run.owner(), run.ownerContext(), run.text())).toList();
+        return processed.stream().map(run -> new Run(run.owner(), run.ownerContext(), run.text(), run.enclosingPath())).toList();
     }
 
     /**
      * Walks {@code owner}'s content in document order, applying its style cascade once (the same call
      * {@code createGraphic} used to make directly) and resolving {@code xml:space}, which is inherited, before
-     * descending into any child.
+     * descending into any child. {@code enclosingPath} carries the nearest {@code <textPath>} ancestor (including
+     * {@code owner} itself) down to every run it contains, so a nested {@code tspan}/{@code tref}/{@code altGlyph}
+     * inside a {@code <textPath>} still lays out along the path.
      */
-    private static void walk(AbstractSvgStylable owner, RenderContext ownerContext, String inheritedSpaceMode, List<RawRun> out) {
+    private static void walk(AbstractSvgStylable owner, RenderContext ownerContext, String inheritedSpaceMode, SvgTextPath enclosingPath,
+        List<RawRun> out) {
         owner.applyStyle(ownerContext);
         String spaceMode = StringUtils.defaultIfBlank(owner.getXmlSpace(), inheritedSpaceMode);
+        SvgTextPath path = owner instanceof SvgTextPath textPath ? textPath : enclosingPath;
         if (owner instanceof AbstractSvgTextContentElement container) {
             RenderContext childContext = ownerContext.resolveChild(owner);
             for (Object item : container.getContent()) {
                 if (item instanceof String text) {
-                    out.add(new RawRun(owner, ownerContext, text, spaceMode));
+                    out.add(new RawRun(owner, ownerContext, text, spaceMode, path));
                 } else if (item instanceof AbstractSvgStylable child) {
-                    walk(child, childContext, spaceMode, out);
+                    walk(child, childContext, spaceMode, path, out);
                 }
             }
         } else if (owner instanceof SvgTextReference reference) {
-            out.add(new RawRun(owner, ownerContext, resolveReferencedText(reference, ownerContext), spaceMode));
+            out.add(new RawRun(owner, ownerContext, resolveReferencedText(reference, ownerContext), spaceMode, path));
         } else if (owner instanceof SvgAltGlyph altGlyph) {
-            out.add(new RawRun(owner, ownerContext, StringUtils.defaultString(altGlyph.getValue()), spaceMode));
+            out.add(new RawRun(owner, ownerContext, StringUtils.defaultString(altGlyph.getValue()), spaceMode, path));
         }
     }
 
