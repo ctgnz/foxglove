@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Demonstrates #15: a <style> block matched by element, .class and #id selectors, and the cascade order between
+  them (and the inline style attribute) - laid out left to right so the effect of each successive, higher-priority
+  rule is visible in FoxgloveParserPreview.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="70" viewBox="0 0 260 70">
+
+  <style>
+    /* lowest priority: the type selector */
+    rect { fill: lightgray; stroke: black; }
+    /* a class selector beats the type selector above */
+    .warning { fill: orange; }
+    /* an id selector beats the class selector, despite appearing first in the cascade */
+    #target { fill: red; }
+  </style>
+
+  <text x="10" y="15" font-size="10">type rule</text>
+  <rect id="plain" x="10" y="20" width="50" height="30"/>
+
+  <text x="70" y="15" font-size="10">class rule</text>
+  <rect id="classy" class="warning" x="70" y="20" width="50" height="30"/>
+
+  <text x="130" y="15" font-size="10">id rule</text>
+  <rect id="target" class="warning" x="130" y="20" width="50" height="30"/>
+
+  <text x="190" y="15" font-size="10">inline style</text>
+  <rect id="inline" class="warning" x="190" y="20" width="50" height="30" style="fill: blue;"/>
+
+</svg>

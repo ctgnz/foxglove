@@ -19,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import nz.co.ctg.foxglove.style.CssStylesheet;
+
 /**
  * An index of the elements in a parsed document, keyed on their {@code id}, supporting the same document references
  * used throughout SVG: {@code url(#id)} in presentation attributes such as {@code fill} and {@code clip-path}, and
@@ -79,8 +81,21 @@ public final class SvgElementIndex {
     private final Map<String, ISvgElement> elementsById = new LinkedHashMap<>();
     private final Map<ISvgElement, ISvgElement> parents = new IdentityHashMap<>();
     private final Set<String> duplicateIds = new LinkedHashSet<>();
+    private final List<SvgStyle> styleElements = new ArrayList<>();
+    private CssStylesheet stylesheet;
 
     private SvgElementIndex() {
+    }
+
+    /**
+     * The parsed content of every {@code <style>} element in the document, built on first use and cached
+     * thereafter - the index is already a one-time snapshot, so the stylesheet built from it can be too.
+     */
+    public CssStylesheet getStylesheet() {
+        if (stylesheet == null) {
+            stylesheet = CssStylesheet.of(styleElements);
+        }
+        return stylesheet;
     }
 
     /**
@@ -162,6 +177,9 @@ public final class SvgElementIndex {
         String id = element.getId();
         if (StringUtils.isNotBlank(id) && elementsById.putIfAbsent(id, element) != null) {
             duplicateIds.add(id);
+        }
+        if (element instanceof SvgStyle style) {
+            styleElements.add(style);
         }
         for (ISvgElement child : getChildren(element)) {
             add(child, element, visited);

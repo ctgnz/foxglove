@@ -12,6 +12,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.FontPosture;
@@ -26,10 +27,14 @@ public class AbstractSvgStylableTest {
         candidate = new SvgRectangle();
     }
 
+    private static RenderContext context() {
+        return RenderContext.root(null, 0, 0);
+    }
+
     @Test
     public void testParseStyleAppliesEachDeclaration() throws Exception {
         candidate.setStyle("fill:red;stroke:blue;stroke-width:2.5;stroke-miterlimit:8;stroke-dashoffset:3");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
         assertThat(candidate.getStroke(), is(SvgPaint.of(Color.BLUE)));
         assertThat(candidate.getStrokeWidth(), is(2.5));
@@ -40,7 +45,7 @@ public class AbstractSvgStylableTest {
     @Test
     public void testParseStyleToleratesWhitespace() throws Exception {
         candidate.setStyle("  fill : red ; stroke : blue  ");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
         assertThat(candidate.getStroke(), is(SvgPaint.of(Color.BLUE)));
     }
@@ -48,7 +53,7 @@ public class AbstractSvgStylableTest {
     @Test
     public void testParseStyleAppliesDashArray() throws Exception {
         candidate.setStyle("stroke-dasharray:4 2 6");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getStrokeDashArray(), contains(4.0, 2.0, 6.0));
     }
 
@@ -58,7 +63,7 @@ public class AbstractSvgStylableTest {
     @Test
     public void testPropertyNamesAreCaseInsensitive() throws Exception {
         candidate.setStyle("FILL:red;Stroke-Width:2.5");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
         assertThat(candidate.getStrokeWidth(), is(2.5));
     }
@@ -71,14 +76,14 @@ public class AbstractSvgStylableTest {
     @Test
     public void testValueCaseIsPreserved() throws Exception {
         candidate.setStyle("font-family:Helvetica Neue");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getFontFamily(), is("Helvetica Neue"));
     }
 
     @Test
     public void testReferenceValueCaseIsPreserved() throws Exception {
         candidate.setStyle("font-family:url(#Grad1)");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getFontFamily(), is("url(#Grad1)"));
     }
 
@@ -89,7 +94,7 @@ public class AbstractSvgStylableTest {
     @Test
     public void testKeywordValuesAreCaseInsensitive() throws Exception {
         candidate.setStyle("fill:NONE;stroke:Blue;stroke-linecap:ROUND;stroke-linejoin:Bevel;font-weight:BOLD;font-style:Italic");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getFill(), is(SvgPaint.none()));
         assertThat(candidate.getStroke(), is(SvgPaint.of(Color.BLUE)));
         assertThat(candidate.getStrokeLineCap(), is(StrokeLineCap.ROUND));
@@ -104,28 +109,28 @@ public class AbstractSvgStylableTest {
     @Test
     public void testValueMayContainColons() throws Exception {
         candidate.setStyle("font-family:Courier:New");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getFontFamily(), is("Courier:New"));
     }
 
     @Test
     public void testDeclarationWithNoColonIsIgnored() throws Exception {
         candidate.setStyle("fill");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.get(ISvgGraphicsAttributes.GRAPHX_FILL), is(nullValue()));
     }
 
     @Test
     public void testDeclarationWithNoValueIsIgnored() throws Exception {
         candidate.setStyle("stroke:");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getStroke(), is(nullValue()));
     }
 
     @Test
     public void testDeclarationWithNoNameIsIgnored() throws Exception {
         candidate.setStyle(":red");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.get(ISvgGraphicsAttributes.GRAPHX_FILL), is(nullValue()));
     }
 
@@ -136,7 +141,7 @@ public class AbstractSvgStylableTest {
     @Test
     public void testMalformedDeclarationsDoNotPreventOthersApplying() throws Exception {
         candidate.setStyle("fill:red;;stroke;stroke-width:2.5; ;");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
         assertThat(candidate.getStroke(), is(nullValue()));
         assertThat(candidate.getStrokeWidth(), is(2.5));
@@ -145,14 +150,85 @@ public class AbstractSvgStylableTest {
     @Test
     public void testBlankStyleIsIgnored() throws Exception {
         candidate.setStyle("   ");
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.get(ISvgGraphicsAttributes.GRAPHX_FILL), is(nullValue()));
     }
 
     @Test
     public void testMissingStyleIsIgnored() throws Exception {
-        candidate.parseStyle();
+        candidate.applyStyle(context());
         assertThat(candidate.get(ISvgGraphicsAttributes.GRAPHX_FILL), is(nullValue()));
+    }
+
+    // --- #15: properties the old switch dropped -----------------------------
+
+    @Test
+    public void testOpacityVisibilityAndFillRuleAreNowSettableFromInlineStyle() throws Exception {
+        candidate.setStyle("opacity:0.5;visibility:hidden;fill-rule:evenodd");
+        candidate.applyStyle(context());
+        assertThat(candidate.getOpacity(), is("0.5"));
+        assertThat(candidate.getVisibility(), is("hidden"));
+        assertThat(candidate.getFillRule(), is(FillRule.EVEN_ODD));
+    }
+
+    @Test
+    public void testAPresentationAttributeOnlyPropertyIsNowSettableFromInlineStyle() throws Exception {
+        candidate.setStyle("clip-path:url(#c);text-anchor:middle");
+        candidate.applyStyle(context());
+        assertThat(candidate.getClipPath(), is("url(#c)"));
+        assertThat(candidate.getTextAnchor(), is("middle"));
+    }
+
+    // --- #15: cascade order ---------------------------------------------------
+
+    @Test
+    public void testInlineStyleBeatsAMatchingStylesheetRule() throws Exception {
+        candidate.setId("target");
+        candidate.setStyle("fill:blue");
+        SvgGraphic svg = new SvgGraphic();
+        SvgStyle style = new SvgStyle();
+        style.setValue("#target { fill: red; }");
+        svg.getContent().add(style);
+        svg.getContent().add(candidate);
+
+        candidate.applyStyle(RenderContext.root(svg.rebuildElementIndex(), 0, 0));
+        assertThat(candidate.getFill(), is(SvgPaint.of(Color.BLUE)));
+    }
+
+    @Test
+    public void testImportantStylesheetRuleBeatsInlineStyle() throws Exception {
+        candidate.setId("target");
+        candidate.setStyle("fill:blue");
+        SvgGraphic svg = new SvgGraphic();
+        SvgStyle style = new SvgStyle();
+        style.setValue("#target { fill: red !important; }");
+        svg.getContent().add(style);
+        svg.getContent().add(candidate);
+
+        candidate.applyStyle(RenderContext.root(svg.rebuildElementIndex(), 0, 0));
+        assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
+    }
+
+    @Test
+    public void testAHigherSpecificityRuleBeatsALowerOneRegardlessOfOrder() throws Exception {
+        candidate.setId("target");
+        candidate.setClassName("warning");
+        SvgGraphic svg = new SvgGraphic();
+        SvgStyle style = new SvgStyle();
+        // the id rule is declared first but must still win over the later, lower-specificity class rule
+        style.setValue("#target { fill: red; } .warning { fill: blue; }");
+        svg.getContent().add(style);
+        svg.getContent().add(candidate);
+
+        candidate.applyStyle(RenderContext.root(svg.rebuildElementIndex(), 0, 0));
+        assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
+    }
+
+    @Test
+    public void testMissingElementIndexIsTreatedAsNoStylesheet() throws Exception {
+        candidate.setStyle("fill:red");
+        candidate.applyStyle(RenderContext.root(null, 0, 0));
+        assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
     }
 
 }

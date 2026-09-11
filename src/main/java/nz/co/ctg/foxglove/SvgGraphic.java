@@ -92,7 +92,7 @@ public class SvgGraphic extends AbstractSvgStylable
      */
     @Override
     public Group createGraphic(RenderContext parentContext) {
-        parseStyle();
+        applyStyle(parentContext);
         Group group = new Group();
         group.setId(StringUtils.defaultIfBlank(getId(), "svg"));
 

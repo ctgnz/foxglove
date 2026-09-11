@@ -1,37 +1,23 @@
 package nz.co.ctg.foxglove;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.adapter.DoubleListAdapter;
-import nz.co.ctg.foxglove.adapter.FontPostureAdapter;
-import nz.co.ctg.foxglove.adapter.FontWeightAdapter;
-import nz.co.ctg.foxglove.adapter.StrokeLineCapAdapter;
-import nz.co.ctg.foxglove.adapter.StrokeLineJoinAdapter;
-import nz.co.ctg.foxglove.adapter.SvgPaintAdapter;
-import nz.co.ctg.foxglove.type.SvgPaint;
+import nz.co.ctg.foxglove.style.CssDeclaration;
+import nz.co.ctg.foxglove.style.CssDeclarations;
+import nz.co.ctg.foxglove.style.CssStylesheet;
+import nz.co.ctg.foxglove.style.SvgPropertyTable;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlTransient
 public abstract class AbstractSvgStylable extends AbstractSvgElement implements ISvgStylable {
-    private static final SvgPaintAdapter paintAdapter = new SvgPaintAdapter();
-    private static final StrokeLineCapAdapter strokeLineCapAdapter = new StrokeLineCapAdapter();
-    private static final StrokeLineJoinAdapter strokeLineJoinAdapter = new StrokeLineJoinAdapter();
-    private static final DoubleListAdapter doubleListAdapter = new DoubleListAdapter();
-    private static final FontWeightAdapter fontWeightAdapter = new FontWeightAdapter();
-    private static final FontPostureAdapter fontPostureAdapter = new FontPostureAdapter();
 
     public AbstractSvgStylable() {
     }
@@ -41,59 +27,29 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
         return display == null || !StringUtils.equalsIgnoreCase("none", display);
     }
 
-    public void parseStyle() {
-        if (StringUtils.isBlank(getStyle())) {
-            return;
-        }
-        for (String declaration : StringUtils.split(getStyle(), ';')) {
-            // Split on the first colon only, as a value may legitimately contain further colons
-            String[] values = StringUtils.split(declaration, ":", 2);
-            if (values.length < 2) {
-                continue;
-            }
-            // Property names are case insensitive, values are not - each parser lowercases its own keywords
-            String name = values[0].trim().toLowerCase(Locale.ROOT);
-            String value = values[1].trim();
-            if (value.isEmpty()) {
-                continue;
-            }
-            switch (name) {
-                case TEXT_FONT_FAMILY:
-                    setFontFamily(value);
-                    break;
-                case TEXT_FONT_SIZE:
-                    setFontSize(value);
-                    break;
-                case TEXT_FONT_STYLE:
-                    setFontStyle(parseFontPosture(value));
-                    break;
-                case TEXT_FONT_WEIGHT:
-                    setFontWeight(parseFontWeight(value));
-                    break;
-                case GRAPHX_FILL:
-                    setFill(parsePaint(value));
-                    break;
-                case GRAPHX_STROKE:
-                    setStroke(parsePaint(value));
-                    break;
-                case GRAPHX_STROKE_WIDTH:
-                    setStrokeWidth(parseDouble(value));
-                    break;
-                case GRAPHX_STROKE_LINECAP:
-                    setStrokeLineCap(parseStrokeLineCap(value));
-                    break;
-                case GRAPHX_STROKE_LINEJOIN:
-                    setStrokeLineJoin(parseStrokeLineJoin(value));
-                    break;
-                case GRAPHX_STROKE_MITERLIMIT:
-                    setStrokeMiterLimit(parseDouble(value));
-                    break;
-                case GRAPHX_STROKE_DASHOFFSET:
-                    setStrokeDashOffset(parseDouble(value));
-                    break;
-                case GRAPHX_STROKE_DASHARRAY:
-                    setStrokeDashArray(parseDoubleList(value));
-                    break;
+    /**
+     * Applies this element's style cascade: any stylesheet rule that matches it, then its own inline {@code style}
+     * attribute, then {@code !important} declarations from either - each step overwriting only the properties it
+     * mentions, so an earlier step's value survives untouched where a later one is silent.
+     * <p>
+     * A presentation attribute such as {@code fill="red"} needs no step here - it is already in the property map,
+     * parsed by JAXB before this ever runs, and simply stands as the value beneath all of this until overwritten.
+     */
+    public void applyStyle(RenderContext context) {
+        CssStylesheet stylesheet = context.getElementIndex() == null ? null : context.getElementIndex().getStylesheet();
+        List<CssDeclaration> stylesheetDeclarations = stylesheet == null ? List.of() : stylesheet.matchingDeclarations(this);
+        List<CssDeclaration> inlineDeclarations = CssDeclarations.parse(getStyle());
+
+        applyAll(stylesheetDeclarations, false);
+        applyAll(inlineDeclarations, false);
+        applyAll(stylesheetDeclarations, true);
+        applyAll(inlineDeclarations, true);
+    }
+
+    private void applyAll(List<CssDeclaration> declarations, boolean important) {
+        for (CssDeclaration declaration : declarations) {
+            if (declaration.important() == important) {
+                SvgPropertyTable.apply(this, declaration.property(), declaration.value());
             }
         }
     }
@@ -102,62 +58,6 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
     public void toStringDetail(ToStringHelper builder) {
         super.toStringDetail(builder);
         ISvgStylable.super.toStringDetail(builder);
-    }
-
-    private SvgPaint parsePaint(String value) {
-        try {
-            return paintAdapter.unmarshal(value);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private StrokeLineCap parseStrokeLineCap(String value) {
-        try {
-            return strokeLineCapAdapter.unmarshal(value);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private StrokeLineJoin parseStrokeLineJoin(String value) {
-        try {
-            return strokeLineJoinAdapter.unmarshal(value);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private FontWeight parseFontWeight(String value) {
-        try {
-            return fontWeightAdapter.unmarshal(value);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private FontPosture parseFontPosture(String value) {
-        try {
-            return fontPostureAdapter.unmarshal(value);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private Double parseDouble(String value) {
-        try {
-            return Double.valueOf(value);
-        } catch (Exception e) {
-            return 0.0;
-        }
-    }
-
-    private List<Double> parseDoubleList(String value) {
-        try {
-            return doubleListAdapter.unmarshal(value);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }
