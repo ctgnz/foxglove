@@ -23,6 +23,7 @@ import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.web.WebView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
@@ -37,6 +38,7 @@ public class FoxgloveParserPreview extends Application {
     private Path defaultFile;
     private Path fileFolder;
     private FoxgloveParser parser;
+    private WebView webView;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -50,6 +52,9 @@ public class FoxgloveParserPreview extends Application {
         root.setTop(createToolbar());
         scrollPane = new ScrollPane(createGraphic(defaultFile));
         root.setCenter(scrollPane);
+        webView = new WebView();
+        webView.setMinSize(400, 800);
+        root.setRight(webView);
 
         Scene scene = new Scene(root);
         mainStage.setScene(scene);
@@ -67,6 +72,7 @@ public class FoxgloveParserPreview extends Application {
             if (filePath != null) {
                 try {
                     scrollPane.setContent(createGraphic(filePath));
+                    webView.getEngine().load(filePath.toUri().toURL().toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
