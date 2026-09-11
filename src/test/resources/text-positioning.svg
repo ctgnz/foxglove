@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150">
+  <text id="listed" x="10 20 30" y="50">abc</text>
+  <text id="rotated" x="10" y="80" rotate="15 30">abc</text>
+  <text id="anchored" x="150" y="110" text-anchor="middle">Hello</text>
+  <text id="decorated" x="10" y="130" text-decoration="underline">Hello</text>
+</svg>

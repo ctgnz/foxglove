@@ -8,6 +8,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import nz.co.ctg.foxglove.FxGraphic;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.adapter.DoubleListAdapter;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -20,32 +21,34 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.text.Text;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "text", propOrder = {
     "text", "content"
 })
 @XmlRootElement(name = "text")
-public class SvgText extends AbstractSvgTextContentElement implements ISvgTextPositioningElement, ISvgTransformable, FxGraphic<Node> {
+public class SvgText extends AbstractSvgTextContentElement implements ISvgTextPositioningElement, ISvgTransformable, FxGraphic<Node>, ISvgGlyphPositioned {
 
     @XmlAttribute(name = "x")
-    private double x;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> x;
 
     @XmlAttribute(name = "y")
-    private double y;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> y;
 
     @XmlAttribute(name = "dx")
-    private double dx;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> dx;
 
     @XmlAttribute(name = "dy")
-    private double dy;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> dy;
 
     @XmlAttribute(name = "rotate")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    private String rotate;
+    @XmlJavaTypeAdapter(DoubleListAdapter.class)
+    private List<Double> rotate;
 
     @XmlAttribute(name = "textLength")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -66,78 +69,51 @@ public class SvgText extends AbstractSvgTextContentElement implements ISvgTextPo
 
     @Override
     public Node createGraphic(RenderContext context) {
-        List<TextRunBuilder.Run> runs = TextRunBuilder.build(this, context);
-        List<Text> nodes = new ArrayList<>();
-        for (TextRunBuilder.Run run : runs) {
-            Text node = new Text(run.text());
-            run.owner().applyGraphicsProperties(run.ownerContext(), node);
-            run.owner().applyTextProperties(run.ownerContext(), node);
-            nodes.add(node);
-        }
-        positionRuns(nodes);
-        Node result = nodes.size() == 1 ? nodes.get(0) : groupOf(nodes);
-        result.setId(getId());
-        applyTransforms(result);
-        return result;
+        return TextGlyphLayout.layout(this, context);
     }
 
-    /**
-     * Lays out each run left to right along one baseline, starting at this element's own {@code x}/{@code y} - the
-     * absolute repositioning a nested run's own {@code x}/{@code y}/{@code dx}/{@code dy} would cause is #28's
-     * concern, not this one.
-     */
-    private void positionRuns(List<Text> nodes) {
-        double cursorX = x;
-        for (Text node : nodes) {
-            node.setX(cursorX);
-            node.setY(y);
-            cursorX += node.getLayoutBounds().getWidth();
-        }
+    @Override
+    public List<Double> getX() {
+        return x == null ? List.of() : x;
     }
 
-    private static Group groupOf(List<Text> nodes) {
-        Group group = new Group();
-        group.getChildren().addAll(nodes);
-        return group;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double value) {
+    public void setX(List<Double> value) {
         this.x = value;
     }
 
-    public double getY() {
-        return y;
+    @Override
+    public List<Double> getY() {
+        return y == null ? List.of() : y;
     }
 
-    public void setY(double value) {
+    public void setY(List<Double> value) {
         this.y = value;
     }
 
-    public double getDx() {
-        return dx;
+    @Override
+    public List<Double> getDx() {
+        return dx == null ? List.of() : dx;
     }
 
-    public void setDx(double value) {
+    public void setDx(List<Double> value) {
         this.dx = value;
     }
 
-    public double getDy() {
-        return dy;
+    @Override
+    public List<Double> getDy() {
+        return dy == null ? List.of() : dy;
     }
 
-    public void setDy(double value) {
+    public void setDy(List<Double> value) {
         this.dy = value;
     }
 
-    public String getRotate() {
-        return rotate;
+    @Override
+    public List<Double> getRotate() {
+        return rotate == null ? List.of() : rotate;
     }
 
-    public void setRotate(String value) {
+    public void setRotate(List<Double> value) {
         this.rotate = value;
     }
 

@@ -248,6 +248,11 @@ public interface ISvgTextAttributes extends ISvgAttributes {
         FontPosture fontPosture = defaultIfNull(style.getFontStyle(), FontPosture.REGULAR);
         Font font = Font.font(fontFamily, fontWeight, fontPosture, size.pixels());
         svgText.setFont(font);
+        // text-decoration is not inherited - like opacity/display, it applies only to the element that declares it,
+        // so it is read from this element directly rather than from the resolved (inherited-only) style.
+        String decoration = StringUtils.defaultString(getTextDecoration());
+        svgText.setUnderline(StringUtils.containsIgnoreCase(decoration, "underline"));
+        svgText.setStrikethrough(StringUtils.containsIgnoreCase(decoration, "line-through"));
     }
 
 }
