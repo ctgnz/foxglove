@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  filter (#26, stage 1). Laid out as a grid so the cases can be told apart in FoxgloveParserPreview.
+  filter (#26 stage 1, #76 stage 2). Laid out as a grid so the cases can be told apart in FoxgloveParserPreview.
 
   Row 1: a lone feGaussianBlur, stdDeviation="4" - a soft blur around the shape, its spread bounded by the filter
          region (default -10%/120% of the target's own bounding box) |
@@ -9,11 +9,13 @@
          shape
   Row 2: an unsupported primitive (feOffset alone - no direct JavaFX equivalent) - degrades to no effect, renders
          exactly as if filter weren't set at all, rather than throwing or disappearing |
-         more than one primitive (two feGaussianBlur) - also outside stage 1's single-primitive fast path, same
-         clean degrade
+         a feFlood + feBlend chain (#76) - a solid blue flood multiplied over the shape's own SourceGraphic
+  Row 3: a feGaussianBlur (result="blurred") + feMerge chain (#76) - SourceGraphic layered over its own blurred
+         copy, a soft-glow-style look (the classic drop-shadow recipe, minus the offset feOffset would add) |
+         a feGaussianBlur + feColorMatrix (saturate) chain (#76) - blurred, then desaturated by half
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="460" height="220" viewBox="0 0 460 220">
+     width="460" height="330" viewBox="0 0 460 330">
 
   <defs>
     <filter id="blur">
@@ -28,9 +30,22 @@
       <feOffset dx="10" dy="10"/>
     </filter>
 
-    <filter id="multiplePrimitives">
-      <feGaussianBlur stdDeviation="2"/>
-      <feGaussianBlur stdDeviation="2"/>
+    <filter id="floodBlend">
+      <feFlood flood-color="blue"/>
+      <feBlend in2="SourceGraphic" mode="multiply"/>
+    </filter>
+
+    <filter id="blurMerge">
+      <feGaussianBlur stdDeviation="6" result="blurred"/>
+      <feMerge>
+        <feMergeNode in="blurred"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="blurSaturate">
+      <feGaussianBlur stdDeviation="3"/>
+      <feColorMatrix type="saturate" values="0.5"/>
     </filter>
   </defs>
 
@@ -40,6 +55,10 @@
 
   <rect x="320" y="30" width="80" height="80" fill="seagreen" filter="url(#unsupportedPrimitive)"/>
 
-  <rect x="20" y="150" width="80" height="60" fill="darkorange" filter="url(#multiplePrimitives)"/>
+  <rect x="20" y="150" width="80" height="60" fill="darkorange" filter="url(#floodBlend)"/>
+
+  <circle cx="230" cy="180" r="40" fill="mediumpurple" filter="url(#blurMerge)"/>
+
+  <rect x="330" y="150" width="80" height="60" fill="gold" filter="url(#blurSaturate)"/>
 
 </svg>
