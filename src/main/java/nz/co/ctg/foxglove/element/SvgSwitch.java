@@ -109,6 +109,7 @@ public class SvgSwitch extends AbstractSvgStylable
                 break;
             }
         }
+        applyClip(context, group);
         return group;
     }
 

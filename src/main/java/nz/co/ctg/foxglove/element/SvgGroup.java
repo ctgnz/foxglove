@@ -113,6 +113,7 @@ public class SvgGroup extends AbstractSvgStylable
         applyNodeProperties(context, group);
         applyTransforms(group);
         appendContent(group, context);
+        applyClip(context, group);
         return group;
     }
 

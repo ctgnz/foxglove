@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  clip-path (#24). Laid out as a grid so the cases can be told apart in FoxgloveParserPreview.
+
+  Cells positioned via a wrapping transform="translate(...)" rather than x/y attributes on the target itself, and
+  clip content authored in that same local (near-zero) coordinate frame - clip-path (unlike objectBoundingBox
+  fractions) resolves in the coordinate system already in place for the referencing element, unaffected by its OWN
+  x/y, so a target positioned via x/y instead of transform would need its clip shapes offset to match instead.
+
+  Row 1: a rectangle clipped to a circle - only the disc shows, corners are clipped away |
+         a <g> containing two rectangles, clipped the same way - both children are clipped as a unit |
+         two disjoint clip shapes in one <clipPath> union - both corners of the target show, the middle does not
+  Row 2: clipPathUnits="objectBoundingBox" - a unit-square clip rect covers the whole (non-square) target regardless
+         of its position, since this mode scales/offsets by the target's own bounding box automatically |
+         a nested clip-path on the <clipPath> element itself intersects - only the overlap of the two rects shows |
+         clip-rule="evenodd" on a self-overlapping path - a hollow ring instead of a solid square
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="620" height="220" viewBox="0 0 620 220">
+
+  <defs>
+    <clipPath id="circleClip">
+      <circle cx="50" cy="50" r="35"/>
+    </clipPath>
+
+    <clipPath id="unionClip">
+      <rect x="0" y="0" width="30" height="100"/>
+      <rect x="70" y="0" width="30" height="100"/>
+    </clipPath>
+
+    <clipPath id="bboxClip" clipPathUnits="objectBoundingBox">
+      <rect x="0.1" y="0.1" width="0.8" height="0.8"/>
+    </clipPath>
+
+    <clipPath id="innerClip">
+      <rect x="30" y="0" width="70" height="100"/>
+    </clipPath>
+    <clipPath id="outerClip" clip-path="url(#innerClip)">
+      <rect x="0" y="0" width="70" height="100"/>
+    </clipPath>
+
+    <clipPath id="evenoddClip">
+      <path d="M0,0 L100,0 L100,100 L0,100 Z M25,25 L75,25 L75,75 L25,75 Z" clip-rule="evenodd"/>
+    </clipPath>
+  </defs>
+
+  <!-- Row 1: a shape clipped to a circle -->
+  <rect x="0" y="0" width="100" height="100" fill="steelblue" clip-path="url(#circleClip)" transform="translate(20 20)"/>
+
+  <!-- Row 1: a group clipped as a unit -->
+  <g transform="translate(170 20)">
+    <g clip-path="url(#circleClip)">
+      <rect x="0" y="0" width="50" height="50" fill="seagreen"/>
+      <rect x="50" y="50" width="50" height="50" fill="darkgreen"/>
+    </g>
+  </g>
+
+  <!-- Row 1: two disjoint clip shapes union -->
+  <rect x="0" y="0" width="100" height="100" fill="crimson" clip-path="url(#unionClip)" transform="translate(320 20)"/>
+
+  <!-- Row 2: objectBoundingBox scales the clip to the target's own bounding box, wherever it is positioned -->
+  <rect x="20" y="150" width="140" height="60" fill="darkorange" clip-path="url(#bboxClip)"/>
+
+  <!-- Row 2: a nested clip-path intersects -->
+  <rect x="0" y="0" width="100" height="100" fill="purple" clip-path="url(#outerClip)" transform="translate(200 150)"/>
+
+  <!-- Row 2: clip-rule="evenodd" hollows out a self-overlapping path -->
+  <rect x="0" y="0" width="100" height="100" fill="teal" clip-path="url(#evenoddClip)" transform="translate(420 150)"/>
+
+</svg>
