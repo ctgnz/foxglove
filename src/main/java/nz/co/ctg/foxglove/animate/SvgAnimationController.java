@@ -59,15 +59,17 @@ public final class SvgAnimationController {
      * nothing to reset yet in this issue, since {@link ISvgAnimationElement#buildAnimation} has no concrete
      * override anywhere yet.
      * <p>
-     * {@code accumulate="sum"} with a finite {@code repeatCount} (see {@link SvgValueAnimationBuilder}) is a genuine
-     * exception to generic {@code repeatCount} wrapping: JavaFX's {@code cycleCount} can only replay a {@code
-     * Timeline} from its own start every time, with no way to shift values between cycles, so that builder manually
-     * unrolls every repeat into one continuous {@code Timeline} spanning the *entire* repeated duration and plays it
-     * exactly once ({@code cycleCount} left at its correct value, {@code 1}). Re-applying {@code repeatCount} here on
-     * top of that would replay the already-fully-unrolled sequence {@code repeatCount} times over - a real playback
-     * bug, not a harmless no-op - so this case is recognised by element type/attributes (the only reliable signal;
-     * {@code cycleCount} itself is legitimately {@code 1} either way) and skipped rather than inferred from
-     * {@code animation}'s own state.
+     * {@code accumulate="sum"} with a finite {@code repeatCount} (see {@link ISvgAccumulatableAnimationElement}'s
+     * implementations - {@link SvgValueAnimationBuilder} for {@code <animate>}/{@code <animateColor>},
+     * {@code SvgAnimateTransformBuilder} for {@code <animateTransform>}) is a genuine exception to generic
+     * {@code repeatCount} wrapping: JavaFX's {@code cycleCount} can only replay a {@code Timeline} from its own start
+     * every time, with no way to shift values between cycles, so each of those builders manually unrolls every
+     * repeat into one continuous {@code Timeline} spanning the *entire* repeated duration and plays it exactly once
+     * ({@code cycleCount} left at its correct value, {@code 1}). Re-applying {@code repeatCount} here on top of that
+     * would replay the already-fully-unrolled sequence {@code repeatCount} times over - a real playback bug, not a
+     * harmless no-op - so this case is recognised by element type/attributes (the only reliable signal; {@code
+     * cycleCount} itself is legitimately {@code 1} either way) and skipped rather than inferred from {@code
+     * animation}'s own state.
      */
     private static Animation withTiming(ISvgAnimationElement element, Animation animation, SvgAnimationTiming timing) {
         if (!repeatCountAlreadyHandled(element, timing)) {
@@ -81,7 +83,7 @@ public final class SvgAnimationController {
     }
 
     private static boolean repeatCountAlreadyHandled(ISvgAnimationElement element, SvgAnimationTiming timing) {
-        return element instanceof ISvgValueAnimationElement value
+        return element instanceof ISvgAccumulatableAnimationElement value
             && "sum".equalsIgnoreCase(StringUtils.trimToEmpty(value.getAccumulate()))
             && timing.repeatCount() != Animation.INDEFINITE
             && timing.repeatCount() > 0;
