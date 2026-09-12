@@ -29,13 +29,13 @@
   			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
   			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
   			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
-  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="dur" name="dur" type="java.lang.String" />
   			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
   			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
   			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
   			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
   			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
-  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDur" name="repeatDur" type="java.lang.String" />
   			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
   			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
   			<!-- ISvgConditionalFeatures -->
@@ -64,13 +64,13 @@
   			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
   			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
   			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
-  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="dur" name="dur" type="java.lang.String" />
   			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
   			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
   			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
   			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
   			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
-  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDur" name="repeatDur" type="java.lang.String" />
   			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
   			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
   			<!-- ISvgConditionalFeatures -->
@@ -99,13 +99,13 @@
   			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
   			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
   			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
-  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="dur" name="dur" type="java.lang.String" />
   			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
   			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
   			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
   			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
   			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
-  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDur" name="repeatDur" type="java.lang.String" />
   			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
   			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
   			<!-- ISvgConditionalFeatures -->
@@ -134,13 +134,13 @@
   			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
   			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
   			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
-  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="dur" name="dur" type="java.lang.String" />
   			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
   			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
   			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
   			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
   			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
-  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDur" name="repeatDur" type="java.lang.String" />
   			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
   			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
   			<!-- ISvgConditionalFeatures -->
@@ -169,13 +169,13 @@
   			<xml-attribute java-attribute="onRepeat" name="onrepeat" type="java.lang.String" />
   			<xml-attribute java-attribute="onLoad" name="onload" type="java.lang.String" />
   			<xml-attribute java-attribute="begin" name="begin" type="java.lang.String" />
-  			<xml-attribute java-attribute="duration" name="dur" type="java.lang.String" />
+  			<xml-attribute java-attribute="dur" name="dur" type="java.lang.String" />
   			<xml-attribute java-attribute="end" name="end" type="java.lang.String" />
   			<xml-attribute java-attribute="min" name="min" type="java.lang.String" />
   			<xml-attribute java-attribute="max" name="max" type="java.lang.String" />
   			<xml-attribute java-attribute="restart" name="restart" type="java.lang.String" />
   			<xml-attribute java-attribute="repeatCount" name="repeatCount" type="java.lang.String" />
-  			<xml-attribute java-attribute="repeatDuration" name="repeatDur" type="java.lang.String" />
+  			<xml-attribute java-attribute="repeatDur" name="repeatDur" type="java.lang.String" />
   			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
   			<xml-attribute java-attribute="to" name="to" type="java.lang.String" />
   			<!-- ISvgConditionalFeatures -->
