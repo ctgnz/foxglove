@@ -156,4 +156,35 @@ public class SvgPathDataTest {
         assertThat(SvgPathData.subpaths(null), hasSize(0));
     }
 
+    // --- toJavaFxPath ------------------------------------------------------
+
+    @Test
+    public void testToJavaFxPathOnALineProducesAMoveToAndALineTo() throws Exception {
+        javafx.scene.shape.Path path = SvgPathData.toJavaFxPath("M0,0 L10,0");
+        assertThat(path.getElements(), hasSize(2));
+        assertThat(path.getElements().get(0), org.hamcrest.CoreMatchers.instanceOf(javafx.scene.shape.MoveTo.class));
+        assertThat(path.getElements().get(1), org.hamcrest.CoreMatchers.instanceOf(javafx.scene.shape.LineTo.class));
+    }
+
+    @Test
+    public void testToJavaFxPathDenselySamplesACurveRatherThanAChordingToItsEndpoint() throws Exception {
+        // unlike subpaths() (which keeps only the real endpoint), this needs real intermediate samples so
+        // PathTransition actually follows the curve rather than a single straight chord across it
+        javafx.scene.shape.Path path = SvgPathData.toJavaFxPath("M0,0 C0,10 10,10 10,0");
+        assertThat(path.getElements().size() > 2, is(true));
+    }
+
+    @Test
+    public void testToJavaFxPathWalksEverySubpathUnlikeFlatten() throws Exception {
+        javafx.scene.shape.Path path = SvgPathData.toJavaFxPath("M0,0 L10,0 M20,20 L30,20");
+        long moveTos = path.getElements().stream().filter(javafx.scene.shape.MoveTo.class::isInstance).count();
+        assertThat(moveTos, is(2L));
+    }
+
+    @Test
+    public void testToJavaFxPathOfABlankPathIsEmpty() throws Exception {
+        assertThat(SvgPathData.toJavaFxPath("").getElements(), hasSize(0));
+        assertThat(SvgPathData.toJavaFxPath(null).getElements(), hasSize(0));
+    }
+
 }
