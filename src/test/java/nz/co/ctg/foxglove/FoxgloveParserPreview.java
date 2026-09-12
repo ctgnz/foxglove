@@ -108,7 +108,13 @@ public class FoxgloveParserPreview extends Application {
     private Node createGraphic(Path filePath) throws Exception {
         SvgGraphic svgElement = parser.parse(Files.newInputStream(filePath));
         svgElement.setBaseUri(filePath.toUri());
-        Group graphic = svgElement.createGroup();
+        // wired up so <a> activation is actually exercisable by clicking in this preview, rather than only visible
+        // via a unit test - printing here is a stand-in for whatever a real embedding application would do
+        RenderContext context = RenderContext.root(svgElement.getElementIndex(), 0, 0)
+            .withBaseUri(svgElement.getBaseUri())
+            .withAnchorActivationHandler(anchor -> System.out.println(
+                "<a> activated: xlink:href=" + anchor.getXlinkHref() + " target=" + anchor.getTarget()));
+        Group graphic = svgElement.createGraphic(context);
         Pane region = new Pane(graphic);
         region.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DOTTED, null, BorderStroke.THIN)));
         return region;

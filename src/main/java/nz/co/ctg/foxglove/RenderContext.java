@@ -4,8 +4,11 @@ import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.element.SvgAnchor;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
@@ -61,7 +64,8 @@ public final class RenderContext implements ISvgStylable {
      * initial viewport.
      */
     public static RenderContext root(SvgElementIndex elementIndex, double viewportWidth, double viewportHeight) {
-        return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null, null, Locale.getDefault());
+        return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null, null, Locale.getDefault(), null,
+            null);
     }
 
     private final SvgInheritedStyle style;
@@ -71,9 +75,12 @@ public final class RenderContext implements ISvgStylable {
     private final Bounds objectBoundingBox;
     private final URI baseUri;
     private final Locale locale;
+    private final Consumer<SvgAnchor> anchorActivationHandler;
+    private final ForeignObjectHandler foreignObjectHandler;
 
     private RenderContext(SvgInheritedStyle style, SvgElementIndex elementIndex, double viewportWidth, double viewportHeight,
-        Bounds objectBoundingBox, URI baseUri, Locale locale) {
+        Bounds objectBoundingBox, URI baseUri, Locale locale, Consumer<SvgAnchor> anchorActivationHandler,
+        ForeignObjectHandler foreignObjectHandler) {
         this.style = style;
         this.elementIndex = elementIndex;
         this.viewportWidth = viewportWidth;
@@ -81,24 +88,26 @@ public final class RenderContext implements ISvgStylable {
         this.objectBoundingBox = objectBoundingBox;
         this.baseUri = baseUri;
         this.locale = locale;
+        this.anchorActivationHandler = anchorActivationHandler;
+        this.foreignObjectHandler = foreignObjectHandler;
     }
 
     /**
      * The context a container hands to one of its children: the container's own style resolved one level further,
-     * same viewport, index, object bounding box, base URI and locale.
+     * same viewport, index, object bounding box, base URI, locale and handlers.
      */
     public RenderContext resolveChild(ISvgAttributes element) {
         return new RenderContext(SvgInheritedStyle.resolve(style, element), elementIndex, viewportWidth, viewportHeight, objectBoundingBox,
-            baseUri, locale);
+            baseUri, locale, anchorActivationHandler, foreignObjectHandler);
     }
 
     /**
      * The context inside a newly established viewport - a nested {@code <svg>} - with the same style, index, base
-     * URI and locale, the new viewport size, and no object bounding box (a new viewport is not itself bound to a
-     * shape).
+     * URI, locale and handlers, the new viewport size, and no object bounding box (a new viewport is not itself
+     * bound to a shape).
      */
     public RenderContext withViewport(double width, double height) {
-        return new RenderContext(style, elementIndex, width, height, null, baseUri, locale);
+        return new RenderContext(style, elementIndex, width, height, null, baseUri, locale, anchorActivationHandler, foreignObjectHandler);
     }
 
     /**
@@ -107,7 +116,8 @@ public final class RenderContext implements ISvgStylable {
      * will call it.
      */
     public RenderContext withObjectBoundingBox(Bounds bbox) {
-        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox, baseUri, locale);
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox, baseUri, locale, anchorActivationHandler,
+            foreignObjectHandler);
     }
 
     /**
@@ -116,7 +126,8 @@ public final class RenderContext implements ISvgStylable {
      * {@link FoxgloveParser#parseFile}); absent when parsed from a bare stream with no known source.
      */
     public RenderContext withBaseUri(URI baseUri) {
-        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale);
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
+            foreignObjectHandler);
     }
 
     /**
@@ -125,7 +136,29 @@ public final class RenderContext implements ISvgStylable {
      * to render the same document for a specific language.
      */
     public RenderContext withLocale(Locale locale) {
-        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale);
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
+            foreignObjectHandler);
+    }
+
+    /**
+     * The context with a callback established for {@code <a>} activation - invoked with the {@link SvgAnchor} when
+     * its rendered content is clicked. Absent by default: this library does not own a browser, so "following a
+     * link" is entirely up to the embedding application. A caller wanting this (or {@link #withForeignObjectHandler})
+     * builds a context directly via {@link #root} rather than through {@code SvgGraphic.createGroup()} - there is no
+     * dedicated overload per optional capability, since that stops scaling once there is more than one.
+     */
+    public RenderContext withAnchorActivationHandler(Consumer<SvgAnchor> anchorActivationHandler) {
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
+            foreignObjectHandler);
+    }
+
+    /**
+     * The context with a handler established for {@code <foreignObject>} content (see {@link ForeignObjectHandler}).
+     * Absent by default - a {@code <foreignObject>} then renders as an empty, correctly positioned group.
+     */
+    public RenderContext withForeignObjectHandler(ForeignObjectHandler foreignObjectHandler) {
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
+            foreignObjectHandler);
     }
 
     public double getViewportWidth() {
@@ -150,6 +183,14 @@ public final class RenderContext implements ISvgStylable {
 
     public Locale getLocale() {
         return locale;
+    }
+
+    public Optional<Consumer<SvgAnchor>> getAnchorActivationHandler() {
+        return Optional.ofNullable(anchorActivationHandler);
+    }
+
+    public Optional<ForeignObjectHandler> getForeignObjectHandler() {
+        return Optional.ofNullable(foreignObjectHandler);
     }
 
     /**

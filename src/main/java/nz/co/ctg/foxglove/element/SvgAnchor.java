@@ -1,41 +1,120 @@
 package nz.co.ctg.foxglove.element;
 
-import org.eclipse.persistence.oxm.annotations.XmlValueExtension;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.FxGraphic;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
+import nz.co.ctg.foxglove.ISvgContainer;
+import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgTransformable;
-import nz.co.ctg.foxglove.ISvgValueElement;
+import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.SvgStyle;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
+import nz.co.ctg.foxglove.clip.SvgClipPath;
+import nz.co.ctg.foxglove.clip.SvgMask;
+import nz.co.ctg.foxglove.description.SvgDescription;
+import nz.co.ctg.foxglove.description.SvgMetadata;
+import nz.co.ctg.foxglove.description.SvgTitle;
+import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.paint.SvgColorProfile;
+import nz.co.ctg.foxglove.paint.SvgLinearGradient;
+import nz.co.ctg.foxglove.paint.SvgPattern;
+import nz.co.ctg.foxglove.paint.SvgRadialGradient;
+import nz.co.ctg.foxglove.shape.SvgCircle;
+import nz.co.ctg.foxglove.shape.SvgEllipse;
+import nz.co.ctg.foxglove.shape.SvgLine;
+import nz.co.ctg.foxglove.shape.SvgPath;
+import nz.co.ctg.foxglove.shape.SvgPolygon;
+import nz.co.ctg.foxglove.shape.SvgPolyline;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.text.SvgAltGlyphDef;
+import nz.co.ctg.foxglove.text.SvgFont;
+import nz.co.ctg.foxglove.text.SvgFontFace;
+import nz.co.ctg.foxglove.text.SvgText;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "value"
+    "content"
 })
 @XmlRootElement(name = "a")
-public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgEventListener, ISvgTransformable, ISvgValueElement {
+public class SvgAnchor extends AbstractSvgStylable
+    implements ISvgStructuralElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgEventListener, ISvgTransformable,
+    ISvgContainer, FxGraphic<Group> {
 
     @XmlAttribute(name = "target")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     private String target;
 
-    @XmlValue
-    @XmlValueExtension
-    private String value;
+    @XmlElements({
+        @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "metadata", type = SvgMetadata.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "svg", type = SvgGraphic.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "g", type = SvgGroup.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "defs", type = SvgDefinitions.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "symbol", type = SvgSymbol.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "use", type = SvgUse.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "switch", type = SvgSwitch.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "image", type = SvgImage.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "style", type = SvgStyle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "path", type = SvgPath.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "rect", type = SvgRectangle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "circle", type = SvgCircle.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "line", type = SvgLine.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "ellipse", type = SvgEllipse.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "polyline", type = SvgPolyline.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "polygon", type = SvgPolygon.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "text", type = SvgText.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "altGlyphDef", type = SvgAltGlyphDef.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "marker", type = SvgMarker.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "color-profile", type = SvgColorProfile.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "linearGradient", type = SvgLinearGradient.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "radialGradient", type = SvgRadialGradient.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "pattern", type = SvgPattern.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "clipPath", type = SvgClipPath.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "mask", type = SvgMask.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "filter", type = SvgFilter.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "cursor", type = SvgCursor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "a", type = SvgAnchor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "view", type = SvgView.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "script", type = SvgScript.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "font", type = SvgFont.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "font-face", type = SvgFontFace.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElement(name = "foreignObject", type = SvgForeignObject.class, namespace = "http://www.w3.org/2000/svg")
+    })
+    private List<ISvgElement> content;
 
     public String getTarget() {
         return target;
@@ -46,13 +125,53 @@ public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElem
     }
 
     @Override
-    public String getValue() {
-        return value;
+    public List<ISvgElement> getContent() {
+        if (content == null) {
+            content = new ArrayList<>();
+        }
+        return this.content;
     }
 
+    /**
+     * Renders this element's content exactly as {@code <g>} would, then makes it activatable: content is always
+     * made clickable (see {@link #clearMouseTransparency}), and if an activation handler is registered
+     * ({@link RenderContext#getAnchorActivationHandler}), a hand cursor is shown and clicking anywhere in the
+     * content invokes it with this element - giving the handler full access to {@code xlink:href}/{@code target}/
+     * {@code xlink:show}/{@code xlink:actuate} to decide what "following the link" means, since this library does
+     * not own a browser. With no handler registered, content still renders, it just isn't clickable.
+     */
     @Override
-    public void setValue(String value) {
-        this.value = value;
+    public Group createGraphic(RenderContext context) {
+        applyStyle(context);
+        Group group = new Group();
+        group.setId(getId());
+        applyNodeProperties(context, group);
+        applyTransforms(group);
+        appendContent(group, context);
+
+        clearMouseTransparency(group);
+        context.getAnchorActivationHandler().ifPresent(handler -> {
+            group.setCursor(Cursor.HAND);
+            group.setOnMouseClicked(event -> handler.accept(this));
+        });
+        return group;
+    }
+
+    /**
+     * A titleless shape sets its own {@code mouseTransparent} to {@code true} (see
+     * {@link nz.co.ctg.foxglove.ISvgDescribable#installTooltip}), which - since {@code mouseTransparent} excludes a
+     * node's whole subtree from being picked, and no ancestor can override a descendant's own {@code true} - would
+     * otherwise make the overwhelmingly common case (a plain shape with no {@code <title>}) inside {@code <a>}
+     * unclickable, since a click that hits nothing pickable never reaches this element's handler via bubbling.
+     * Scoped to this element's own subtree only; {@code installTooltip}'s default elsewhere is untouched.
+     */
+    private static void clearMouseTransparency(Node node) {
+        node.setMouseTransparent(false);
+        if (node instanceof Parent parent) {
+            for (Node child : parent.getChildrenUnmodifiable()) {
+                clearMouseTransparency(child);
+            }
+        }
     }
 
     @Override

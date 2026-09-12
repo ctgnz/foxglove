@@ -74,6 +74,33 @@ public class ISvgGraphicsAttributesTest {
     }
 
     @Test
+    public void testShapeInheritsCursorFromItsGroup() throws Exception {
+        SvgGroup group = new SvgGroup();
+        group.setCursor("pointer");
+        group.getContent().add(new SvgRectangle());
+
+        Shape shape = firstShape(render(group));
+        assertThat(shape.getCursor(), is(javafx.scene.Cursor.HAND));
+        // a titleless shape otherwise gets mouseTransparent(true) from installTooltip, which would make it
+        // unhoverable - so its own cursor could never actually show
+        assertThat(shape.isMouseTransparent(), is(false));
+    }
+
+    /**
+     * The exact scenario a bug report caught: a bare titleless shape with its own {@code cursor}, no wrapping
+     * {@code <a>} to reset {@code mouseTransparent} the way {@code SvgAnchor} does for its own content.
+     */
+    @Test
+    public void testStandaloneShapeWithItsOwnCursorIsStillHoverable() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        rect.setCursor("pointer");
+
+        Shape shape = firstShape(render(groupOf(rect)));
+        assertThat(shape.getCursor(), is(javafx.scene.Cursor.HAND));
+        assertThat(shape.isMouseTransparent(), is(false));
+    }
+
+    @Test
     public void testShapeInheritsStrokePropertiesFromItsGroup() throws Exception {
         SvgGroup group = new SvgGroup();
         group.setStroke(Color.BLUE);
