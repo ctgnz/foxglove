@@ -1,6 +1,6 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
@@ -10,6 +10,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javafx.scene.paint.Color;
 
@@ -111,9 +112,10 @@ public class SvgInheritedStyleTest {
         assertThat(SvgInheritedStyle.resolve(null, new SvgRectangle()).getProperties(), is(anEmptyMap()));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testResolvedStyleIsImmutable() throws Exception {
-        SvgInheritedStyle.root().set(ISvgGraphicsAttributes.GRAPHX_FILL, Color.RED);
+        assertThrows(UnsupportedOperationException.class,
+            () -> SvgInheritedStyle.root().set(ISvgGraphicsAttributes.GRAPHX_FILL, Color.RED));
     }
 
 }

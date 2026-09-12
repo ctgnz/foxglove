@@ -3,8 +3,8 @@ package nz.co.ctg.foxglove;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.element.SvgDefinitions;
 import nz.co.ctg.foxglove.element.SvgGroup;
@@ -26,7 +26,7 @@ public class SvgElementIndexTest {
 
     private SvgGraphic svg;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         svg = new SvgGraphic();
     }

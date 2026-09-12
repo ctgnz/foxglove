@@ -1,6 +1,6 @@
 package nz.co.ctg.foxglove.type;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.type.PreserveAspectRatio.Align;
 import nz.co.ctg.foxglove.type.PreserveAspectRatio.MeetOrSlice;

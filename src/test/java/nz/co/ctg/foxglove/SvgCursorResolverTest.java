@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.element.SvgCursor;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
@@ -20,7 +20,7 @@ import javafx.scene.ImageCursor;
  */
 public class SvgCursorResolverTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
     }

@@ -1,8 +1,8 @@
 package nz.co.ctg.foxglove.adapter;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,7 +16,7 @@ public class SizeAdapterTest {
 
     private SizeAdapter candidate;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         candidate = new SizeAdapter();
     }
@@ -57,13 +57,13 @@ public class SizeAdapterTest {
         assertThat(candidate.unmarshal("12.345in").pixels(), closeTo(1185.12, 0.01));
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testUnmarshalEms() throws Exception {
         assertThat(candidate.unmarshal("12em").pixels(Font.font("SansSerif")), is(144.0));
         assertThat(candidate.unmarshal("1.2em").pixels(Font.font("SansSerif")), is(14.4));
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testUnmarshalExs() throws Exception {
         assertThat(candidate.unmarshal("12ex").pixels(Font.font("SansSerif")), is(72.0));
         assertThat(candidate.unmarshal("1.2ex").pixels(Font.font("SansSerif")), is(7.2));

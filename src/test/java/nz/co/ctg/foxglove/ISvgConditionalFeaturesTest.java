@@ -2,7 +2,7 @@ package nz.co.ctg.foxglove;
 
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 

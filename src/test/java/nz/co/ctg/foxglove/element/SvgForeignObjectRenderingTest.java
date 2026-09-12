@@ -3,7 +3,7 @@ package nz.co.ctg.foxglove.element;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.ForeignObjectHandler;
 import nz.co.ctg.foxglove.FoxgloveParser;

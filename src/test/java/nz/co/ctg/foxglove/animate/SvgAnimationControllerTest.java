@@ -4,8 +4,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.JavaFxTestSupport;
@@ -32,7 +32,7 @@ import javafx.util.Duration;
  */
 public class SvgAnimationControllerTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
     }

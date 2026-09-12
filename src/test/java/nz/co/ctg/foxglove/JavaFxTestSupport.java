@@ -14,7 +14,7 @@ import javafx.application.Platform;
  * <p>
  * {@code Platform.startup(Runnable)} can only be called once per JVM (a second call throws
  * {@code IllegalStateException: Toolkit already initialized}), so every test class that needs the toolkit calls
- * {@link #ensureStarted()} from its own {@code @BeforeClass} rather than calling {@code Platform.startup} directly.
+ * {@link #ensureStarted()} from its own {@code @BeforeAll} rather than calling {@code Platform.startup} directly.
  * It also returns before the toolkit has necessarily finished initialising - the runnable only marks when it is
  * ready - so this waits on a latch rather than returning immediately, which avoided a real, observed flake: a
  * different test class's unrelated classpath resource reads intermittently failed when it started running while

@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.type.SvgPaint;
@@ -22,7 +22,7 @@ public class AbstractSvgStylableTest {
 
     private SvgRectangle candidate;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         candidate = new SvgRectangle();
     }

@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.element.SvgImage;
 
@@ -22,7 +22,7 @@ public class SvgImageBindingTest {
 
     private SvgImage image;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         FoxgloveParser parser = new FoxgloveParser();
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/xlink-attributes.svg"));

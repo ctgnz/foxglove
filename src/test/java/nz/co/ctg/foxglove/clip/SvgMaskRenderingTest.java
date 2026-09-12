@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove.clip;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.JavaFxTestSupport;
@@ -41,7 +41,7 @@ import javafx.scene.paint.Color;
  */
 public class SvgMaskRenderingTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
     }
