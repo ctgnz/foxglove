@@ -33,10 +33,32 @@ public interface ISvgContainer extends ISvgContent, ISvgStylable {
             if (child instanceof FxGraphic<?> graphic && isRendered(child, context.getLocale())) {
                 Node node = graphic.createGraphic(context);
                 if (node != null) {
-                    target.getChildren().add(SvgMarkerRenderer.applyMarkers(node, child, context));
+                    node = SvgMarkerRenderer.applyMarkers(node, child, context);
+                    node = applyChildMask(child, node, context);
+                    target.getChildren().add(node);
                 }
             }
         }
+    }
+
+    /**
+     * Applies {@code child}'s own {@code mask}, if any, to its already-built {@code node} - the consumer side,
+     * mirroring where markers are applied just above, rather than inside each element's own {@code createGraphic}.
+     * <p>
+     * This is where masking has to live for a shape: {@link nz.co.ctg.foxglove.shape.AbstractSvgShape} declares
+     * {@code createGraphic} to return {@code S extends Shape}, not a plain {@link Node}, so a shape cannot return an
+     * {@link javafx.scene.image.ImageView}-based replacement from inside its own method the way a container (which
+     * already returns {@code Group}/{@code Node}) could. Applying masking uniformly here instead - for every child,
+     * container or shape alike - avoids a child masking itself once internally and then being masked again by its
+     * own consumer, since a container never masks its own return value from within its own {@code createGraphic}.
+     * <p>
+     * One consequence: the document root (built via {@code SvgGraphic.createGroup()}, never itself "a child" of
+     * anyone's {@code appendContent}) has no consumer to apply this on its behalf - a {@code mask} declared directly
+     * on the root {@code <svg>} element is not applied. Accepted as a known, narrow gap; masking a whole document
+     * against something defined within itself is a rare case in practice.
+     */
+    private static Node applyChildMask(ISvgElement child, Node node, RenderContext context) {
+        return child instanceof ISvgGraphicsAttributes attrs ? attrs.applyMask(context, node) : node;
     }
 
     /**

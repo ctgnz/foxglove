@@ -8,6 +8,8 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgClipPathRenderer;
+import nz.co.ctg.foxglove.clip.SvgMask;
+import nz.co.ctg.foxglove.clip.SvgMaskRenderer;
 import nz.co.ctg.foxglove.type.SvgPaint;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
@@ -391,6 +393,25 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         String clipPathRef = get(ISvgPresentationAttributes.PRES_CLIP_PATH);
         index.resolve(clipPathRef, SvgClipPath.class)
             .ifPresent(clipPath -> node.setClip(SvgClipPathRenderer.render(clipPath, context, node.getBoundsInLocal())));
+    }
+
+    /**
+     * Applies this element's own {@code mask}, if it resolves to a real {@code <mask>}, substituting a masked
+     * {@link Node} for {@code node} - unlike {@link #applyClip}, which mutates {@code node} in place via
+     * {@code setClip()}, JavaFX has no per-pixel mask analogue, so masking rasterises and replaces the node entirely
+     * (see {@link SvgMaskRenderer}). Callers must call this last, after {@link #applyClip} - masking composites
+     * against the already-clipped rendering - and use the returned {@link Node} rather than assuming {@code node}
+     * itself is still what gets added to the scene graph.
+     */
+    default Node applyMask(RenderContext context, Node node) {
+        SvgElementIndex index = context.getElementIndex();
+        if (index == null) {
+            return node;
+        }
+        String maskRef = get(ISvgPresentationAttributes.PRES_MASK);
+        return index.resolve(maskRef, SvgMask.class)
+            .map(mask -> SvgMaskRenderer.apply(node, mask, context))
+            .orElse(node);
     }
 
     /**

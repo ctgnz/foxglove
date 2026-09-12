@@ -11,6 +11,7 @@ import nz.co.ctg.foxglove.shape.SvgRectangle;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
@@ -303,6 +304,22 @@ public class ISvgGraphicsAttributesTest {
         Group renderedGroup = group.createGraphic(context);
         assertThat(renderedGroup.getClip(), is(notNullValue()));
         assertThat(firstShape(renderedGroup).getClip(), is(nullValue()));
+    }
+
+    // --- mask ----------------------------------------------------------------
+
+    /**
+     * {@code applyMask} is a no-op (returns the exact same node) when {@code mask} is absent - it must never build a
+     * replacement {@link Node} it doesn't need.
+     */
+    @Test
+    public void testAbsentMaskReturnsTheSameNode() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        SvgGraphic svg = new SvgGraphic();
+        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
+
+        Node node = rect.createGraphic(context);
+        assertThat(rect.applyMask(context, node), is(sameInstance(node)));
     }
 
     // --- opacity parsing ---------------------------------------------------

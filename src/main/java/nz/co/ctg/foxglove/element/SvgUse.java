@@ -13,6 +13,7 @@ import nz.co.ctg.foxglove.ISvgContainer;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.RenderContext;
@@ -106,17 +107,25 @@ public class SvgUse extends AbstractSvgStylable
         return group;
     }
 
+    /**
+     * Also applies the *referenced target's own* {@code mask} (independent of any {@code mask} on this {@code
+     * <use>} element itself, which - like this element's own {@code clip-path} - is applied to this element's
+     * returned {@code group} by whichever container consumes it, the same as any other child; see
+     * {@link ISvgContainer#appendContent}). This dispatch is the one place the referenced target's own node is built
+     * outside that shared consumer path, so it is the one place that has to apply the target's mask itself.
+     */
     private Node buildReferenced(ISvgElement target, RenderContext context) {
+        Node node;
         if (target instanceof SvgSymbol symbol) {
-            return buildSymbol(symbol, context);
+            node = buildSymbol(symbol, context);
+        } else if (target instanceof SvgGraphic svg) {
+            node = svg.createGraphic(context, getWidth(), getHeight());
+        } else if (target instanceof FxGraphic<?> graphic) {
+            node = graphic.createGraphic(context);
+        } else {
+            return null;
         }
-        if (target instanceof SvgGraphic svg) {
-            return svg.createGraphic(context, getWidth(), getHeight());
-        }
-        if (target instanceof FxGraphic<?> graphic) {
-            return graphic.createGraphic(context);
-        }
-        return null;
+        return target instanceof ISvgGraphicsAttributes attrs ? attrs.applyMask(context, node) : node;
     }
 
     /**

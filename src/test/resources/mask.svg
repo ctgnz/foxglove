@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  mask (#25). Laid out as a grid so the cases can be told apart in FoxgloveParserPreview. Positioned via
+  transform="translate(...)" rather than x/y, same reasoning as clip-path.svg - mask (userSpaceOnUse) resolves
+  in the coordinate system already in place for the referencing element, unaffected by its own x/y.
+
+  Row 1: an opaque white rectangle mask, covering half the target - a hard-edged crop, not a soft one |
+         a white-to-black horizontal gradient mask - a soft fade from fully visible to fully invisible
+  Row 2: maskUnits="objectBoundingBox" (the default) - a mask region defined as a fraction of the target's own
+         bounding box, here scaled down to exactly its own footprint (x/y/width/height 0/0/100%/100%) rather than
+         the default -10%/120% overshoot, so the fade is clipped tightly to the shape itself |
+         maskContentUnits="objectBoundingBox" - mask CONTENT (not just the region) scaled by the target's bbox: a
+         unit-square white rect used as content covers the whole (non-square) target regardless of its size
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="460" height="220" viewBox="0 0 460 220">
+
+  <defs>
+    <mask id="halfMask">
+      <rect x="0" y="0" width="50" height="100" fill="white"/>
+    </mask>
+
+    <linearGradient id="fadeGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="white"/>
+      <stop offset="1" stop-color="black"/>
+    </linearGradient>
+    <mask id="gradientMask">
+      <rect x="0" y="0" width="100" height="100" fill="url(#fadeGradient)"/>
+    </mask>
+
+    <mask id="tightMask" maskUnits="objectBoundingBox" x="0" y="0" width="1" height="1">
+      <rect x="0" y="0" width="100" height="100" fill="url(#fadeGradient)"/>
+    </mask>
+
+    <mask id="contentUnitsMask" maskContentUnits="objectBoundingBox">
+      <rect x="0" y="0" width="1" height="1" fill="white"/>
+    </mask>
+  </defs>
+
+  <rect x="0" y="0" width="100" height="100" fill="steelblue" mask="url(#halfMask)" transform="translate(20 20)"/>
+
+  <rect x="0" y="0" width="100" height="100" fill="crimson" mask="url(#gradientMask)" transform="translate(170 20)"/>
+
+  <rect x="0" y="0" width="100" height="100" fill="seagreen" mask="url(#tightMask)" transform="translate(320 20)"/>
+
+  <rect x="0" y="0" width="140" height="60" fill="darkorange" mask="url(#contentUnitsMask)" transform="translate(20 150)"/>
+
+</svg>
