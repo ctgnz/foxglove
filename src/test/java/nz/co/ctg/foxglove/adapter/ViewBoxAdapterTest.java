@@ -1,6 +1,6 @@
 package nz.co.ctg.foxglove.adapter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.type.ViewBox;
 

@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove.paint;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.RenderContext;
@@ -37,7 +37,7 @@ public class SvgPatternTest {
 
     private static final double DELTA = 1e-6;
 
-    @BeforeClass
+    @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
     }

@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -22,7 +22,7 @@ public class StyleElementParseTest {
 
     private Group rendered;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         FoxgloveParser parser = new FoxgloveParser();
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/style-element.svg"));

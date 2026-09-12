@@ -1,6 +1,6 @@
 package nz.co.ctg.foxglove.style;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.shape.SvgRectangle;

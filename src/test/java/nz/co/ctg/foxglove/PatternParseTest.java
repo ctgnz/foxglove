@@ -1,8 +1,8 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.paint.SvgPattern;
 
@@ -30,12 +30,12 @@ public class PatternParseTest {
 
     private Group rendered;
 
-    @BeforeClass
+    @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         FoxgloveParser parser = new FoxgloveParser();
         SvgGraphic svg = parser.parse(SvgGraphic.class.getResourceAsStream("/patterns.svg"));

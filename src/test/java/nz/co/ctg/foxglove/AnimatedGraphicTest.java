@@ -2,8 +2,8 @@ package nz.co.ctg.foxglove;
 
 import java.util.Optional;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.animate.AbstractSvgAnimationElement;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
@@ -28,7 +28,7 @@ import javafx.util.Duration;
  */
 public class AnimatedGraphicTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
     }

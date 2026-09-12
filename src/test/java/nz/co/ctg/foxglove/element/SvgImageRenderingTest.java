@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove.element;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.FoxgloveParser;
 import nz.co.ctg.foxglove.JavaFxTestSupport;
@@ -44,7 +44,7 @@ public class SvgImageRenderingTest {
     private static final String WIDE_PNG =
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg==";
 
-    @BeforeClass
+    @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
     }

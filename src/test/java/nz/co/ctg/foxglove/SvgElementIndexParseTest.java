@@ -2,8 +2,8 @@ package nz.co.ctg.foxglove;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.element.SvgUse;
@@ -28,7 +28,7 @@ public class SvgElementIndexParseTest {
     private SvgElementIndex index;
     private SvgGraphic svg;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         FoxgloveParser parser = new FoxgloveParser();
         svg = parser.parse(SvgGraphic.class.getResourceAsStream("/references.svg"));

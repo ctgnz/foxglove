@@ -1,7 +1,7 @@
 package nz.co.ctg.foxglove.clip;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.RenderContext;
@@ -34,7 +34,7 @@ import javafx.scene.paint.Color;
  */
 public class SvgClipPathRenderingTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
     }
