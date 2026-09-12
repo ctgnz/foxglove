@@ -35,6 +35,7 @@ public interface ISvgContainer extends ISvgContent, ISvgStylable {
                 if (node != null) {
                     node = SvgMarkerRenderer.applyMarkers(node, child, context);
                     node = applyChildMask(child, node, context);
+                    registerChildNode(child, node, context);
                     target.getChildren().add(node);
                 }
             }
@@ -59,6 +60,18 @@ public interface ISvgContainer extends ISvgContent, ISvgStylable {
      */
     private static Node applyChildMask(ISvgElement child, Node node, RenderContext context) {
         return child instanceof ISvgGraphicsAttributes attrs ? attrs.applyMask(context, node) : node;
+    }
+
+    /**
+     * Records {@code child}'s final built node (after masking may have replaced it) in {@code context}'s node
+     * registry, if any (#30) - must run after {@link #applyChildMask}, for the same reason that method itself has
+     * to live here rather than inside each element's own {@code createGraphic}: registering the pre-mask node would
+     * point an animation at a node that is no longer the one actually in the scene graph.
+     */
+    private static void registerChildNode(ISvgElement child, Node node, RenderContext context) {
+        if (child instanceof ISvgGraphicsAttributes attrs) {
+            attrs.registerNode(context, node);
+        }
     }
 
     /**

@@ -1,0 +1,101 @@
+package nz.co.ctg.foxglove.animate;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.SvgElementIndex;
+
+import javafx.animation.Animation;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
+import javafx.scene.Node;
+import javafx.util.Duration;
+
+/**
+ * Plays, pauses, stops and seeks every animation built for a rendered document - returned alongside the built
+ * {@link Node} by {@code SvgGraphic.createAnimatedGraphic}, since rendering itself has no other way to hand back
+ * something a caller can control playback through.
+ * <p>
+ * Built by resolving every {@link ISvgAnimationElement} in the document to its target node (via {@link
+ * SvgAnimationTargets} and the node registry {@code createAnimatedGraphic} populates), asking the element itself to
+ * build its own {@link Animation} (see {@link ISvgAnimationElement#buildAnimation}), and wrapping whatever comes
+ * back in that element's own {@link SvgAnimationTiming}. An element with no resolvable target, no built node for
+ * that target, or nothing from {@code buildAnimation} (every element, until #31-#34 override it) is skipped -
+ * exactly this renderer's usual "unsupported degrades rather than throws" treatment, not a partial or broken
+ * controller.
+ */
+public final class SvgAnimationController {
+
+    private final List<Animation> animations;
+
+    public SvgAnimationController(SvgElementIndex index, Map<ISvgElement, Node> nodeRegistry, RenderContext context) {
+        this.animations = build(index, nodeRegistry, context);
+    }
+
+    private static List<Animation> build(SvgElementIndex index, Map<ISvgElement, Node> nodeRegistry, RenderContext context) {
+        List<Animation> result = new ArrayList<>();
+        for (ISvgAnimationElement element : index.getElementsOfType(ISvgAnimationElement.class)) {
+            SvgAnimationTargets.resolve(element, index)
+                .map(nodeRegistry::get)
+                .flatMap(target -> element.buildAnimation(target, context))
+                .map(animation -> withTiming(animation, SvgAnimationTiming.parse(element)))
+                .ifPresent(result::add);
+        }
+        return result;
+    }
+
+    /**
+     * {@code repeatCount} applies to {@code animation} itself, not the leading {@code begin} pause - repeating
+     * "pause then play" as a unit would re-insert the delay before every cycle, which is not what SMIL's
+     * {@code repeatCount} means. {@code fill="freeze"} is a JavaFX {@code Animation}'s own default end-of-run
+     * behaviour (the last interpolated value holds); {@code fill="remove"} needs an explicit reset of whatever
+     * property was actually animated, which only whichever future code supplies the real {@code KeyValue} can do -
+     * nothing to reset yet in this issue, since {@link ISvgAnimationElement#buildAnimation} has no concrete
+     * override anywhere yet.
+     */
+    private static Animation withTiming(Animation animation, SvgAnimationTiming timing) {
+        animation.setCycleCount(timing.repeatCount());
+        Duration begin = timing.begin().orElse(Duration.ZERO);
+        if (begin.greaterThan(Duration.ZERO)) {
+            return new SequentialTransition(new PauseTransition(begin), animation);
+        }
+        return animation;
+    }
+
+    public void play() {
+        animations.forEach(Animation::play);
+    }
+
+    public void pause() {
+        animations.forEach(Animation::pause);
+    }
+
+    public void stop() {
+        animations.forEach(Animation::stop);
+    }
+
+    public void seek(Duration time) {
+        animations.forEach(animation -> animation.jumpTo(time));
+    }
+
+    /**
+     * The longest total duration across every wrapped animation ({@code Duration.INDEFINITE} if any of them repeat
+     * indefinitely), or {@link Duration#ZERO} for a document with nothing to animate.
+     */
+    public Duration getTotalDuration() {
+        return animations.stream().map(Animation::getTotalDuration).max(Comparator.naturalOrder()).orElse(Duration.ZERO);
+    }
+
+    /**
+     * The number of animations actually built - mostly useful for tests, since an element with no resolvable
+     * target/node/{@code buildAnimation} result is silently skipped rather than represented here at all.
+     */
+    public int size() {
+        return animations.size();
+    }
+
+}

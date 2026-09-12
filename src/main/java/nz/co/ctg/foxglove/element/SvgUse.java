@@ -113,7 +113,12 @@ public class SvgUse extends AbstractSvgStylable
      * <use>} element itself, which - like this element's own {@code clip-path} - is applied to this element's
      * returned {@code group} by whichever container consumes it, the same as any other child; see
      * {@link ISvgContainer#appendContent}). This dispatch is the one place the referenced target's own node is built
-     * outside that shared consumer path, so it is the one place that has to apply the target's mask itself.
+     * outside that shared consumer path, so it is the one place that has to apply the target's mask - and register
+     * its node (#30) - itself.
+     * <p>
+     * A known limitation shared with masking above: if the same target is referenced by more than one {@code <use>},
+     * only the most recently built copy stays in the node registry - an animation on content reused as a shared
+     * {@code <symbol>}/template, expecting each copy to animate independently, is out of scope for now.
      */
     private Node buildReferenced(ISvgElement target, RenderContext context) {
         Node node;
@@ -126,7 +131,11 @@ public class SvgUse extends AbstractSvgStylable
         } else {
             return null;
         }
-        return target instanceof ISvgGraphicsAttributes attrs ? attrs.applyMask(context, node) : node;
+        if (target instanceof ISvgGraphicsAttributes attrs) {
+            node = attrs.applyMask(context, node);
+            attrs.registerNode(context, node);
+        }
+        return node;
     }
 
     /**

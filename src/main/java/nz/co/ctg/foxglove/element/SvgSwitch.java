@@ -108,6 +108,7 @@ public class SvgSwitch extends AbstractSvgStylable
                     node = SvgMarkerRenderer.applyMarkers(node, child, childContext);
                     if (child instanceof ISvgGraphicsAttributes attrs) {
                         node = attrs.applyMask(childContext, node);
+                        attrs.registerNode(childContext, node);
                     }
                     group.getChildren().add(node);
                 }
