@@ -10,6 +10,8 @@ import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.clip.SvgClipPathRenderer;
 import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.clip.SvgMaskRenderer;
+import nz.co.ctg.foxglove.filter.SvgFilter;
+import nz.co.ctg.foxglove.filter.SvgFilterRenderer;
 import nz.co.ctg.foxglove.type.SvgPaint;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
@@ -393,6 +395,25 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         String clipPathRef = get(ISvgPresentationAttributes.PRES_CLIP_PATH);
         index.resolve(clipPathRef, SvgClipPath.class)
             .ifPresent(clipPath -> node.setClip(SvgClipPathRenderer.render(clipPath, context, node.getBoundsInLocal())));
+    }
+
+    /**
+     * Applies this element's own {@code filter}, if it resolves to a real {@code <filter>}, to {@code node} - in
+     * place, like {@link #applyClip} (a filter effect and a filter-region clip are both plain node properties, so
+     * unlike {@link #applyMask} there is no need to replace the node). Callers must call this after
+     * {@link #applyClip}: the filter region composes with any existing clip-path clip by further-clipping it (see
+     * {@link SvgFilterRenderer}), which only produces the right intersection once that clip already exists.
+     * <p>
+     * Stage 1 of #26: resolves a lone {@code feGaussianBlur} to a {@link javafx.scene.effect.GaussianBlur}; any
+     * other filter shape degrades to no effect rather than throwing or rendering nothing.
+     */
+    default void applyFilter(RenderContext context, Node node) {
+        SvgElementIndex index = context.getElementIndex();
+        if (index == null) {
+            return;
+        }
+        String filterRef = get(ISvgPresentationAttributes.PRES_FILTER);
+        index.resolve(filterRef, SvgFilter.class).ifPresent(filter -> SvgFilterRenderer.apply(context, node, filter));
     }
 
     /**

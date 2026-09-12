@@ -22,6 +22,7 @@ public abstract class AbstractSvgShape<S extends Shape> extends AbstractSvgStyla
         installTooltip(shape);
         applyGraphicsProperties(context, shape);
         applyClip(context, shape);
+        applyFilter(context, shape);
         applyTransforms(shape);
         return shape;
     }

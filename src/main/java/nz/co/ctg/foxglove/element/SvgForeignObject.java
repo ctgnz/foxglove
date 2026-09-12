@@ -66,6 +66,7 @@ public class SvgForeignObject extends AbstractSvgStylable
         }
         applyNodeProperties(context, group);
         applyClip(context, group);
+        applyFilter(context, group);
         group.getTransforms().addAll(getTransformList());
         group.getTransforms().add(new Translate(resolveX(context), resolveY(context)));
         return group;

@@ -162,6 +162,7 @@ public class SvgGraphic extends AbstractSvgStylable
 
         appendContent(group, parentContext.withViewport(childViewportWidth, childViewportHeight));
         applyClip(parentContext, group);
+        applyFilter(parentContext, group);
         return group;
     }
 
