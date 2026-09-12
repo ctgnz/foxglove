@@ -155,6 +155,7 @@ public class SvgAnchor extends AbstractSvgStylable
             group.setOnMouseClicked(event -> handler.accept(this));
         });
         applyClip(context, group);
+        applyFilter(context, group);
         return group;
     }
 

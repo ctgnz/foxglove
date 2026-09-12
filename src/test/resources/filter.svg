@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  filter (#26, stage 1). Laid out as a grid so the cases can be told apart in FoxgloveParserPreview.
+
+  Row 1: a lone feGaussianBlur, stdDeviation="4" - a soft blur around the shape, its spread bounded by the filter
+         region (default -10%/120% of the target's own bounding box) |
+         primitiveUnits="objectBoundingBox" - the same stdDeviation number (0.08) now scaled by the target's own
+         bounding-box diagonal instead of being a literal pixel value, giving a comparable blur on a similar-sized
+         shape
+  Row 2: an unsupported primitive (feOffset alone - no direct JavaFX equivalent) - degrades to no effect, renders
+         exactly as if filter weren't set at all, rather than throwing or disappearing |
+         more than one primitive (two feGaussianBlur) - also outside stage 1's single-primitive fast path, same
+         clean degrade
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="460" height="220" viewBox="0 0 460 220">
+
+  <defs>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+
+    <filter id="blurObb" primitiveUnits="objectBoundingBox">
+      <feGaussianBlur stdDeviation="0.08"/>
+    </filter>
+
+    <filter id="unsupportedPrimitive">
+      <feOffset dx="10" dy="10"/>
+    </filter>
+
+    <filter id="multiplePrimitives">
+      <feGaussianBlur stdDeviation="2"/>
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
+
+  <circle cx="70" cy="70" r="40" fill="steelblue" filter="url(#blur)"/>
+
+  <circle cx="220" cy="70" r="40" fill="crimson" filter="url(#blurObb)"/>
+
+  <rect x="320" y="30" width="80" height="80" fill="seagreen" filter="url(#unsupportedPrimitive)"/>
+
+  <rect x="20" y="150" width="80" height="60" fill="darkorange" filter="url(#multiplePrimitives)"/>
+
+</svg>

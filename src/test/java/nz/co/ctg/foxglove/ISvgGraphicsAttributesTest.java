@@ -322,6 +322,24 @@ public class ISvgGraphicsAttributesTest {
         assertThat(rect.applyMask(context, node), is(sameInstance(node)));
     }
 
+    // --- filter ----------------------------------------------------------------
+
+    /**
+     * {@code applyFilter} is a no-op when {@code filter} is absent - unlike {@code applyClip}/{@code applyMask},
+     * there is no separate property to assert against directly, so this just confirms nothing throws and no effect
+     * is set.
+     */
+    @Test
+    public void testAbsentFilterLeavesTheNodeUnaffected() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        SvgGraphic svg = new SvgGraphic();
+        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
+
+        Node node = rect.createGraphic(context);
+        rect.applyFilter(context, node);
+        assertThat(node.getEffect(), is(nullValue()));
+    }
+
     // --- opacity parsing ---------------------------------------------------
 
     @Test

@@ -104,6 +104,7 @@ public class SvgUse extends AbstractSvgStylable
             .map(target -> buildReferenced(target, childContext))
             .ifPresent(node -> group.getChildren().add(node));
         applyClip(context, group);
+        applyFilter(context, group);
         return group;
     }
 

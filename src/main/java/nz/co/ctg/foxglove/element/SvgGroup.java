@@ -114,6 +114,7 @@ public class SvgGroup extends AbstractSvgStylable
         applyTransforms(group);
         appendContent(group, context);
         applyClip(context, group);
+        applyFilter(context, group);
         return group;
     }
 
