@@ -64,6 +64,13 @@ public class FoxgloveParser {
             CatalogResolver resolver = CatalogManager.catalogResolver(catalog);
             xmlInputFactory.setProperty(XMLInputFactory.RESOLVER, resolver);
             xmlInputFactory.setProperty(XMLInputFactory.IS_VALIDATING, false);
+            // The real SVG 1.1 DTD's own %SVG.Presentation.attrib parameter entity is ~15041 characters - one
+            // character over the JDK's own jdk.xml.maxParameterEntitySizeLimit default of 15000 (a security
+            // hardening limit against XML entity-expansion attacks). Raised here, scoped to this factory instance
+            // only (not a JVM-wide system property, which would affect every other XML processor an embedding
+            // application uses) - to a generous bound rather than disabled outright (0/unlimited), so this still
+            // offers some protection against a genuinely malicious, unbounded entity.
+            xmlInputFactory.setProperty("jdk.xml.maxParameterEntitySizeLimit", 100_000);
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to create JAXB context: " + e.getMessage(), e);
         }
