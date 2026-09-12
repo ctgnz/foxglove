@@ -34,11 +34,16 @@ import javafx.scene.shape.Rectangle;
 @XmlRootElement(name = "rect")
 public class SvgRectangle extends AbstractSvgShape<Rectangle> implements ISvgBounded {
 
+    /**
+     * Boxed, not a primitive {@code double} - {@code null} (attribute absent) must be distinguishable from an
+     * explicit {@code 0}, since SVG's own defaulting rule ("if only one of {@code rx}/{@code ry} is specified, the
+     * other defaults to the same value") depends on knowing which case this is, not just what the numeric value is.
+     */
     @XmlAttribute(name = "rx")
-    private double radiusX;
+    private Double radiusX;
 
     @XmlAttribute(name = "ry")
-    private double radiusY;
+    private Double radiusY;
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"), @XmlElement(name = "title", type = SvgTitle.class, namespace = "http://www.w3.org/2000/svg"),
@@ -63,25 +68,38 @@ public class SvgRectangle extends AbstractSvgShape<Rectangle> implements ISvgBou
 
     @Override
     protected Rectangle createShape(RenderContext context) {
-        Rectangle rect = new Rectangle(resolveX(context), resolveY(context), resolveWidth(context), resolveHeight(context));
-        rect.setArcWidth(radiusX);
-        rect.setArcHeight(radiusY);
+        double width = resolveWidth(context);
+        double height = resolveHeight(context);
+        Rectangle rect = new Rectangle(resolveX(context), resolveY(context), width, height);
+
+        // SVG's own rx/ry resolution (shapes.html#RectElement): whichever of rx/ry is omitted defaults to the
+        // other's value (not 0); either specified value exceeding half its own dimension is clamped to that half.
+        double effectiveRx = radiusX != null ? radiusX : (radiusY != null ? radiusY : 0);
+        double effectiveRy = radiusY != null ? radiusY : (radiusX != null ? radiusX : 0);
+        effectiveRx = Math.min(effectiveRx, width / 2);
+        effectiveRy = Math.min(effectiveRy, height / 2);
+
+        // JavaFX's arcWidth/arcHeight are the full width/height of the corner-rounding ellipse (a diameter,
+        // matching AWT's RoundRectangle2D convention) - SVG's rx/ry are radii, so this doubles rather than passing
+        // them straight through.
+        rect.setArcWidth(2 * effectiveRx);
+        rect.setArcHeight(2 * effectiveRy);
         return rect;
     }
 
-    public double getRadiusX() {
+    public Double getRadiusX() {
         return radiusX;
     }
 
-    public void setRadiusX(double value) {
+    public void setRadiusX(Double value) {
         this.radiusX = value;
     }
 
-    public double getRadiusY() {
+    public Double getRadiusY() {
         return radiusY;
     }
 
-    public void setRadiusY(double value) {
+    public void setRadiusY(Double value) {
         this.radiusY = value;
     }
 
