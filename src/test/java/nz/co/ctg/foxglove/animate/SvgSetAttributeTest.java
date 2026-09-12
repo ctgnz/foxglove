@@ -2,6 +2,8 @@ package nz.co.ctg.foxglove.animate;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -15,6 +17,12 @@ import nz.co.ctg.foxglove.shape.SvgRectangle;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.number.IsCloseTo.closeTo;
+
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.scene.shape.Rectangle;
 
 /**
  * {@code SvgSetAttribute} used to extend {@code AbstractSvgElement} directly instead of
@@ -63,6 +71,100 @@ public class SvgSetAttributeTest {
         assertThat(roundTrippedSet.getDuration(), is("3s"));
         assertThat(roundTrippedSet.getFill(), is("freeze"));
         assertThat(roundTrippedSet.getXlinkHref(), is("#other"));
+    }
+
+    // --- rendering -----------------------------------------------------------
+
+    @Test
+    public void testAppliesToValueImmediatelyAndFreezeHoldsIt() {
+        Rectangle rect = new Rectangle(0, 0, 10, 10);
+        rect.setX(5);
+        SvgSetAttribute set = set(s -> {
+            s.setAttributeName("x");
+            s.setTo("20");
+            s.setFill("freeze");
+        });
+
+        Timeline timeline = build(set, rect);
+        List<KeyFrame> frames = timeline.getKeyFrames();
+        // freeze needs only the "set" KeyFrame - a JavaFX Animation already holds its last value once finished
+        assertThat(frames.size(), is(1));
+        assertThat(frames.get(0).getTime(), is(javafx.util.Duration.ZERO));
+        assertThat(doubleValue(frames.get(0)), closeTo(20.0, 1e-9));
+    }
+
+    @Test
+    public void testFillRemoveRevertsToThePreAnimationValueAtTheEndOfDur() {
+        Rectangle rect = new Rectangle(0, 0, 10, 10);
+        rect.setX(5);
+        SvgSetAttribute set = set(s -> {
+            s.setAttributeName("x");
+            s.setTo("20");
+            s.setDuration("3s");
+            s.setFill("remove");
+        });
+
+        Timeline timeline = build(set, rect);
+        List<KeyFrame> frames = timeline.getKeyFrames();
+        assertThat(frames.size(), is(2));
+        assertThat(frames.get(0).getTime(), is(javafx.util.Duration.ZERO));
+        assertThat(doubleValue(frames.get(0)), closeTo(20.0, 1e-9));
+        assertThat(frames.get(1).getTime(), is(javafx.util.Duration.seconds(3)));
+        assertThat(doubleValue(frames.get(1)), closeTo(5.0, 1e-9));
+    }
+
+    @Test
+    public void testFillDefaultsToRemove() {
+        Rectangle rect = new Rectangle(0, 0, 10, 10);
+        rect.setX(5);
+        SvgSetAttribute set = set(s -> {
+            s.setAttributeName("x");
+            s.setTo("20");
+            s.setDuration("1s");
+        });
+
+        assertThat(build(set, rect).getKeyFrames().size(), is(2));
+    }
+
+    @Test
+    public void testMissingToIsUnsupported() {
+        SvgSetAttribute set = set(s -> s.setAttributeName("x"));
+        assertThat(set.buildAnimation(new Rectangle(), null).isEmpty(), is(true));
+    }
+
+    @Test
+    public void testUnmappableAttributeNameIsUnsupported() {
+        SvgSetAttribute set = set(s -> {
+            s.setAttributeName("not-a-real-attribute");
+            s.setTo("20");
+        });
+        assertThat(set.buildAnimation(new Rectangle(), null).isEmpty(), is(true));
+    }
+
+    @Test
+    public void testAValueThatFailsToParseIsUnsupported() {
+        SvgSetAttribute set = set(s -> {
+            s.setAttributeName("fill");
+            s.setTo("not-a-colour");
+        });
+        assertThat(set.buildAnimation(new Rectangle(), null).isEmpty(), is(true));
+    }
+
+    // --- helpers -----------------------------------------------------------
+
+    private static SvgSetAttribute set(java.util.function.Consumer<SvgSetAttribute> configure) {
+        SvgSetAttribute element = new SvgSetAttribute();
+        configure.accept(element);
+        return element;
+    }
+
+    private static Timeline build(SvgSetAttribute set, Rectangle target) {
+        Optional<Animation> result = set.buildAnimation(target, null);
+        return (Timeline) result.orElseThrow();
+    }
+
+    private static double doubleValue(KeyFrame frame) {
+        return ((Number) frame.getValues().iterator().next().getEndValue()).doubleValue();
     }
 
 }
