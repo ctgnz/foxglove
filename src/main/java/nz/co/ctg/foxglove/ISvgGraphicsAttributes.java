@@ -10,6 +10,7 @@ import nz.co.ctg.foxglove.type.SvgPaint;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -331,6 +332,7 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         applyFillRule(style.getFillRule(), shape);
         applyOpacity(shape);
         applyVisibility(style, shape);
+        applyCursor(style, parent.getElementIndex(), shape);
     }
 
     /**
@@ -342,8 +344,21 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
      * so hiding the group node would make that override impossible. Instead {@code visibility} travels down as an
      * inherited property and each leaf decides for itself.
      */
-    default void applyNodeProperties(ISvgStylable parent, Node node) {
+    default void applyNodeProperties(RenderContext context, Node node) {
         applyOpacity(node);
+        applyCursor(SvgInheritedStyle.resolve(context, this), context.getElementIndex(), node);
+    }
+
+    /**
+     * {@code cursor} is inheritable, so it comes from the resolved style rather than this element's own value alone
+     * - the same reasoning already applied to {@code fill}/{@code stroke}. Left untouched (not even reset to a
+     * default) when nothing resolves, so JavaFX's own cursor inheritance from an ancestor `Node` still applies.
+     */
+    private static void applyCursor(ISvgStylable style, SvgElementIndex elementIndex, Node node) {
+        Cursor cursor = SvgCursorResolver.resolve(style.getCursor(), elementIndex);
+        if (cursor != null) {
+            node.setCursor(cursor);
+        }
     }
 
     /**

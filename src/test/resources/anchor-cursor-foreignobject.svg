@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  <a>, <cursor> and <foreignObject> (#23). Laid out as a grid so the cases can be told apart in
+  FoxgloveParserPreview. <view> is documented as unsupported (no navigation API yet) and isn't shown here.
+
+  Row 1: an <a> wrapping a plain rect (no <title>) - click it in the running preview app to see it print its
+         xlink:href to the console, proving the content is genuinely clickable despite having no title of its own |
+         a circle with cursor="pointer" - hover it in the running preview to see the hand cursor
+  Row 2: a rect with a custom cursor (data: URI image, via <cursor>'s xlink:href) - hover to see the custom cursor |
+         a <foreignObject> with no handler registered in this preview - renders as empty space (the documented,
+         clean degrade), the red dashed border shows where its bounds are
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="380" height="220" viewBox="0 0 380 220">
+
+  <defs>
+    <cursor id="customCursor" x="2" y="1"
+            xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg=="/>
+  </defs>
+
+  <!-- Row 1: <a> wrapping a titleless rect - click it in the running preview to see it activate -->
+  <a xlink:href="https://example.com/clicked" target="_blank">
+    <rect x="20" y="20" width="80" height="60" fill="steelblue"/>
+  </a>
+
+  <!-- Row 1: cursor="pointer" - hover in the running preview to see the hand cursor -->
+  <circle cx="220" cy="50" r="30" fill="seagreen" cursor="pointer"/>
+
+  <!-- Row 2: a custom image cursor referenced via <cursor> -->
+  <rect x="20" y="120" width="80" height="60" fill="crimson" cursor="url(#customCursor), pointer"/>
+
+  <!-- Row 2: foreignObject with no handler registered - renders empty, bounds shown by the surrounding rect -->
+  <rect x="220" y="120" width="120" height="60" fill="none" stroke="gray" stroke-dasharray="4 4"/>
+  <foreignObject x="220" y="120" width="120" height="60"/>
+
+</svg>

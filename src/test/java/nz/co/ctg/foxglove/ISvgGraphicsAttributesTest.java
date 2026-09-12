@@ -74,6 +74,15 @@ public class ISvgGraphicsAttributesTest {
     }
 
     @Test
+    public void testShapeInheritsCursorFromItsGroup() throws Exception {
+        SvgGroup group = new SvgGroup();
+        group.setCursor("pointer");
+        group.getContent().add(new SvgRectangle());
+
+        assertThat(firstShape(render(group)).getCursor(), is(javafx.scene.Cursor.HAND));
+    }
+
+    @Test
     public void testShapeInheritsStrokePropertiesFromItsGroup() throws Exception {
         SvgGroup group = new SvgGroup();
         group.setStroke(Color.BLUE);
