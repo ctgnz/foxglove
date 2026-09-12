@@ -60,6 +60,10 @@ import javafx.scene.paint.Color;
  * #88 already cover with ~200 dedicated unit tests of their own). Actually exercising these would need first
  * understanding what moment in time each reference image was captured at - not obviously encoded in the SVG
  * itself - which is real, separate work this issue doesn't attempt.
+ * <p>
+ * Every run also writes {@link ConformanceReport}'s static HTML dashboard to {@code target/conformance-report/} -
+ * unconditionally, before the pass/fail check below, so #92's GitHub Actions publish step has something to deploy
+ * regardless of whether this run's own manifest-diff assertion passes.
  */
 public class W3cSvgConformanceCheck {
 
@@ -97,6 +101,10 @@ public class W3cSvgConformanceCheck {
             System.out.println(failureReasons.size() + " test(s) threw during render/compare:");
             failureReasons.forEach((name, reason) -> System.out.println("  " + name + ": " + reason));
         }
+
+        // Written unconditionally, before the pass/fail branch below - #92's dashboard needs to keep showing a
+        // regression, not go stale because the run that found it also failed its own assertion.
+        ConformanceReport.write(actual, Path.of("target/conformance-report/index.html"));
 
         String mode = System.getProperty("conformance.mode", "verify");
         if ("record".equals(mode)) {
