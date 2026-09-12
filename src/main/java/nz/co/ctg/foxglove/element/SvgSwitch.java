@@ -12,6 +12,7 @@ import nz.co.ctg.foxglove.ISvgContainer;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
+import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
@@ -104,7 +105,11 @@ public class SvgSwitch extends AbstractSvgStylable
             if (child instanceof FxGraphic<?> graphic && ISvgContainer.isRendered(child, childContext.getLocale())) {
                 Node node = graphic.createGraphic(childContext);
                 if (node != null) {
-                    group.getChildren().add(SvgMarkerRenderer.applyMarkers(node, child, childContext));
+                    node = SvgMarkerRenderer.applyMarkers(node, child, childContext);
+                    if (child instanceof ISvgGraphicsAttributes attrs) {
+                        node = attrs.applyMask(childContext, node);
+                    }
+                    group.getChildren().add(node);
                 }
                 break;
             }
