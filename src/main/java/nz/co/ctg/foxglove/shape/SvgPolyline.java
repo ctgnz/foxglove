@@ -80,6 +80,9 @@ public class SvgPolyline extends AbstractSvgShape<Polyline> {
     }
 
     private double[] getPointList() {
+        if (points == null) {
+            return new double[0];
+        }
         return points.stream().flatMap(pt -> Stream.of(pt.getX(), pt.getY())).mapToDouble(Double::doubleValue).toArray();
     }
 
