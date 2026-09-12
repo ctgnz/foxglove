@@ -144,6 +144,8 @@ public class SvgImage extends AbstractSvgStylable
         }
         group.getTransforms().addAll(getTransformList());
         group.getTransforms().add(new Translate(resolveX(context), resolveY(context)));
+        // clip-path is not applied here: group already has a clip of its own (the slice-fit rectangle above), and
+        // a second setClip() call would overwrite it - see #24's PR description for why this is out of scope for now.
         return group;
     }
 

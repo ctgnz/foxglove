@@ -154,6 +154,7 @@ public class SvgAnchor extends AbstractSvgStylable
             group.setCursor(Cursor.HAND);
             group.setOnMouseClicked(event -> handler.accept(this));
         });
+        applyClip(context, group);
         return group;
     }
 

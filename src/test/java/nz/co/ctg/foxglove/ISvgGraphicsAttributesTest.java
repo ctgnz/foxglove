@@ -2,11 +2,14 @@ package nz.co.ctg.foxglove;
 
 import org.junit.Test;
 
+import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.element.SvgGroup;
+import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.IsCloseTo.closeTo;
@@ -268,6 +271,38 @@ public class ISvgGraphicsAttributesTest {
         group.getContent().add(path);
 
         assertThat(((SVGPath) firstShape(render(group))).getFillRule(), is(FillRule.EVEN_ODD));
+    }
+
+    // --- clip-path -----------------------------------------------------------
+
+    @Test
+    public void testAbsentClipPathLeavesTheNodeUnclipped() throws Exception {
+        assertThat(firstShape(render(groupOf(new SvgRectangle()))).getClip(), is(nullValue()));
+    }
+
+    /**
+     * {@code clip-path} is not inherited (confirmed absent from {@code SvgInheritedStyle}'s inherited set) - a
+     * group's own clip must not cascade onto a child that declares none of its own, unlike {@code fill}/
+     * {@code cursor} above.
+     */
+    @Test
+    public void testClipPathIsNotInheritedByAChildThatDeclaresNone() throws Exception {
+        SvgClipPath clipPath = new SvgClipPath();
+        clipPath.setId("clip");
+        clipPath.getContent().add(new SvgCircle());
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(clipPath);
+        SvgGroup group = new SvgGroup();
+        group.setClipPath("url(#clip)");
+        SvgRectangle rect = new SvgRectangle();
+        group.getContent().add(rect);
+        svg.getContent().add(group);
+
+        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
+        Group renderedGroup = group.createGraphic(context);
+        assertThat(renderedGroup.getClip(), is(notNullValue()));
+        assertThat(firstShape(renderedGroup).getClip(), is(nullValue()));
     }
 
     // --- opacity parsing ---------------------------------------------------

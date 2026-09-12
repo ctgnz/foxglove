@@ -6,6 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.clip.SvgClipPath;
+import nz.co.ctg.foxglove.clip.SvgClipPathRenderer;
 import nz.co.ctg.foxglove.type.SvgPaint;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
@@ -366,6 +368,29 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
             node.setCursor(cursor);
             node.setMouseTransparent(false);
         }
+    }
+
+    /**
+     * Applies this element's own {@code clip-path}, if it resolves to a real {@code <clipPath>}, to {@code node}.
+     * Unlike every other property applied here, {@code clip-path} is not inherited (confirmed absent from
+     * {@link SvgInheritedStyle}'s inherited set), so it is read directly from this element rather than through the
+     * resolved style - consulting the resolved style for it would incorrectly cascade a clip down onto every
+     * descendant instead of applying once, to the element that declares it.
+     * <p>
+     * Resolving {@code clipPathUnits="objectBoundingBox"} needs {@code node}'s own bounding box, which is only final
+     * once its content and geometry are fully built - callers must invoke this last: after a shape's geometry and
+     * paint are set (the same point paint's own {@code objectBoundingBox} context is built from
+     * {@code shape.getBoundsInLocal()}), or after a container has appended its children, never from
+     * {@link #applyNodeProperties} alone, which some containers call before their content exists.
+     */
+    default void applyClip(RenderContext context, Node node) {
+        SvgElementIndex index = context.getElementIndex();
+        if (index == null) {
+            return;
+        }
+        String clipPathRef = get(ISvgPresentationAttributes.PRES_CLIP_PATH);
+        index.resolve(clipPathRef, SvgClipPath.class)
+            .ifPresent(clipPath -> node.setClip(SvgClipPathRenderer.render(clipPath, context, node.getBoundsInLocal())));
     }
 
     /**
