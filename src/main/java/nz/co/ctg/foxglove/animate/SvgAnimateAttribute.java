@@ -2,9 +2,11 @@ package nz.co.ctg.foxglove.animate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
@@ -21,13 +23,15 @@ import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import javafx.animation.Animation;
+import javafx.scene.Node;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "contents"
 })
 @XmlRootElement(name = "animate")
-public class SvgAnimateAttribute extends AbstractSvgAnimationElement {
+public class SvgAnimateAttribute extends AbstractSvgAnimationElement implements ISvgValueAnimationElement {
 
     @XmlAttribute(name = "attributeName", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -173,6 +177,11 @@ public class SvgAnimateAttribute extends AbstractSvgAnimationElement {
             contents = new ArrayList<>();
         }
         return this.contents;
+    }
+
+    @Override
+    public Optional<Animation> buildAnimation(Node target, RenderContext context) {
+        return SvgValueAnimationBuilder.build(this, target, context);
     }
 
     @Override

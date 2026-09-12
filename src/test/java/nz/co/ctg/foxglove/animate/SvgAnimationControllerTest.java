@@ -150,6 +150,31 @@ public class SvgAnimationControllerTest {
     }
 
     @Test
+    public void testAccumulateSumWithFiniteRepeatCountIsNotDoubleWrapped() throws Exception {
+        // #32's accumulate="sum" builds one continuous Timeline already spanning every repeat - repeatCount must
+        // not be applied again on top of that, which would replay the whole already-unrolled sequence again
+        SvgAnimateAttribute animate = new SvgAnimateAttribute();
+        animate.setAttributeName("x");
+        animate.setDuration("1s");
+        animate.setValues("0;10");
+        animate.setAccumulate("sum");
+        animate.setRepeatCount("3");
+
+        SvgRectangle target = new SvgRectangle();
+        target.getContent().add(animate);
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(target);
+
+        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        registry.put(target, new Rectangle());
+        SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
+            RenderContext.root(svg.getElementIndex(), 0, 0));
+
+        // 3 accumulated 1s cycles = 3s total - if repeatCount were (wrongly) re-applied, this would be 9s
+        assertThat(controller.getTotalDuration(), is(Duration.seconds(3)));
+    }
+
+    @Test
     public void testPlayPauseStopAndSeekFanOutToEveryBuiltAnimation() throws Exception {
         StubAnimation stub = new StubAnimation();
         SvgRectangle target = new SvgRectangle();

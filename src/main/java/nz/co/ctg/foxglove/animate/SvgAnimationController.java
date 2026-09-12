@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgElementIndex;
@@ -42,7 +44,7 @@ public final class SvgAnimationController {
             SvgAnimationTargets.resolve(element, index)
                 .map(nodeRegistry::get)
                 .flatMap(target -> element.buildAnimation(target, context))
-                .map(animation -> withTiming(animation, SvgAnimationTiming.parse(element)))
+                .map(animation -> withTiming(element, animation, SvgAnimationTiming.parse(element)))
                 .ifPresent(result::add);
         }
         return result;
@@ -56,14 +58,33 @@ public final class SvgAnimationController {
      * property was actually animated, which only whichever future code supplies the real {@code KeyValue} can do -
      * nothing to reset yet in this issue, since {@link ISvgAnimationElement#buildAnimation} has no concrete
      * override anywhere yet.
+     * <p>
+     * {@code accumulate="sum"} with a finite {@code repeatCount} (see {@link SvgValueAnimationBuilder}) is a genuine
+     * exception to generic {@code repeatCount} wrapping: JavaFX's {@code cycleCount} can only replay a {@code
+     * Timeline} from its own start every time, with no way to shift values between cycles, so that builder manually
+     * unrolls every repeat into one continuous {@code Timeline} spanning the *entire* repeated duration and plays it
+     * exactly once ({@code cycleCount} left at its correct value, {@code 1}). Re-applying {@code repeatCount} here on
+     * top of that would replay the already-fully-unrolled sequence {@code repeatCount} times over - a real playback
+     * bug, not a harmless no-op - so this case is recognised by element type/attributes (the only reliable signal;
+     * {@code cycleCount} itself is legitimately {@code 1} either way) and skipped rather than inferred from
+     * {@code animation}'s own state.
      */
-    private static Animation withTiming(Animation animation, SvgAnimationTiming timing) {
-        animation.setCycleCount(timing.repeatCount());
+    private static Animation withTiming(ISvgAnimationElement element, Animation animation, SvgAnimationTiming timing) {
+        if (!repeatCountAlreadyHandled(element, timing)) {
+            animation.setCycleCount(timing.repeatCount());
+        }
         Duration begin = timing.begin().orElse(Duration.ZERO);
         if (begin.greaterThan(Duration.ZERO)) {
             return new SequentialTransition(new PauseTransition(begin), animation);
         }
         return animation;
+    }
+
+    private static boolean repeatCountAlreadyHandled(ISvgAnimationElement element, SvgAnimationTiming timing) {
+        return element instanceof ISvgValueAnimationElement value
+            && "sum".equalsIgnoreCase(StringUtils.trimToEmpty(value.getAccumulate()))
+            && timing.repeatCount() != Animation.INDEFINITE
+            && timing.repeatCount() > 0;
     }
 
     public void play() {

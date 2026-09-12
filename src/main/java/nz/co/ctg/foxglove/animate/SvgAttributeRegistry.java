@@ -44,6 +44,9 @@ import javafx.scene.shape.Shape;
 public final class SvgAttributeRegistry {
 
     public static Optional<SvgAttributeBinding<?>> resolve(Node node, String attributeName) {
+        if (attributeName == null) {
+            return Optional.empty();
+        }
         Optional<SvgAttributeBinding<?>> geometry = resolveGeometry(node, attributeName);
         if (geometry.isPresent()) {
             return geometry;
