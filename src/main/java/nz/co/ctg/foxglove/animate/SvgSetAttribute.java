@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import nz.co.ctg.foxglove.AbstractSvgElement;
 import nz.co.ctg.foxglove.description.ISvgDescriptiveElement;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
@@ -27,7 +26,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "contents"
 })
 @XmlRootElement(name = "set")
-public class SvgSetAttribute extends AbstractSvgElement {
+public class SvgSetAttribute extends AbstractSvgAnimationElement {
 
     @XmlAttribute(name = "attributeName", required = true)
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
