@@ -6,6 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javafx.geometry.Point2D;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 
 /**
  * Parses an SVG {@code <path d="...">} attribute into a flattened polyline, for arc-length purposes (#29) rather
@@ -416,6 +420,222 @@ public final class SvgPathData {
             subpaths.add(new Subpath(current, false));
         }
         return subpaths;
+    }
+
+    /**
+     * Converts path data into a real JavaFX {@link Path} for {@code <animateMotion>} (#88) - {@code
+     * javafx.animation.PathTransition} needs actual {@code PathElement}s, not the {@code SVGPath} content-string
+     * {@link nz.co.ctg.foxglove.shape.SvgPath} itself renders via, which exposes no geometry at all.
+     * <p>
+     * Structurally a third copy of {@link #flatten}/{@link #subpaths}'s per-command dispatch loop - walks every
+     * subpath like {@link #subpaths} (unlike {@link #flatten}, which stops at the first), but densely samples curves
+     * like {@link #flatten} does (unlike {@link #subpaths}, which keeps only each command's real endpoint - a chord
+     * between real vertices would flatten an actual curve into a single straight segment, which is fine for marker
+     * placement but would be an obviously wrong, visibly jagged path for motion to follow). Reuses {@link
+     * #flattenCubic}/{@link #flattenQuadratic}/{@link #flattenArc} verbatim by handing them a scratch list per curve
+     * segment, converting each sampled point straight into a {@link LineTo} - {@code PathTransition} only needs
+     * accurate arc-length parameterisation and tangent directions along the path, both of which a sufficiently fine
+     * polyline already gives it, so this does not attempt to re-derive true {@code CubicCurveTo}/{@code
+     * QuadCurveTo}/{@code ArcTo} {@code PathElement}s from the original command stream.
+     */
+    public static Path toJavaFxPath(String d) {
+        Path path = new Path();
+        if (d == null || d.isBlank()) {
+            return path;
+        }
+        List<String> tokens = tokenize(d);
+        int i = 0;
+        double curX = 0;
+        double curY = 0;
+        double subpathStartX = 0;
+        double subpathStartY = 0;
+        double prevControlX = 0;
+        double prevControlY = 0;
+        char prevCommand = 0;
+        char command = 0;
+
+        while (i < tokens.size()) {
+            if (isCommand(tokens.get(i))) {
+                command = tokens.get(i).charAt(0);
+                i++;
+            }
+            switch (Character.toUpperCase(command)) {
+                case 'M': {
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                        y += curY;
+                    }
+                    curX = x;
+                    curY = y;
+                    subpathStartX = x;
+                    subpathStartY = y;
+                    path.getElements().add(new MoveTo(x, y));
+                    command = Character.isLowerCase(command) ? 'l' : 'L';
+                    break;
+                }
+                case 'L': {
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                        y += curY;
+                    }
+                    path.getElements().add(new LineTo(x, y));
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'H': {
+                    double x = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                    }
+                    path.getElements().add(new LineTo(x, curY));
+                    curX = x;
+                    break;
+                }
+                case 'V': {
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        y += curY;
+                    }
+                    path.getElements().add(new LineTo(curX, y));
+                    curY = y;
+                    break;
+                }
+                case 'C': {
+                    double x1 = parseDouble(tokens.get(i++));
+                    double y1 = parseDouble(tokens.get(i++));
+                    double x2 = parseDouble(tokens.get(i++));
+                    double y2 = parseDouble(tokens.get(i++));
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x1 += curX;
+                        y1 += curY;
+                        x2 += curX;
+                        y2 += curY;
+                        x += curX;
+                        y += curY;
+                    }
+                    appendFlattenedCubic(path, curX, curY, x1, y1, x2, y2, x, y);
+                    prevControlX = x2;
+                    prevControlY = y2;
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'S': {
+                    double x2 = parseDouble(tokens.get(i++));
+                    double y2 = parseDouble(tokens.get(i++));
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x2 += curX;
+                        y2 += curY;
+                        x += curX;
+                        y += curY;
+                    }
+                    double x1 = isCubicCommand(prevCommand) ? 2 * curX - prevControlX : curX;
+                    double y1 = isCubicCommand(prevCommand) ? 2 * curY - prevControlY : curY;
+                    appendFlattenedCubic(path, curX, curY, x1, y1, x2, y2, x, y);
+                    prevControlX = x2;
+                    prevControlY = y2;
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'Q': {
+                    double x1 = parseDouble(tokens.get(i++));
+                    double y1 = parseDouble(tokens.get(i++));
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x1 += curX;
+                        y1 += curY;
+                        x += curX;
+                        y += curY;
+                    }
+                    appendFlattenedQuadratic(path, curX, curY, x1, y1, x, y);
+                    prevControlX = x1;
+                    prevControlY = y1;
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'T': {
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                        y += curY;
+                    }
+                    double x1 = isQuadraticCommand(prevCommand) ? 2 * curX - prevControlX : curX;
+                    double y1 = isQuadraticCommand(prevCommand) ? 2 * curY - prevControlY : curY;
+                    appendFlattenedQuadratic(path, curX, curY, x1, y1, x, y);
+                    prevControlX = x1;
+                    prevControlY = y1;
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'A': {
+                    double rx = parseDouble(tokens.get(i++));
+                    double ry = parseDouble(tokens.get(i++));
+                    double rotation = parseDouble(tokens.get(i++));
+                    boolean largeArc = parseDouble(tokens.get(i++)) != 0;
+                    boolean sweep = parseDouble(tokens.get(i++)) != 0;
+                    double x = parseDouble(tokens.get(i++));
+                    double y = parseDouble(tokens.get(i++));
+                    if (Character.isLowerCase(command)) {
+                        x += curX;
+                        y += curY;
+                    }
+                    appendFlattenedArc(path, curX, curY, rx, ry, rotation, largeArc, sweep, x, y);
+                    curX = x;
+                    curY = y;
+                    break;
+                }
+                case 'Z': {
+                    path.getElements().add(new ClosePath());
+                    curX = subpathStartX;
+                    curY = subpathStartY;
+                    break;
+                }
+                default:
+                    return path;
+            }
+            prevCommand = command;
+        }
+        return path;
+    }
+
+    private static void appendFlattenedCubic(Path path, double x0, double y0, double x1, double y1, double x2, double y2, double x3,
+        double y3) {
+        List<Point2D> points = new ArrayList<>();
+        flattenCubic(points, x0, y0, x1, y1, x2, y2, x3, y3);
+        for (Point2D point : points) {
+            path.getElements().add(new LineTo(point.getX(), point.getY()));
+        }
+    }
+
+    private static void appendFlattenedQuadratic(Path path, double x0, double y0, double x1, double y1, double x2, double y2) {
+        List<Point2D> points = new ArrayList<>();
+        flattenQuadratic(points, x0, y0, x1, y1, x2, y2);
+        for (Point2D point : points) {
+            path.getElements().add(new LineTo(point.getX(), point.getY()));
+        }
+    }
+
+    private static void appendFlattenedArc(Path path, double x0, double y0, double rx, double ry, double rotationDegrees,
+        boolean largeArc, boolean sweep, double x, double y) {
+        List<Point2D> points = new ArrayList<>();
+        flattenArc(points, x0, y0, rx, ry, rotationDegrees, largeArc, sweep, x, y);
+        for (Point2D point : points) {
+            path.getElements().add(new LineTo(point.getX(), point.getY()));
+        }
     }
 
     private static void flattenCubic(List<Point2D> points, double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3) {

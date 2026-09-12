@@ -2,10 +2,12 @@ package nz.co.ctg.foxglove.animate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
@@ -21,6 +23,8 @@ import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import javafx.animation.Animation;
+import javafx.scene.Node;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -198,6 +202,11 @@ public class SvgAnimateMotion extends AbstractSvgAnimationElement {
             contents = new ArrayList<>();
         }
         return this.contents;
+    }
+
+    @Override
+    public Optional<Animation> buildAnimation(Node target, RenderContext context) {
+        return SvgAnimateMotionBuilder.build(this, target, context);
     }
 
     @Override
