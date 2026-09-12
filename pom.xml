@@ -152,6 +152,48 @@
     
     <profiles>
         <profile>
+            <!--
+                On-demand: `mvn -Pconformance test`. Fetches the W3C SVG 1.1 test suite (not vendored - see
+                W3cSvgConformanceCheck's own javadoc) and runs it against a checked-in baseline manifest. Kept out
+                of the default build/CI job entirely: W3cSvgConformanceCheck's name deliberately doesn't match
+                Surefire's own default test-discovery patterns (**/*Test.java etc.), so no exclude is even needed
+                in the base build - this profile is the only thing that ever includes it.
+            -->
+            <id>conformance</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.13.0</version>
+                        <executions>
+                            <execution>
+                                <id>fetch-w3c-svg-testsuite</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://www.w3.org/Graphics/SVG/Test/20110816/archives/W3C_SVG_11_TestSuite.tar.gz</url>
+                                    <sha256>b5f46cca1ad79b670f9179770b2366c57efd5c671d084144090feab4b7ff1030</sha256>
+                                    <unpack>true</unpack>
+                                    <outputDirectory>${project.build.directory}/w3c-svg-testsuite</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/W3cSvgConformanceCheck.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>release</id>
             <build>
                 <plugins>

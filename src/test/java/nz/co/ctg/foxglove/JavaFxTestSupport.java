@@ -38,6 +38,15 @@ public final class JavaFxTestSupport {
      * handed to it explicitly via {@code Platform.runLater}.
      */
     public static <T> T onFxThread(Callable<T> action) throws Exception {
+        return onFxThread(action, 5, TimeUnit.SECONDS);
+    }
+
+    /**
+     * As {@link #onFxThread(Callable)}, but with an explicit timeout - for an action that's doing meaningfully more
+     * work than a single test's own render/snapshot (#44's conformance check runs its entire ~525-document loop in
+     * one call, to avoid 525 separate {@code Platform.runLater} round-trips).
+     */
+    public static <T> T onFxThread(Callable<T> action, long timeout, TimeUnit unit) throws Exception {
         CompletableFuture<T> result = new CompletableFuture<>();
         Platform.runLater(() -> {
             try {
@@ -46,7 +55,7 @@ public final class JavaFxTestSupport {
                 result.completeExceptionally(e);
             }
         });
-        return result.get(5, TimeUnit.SECONDS);
+        return result.get(timeout, unit);
     }
 
     private JavaFxTestSupport() {
