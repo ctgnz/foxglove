@@ -2,13 +2,16 @@ package nz.co.ctg.foxglove;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import nz.co.ctg.foxglove.animate.SvgAnimationController;
 import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.type.ViewBox;
@@ -21,6 +24,7 @@ import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.transform.Transform;
 
 import static nz.co.ctg.foxglove.RenderContext.Axis;
@@ -112,6 +116,25 @@ public class SvgGraphic extends AbstractSvgStylable
      */
     public Group createGroup(Locale locale) {
         return createGraphic(RenderContext.root(getElementIndex(), 0, 0).withBaseUri(baseUri).withLocale(locale));
+    }
+
+    /**
+     * As {@link #createGraphic(RenderContext)}, but also builds an {@link SvgAnimationController} for every
+     * animation element in the document (#30) - a new, additive entry point. {@link #createGroup()}/{@link
+     * #createGraphic(RenderContext)} are unchanged and remain the right choice for a caller that doesn't need
+     * animation control; the whole point of adding this alongside them, rather than changing what they return, is
+     * that every existing caller keeps compiling without it.
+     * <p>
+     * The root {@code <svg>} element itself is registered directly here, rather than via {@link
+     * ISvgGraphicsAttributes#registerNode} - that only ever runs for a *child* some container consumes, and the
+     * root is nobody's child - so an animation whose target is the document root itself (the default when its own
+     * parent, per SMIL, is the root) still resolves, unlike {@code mask}'s equivalent root-level gap.
+     */
+    public AnimatedGraphic createAnimatedGraphic(RenderContext parentContext) {
+        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        Node node = createGraphic(parentContext.withNodeRegistry(registry));
+        registry.put(this, node);
+        return new AnimatedGraphic(node, new SvgAnimationController(getElementIndex(), registry, parentContext));
     }
 
     /**

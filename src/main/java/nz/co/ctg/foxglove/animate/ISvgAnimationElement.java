@@ -1,8 +1,14 @@
 package nz.co.ctg.foxglove.animate;
 
+import java.util.Optional;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.ISvgAttributes;
+import nz.co.ctg.foxglove.RenderContext;
+
+import javafx.animation.Animation;
+import javafx.scene.Node;
 
 public interface ISvgAnimationElement extends ISvgAttributes {
     String ANIM_ONBEGIN = "onbegin";
@@ -132,10 +138,18 @@ public interface ISvgAnimationElement extends ISvgAttributes {
         set(ANIM_TO, value);
     }
 
-//    SVGElement getTargetElement();
-//    float getStartTime();
-//    float getCurrentTime();
-//    float getSimpleDuration();
+    /**
+     * Builds this element's own animation against its already-resolved {@code target} node, or {@link
+     * Optional#empty()} if this element doesn't (yet) know how to animate anything - the default, until a concrete
+     * animation type (#31-#34) overrides it on its own class. {@link SvgAnimationController} calls this
+     * polymorphically for every animation element in the document and wraps whatever comes back in this element's
+     * own {@link SvgAnimationTiming} (begin offset, {@code repeatCount}, etc.) - this method itself should build only
+     * the "what to animate" part (typically a {@code Timeline} with real {@code KeyValue}s writing to a property on
+     * {@code target}), not concern itself with when or how often to play it.
+     */
+    default Optional<Animation> buildAnimation(Node target, RenderContext context) {
+        return Optional.empty();
+    }
 
     default void toStringDetail(ToStringHelper builder) {
         builder.add(ANIM_ONBEGIN, getOnBegin());

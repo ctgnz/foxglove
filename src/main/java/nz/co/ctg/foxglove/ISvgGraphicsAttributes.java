@@ -417,6 +417,23 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
+     * Records this element's own built {@code node} in {@code context}'s node registry, if one is present - what
+     * {@link SvgGraphic#createAnimatedGraphic} uses to resolve an animation's target element back to the concrete
+     * {@link Node} it needs to animate (#30). A no-op (and effectively free) for the overwhelmingly common case of
+     * a plain {@code createGroup()}/{@code createGraphic()} caller who never asked for a registry.
+     * <p>
+     * Callers should call this last, once {@code node} is the actual node being returned - after
+     * {@link #applyFilter}, mirroring where that itself is called relative to {@link #applyClip}.
+     */
+    default void registerNode(RenderContext context, Node node) {
+        context.getNodeRegistry().ifPresent(registry -> {
+            if (this instanceof ISvgElement element) {
+                registry.put(element, node);
+            }
+        });
+    }
+
+    /**
      * Applies this element's own {@code mask}, if it resolves to a real {@code <mask>}, substituting a masked
      * {@link Node} for {@code node} - unlike {@link #applyClip}, which mutates {@code node} in place via
      * {@code setClip()}, JavaFX has no per-pixel mask analogue, so masking rasterises and replaces the node entirely

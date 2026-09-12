@@ -82,6 +82,7 @@ public final class SvgElementIndex {
     private final Map<ISvgElement, ISvgElement> parents = new IdentityHashMap<>();
     private final Set<String> duplicateIds = new LinkedHashSet<>();
     private final List<SvgStyle> styleElements = new ArrayList<>();
+    private final List<ISvgElement> allElements = new ArrayList<>();
     private CssStylesheet stylesheet;
 
     private SvgElementIndex() {
@@ -111,6 +112,16 @@ public final class SvgElementIndex {
      */
     public <T extends ISvgElement> Optional<T> resolve(String reference, Class<T> type) {
         return resolve(reference).filter(type::isInstance).map(type::cast);
+    }
+
+    /**
+     * Every element in the document matching {@code type}, in document order, regardless of whether it carries an
+     * {@code id} - unlike {@link #resolve}, which only ever finds an element someone can reference by name. Used to
+     * find every animation element in a document (#30), most of which have no reason to declare an {@code id} at
+     * all.
+     */
+    public <T> List<T> getElementsOfType(Class<T> type) {
+        return allElements.stream().filter(type::isInstance).map(type::cast).toList();
     }
 
     /**
@@ -174,6 +185,7 @@ public final class SvgElementIndex {
             return;
         }
         parents.put(element, parent);
+        allElements.add(element);
         String id = element.getId();
         if (StringUtils.isNotBlank(id) && elementsById.putIfAbsent(id, element) != null) {
             duplicateIds.add(id);

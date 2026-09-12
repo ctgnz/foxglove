@@ -15,6 +15,7 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
 
 /**
  * The state threaded through rendering that a bare parent element cannot carry on its own: the style resolved down
@@ -65,7 +66,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public static RenderContext root(SvgElementIndex elementIndex, double viewportWidth, double viewportHeight) {
         return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null, null, Locale.getDefault(), null,
-            null);
+            null, null);
     }
 
     private final SvgInheritedStyle style;
@@ -77,10 +78,11 @@ public final class RenderContext implements ISvgStylable {
     private final Locale locale;
     private final Consumer<SvgAnchor> anchorActivationHandler;
     private final ForeignObjectHandler foreignObjectHandler;
+    private final Map<ISvgElement, Node> nodeRegistry;
 
     private RenderContext(SvgInheritedStyle style, SvgElementIndex elementIndex, double viewportWidth, double viewportHeight,
         Bounds objectBoundingBox, URI baseUri, Locale locale, Consumer<SvgAnchor> anchorActivationHandler,
-        ForeignObjectHandler foreignObjectHandler) {
+        ForeignObjectHandler foreignObjectHandler, Map<ISvgElement, Node> nodeRegistry) {
         this.style = style;
         this.elementIndex = elementIndex;
         this.viewportWidth = viewportWidth;
@@ -90,6 +92,7 @@ public final class RenderContext implements ISvgStylable {
         this.locale = locale;
         this.anchorActivationHandler = anchorActivationHandler;
         this.foreignObjectHandler = foreignObjectHandler;
+        this.nodeRegistry = nodeRegistry;
     }
 
     /**
@@ -98,7 +101,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext resolveChild(ISvgAttributes element) {
         return new RenderContext(SvgInheritedStyle.resolve(style, element), elementIndex, viewportWidth, viewportHeight, objectBoundingBox,
-            baseUri, locale, anchorActivationHandler, foreignObjectHandler);
+            baseUri, locale, anchorActivationHandler, foreignObjectHandler, nodeRegistry);
     }
 
     /**
@@ -107,7 +110,8 @@ public final class RenderContext implements ISvgStylable {
      * bound to a shape).
      */
     public RenderContext withViewport(double width, double height) {
-        return new RenderContext(style, elementIndex, width, height, null, baseUri, locale, anchorActivationHandler, foreignObjectHandler);
+        return new RenderContext(style, elementIndex, width, height, null, baseUri, locale, anchorActivationHandler, foreignObjectHandler,
+            nodeRegistry);
     }
 
     /**
@@ -117,7 +121,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withObjectBoundingBox(Bounds bbox) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler);
+            foreignObjectHandler, nodeRegistry);
     }
 
     /**
@@ -127,7 +131,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withBaseUri(URI baseUri) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler);
+            foreignObjectHandler, nodeRegistry);
     }
 
     /**
@@ -137,7 +141,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withLocale(Locale locale) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler);
+            foreignObjectHandler, nodeRegistry);
     }
 
     /**
@@ -149,7 +153,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withAnchorActivationHandler(Consumer<SvgAnchor> anchorActivationHandler) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler);
+            foreignObjectHandler, nodeRegistry);
     }
 
     /**
@@ -158,7 +162,19 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withForeignObjectHandler(ForeignObjectHandler foreignObjectHandler) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler);
+            foreignObjectHandler, nodeRegistry);
+    }
+
+    /**
+     * The context with a registry established to record each element's own built {@link Node} as rendering
+     * proceeds (see {@link nz.co.ctg.foxglove.ISvgGraphicsAttributes#registerNode}) - what
+     * {@link SvgGraphic#createAnimatedGraphic} uses to resolve an animation's target element back to the concrete
+     * node it needs to animate. Absent by default, the same as the other optional capabilities above - a plain
+     * {@link SvgGraphic#createGroup()}/{@link #root} caller pays nothing for this.
+     */
+    public RenderContext withNodeRegistry(Map<ISvgElement, Node> nodeRegistry) {
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
+            foreignObjectHandler, nodeRegistry);
     }
 
     public double getViewportWidth() {
@@ -191,6 +207,10 @@ public final class RenderContext implements ISvgStylable {
 
     public Optional<ForeignObjectHandler> getForeignObjectHandler() {
         return Optional.ofNullable(foreignObjectHandler);
+    }
+
+    public Optional<Map<ISvgElement, Node>> getNodeRegistry() {
+        return Optional.ofNullable(nodeRegistry);
     }
 
     /**

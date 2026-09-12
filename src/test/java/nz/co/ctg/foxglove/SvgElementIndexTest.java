@@ -328,6 +328,33 @@ public class SvgElementIndexTest {
         assertThat(index.isSelfOrAncestor(index.resolve(use.getXlinkHref()).get(), use), is(false));
     }
 
+    // --- elements by type (#30) ---------------------------------------------
+
+    /**
+     * Needed to find every animation element in a document (#30) - most have no reason to declare an {@code id} at
+     * all, so {@link SvgElementIndex#resolve} alone could never find them.
+     */
+    @Test
+    public void testGetElementsOfTypeFindsEveryMatchingElementRegardlessOfId() throws Exception {
+        nz.co.ctg.foxglove.animate.SvgAnimateAttribute idLess = new nz.co.ctg.foxglove.animate.SvgAnimateAttribute();
+        nz.co.ctg.foxglove.animate.SvgAnimateAttribute withId = new nz.co.ctg.foxglove.animate.SvgAnimateAttribute();
+        withId.setId("anim");
+        SvgRectangle rect = new SvgRectangle();
+        rect.getContent().add(idLess);
+        rect.getContent().add(withId);
+        svg.getContent().add(rect);
+
+        List<nz.co.ctg.foxglove.animate.SvgAnimateAttribute> found =
+            svg.getElementIndex().getElementsOfType(nz.co.ctg.foxglove.animate.SvgAnimateAttribute.class);
+        assertThat(found, contains(idLess, withId));
+    }
+
+    @Test
+    public void testGetElementsOfTypeFindsNothingWhenNoneMatch() throws Exception {
+        svg.getContent().add(new SvgRectangle());
+        assertThat(svg.getElementIndex().getElementsOfType(nz.co.ctg.foxglove.animate.SvgAnimateAttribute.class), is(empty()));
+    }
+
     // --- caching -----------------------------------------------------------
 
     @Test
