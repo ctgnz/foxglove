@@ -7,7 +7,7 @@ package nz.co.ctg.foxglove.animate;
  * class). {@code to} itself is already declared by {@link ISvgAnimationElement}. Purely additive - both concrete
  * classes already declare every one of these getters with a matching signature.
  */
-public interface ISvgValueAnimationElement extends ISvgAnimationElement {
+public interface ISvgValueAnimationElement extends ISvgAccumulatableAnimationElement {
 
     String getAttributeName();
 
@@ -24,7 +24,5 @@ public interface ISvgValueAnimationElement extends ISvgAnimationElement {
     String getBy();
 
     String getAdditive();
-
-    String getAccumulate();
 
 }
