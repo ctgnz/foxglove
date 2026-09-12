@@ -77,9 +77,13 @@ public class SvgUse extends AbstractSvgStylable
      * from this element's own ancestors, so it inherits from the {@code <use>} site rather than from wherever it
      * was declared - the same mechanism paint server {@code xlink:href} inheritance already relies on.
      * <p>
-     * Resolves to an empty {@link Group} - never {@code null} - when the reference is missing, invisible, or would
-     * reuse one of this element's own ancestors, which the specification declares an error and which would
-     * otherwise expand forever.
+     * Resolves to an empty {@link Group} - never {@code null} - when the reference is missing, invisible, reuses
+     * one of this element's own static-containment ancestors ({@link SvgElementIndex#isSelfOrAncestor}), or would
+     * revisit an element already being expanded somewhere up this call chain ({@link
+     * RenderContext#isActiveUseTarget}) - a cycle reachable purely through {@code xlink:href} chains between
+     * otherwise-unrelated elements (siblings referencing each other, directly or via several indirections), which
+     * {@code isSelfOrAncestor} alone does not catch since none of them are each other's actual parse-tree ancestor.
+     * Either way, rendering would otherwise expand forever.
      * <p>
      * Per the specification, {@code translate(x,y)} is appended to the end of this element's own {@code transform}
      * list rather than applied separately - so both go into the JavaFX {@code transforms} list, in that order, and
@@ -97,11 +101,12 @@ public class SvgUse extends AbstractSvgStylable
         group.getTransforms().add(new Translate(resolveX(context), resolveY(context)));
 
         SvgElementIndex index = context.getElementIndex();
-        RenderContext childContext = context.resolveChild(this);
+        RenderContext selfContext = context.withActiveUseTarget(this);
         index.resolve(getXlinkHref())
             .filter(target -> ISvgContainer.isRendered(target, context.getLocale()))
             .filter(target -> !index.isSelfOrAncestor(target, this))
-            .map(target -> buildReferenced(target, childContext))
+            .filter(target -> !selfContext.isActiveUseTarget(target))
+            .map(target -> buildReferenced(target, selfContext.withActiveUseTarget(target).resolveChild(this)))
             .ifPresent(node -> group.getChildren().add(node));
         applyClip(context, group);
         applyFilter(context, group);

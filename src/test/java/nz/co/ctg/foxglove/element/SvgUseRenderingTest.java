@@ -24,7 +24,10 @@ import javafx.scene.transform.Affine;
  * Exercises #19's acceptance criteria: {@code <use>} of a shape, a group, a {@code <symbol>} and a nested
  * {@code <svg>} each render correctly, the referenced content inherits from the {@code <use>} site rather than from
  * where it was declared, {@code <defs>} content is reachable only by reference, and an ancestor-referencing
- * {@code <use>} is rejected without hanging.
+ * {@code <use>} is rejected without hanging. Also covers #95: a reference cycle reachable only through
+ * {@code xlink:href} chains between otherwise-unrelated elements (not each other's static-containment ancestor,
+ * so the ancestor check alone misses it) must be rejected the same way, without a {@code StackOverflowError} - and
+ * two independent siblings legitimately reusing the same target must not be mistaken for one.
  */
 public class SvgUseRenderingTest {
 
@@ -246,6 +249,100 @@ public class SvgUseRenderingTest {
         Group renderedOuter = render(outer);
         Group renderedUse = (Group) renderedOuter.getChildren().get(0);
         assertThat(renderedUse.getChildren(), is(empty()));
+    }
+
+    @Test
+    public void testSelfReferencingUseRendersEmptyWithoutHanging() throws Exception {
+        SvgUse use = new SvgUse();
+        use.setId("self");
+        use.setXlinkHref("#self");
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(use);
+
+        Group renderedUse = (Group) render(root).getChildren().get(0);
+        assertThat(renderedUse.getChildren(), is(empty()));
+    }
+
+    /**
+     * A regression case for #95: two sibling {@code <use>} elements referencing each other - neither is the
+     * other's static-containment ancestor, so {@code SvgElementIndex#isSelfOrAncestor} alone does not catch this;
+     * without a chain-tracking guard this recurses (A -> B -> A -> B -> ...) until the stack overflows. {@code
+     * useA} itself resolves fine (its target, {@code useB}, is not yet active) and renders a group containing
+     * {@code useB}'s own result - it is {@code useB}'s own attempt to resolve back to {@code useA} (already active)
+     * that gets rejected, one level down, rather than {@code useA} itself rendering nothing at all.
+     */
+    @Test
+    public void testMutualSiblingReferenceCycleRendersEmptyWithoutHanging() throws Exception {
+        SvgUse useA = new SvgUse();
+        useA.setId("useA");
+        useA.setXlinkHref("#useB");
+        SvgUse useB = new SvgUse();
+        useB.setId("useB");
+        useB.setXlinkHref("#useA");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(useA);
+        root.getContent().add(useB);
+
+        Group renderedRoot = render(root);
+        Group renderedA = (Group) renderedRoot.getChildren().get(0);
+        assertThat(renderedA.getChildren(), hasSize(1));
+        Group renderedAsB = (Group) renderedA.getChildren().get(0);
+        assertThat(renderedAsB.getChildren(), is(empty()));
+    }
+
+    /**
+     * A longer indirect cycle (A -> B -> C -> A) - the same class of bug as the mutual two-element case, just one
+     * hop further, confirming the guard tracks the whole active chain (not only the immediately-previous element):
+     * A and B each resolve fine, nesting three groups deep, with only C's own attempt to resolve back to A (already
+     * active on this chain) rejected at the innermost level.
+     */
+    @Test
+    public void testLongerIndirectReferenceCycleRendersEmptyWithoutHanging() throws Exception {
+        SvgUse useA = new SvgUse();
+        useA.setId("chainA");
+        useA.setXlinkHref("#chainB");
+        SvgUse useB = new SvgUse();
+        useB.setId("chainB");
+        useB.setXlinkHref("#chainC");
+        SvgUse useC = new SvgUse();
+        useC.setId("chainC");
+        useC.setXlinkHref("#chainA");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(useA);
+        root.getContent().add(useB);
+        root.getContent().add(useC);
+
+        Group renderedA = (Group) render(root).getChildren().get(0);
+        Group renderedAsB = (Group) renderedA.getChildren().get(0);
+        Group renderedAsC = (Group) renderedAsB.getChildren().get(0);
+        assertThat(renderedAsC.getChildren(), is(empty()));
+    }
+
+    /**
+     * The guard must not mistake two independent siblings legitimately reusing the same target for a cycle - a
+     * common, perfectly valid idiom (e.g. reusing one {@code <symbol>} several times).
+     */
+    @Test
+    public void testTwoSiblingUsesOfTheSameTargetIsNotMistakenForACycle() throws Exception {
+        SvgRectangle target = rect("shared");
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(target);
+
+        SvgUse useA = new SvgUse();
+        useA.setXlinkHref("#shared");
+        SvgUse useB = new SvgUse();
+        useB.setXlinkHref("#shared");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(useA);
+        root.getContent().add(useB);
+
+        Group renderedRoot = render(root);
+        assertThat(((Group) renderedRoot.getChildren().get(0)).getChildren(), hasSize(1));
+        assertThat(((Group) renderedRoot.getChildren().get(1)).getChildren(), hasSize(1));
     }
 
     @Test

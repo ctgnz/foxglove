@@ -1,9 +1,12 @@
 package nz.co.ctg.foxglove;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -66,7 +69,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public static RenderContext root(SvgElementIndex elementIndex, double viewportWidth, double viewportHeight) {
         return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null, null, Locale.getDefault(), null,
-            null, null);
+            null, null, Collections.emptySet());
     }
 
     private final SvgInheritedStyle style;
@@ -79,10 +82,11 @@ public final class RenderContext implements ISvgStylable {
     private final Consumer<SvgAnchor> anchorActivationHandler;
     private final ForeignObjectHandler foreignObjectHandler;
     private final Map<ISvgElement, Node> nodeRegistry;
+    private final Set<ISvgElement> activeUseTargets;
 
     private RenderContext(SvgInheritedStyle style, SvgElementIndex elementIndex, double viewportWidth, double viewportHeight,
         Bounds objectBoundingBox, URI baseUri, Locale locale, Consumer<SvgAnchor> anchorActivationHandler,
-        ForeignObjectHandler foreignObjectHandler, Map<ISvgElement, Node> nodeRegistry) {
+        ForeignObjectHandler foreignObjectHandler, Map<ISvgElement, Node> nodeRegistry, Set<ISvgElement> activeUseTargets) {
         this.style = style;
         this.elementIndex = elementIndex;
         this.viewportWidth = viewportWidth;
@@ -93,6 +97,7 @@ public final class RenderContext implements ISvgStylable {
         this.anchorActivationHandler = anchorActivationHandler;
         this.foreignObjectHandler = foreignObjectHandler;
         this.nodeRegistry = nodeRegistry;
+        this.activeUseTargets = activeUseTargets;
     }
 
     /**
@@ -101,7 +106,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext resolveChild(ISvgAttributes element) {
         return new RenderContext(SvgInheritedStyle.resolve(style, element), elementIndex, viewportWidth, viewportHeight, objectBoundingBox,
-            baseUri, locale, anchorActivationHandler, foreignObjectHandler, nodeRegistry);
+            baseUri, locale, anchorActivationHandler, foreignObjectHandler, nodeRegistry, activeUseTargets);
     }
 
     /**
@@ -111,7 +116,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withViewport(double width, double height) {
         return new RenderContext(style, elementIndex, width, height, null, baseUri, locale, anchorActivationHandler, foreignObjectHandler,
-            nodeRegistry);
+            nodeRegistry, activeUseTargets);
     }
 
     /**
@@ -121,7 +126,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withObjectBoundingBox(Bounds bbox) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry);
+            foreignObjectHandler, nodeRegistry, activeUseTargets);
     }
 
     /**
@@ -131,7 +136,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withBaseUri(URI baseUri) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry);
+            foreignObjectHandler, nodeRegistry, activeUseTargets);
     }
 
     /**
@@ -141,7 +146,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withLocale(Locale locale) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry);
+            foreignObjectHandler, nodeRegistry, activeUseTargets);
     }
 
     /**
@@ -153,7 +158,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withAnchorActivationHandler(Consumer<SvgAnchor> anchorActivationHandler) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry);
+            foreignObjectHandler, nodeRegistry, activeUseTargets);
     }
 
     /**
@@ -162,7 +167,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withForeignObjectHandler(ForeignObjectHandler foreignObjectHandler) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry);
+            foreignObjectHandler, nodeRegistry, activeUseTargets);
     }
 
     /**
@@ -174,7 +179,36 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withNodeRegistry(Map<ISvgElement, Node> nodeRegistry) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry);
+            foreignObjectHandler, nodeRegistry, activeUseTargets);
+    }
+
+    /**
+     * The context with {@code target} added to the set of elements currently being expanded as a {@code <use>}
+     * reference somewhere up this call chain (see {@code SvgUse#createGraphic} for the two points it calls this -
+     * once for the {@code <use>} element itself, once for whatever it resolves to) - empty by default, at
+     * {@link #root}. Unlike every other {@code withXxx} method here, the added element accumulates rather than
+     * replacing what was there: each sibling branch of the render tree gets its own independent copy (this context
+     * is otherwise immutable), so one sibling reusing the same target as another is never mistaken for a cycle -
+     * only actually revisiting something already active on THIS branch's own chain is.
+     */
+    public RenderContext withActiveUseTarget(ISvgElement target) {
+        Set<ISvgElement> updated = Collections.newSetFromMap(new IdentityHashMap<>());
+        updated.addAll(activeUseTargets);
+        updated.add(target);
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale,
+            anchorActivationHandler, foreignObjectHandler, nodeRegistry, Collections.unmodifiableSet(updated));
+    }
+
+    /**
+     * Whether {@code target} is already being expanded somewhere up this call chain - see
+     * {@link #withActiveUseTarget}. A {@code <use>} resolving to a target this returns {@code true} for is a
+     * reference cycle (SVG 1.1 5.6: "If the referenced element... is an ancestor of the 'use' element... in the DOM"
+     * generalises, in practice, to any cycle reachable purely through reference chains, not just static containment
+     * - see {@link SvgElementIndex#isSelfOrAncestor} for the complementary static-containment check this doesn't
+     * replace) and must not be rendered, rather than expanded forever.
+     */
+    public boolean isActiveUseTarget(ISvgElement target) {
+        return activeUseTargets.contains(target);
     }
 
     public double getViewportWidth() {
