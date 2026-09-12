@@ -1,11 +1,14 @@
 package nz.co.ctg.foxglove.filter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.RenderContext.UnitsMode;
 
@@ -14,16 +17,34 @@ import javafx.css.SizeUnits;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.ColorInput;
+import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Applies {@code filter="url(#id)"} to an already-built {@code node}, in place - stage 1 of #26: filter plumbing
- * (the filter region, {@code filterUnits}/{@code primitiveUnits}) plus a single-primitive fast path covering a lone
- * {@code feGaussianBlur}. A filter with any other shape (empty, more than one primitive, an unsupported primitive,
- * or an unsupported {@code in}) degrades to no effect - {@code node} renders unfiltered, never throwing and never
- * silently wrong. Full filter-graph support (named results, chains, the pixel-level primitives with no JavaFX
- * equivalent) is out of scope here - see the issue's own suggested follow-up stages.
+ * Applies {@code filter="url(#id)"} to an already-built {@code node}, in place - the filter region
+ * ({@code filterUnits}/{@code primitiveUnits}) plus a chain-of-primitives fast path (stages 1 and 2 of #26/#76).
+ * <p>
+ * A {@code <filter>}'s primitives form a directed graph via named {@code result}/{@code in}/{@code in2}, but a
+ * JavaFX {@link Effect} chains through a single {@code input} (two, for {@link Blend}) - so only primitives that
+ * genuinely map onto a real {@code Effect} with such a slot are supported: {@link FeGaussianBlur} → {@link
+ * GaussianBlur}, {@link FeFlood} → {@link ColorInput}, {@link FeColorMatrix}'s {@code saturate}/{@code hueRotate}
+ * shorthand → {@link ColorAdjust}, {@link FeBlend} → {@link Blend}, {@link FeMerge}/{@link FeMergeNode} → a fold of
+ * {@link Blend}. Deliberately excluded, not just deferred: {@code feOffset} has no {@code Effect} equivalent at all
+ * (verified against the OpenJFX javadoc - every effect's input is another {@code Effect}, and there is no way to
+ * hand a translated raw node into one), and {@code feDiffuseLighting}/{@code feSpecularLighting}/{@code feImage}
+ * need machinery (light sources, image loading) beyond what a chain needs.
+ * <p>
+ * A filter whose primitives don't fit this shape at all (an excluded primitive, a graph that isn't resolvable
+ * through blank/{@code SourceGraphic}/an earlier {@code result} - branches, {@code SourceAlpha},
+ * {@code BackgroundImage}) degrades to no effect - {@code node} renders unfiltered, never throwing and never
+ * silently wrong. Full arbitrary-graph support (primitive subregions beyond falling back to the filter region, the
+ * pixel-level primitives) is out of scope here - see the issue's own suggested follow-up stage.
  * <p>
  * Unlike {@code mask} (#25), this mutates {@code node} in place ({@code setEffect}/{@code setClip}) rather than
  * replacing it, so it needs none of masking's consumer-side indirection - {@code AbstractSvgShape}'s narrower
@@ -38,42 +59,206 @@ public final class SvgFilterRenderer {
      */
     private static final double STD_DEVIATION_TO_RADIUS = 3.0;
 
+    /**
+     * Thrown internally to abort building a filter's chain the moment any primitive, or any {@code in}/{@code in2}
+     * reference, falls outside what this renderer supports - caught once, at the top, so every abort path degrades
+     * identically (leaves {@code node} unfiltered) without each call site needing its own early-return plumbing.
+     */
+    private static final class UnsupportedFilterException extends RuntimeException {
+    }
+
     public static void apply(RenderContext context, Node node, SvgFilter filter) {
         Bounds targetBounds = node.getBoundsInLocal();
-        applySinglePrimitiveFastPath(node, filter, targetBounds);
+        applyChain(node, filter, targetBounds, context);
         applyFilterRegionClip(context, node, filter, targetBounds);
     }
 
     /**
-     * Sets a {@link GaussianBlur} when {@code filter} contains exactly one primitive, it is a {@link FeGaussianBlur},
-     * and its {@code in} is blank or exactly {@code "SourceGraphic"} - any other shape leaves {@code node}'s effect
-     * untouched (the documented degrade).
+     * Builds a JavaFX effect chain by walking {@code filter}'s primitives in document order, tracking the
+     * previous primitive's built {@link Effect} (what a blank {@code in} on any primitive after the first resolves
+     * to, per spec) and a name→{@code Effect} map for anything that declared its own {@code result}. Aborts to no
+     * effect at all - rather than a partially-built one - the moment anything doesn't fit.
      */
-    private static void applySinglePrimitiveFastPath(Node node, SvgFilter filter, Bounds targetBounds) {
+    private static void applyChain(Node node, SvgFilter filter, Bounds targetBounds, RenderContext context) {
         List<ISvgFilterPrimitive> primitives = filter.getContent().stream()
             .filter(ISvgFilterPrimitive.class::isInstance)
             .map(ISvgFilterPrimitive.class::cast)
             .toList();
-        if (primitives.size() != 1 || !(primitives.get(0) instanceof FeGaussianBlur blur)) {
+        if (primitives.isEmpty()) {
             return;
         }
-        String in = blur.getIn();
-        if (StringUtils.isNotBlank(in) && !"SourceGraphic".equals(in)) {
-            return;
+        try {
+            Map<String, Effect> namedResults = new HashMap<>();
+            Effect current = null;
+            boolean first = true;
+            for (ISvgFilterPrimitive primitive : primitives) {
+                current = buildEffect(primitive, current, first, namedResults, filter, targetBounds, context);
+                first = false;
+                String result = primitive.getResult();
+                if (StringUtils.isNotBlank(result)) {
+                    namedResults.put(result, current);
+                }
+            }
+            node.setEffect(current);
+        } catch (UnsupportedFilterException e) {
+            // documented degrade: node stays unfiltered
         }
+    }
 
+    private static Effect buildEffect(ISvgFilterPrimitive primitive, Effect previousResult, boolean first, Map<String, Effect> namedResults,
+        SvgFilter filter, Bounds targetBounds, RenderContext context) {
+        if (primitive instanceof FeGaussianBlur blur) {
+            return buildGaussianBlur(blur, previousResult, first, namedResults, filter, targetBounds);
+        }
+        if (primitive instanceof FeFlood flood) {
+            return buildColorInput(flood, filter, targetBounds, context);
+        }
+        if (primitive instanceof FeColorMatrix matrix) {
+            return buildColorAdjust(matrix, previousResult, first, namedResults);
+        }
+        if (primitive instanceof FeBlend blend) {
+            return buildBlend(blend, previousResult, first, namedResults);
+        }
+        if (primitive instanceof FeMerge merge) {
+            return buildMerge(merge, previousResult, first, namedResults);
+        }
+        throw new UnsupportedFilterException();
+    }
+
+    /**
+     * Resolves a primitive's {@code in} (or a {@code feMergeNode}'s): blank resolves to {@code SourceGraphic} only
+     * for the very first primitive in the filter, otherwise to the previous primitive's own result, per spec - both
+     * mean "the plain node itself" here, represented as {@code null} (every {@link Effect} used here already treats
+     * a {@code null} input that way). An explicit {@code SourceGraphic} always means the plain node, regardless of
+     * position. Anything else must name an earlier {@code result}; a reference to nothing this renderer tracked
+     * (a genuine {@code SourceAlpha}/{@code BackgroundImage}, or a name from outside this supported subset) aborts
+     * the whole filter.
+     */
+    private static Effect resolveInput(String in, Effect previousResult, boolean first, Map<String, Effect> namedResults) {
+        String ref = StringUtils.trimToEmpty(in);
+        if (ref.isEmpty()) {
+            return first ? null : previousResult;
+        }
+        if ("SourceGraphic".equals(ref)) {
+            return null;
+        }
+        if (namedResults.containsKey(ref)) {
+            return namedResults.get(ref);
+        }
+        throw new UnsupportedFilterException();
+    }
+
+    private static GaussianBlur buildGaussianBlur(FeGaussianBlur blur, Effect previousResult, boolean first, Map<String, Effect> namedResults,
+        SvgFilter filter, Bounds targetBounds) {
+        Effect in = resolveInput(blur.getIn(), previousResult, first, namedResults);
         double stdDeviation = firstNumber(blur.getStdDeviation());
         if (RenderContext.parseUnits(filter.getPrimitiveUnits(), UnitsMode.USER_SPACE_ON_USE) == UnitsMode.OBJECT_BOUNDING_BOX) {
             stdDeviation *= bboxDiagonal(targetBounds);
         }
         double radius = Math.clamp(STD_DEVIATION_TO_RADIUS * stdDeviation, 0.0, 63.0);
-        node.setEffect(new GaussianBlur(radius));
+        GaussianBlur gaussianBlur = new GaussianBlur(radius);
+        gaussianBlur.setInput(in);
+        return gaussianBlur;
     }
 
     /**
-     * The first number in a {@code <number-optional-number>} value such as {@code stdDeviation} - JavaFX's
-     * {@link GaussianBlur} has one isotropic radius, so a second (anisotropic) number is not representable and is
-     * ignored, a documented limitation.
+     * A leaf - {@code feFlood} has no {@code in} of its own. Always sized to the filter region rather than the
+     * primitive's own (optional) subregion: {@code ISvgFilterPrimitive}'s x/y/width/height are plain strings with
+     * their own unit-mode rules, and a document setting them on a bare {@code feFlood} specifically is rare enough
+     * that this is a deliberate, documented simplification rather than the first thing worth the extra parsing.
+     */
+    private static ColorInput buildColorInput(FeFlood flood, SvgFilter filter, Bounds targetBounds, RenderContext context) {
+        Bounds region = resolveFilterRegion(filter, context, targetBounds);
+        Color color = parseFloodColor(flood.getFloodColor());
+        Double opacity = ISvgGraphicsAttributes.parseOpacity(flood.getFloodOpacity());
+        if (opacity != null) {
+            color = color.deriveColor(0, 1, 1, opacity);
+        }
+        return new ColorInput(region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), color);
+    }
+
+    private static Color parseFloodColor(String value) {
+        if (StringUtils.isBlank(value)) {
+            return Color.BLACK;
+        }
+        try {
+            return Color.web(value.trim());
+        } catch (RuntimeException e) {
+            return Color.BLACK;
+        }
+    }
+
+    /**
+     * Only the {@code saturate}/{@code hueRotate} shorthand forms - {@code matrix}/{@code luminanceToAlpha} need an
+     * arbitrary matrix {@link ColorAdjust} has no way to express, and abort the filter like any other unsupported
+     * primitive. Neither shorthand's scale matches {@link ColorAdjust}'s {@code [-1, 1]} range exactly (SVG's
+     * {@code saturate} is {@code [0, 1]} with identity {@code 1}; {@code hueRotate} is degrees) - documented
+     * approximations, not exact fidelity.
+     */
+    private static ColorAdjust buildColorAdjust(FeColorMatrix matrix, Effect previousResult, boolean first, Map<String, Effect> namedResults) {
+        String type = matrix.getType();
+        if (!"saturate".equals(type) && !"hueRotate".equals(type)) {
+            throw new UnsupportedFilterException();
+        }
+        Effect in = resolveInput(matrix.getIn(), previousResult, first, namedResults);
+        double value = firstNumber(matrix.getValues());
+        ColorAdjust adjust = new ColorAdjust();
+        if ("saturate".equals(type)) {
+            adjust.setSaturation(Math.clamp(value - 1, -1.0, 1.0));
+        } else {
+            adjust.setHue(Math.clamp(value / 180.0, -1.0, 1.0));
+        }
+        adjust.setInput(in);
+        return adjust;
+    }
+
+    private static Blend buildBlend(FeBlend blend, Effect previousResult, boolean first, Map<String, Effect> namedResults) {
+        Effect bottom = resolveInput(blend.getIn(), previousResult, first, namedResults);
+        Effect top = resolveInput(blend.getIn2(), previousResult, first, namedResults);
+        Blend result = new Blend(mapBlendMode(blend.getMode()));
+        result.setBottomInput(bottom);
+        result.setTopInput(top);
+        return result;
+    }
+
+    private static BlendMode mapBlendMode(String mode) {
+        return switch (mode) {
+            case "multiply" -> BlendMode.MULTIPLY;
+            case "screen" -> BlendMode.SCREEN;
+            case "darken" -> BlendMode.DARKEN;
+            case "lighten" -> BlendMode.LIGHTEN;
+            default -> BlendMode.SRC_OVER;
+        };
+    }
+
+    /**
+     * A left-to-right fold of {@link Blend}, each {@code feMergeNode} layered on top of the accumulated result so
+     * far - matching the specification's own compositing order. Every node's {@code in} resolves against the same
+     * {@code first}/{@code previousResult} the {@code <feMerge>} element itself would have, per spec (a blank
+     * {@code in} means the result of the primitive before the whole {@code <feMerge>}, not the previous merge
+     * node). Fewer than two nodes is degenerate and aborts, same as any other unsupported shape.
+     */
+    private static Effect buildMerge(FeMerge merge, Effect previousResult, boolean first, Map<String, Effect> namedResults) {
+        List<FeMergeNode> nodes = merge.getFeMergeNode();
+        if (nodes.size() < 2) {
+            throw new UnsupportedFilterException();
+        }
+        Effect accumulated = resolveInput(nodes.get(0).getIn(), previousResult, first, namedResults);
+        for (int i = 1; i < nodes.size(); i++) {
+            Effect top = resolveInput(nodes.get(i).getIn(), previousResult, first, namedResults);
+            Blend blend = new Blend(BlendMode.SRC_OVER);
+            blend.setBottomInput(accumulated);
+            blend.setTopInput(top);
+            accumulated = blend;
+        }
+        return accumulated;
+    }
+
+    /**
+     * The first number in a {@code <number-optional-number>} value such as {@code stdDeviation}, or a bare
+     * {@code values} number such as {@code feColorMatrix}'s shorthand forms use - {@link GaussianBlur} has one
+     * isotropic radius, so a second (anisotropic) {@code stdDeviation} number is not representable and is ignored,
+     * a documented limitation.
      */
     private static double firstNumber(String value) {
         String text = StringUtils.trimToEmpty(value);
