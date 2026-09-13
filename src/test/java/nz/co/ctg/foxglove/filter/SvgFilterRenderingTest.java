@@ -1,13 +1,17 @@
 package nz.co.ctg.foxglove.filter;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.clip.SvgClipPath;
 import nz.co.ctg.foxglove.shape.SvgCircle;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
+
+import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -25,15 +29,30 @@ import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.ImageInput;
 import javafx.scene.paint.Color;
 
 /**
  * Exercises #26/#76's acceptance criteria: {@code filter="url(#id)"} resolves and applies, a lone
- * {@code feGaussianBlur} renders with the correct blur radius, {@code filterUnits}/{@code primitiveUnits} resolve,
- * a chain of directly-mappable primitives builds the equivalent JavaFX effect chain, and anything outside that
- * supported shape degrades to no effect rather than throwing or rendering nothing.
+ * {@code feGaussianBlur} renders with the correct blur radius, {@code filterUnits}/{@code primitiveUnits} resolve, and
+ * a chain of directly-mappable primitives builds the equivalent JavaFX effect chain.
+ * <p>
+ * Since #77 there is a second path behind this one, so the interesting assertion for anything the chain cannot express
+ * is no longer "no effect at all" but "not <i>this</i> path" - the filter is handed to
+ * {@link SvgFilterRasterPipeline}, which {@link SvgFilterRasterPipelineTest} covers on its own terms. What stays an
+ * outright degrade is narrower: a filter with no primitives, and a genuine authoring error such as an {@code in} that
+ * names a {@code result} no primitive ever declared.
+ * <p>
+ * Every test renders on the JavaFX Application Thread. That matters for the degrade assertions specifically: off it,
+ * the raster path cannot snapshot and so cannot engage at all, which would leave those tests passing while proving
+ * nothing about which path ran.
  */
 public class SvgFilterRenderingTest {
+
+    @BeforeAll
+    public static void initJfx() throws Exception {
+        JavaFxTestSupport.ensureStarted();
+    }
 
     @Test
     public void testFilterResolvesAndAppliesAGaussianBlur() throws Exception {
@@ -112,11 +131,12 @@ public class SvgFilterRenderingTest {
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
         rect.setClipPath("url(#clip)");
 
-        SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(clipPath);
-        svg.getContent().add(filter);
-        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
-        Node node = rect.createGraphic(context);
+        Node node = onFxThread(() -> {
+            SvgGraphic svg = new SvgGraphic();
+            svg.getContent().add(clipPath);
+            svg.getContent().add(filter);
+            return rect.createGraphic(RenderContext.root(svg.getElementIndex(), 0, 0));
+        });
 
         assertThat(node.getClip(), notNullValue());
         // the clip-path clip itself now has a further clip (the filter region) - both narrow the visible area
@@ -124,12 +144,12 @@ public class SvgFilterRenderingTest {
     }
 
     @Test
-    public void testUnsupportedPrimitiveDegradesToNoEffect() throws Exception {
+    public void testAPrimitiveWithNoEffectEquivalentFallsBackToTheRasterPipeline() throws Exception {
         SvgFilter filter = filterOf(new FeOffset());
         filter.setId("f");
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
 
-        assertThat(render(rect, filter).getEffect(), is(nullValue()));
+        assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
     }
 
     @Test
@@ -146,14 +166,15 @@ public class SvgFilterRenderingTest {
     }
 
     @Test
-    public void testAChainContainingAnExcludedPrimitiveDegradesToNoEffect() throws Exception {
+    public void testAChainContainingAnExcludedPrimitiveFallsBackWholesaleRatherThanPartially() throws Exception {
         // feOffset has no JavaFX effect equivalent at all (verified against the OpenJFX javadoc - see
-        // SvgFilterRenderer's own class javadoc) - aborts the whole chain, not just that one step
+        // SvgFilterRenderer's own class javadoc), so it aborts the whole chain rather than just that one step: the
+        // feGaussianBlur before it is re-evaluated by the raster pipeline too, not left as a half-built effect
         SvgFilter filter = filterOf(blur("5"), new FeOffset());
         filter.setId("f");
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
 
-        assertThat(render(rect, filter).getEffect(), is(nullValue()));
+        assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
     }
 
     @Test
@@ -168,14 +189,16 @@ public class SvgFilterRenderingTest {
     }
 
     @Test
-    public void testUnsupportedInDegradesToNoEffect() throws Exception {
+    public void testAnInTheChainCannotResolveFallsBackToTheRasterPipeline() throws Exception {
+        // SourceAlpha is not a plain node and not an earlier Effect, so there is nothing to hand a GaussianBlur as
+        // its input - the raster pipeline derives it from the rasterised source instead
         FeGaussianBlur blur = blur("5");
         blur.setIn("SourceAlpha");
         SvgFilter filter = filterOf(blur);
         filter.setId("f");
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
 
-        assertThat(render(rect, filter).getEffect(), is(nullValue()));
+        assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
     }
 
     @Test
@@ -190,8 +213,7 @@ public class SvgFilterRenderingTest {
     @Test
     public void testUnresolvableFilterReferenceIsANoOp() throws Exception {
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#missing)");
-        SvgGraphic svg = new SvgGraphic();
-        Node node = rect.createGraphic(RenderContext.root(svg.getElementIndex(), 0, 0));
+        Node node = onFxThread(() -> rect.createGraphic(RenderContext.root(new SvgGraphic().getElementIndex(), 0, 0)));
         assertThat(node.getEffect(), is(nullValue()));
         assertThat(node.getClip(), is(nullValue()));
     }
@@ -199,7 +221,7 @@ public class SvgFilterRenderingTest {
     @Test
     public void testNullElementIndexIsANoOp() throws Exception {
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#anything)");
-        Node node = rect.createGraphic(RenderContext.root(null, 0, 0));
+        Node node = onFxThread(() -> rect.createGraphic(RenderContext.root(null, 0, 0)));
         assertThat(node.getEffect(), is(nullValue()));
     }
 
@@ -248,14 +270,15 @@ public class SvgFilterRenderingTest {
     }
 
     @Test
-    public void testColorMatrixTypeMatrixDegradesToNoEffect() throws Exception {
+    public void testColorMatrixTypeMatrixFallsBackToTheRasterPipeline() throws Exception {
+        // ColorAdjust can only approximate saturate/hueRotate; an arbitrary 5x4 matrix needs the real arithmetic
         FeColorMatrix matrix = new FeColorMatrix();
         matrix.setValues("1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0");
         SvgFilter filter = filterOf(matrix);
         filter.setId("f");
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
 
-        assertThat(render(rect, filter).getEffect(), is(nullValue()));
+        assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
     }
 
     @Test
@@ -298,7 +321,9 @@ public class SvgFilterRenderingTest {
     }
 
     @Test
-    public void testFeMergeWithFewerThanTwoNodesDegradesToNoEffect() throws Exception {
+    public void testFeMergeWithFewerThanTwoNodesFallsBackToTheRasterPipeline() throws Exception {
+        // a one-node feMerge is degenerate for a Blend, which needs two inputs; compositing a single layer over an
+        // empty canvas is perfectly well-defined for the raster pipeline
         FeMerge merge = new FeMerge();
         FeMergeNode onlyNode = new FeMergeNode();
         onlyNode.setIn("SourceGraphic");
@@ -307,7 +332,7 @@ public class SvgFilterRenderingTest {
         filter.setId("f");
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
 
-        assertThat(render(rect, filter).getEffect(), is(nullValue()));
+        assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
     }
 
     // --- helpers ---------------------------------------------------------
@@ -337,10 +362,12 @@ public class SvgFilterRenderingTest {
     }
 
     private static Node render(SvgRectangle rect, SvgFilter filter) throws Exception {
-        SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(filter);
-        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
-        return rect.createGraphic(context);
+        return onFxThread(() -> {
+            SvgGraphic svg = new SvgGraphic();
+            svg.getContent().add(filter);
+            RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
+            return rect.createGraphic(context);
+        });
     }
 
 }
