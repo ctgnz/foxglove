@@ -28,6 +28,12 @@ public final class JavaFxTestSupport {
     public static void ensureStarted() throws InterruptedException {
         if (STARTING.compareAndSet(false, true)) {
             Platform.startup(READY::countDown);
+            // Without this, closing the last shown Stage terminates the toolkit for the whole JVM - and then every
+            // later Platform.runLater is simply never run, so every subsequent test times out rather than failing
+            // with anything that points at the cause. Nothing needed it until #112 started showing a Stage (a
+            // WebView only paints into a snapshot when its Stage is showing), and it cost a genuinely baffling
+            // cascade of timeouts to find.
+            Platform.setImplicitExit(false);
         }
         READY.await(5, TimeUnit.SECONDS);
     }

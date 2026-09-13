@@ -203,8 +203,18 @@ public class W3cSvgConformanceCheck {
      * with how well it renders. {@code SvgFilterRasterPipeline.rasterizeSource} sets one for the same reason.
      */
     static WritableImage snapshot(Node built, int width, int height) {
+        return snapshot(built, width, height, Color.TRANSPARENT);
+    }
+
+    /**
+     * As {@link #snapshot(Node, int, int)}, over a chosen background. Transparent is right against the suite's own
+     * reference PNGs, which are themselves transparent - but #112 compares against a browser engine, which paints an
+     * opaque page. Mismatch the two and every background pixel differs on alpha alone, which reads as a 99%
+     * difference between images that are in fact nearly identical.
+     */
+    static WritableImage snapshot(Node built, int width, int height, Color fill) {
         SnapshotParameters params = new SnapshotParameters();
-        params.setFill(Color.TRANSPARENT);
+        params.setFill(fill);
         params.setViewport(new Rectangle2D(0, 0, width, height));
         return built.snapshot(params, new WritableImage(width, height));
     }
@@ -216,7 +226,7 @@ public class W3cSvgConformanceCheck {
      * by {@code javafx-web}) and its module wasn't reliably resolvable at runtime under Surefire - a plain
      * pixel-by-pixel copy needs nothing beyond {@code java.desktop}, already implicit on any JVM running AWT/Swing.
      */
-    private static void writePng(WritableImage image, int width, int height, String path) throws IOException {
+    static void writePng(WritableImage image, int width, int height, String path) throws IOException {
         var reader = image.getPixelReader();
         var buffered = new java.awt.image.BufferedImage(width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < height; y++) {
@@ -232,7 +242,7 @@ public class W3cSvgConformanceCheck {
      * canvas can be excluded from comparison - {@code height} (no cropping) if the test has no such element, since
      * not every test in the suite carries one.
      */
-    private static int revisionCropFromY(SvgGraphic svg, Map<ISvgElement, Node> registry, int height) {
+    static int revisionCropFromY(SvgGraphic svg, Map<ISvgElement, Node> registry, int height) {
         Optional<ISvgElement> revision = svg.getElementIndex().resolve("#revision");
         if (revision.isEmpty()) {
             return height;
