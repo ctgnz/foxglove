@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.ISvgPresentationAttributes;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.RenderContext.UnitsMode;
 
@@ -119,7 +118,7 @@ final class SvgFilterRasterPipeline {
             for (ISvgFilterPrimitive primitive : primitives) {
                 // each primitive declares the space it works in, so this is per-primitive rather than set once
                 // for the filter - resolveInput converts whatever it is handed into it
-                colorSpace = primitiveColorSpace(primitive);
+                colorSpace = FilterColorSpace.of(primitive, filter);
                 result = evaluate(primitive);
                 result.setColorSpace(colorSpace);
                 previous = result;
@@ -134,30 +133,6 @@ final class SvgFilterRasterPipeline {
         } catch (UnsupportedFilterException e) {
             return null;
         }
-    }
-
-    /**
-     * The space a primitive works in when it declares none of its own: the {@code <filter>}'s, falling back to
-     * SVG's own default of linearRGB.
-     * <p>
-     * {@code color-interpolation-filters} is a properly inherited property, so strictly this should also consult the
-     * {@code <filter>} element's ancestors. Resolving primitive → filter → default covers how it is actually written
-     * in practice and is a documented simplification, not an oversight - a {@code <filter>} normally sits in
-     * {@code <defs>}, whose ancestors are not the referencing element's and carry nothing meaningful.
-     */
-    private FilterColorSpace filterColorSpace() {
-        return FilterColorSpace.parse(filter.getColorInterpolationFilters(), FilterColorSpace.LINEAR_RGB);
-    }
-
-    /**
-     * {@link ISvgFilterPrimitive} carries only the {@code in}/{@code result}/subregion attributes common to every
-     * primitive, not the presentation properties - but every concrete {@code fe*} class extends
-     * {@code AbstractSvgStylable} and so does have them, and the binding files declare
-     * {@code color-interpolation-filters} on all of them.
-     */
-    private FilterColorSpace primitiveColorSpace(ISvgFilterPrimitive primitive) {
-        String declared = primitive instanceof ISvgPresentationAttributes attrs ? attrs.getColorInterpolationFilters() : null;
-        return FilterColorSpace.parse(declared, filterColorSpace());
     }
 
     /**

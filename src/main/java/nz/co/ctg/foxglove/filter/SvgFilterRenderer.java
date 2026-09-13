@@ -49,20 +49,22 @@ import javafx.scene.shape.Rectangle;
  * stays vector, so it scales crisply and costs no rasterisation - with the raster pipeline picking up everything it
  * cannot express. Only when that fails too does {@code node} render unfiltered.
  * <p>
- * Two consequences of that layering, both deliberate and both worth knowing, since they mean the same document can
- * render differently depending on which path takes it:
- * <ul>
- * <li>{@code feColorMatrix}'s {@code saturate}/{@code hueRotate} keep the approximate {@link ColorAdjust} treatment
- * below when the rest of the chain is effect-expressible, but are computed exactly when the filter falls back to
- * raster for some other reason.
- * <li>The raster pipeline honours {@code color-interpolation-filters} and works in linearRGB by default, per the
- * specification (#108). This path cannot: JavaFX effects operate in sRGB and expose no way to ask otherwise -
- * verified by blurring a hard black/white edge, whose midpoint comes back at {@code 0.52} rather than the
- * {@code 0.735} a linear-light blur would give. So an effect-expressible filter is still evaluated in sRGB.
- * </ul>
- * Always preferring raster would be more accurate on both counts but would rasterise every filter in the library,
- * including the many that render perfectly well - and crisply, at any scale - as an effect chain today. Tracked
- * as #126.
+ * <b>This path is an sRGB-only fast path</b> (#126). JavaFX effects operate in sRGB and expose no way to ask
+ * otherwise - verified by blurring a hard black/white edge, whose midpoint comes back at {@code 0.52} rather than
+ * the {@code 0.735} a linear-light blur would give - while the raster pipeline honours
+ * {@code color-interpolation-filters} and works in linearRGB by default, per the specification (#108). Rather than
+ * let the same document render differently depending on which path happened to take it, the chain is used only when
+ * every primitive resolves to sRGB. Since linearRGB is the default, that means only when a document asks for sRGB
+ * outright.
+ * <p>
+ * The trade-off was measured rather than assumed, and is recorded on #126: the chain was carrying 22 of 176 filter
+ * applications in the W3C suite, and rasterising those was uniformly more accurate (the {@code filters} chapter
+ * moved from 29.4% to 31.9% ink matched). What it costs is resolution independence - on a hard edge magnified
+ * eightfold the chain stays perfectly crisp where the raster smears over about eight pixels - which is why the
+ * chain is kept for the documents that do opt in rather than deleted outright.
+ * <p>
+ * One wart survives, now narrowed to those documents: {@code feColorMatrix}'s {@code saturate}/{@code hueRotate}
+ * keep the approximate {@link ColorAdjust} treatment below, while the raster pipeline computes them exactly.
  * <p>
  * Unlike {@code mask} (#25), this mutates {@code node} in place ({@code setEffect}/{@code setClip}) rather than
  * replacing it, so it needs none of masking's consumer-side indirection - {@code AbstractSvgShape}'s narrower
@@ -114,6 +116,10 @@ public final class SvgFilterRenderer {
         if (primitives.isEmpty()) {
             return;
         }
+        if (!allPrimitivesUseSrgb(primitives, filter)) {
+            applyRasterPipeline(context, node, filter, primitives, targetBounds, region);
+            return;
+        }
         try {
             Map<String, Effect> namedResults = new HashMap<>();
             Effect current = null;
@@ -130,6 +136,18 @@ public final class SvgFilterRenderer {
         } catch (UnsupportedFilterException e) {
             applyRasterPipeline(context, node, filter, primitives, targetBounds, region);
         }
+    }
+
+    /**
+     * Whether every primitive works in sRGB, which is what this path requires: JavaFX effects operate in sRGB and
+     * expose no way to ask otherwise (#126). SVG's default is linearRGB, so in practice this is true only when a
+     * document says {@code color-interpolation-filters="sRGB"} outright.
+     * <p>
+     * Every primitive has to agree, not just the filter: the property is per-primitive, and an effect chain has no
+     * way to represent a graph that changes colour space partway through.
+     */
+    private static boolean allPrimitivesUseSrgb(List<ISvgFilterPrimitive> primitives, SvgFilter filter) {
+        return primitives.stream().allMatch(primitive -> FilterColorSpace.of(primitive, filter) == FilterColorSpace.SRGB);
     }
 
     /**
