@@ -332,9 +332,7 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         shape.setStrokeDashOffset(defaultIfNull(style.getStrokeDashOffset(), INITIAL_STROKE_DASH_OFFSET));
         shape.setStrokeLineCap(defaultIfNull(style.getStrokeLineCap(), INITIAL_STROKE_LINE_CAP));
         shape.setStrokeLineJoin(defaultIfNull(style.getStrokeLineJoin(), INITIAL_STROKE_LINE_JOIN));
-        if (style.getStrokeDashArray() != null) {
-            shape.getStrokeDashArray().addAll(style.getStrokeDashArray());
-        }
+        applyStrokeDashArray(style.getStrokeDashArray(), shape);
         applyFillRule(style.getFillRule(), shape);
         applyOpacity(shape);
         applyVisibility(style, shape);
@@ -472,6 +470,39 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         if (visibility != null) {
             node.setVisible(!"hidden".equalsIgnoreCase(visibility) && !"collapse".equalsIgnoreCase(visibility));
         }
+    }
+
+    /**
+     * Applies {@code stroke-dasharray}, leaving the stroke solid for every case the specification says yields no
+     * dashing - all of which JavaFX would otherwise reject outright (#114).
+     * <p>
+     * JavaFX throws {@code IllegalArgumentException} from deep inside rendering, not from the setter, for a dash
+     * array whose entries are all zero ({@code "dash lengths all zero"}) or that contains a negative
+     * ({@code "negative dash length"}) - verified empirically, since neither is documented. SVG 1.1 treats both as
+     * producing a solid stroke rather than as a rendering failure: a sum of zero is explicitly "rendered as if a
+     * value of none were specified", and a negative value puts the declaration in error, which this library degrades
+     * the same way it degrades every other unsupported or malformed value.
+     * <p>
+     * SVG's other rule here - "if an odd number of values is provided, then the list of values is repeated to yield
+     * an even number" - needs no code: JavaFX already cycles an odd-length array so that dash and gap roles swap on
+     * each pass, which is pixel-for-pixel identical to passing the doubled list (verified by rendering both and
+     * comparing). Doubling it here would be redundant rather than clearer.
+     */
+    private static void applyStrokeDashArray(List<Double> values, Shape shape) {
+        if (values == null || values.isEmpty()) {
+            return;
+        }
+        double total = 0;
+        for (Double value : values) {
+            if (value == null || value < 0) {
+                return;
+            }
+            total += value;
+        }
+        if (total <= 0) {
+            return;
+        }
+        shape.getStrokeDashArray().addAll(values);
     }
 
     /**

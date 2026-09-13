@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.clip.SvgClipPath;
@@ -13,10 +15,16 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
+import javafx.css.Size;
+import javafx.css.SizeUnits;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.SVGPath;
@@ -142,6 +150,118 @@ public class ISvgGraphicsAttributesTest {
         assertThat(shape.getStrokeDashOffset(), is(0.0));
         assertThat(shape.getStrokeLineCap(), is(StrokeLineCap.BUTT));
         assertThat(shape.getStrokeLineJoin(), is(StrokeLineJoin.MITER));
+    }
+
+    // --- stroke-dasharray (#114) -------------------------------------------
+
+    /**
+     * JavaFX rejects a dash array whose entries are all zero, throwing {@code IllegalArgumentException} from inside
+     * rendering rather than from the setter - so this used to escape {@code createGraphic} into whatever application
+     * was rendering the document. SVG 1.1 says the opposite: a sum of zero is "rendered as if a value of none were
+     * specified", i.e. an ordinary solid stroke.
+     */
+    @Test
+    public void testAnAllZeroDashArrayRendersSolidRatherThanThrowing() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        rect.setStrokeDashArray(List.of(0.0));
+
+        assertThat(firstShape(render(groupOf(rect))).getStrokeDashArray(), is(empty()));
+    }
+
+    @Test
+    public void testAMultiEntryAllZeroDashArrayAlsoRendersSolid() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        rect.setStrokeDashArray(List.of(0.0, 0.0, 0.0));
+
+        assertThat(firstShape(render(groupOf(rect))).getStrokeDashArray(), is(empty()));
+    }
+
+    /** JavaFX throws {@code "negative dash length"} here; SVG puts the declaration in error, which means solid. */
+    @Test
+    public void testADashArrayContainingANegativeRendersSolidRatherThanThrowing() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        rect.setStrokeDashArray(List.of(5.0, -2.0));
+
+        assertThat(firstShape(render(groupOf(rect))).getStrokeDashArray(), is(empty()));
+    }
+
+    /** The whole point is to reject only what JavaFX cannot take - a real dash pattern must still get through. */
+    @Test
+    public void testAValidDashArrayIsStillApplied() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        rect.setStrokeDashArray(List.of(5.0, 2.0));
+
+        assertThat(firstShape(render(groupOf(rect))).getStrokeDashArray(), is(List.of(5.0, 2.0)));
+    }
+
+    /**
+     * A zero entry is only fatal when every entry is zero - {@code "5 0"} sums above zero, is a legal (if degenerate)
+     * pattern, and JavaFX accepts it.
+     */
+    @Test
+    public void testAZeroEntryAlongsideANonZeroOneIsStillApplied() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        rect.setStrokeDashArray(List.of(5.0, 0.0));
+
+        assertThat(firstShape(render(groupOf(rect))).getStrokeDashArray(), is(List.of(5.0, 0.0)));
+    }
+
+    /**
+     * SVG's "repeat an odd list to yield an even number of values" rule is left to JavaFX, which cycles an
+     * odd-length array so dash and gap roles swap on each pass - pixel-for-pixel identical to the doubled list.
+     * This pins that the list is passed through as-authored rather than silently rewritten.
+     */
+    @Test
+    public void testAnOddLengthDashArrayIsPassedThroughUnchanged() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        rect.setStrokeDashArray(List.of(5.0, 2.0, 5.0));
+
+        assertThat(firstShape(render(groupOf(rect))).getStrokeDashArray(), is(List.of(5.0, 2.0, 5.0)));
+    }
+
+    /** {@code stroke-dasharray="none"} parses to an empty list, which must mean solid, not an empty dash pattern. */
+    @Test
+    public void testDashArrayNoneRendersSolid() throws Exception {
+        SvgRectangle rect = new SvgRectangle();
+        rect.setStrokeDashArray(List.of());
+
+        assertThat(firstShape(render(groupOf(rect))).getStrokeDashArray(), is(empty()));
+    }
+
+    /**
+     * The end-to-end proof, and the reason the assertions above are not sufficient on their own: JavaFX accepts a
+     * bad dash array quite happily at the setter and only throws once something paints it. So a document like this
+     * would not fail in {@code createGraphic} at all - it would blow up later, on the JavaFX Application Thread,
+     * mid-render, a long way from the value that caused it. This rasterises to prove that no longer happens.
+     */
+    @Test
+    public void testAnAllZeroDashArrayActuallyRasterises() throws Exception {
+        JavaFxTestSupport.ensureStarted();
+        SvgRectangle rect = new SvgRectangle();
+        rect.setWidth(new Size(40, SizeUnits.PX));
+        rect.setHeight(new Size(20, SizeUnits.PX));
+        rect.setStroke(Color.BLACK);
+        rect.setStrokeDashArray(List.of(0.0));
+
+        WritableImage image = JavaFxTestSupport.onFxThread(() -> {
+            Group rendered = render(groupOf(rect));
+            new Scene(rendered);
+            SnapshotParameters params = new SnapshotParameters();
+            params.setFill(Color.WHITE);
+            return rendered.snapshot(params, new WritableImage(50, 30));
+        });
+
+        // asserting that something was painted, rather than on any particular pixel: the claim under test is that
+        // the render completes at all, and pinning an exact colour would only make this hostage to edge antialiasing
+        int painted = 0;
+        for (int y = 0; y < 30; y++) {
+            for (int x = 0; x < 50; x++) {
+                if (!image.getPixelReader().getColor(x, y).equals(Color.WHITE)) {
+                    painted++;
+                }
+            }
+        }
+        assertThat("the shape should have rendered rather than thrown", painted > 0, is(true));
     }
 
     // --- opacity -----------------------------------------------------------
