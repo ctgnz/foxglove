@@ -36,8 +36,16 @@ public final class ConformanceManifest {
     }
 
     public static Map<String, Boolean> load() {
+        return load(PATH);
+    }
+
+    /**
+     * As {@link #load()}, from a named file - {@link W3cSvgAnimationCheck} keeps its own baseline (#112), and the
+     * diff logic below is worth sharing rather than copying alongside it.
+     */
+    public static Map<String, Boolean> load(Path path) {
         Properties properties = new Properties();
-        try (InputStream in = Files.newInputStream(PATH)) {
+        try (InputStream in = Files.newInputStream(path)) {
             properties.load(in);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -54,14 +62,18 @@ public final class ConformanceManifest {
      * change in baseline ({@code -Dconformance.mode=record}), never done implicitly by a plain verification run.
      */
     public static void record(Map<String, Boolean> actual) {
-        StringBuilder content = new StringBuilder();
-        content.append("# W3C SVG 1.1 conformance baseline (#44) - one PASS/FAIL line per test name.\n");
-        content.append("# Regenerate deliberately with -Dconformance.mode=record after reviewing what changed.\n");
+        record(PATH, actual, "# W3C SVG 1.1 conformance baseline (#44) - one PASS/FAIL line per test name.\n"
+            + "# Regenerate deliberately with -Dconformance.mode=record after reviewing what changed.\n");
+    }
+
+    /** As {@link #record(Map)}, to a named file and under its own {@code header} - see {@link #load(Path)}. */
+    public static void record(Path path, Map<String, Boolean> actual, String header) {
+        StringBuilder content = new StringBuilder(header);
         for (Map.Entry<String, Boolean> entry : new TreeMap<>(actual).entrySet()) {
             content.append(entry.getKey()).append('=').append(entry.getValue() ? "PASS" : "FAIL").append('\n');
         }
         try {
-            Files.writeString(PATH, content.toString(), StandardCharsets.UTF_8);
+            Files.writeString(path, content.toString(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
