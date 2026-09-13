@@ -158,8 +158,14 @@ public class SvgGraphic extends AbstractSvgStylable
 
         // x/y position this element within its parent, so - unlike width/height/viewBox below - they resolve
         // against the parent's viewport rather than the one this element is about to establish.
-        group.setTranslateX(parentContext.resolveLength(getX(), Axis.HORIZONTAL));
-        group.setTranslateY(parentContext.resolveLength(getY(), Axis.VERTICAL));
+        //
+        // On the outermost <svg> they are ignored entirely (SVG 1.1 5.1.2): there is no parent coordinate system to
+        // be positioned within, so x/y have no meaning there. Applying them anyway translated the whole document,
+        // which for a document declaring something like x="1000" put every bit of it off-canvas (#113).
+        if (!parentContext.isDocumentRoot()) {
+            group.setTranslateX(parentContext.resolveLength(getX(), Axis.HORIZONTAL));
+            group.setTranslateY(parentContext.resolveLength(getY(), Axis.VERTICAL));
+        }
 
         double width = resolveIntrinsicLength(overrideWidth != null ? overrideWidth : getWidth(), parentContext, Axis.HORIZONTAL, DEFAULT_WIDTH);
         double height = resolveIntrinsicLength(overrideHeight != null ? overrideHeight : getHeight(), parentContext, Axis.VERTICAL, DEFAULT_HEIGHT);

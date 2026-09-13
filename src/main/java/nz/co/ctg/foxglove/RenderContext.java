@@ -65,11 +65,11 @@ public final class RenderContext implements ISvgStylable {
 
     /**
      * The context at the top of the document: no inherited style, the document's element index, and the given
-     * initial viewport.
+     * initial viewport. This is the only context that reports {@link #isDocumentRoot()}.
      */
     public static RenderContext root(SvgElementIndex elementIndex, double viewportWidth, double viewportHeight) {
         return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null, null, Locale.getDefault(), null,
-            null, null, Collections.emptySet());
+            null, null, Collections.emptySet(), true);
     }
 
     private final SvgInheritedStyle style;
@@ -83,10 +83,12 @@ public final class RenderContext implements ISvgStylable {
     private final ForeignObjectHandler foreignObjectHandler;
     private final Map<ISvgElement, Node> nodeRegistry;
     private final Set<ISvgElement> activeUseTargets;
+    private final boolean documentRoot;
 
     private RenderContext(SvgInheritedStyle style, SvgElementIndex elementIndex, double viewportWidth, double viewportHeight,
         Bounds objectBoundingBox, URI baseUri, Locale locale, Consumer<SvgAnchor> anchorActivationHandler,
-        ForeignObjectHandler foreignObjectHandler, Map<ISvgElement, Node> nodeRegistry, Set<ISvgElement> activeUseTargets) {
+        ForeignObjectHandler foreignObjectHandler, Map<ISvgElement, Node> nodeRegistry, Set<ISvgElement> activeUseTargets,
+        boolean documentRoot) {
         this.style = style;
         this.elementIndex = elementIndex;
         this.viewportWidth = viewportWidth;
@@ -98,15 +100,32 @@ public final class RenderContext implements ISvgStylable {
         this.foreignObjectHandler = foreignObjectHandler;
         this.nodeRegistry = nodeRegistry;
         this.activeUseTargets = activeUseTargets;
+        this.documentRoot = documentRoot;
+    }
+
+    /**
+     * Whether this context is the one the document's outermost element renders against - true only for {@link #root},
+     * cleared the moment anything descends through {@link #resolveChild}.
+     * <p>
+     * Exists because a handful of attributes mean something different, or nothing at all, on the outermost
+     * {@code <svg>}: its {@code x}/{@code y} are ignored entirely (SVG 1.1 5.1.2), since there is no parent
+     * coordinate system to be positioned within, whereas on a nested {@code <svg>} they position it in its parent.
+     */
+    public boolean isDocumentRoot() {
+        return documentRoot;
     }
 
     /**
      * The context a container hands to one of its children: the container's own style resolved one level further,
      * same viewport, index, object bounding box, base URI, locale and handlers.
+     * <p>
+     * This is also the single point where {@link #isDocumentRoot()} is cleared, and the reason that flag can be
+     * trusted: every element rendered as somebody's child arrives through here, so nothing below the top of the
+     * document can claim to be the root, however the context was otherwise derived on the way down.
      */
     public RenderContext resolveChild(ISvgAttributes element) {
         return new RenderContext(SvgInheritedStyle.resolve(style, element), elementIndex, viewportWidth, viewportHeight, objectBoundingBox,
-            baseUri, locale, anchorActivationHandler, foreignObjectHandler, nodeRegistry, activeUseTargets);
+            baseUri, locale, anchorActivationHandler, foreignObjectHandler, nodeRegistry, activeUseTargets, false);
     }
 
     /**
@@ -116,7 +135,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withViewport(double width, double height) {
         return new RenderContext(style, elementIndex, width, height, null, baseUri, locale, anchorActivationHandler, foreignObjectHandler,
-            nodeRegistry, activeUseTargets);
+            nodeRegistry, activeUseTargets, documentRoot);
     }
 
     /**
@@ -126,7 +145,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withObjectBoundingBox(Bounds bbox) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry, activeUseTargets);
+            foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
     }
 
     /**
@@ -136,7 +155,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withBaseUri(URI baseUri) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry, activeUseTargets);
+            foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
     }
 
     /**
@@ -146,7 +165,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withLocale(Locale locale) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry, activeUseTargets);
+            foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
     }
 
     /**
@@ -158,7 +177,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withAnchorActivationHandler(Consumer<SvgAnchor> anchorActivationHandler) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry, activeUseTargets);
+            foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
     }
 
     /**
@@ -167,7 +186,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withForeignObjectHandler(ForeignObjectHandler foreignObjectHandler) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry, activeUseTargets);
+            foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
     }
 
     /**
@@ -179,7 +198,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withNodeRegistry(Map<ISvgElement, Node> nodeRegistry) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-            foreignObjectHandler, nodeRegistry, activeUseTargets);
+            foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
     }
 
     /**
@@ -196,7 +215,7 @@ public final class RenderContext implements ISvgStylable {
         updated.addAll(activeUseTargets);
         updated.add(target);
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale,
-            anchorActivationHandler, foreignObjectHandler, nodeRegistry, Collections.unmodifiableSet(updated));
+            anchorActivationHandler, foreignObjectHandler, nodeRegistry, Collections.unmodifiableSet(updated), documentRoot);
     }
 
     /**

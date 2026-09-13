@@ -198,4 +198,57 @@ public class ViewportRenderingTest {
         assertThat(fxRect.getHeight(), closeTo(50, 1e-9));
     }
 
+    /**
+     * Regression cover for #113. The outermost {@code <svg>} has no parent coordinate system to be positioned
+     * within, so SVG 1.1 5.1.2 gives its {@code x}/{@code y} no meaning at all. Applying them anyway translated the
+     * entire document - a real W3C test declares {@code x="1000" y="1000"} precisely to catch this, and every bit of
+     * such a document rendered off-canvas.
+     */
+    @Test
+    public void testOutermostSvgIgnoresItsOwnXAndY() throws Exception {
+        SvgGraphic svg = new SvgGraphic();
+        svg.setWidth(px(400));
+        svg.setHeight(px(200));
+        svg.setX(px(1000));
+        svg.setY(px(1000));
+        SvgRectangle rect = new SvgRectangle();
+        rect.setX(px(10));
+        rect.setY(px(20));
+        rect.setWidth(px(30));
+        rect.setHeight(px(40));
+        svg.getContent().add(rect);
+
+        Group rendered = svg.createGroup();
+        assertThat(rendered.getTranslateX(), closeTo(0, 1e-9));
+        assertThat(rendered.getTranslateY(), closeTo(0, 1e-9));
+        // and the content still sits where the document put it, rather than 1000 units away
+        assertThat(rendered.getBoundsInParent().getMinX(), closeTo(10, 1e-9));
+        assertThat(rendered.getBoundsInParent().getMinY(), closeTo(20, 1e-9));
+    }
+
+    /**
+     * The other half of #113: the rule is about being outermost, not about {@code <svg>} elements generally, so a
+     * nested one must still be positioned by its own x/y even when the identical attributes are being ignored one
+     * level up. {@link #testNestedSvgXYResolveAgainstTheParentViewportNotItsOwn} covers the resolution rule itself.
+     */
+    @Test
+    public void testANestedSvgStillHonoursXAndYWhenTheRootIgnoresItsOwn() throws Exception {
+        SvgGraphic root = new SvgGraphic();
+        root.setWidth(px(400));
+        root.setHeight(px(200));
+        root.setX(px(1000));
+        root.setY(px(1000));
+        SvgGraphic nested = new SvgGraphic();
+        nested.setX(px(30));
+        nested.setY(px(40));
+        nested.setWidth(px(100));
+        nested.setHeight(px(100));
+        root.getContent().add(nested);
+
+        Group rendered = root.createGroup();
+        assertThat(rendered.getTranslateX(), closeTo(0, 1e-9));
+        assertThat(((Group) rendered.getChildren().get(0)).getTranslateX(), closeTo(30, 1e-9));
+        assertThat(((Group) rendered.getChildren().get(0)).getTranslateY(), closeTo(40, 1e-9));
+    }
+
 }
