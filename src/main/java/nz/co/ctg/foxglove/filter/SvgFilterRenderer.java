@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.filter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +13,7 @@ import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.RenderContext.UnitsMode;
 
+import javafx.application.Platform;
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.BoundingBox;
@@ -41,10 +43,16 @@ import javafx.scene.shape.Rectangle;
  * need machinery (light sources, image loading) beyond what a chain needs.
  * <p>
  * A filter whose primitives don't fit this shape at all (an excluded primitive, a graph that isn't resolvable
- * through blank/{@code SourceGraphic}/an earlier {@code result} - branches, {@code SourceAlpha},
- * {@code BackgroundImage}) degrades to no effect - {@code node} renders unfiltered, never throwing and never
- * silently wrong. Full arbitrary-graph support (primitive subregions beyond falling back to the filter region, the
- * pixel-level primitives) is out of scope here - see the issue's own suggested follow-up stage.
+ * through blank/{@code SourceGraphic}/an earlier {@code result} - branches, {@code SourceAlpha}) no longer degrades
+ * straight to no effect: it falls back to {@link SvgFilterRasterPipeline}, which evaluates the primitive graph as
+ * real pixels (#77). The effect chain is tried first because it is strictly better where it applies - the result
+ * stays vector, so it scales crisply and costs no rasterisation - with the raster pipeline picking up everything it
+ * cannot express. Only when that fails too does {@code node} render unfiltered.
+ * <p>
+ * One consequence of that layering, deliberate but worth knowing: {@code feColorMatrix}'s
+ * {@code saturate}/{@code hueRotate} keep the approximate {@link ColorAdjust} treatment below when the rest of the
+ * chain is effect-expressible, but are computed exactly when the filter falls back to raster for some other reason.
+ * Always preferring raster would be more accurate but would regress filters that render fine today.
  * <p>
  * Unlike {@code mask} (#25), this mutates {@code node} in place ({@code setEffect}/{@code setClip}) rather than
  * replacing it, so it needs none of masking's consumer-side indirection - {@code AbstractSvgShape}'s narrower
@@ -60,17 +68,26 @@ public final class SvgFilterRenderer {
     private static final double STD_DEVIATION_TO_RADIUS = 3.0;
 
     /**
-     * Thrown internally to abort building a filter's chain the moment any primitive, or any {@code in}/{@code in2}
-     * reference, falls outside what this renderer supports - caught once, at the top, so every abort path degrades
-     * identically (leaves {@code node} unfiltered) without each call site needing its own early-return plumbing.
+     * The only logging in this library. A filter that cannot be rendered at all produces nothing visible, which is
+     * otherwise indistinguishable from one that rendered correctly but subtly - so the two reasons that can happen
+     * are reported rather than swallowed, at levels that reflect how actionable each is:
+     * <ul>
+     * <li>{@code FINE} - the filter genuinely uses something unsupported (see {@link SvgFilterRasterPipeline}'s own
+     * list of gaps). Expected, and far too common in real documents to warrant anything louder.
+     * <li>{@code WARNING} - the filter could have rendered, but rasterising was not possible, almost always because
+     * the scene graph is being built off the JavaFX Application Thread, which {@code Node.snapshot} requires. That
+     * is an environmental problem the calling application can actually act on.
+     * </ul>
+     * Uses {@code java.util.logging} deliberately: no new dependency, part of the JDK, what JavaFX itself uses, and
+     * routable to SLF4J/Log4j by a consuming application that wants that.
      */
-    private static final class UnsupportedFilterException extends RuntimeException {
-    }
+    private static final Logger LOG = Logger.getLogger(SvgFilterRenderer.class.getName());
 
     public static void apply(RenderContext context, Node node, SvgFilter filter) {
         Bounds targetBounds = node.getBoundsInLocal();
-        applyChain(node, filter, targetBounds, context);
-        applyFilterRegionClip(context, node, filter, targetBounds);
+        Bounds region = resolveFilterRegion(filter, context, targetBounds);
+        applyChain(node, filter, targetBounds, context, region);
+        applyFilterRegionClip(node, region);
     }
 
     /**
@@ -79,7 +96,7 @@ public final class SvgFilterRenderer {
      * to, per spec) and a name→{@code Effect} map for anything that declared its own {@code result}. Aborts to no
      * effect at all - rather than a partially-built one - the moment anything doesn't fit.
      */
-    private static void applyChain(Node node, SvgFilter filter, Bounds targetBounds, RenderContext context) {
+    private static void applyChain(Node node, SvgFilter filter, Bounds targetBounds, RenderContext context, Bounds region) {
         List<ISvgFilterPrimitive> primitives = filter.getContent().stream()
             .filter(ISvgFilterPrimitive.class::isInstance)
             .map(ISvgFilterPrimitive.class::cast)
@@ -101,7 +118,24 @@ public final class SvgFilterRenderer {
             }
             node.setEffect(current);
         } catch (UnsupportedFilterException e) {
-            // documented degrade: node stays unfiltered
+            applyRasterPipeline(context, node, filter, primitives, targetBounds, region);
+        }
+    }
+
+    /**
+     * The fallback for everything the effect chain above cannot express - see {@link SvgFilterRasterPipeline}. Its
+     * own failure to render is the last word: {@code node} then stays unfiltered, reported per {@link #LOG}.
+     */
+    private static void applyRasterPipeline(RenderContext context, Node node, SvgFilter filter, List<ISvgFilterPrimitive> primitives,
+        Bounds targetBounds, Bounds region) {
+        if (SvgFilterRasterPipeline.apply(context, node, filter, primitives, targetBounds, region)) {
+            return;
+        }
+        if (Platform.isFxApplicationThread()) {
+            LOG.fine(() -> "Filter '" + filter.getId() + "' uses features this renderer does not support; rendering unfiltered.");
+        } else {
+            LOG.warning(() -> "Filter '" + filter.getId() + "' needs rasterising, which requires the JavaFX Application Thread - "
+                + "build the scene graph there (see Platform.runLater) for it to render. Rendering unfiltered.");
         }
     }
 
@@ -177,7 +211,7 @@ public final class SvgFilterRenderer {
         return new ColorInput(region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), color);
     }
 
-    private static Color parseFloodColor(String value) {
+    static Color parseFloodColor(String value) {
         if (StringUtils.isBlank(value)) {
             return Color.BLACK;
         }
@@ -271,7 +305,7 @@ public final class SvgFilterRenderer {
      * {@code Axis.DIAGONAL} length, but keyed to the target's own bounding box rather than the viewport - what
      * {@code primitiveUnits="objectBoundingBox"} resolves a fraction against.
      */
-    private static double bboxDiagonal(Bounds bounds) {
+    static double bboxDiagonal(Bounds bounds) {
         return Math.sqrt((bounds.getWidth() * bounds.getWidth() + bounds.getHeight() * bounds.getHeight()) / 2.0);
     }
 
@@ -284,8 +318,7 @@ public final class SvgFilterRenderer {
      * filter region is genuinely spec-correct, not just plumbing for its own sake: it is why the default region is
      * 120%, not the shape's own exact bounds.
      */
-    private static void applyFilterRegionClip(RenderContext context, Node node, SvgFilter filter, Bounds targetBounds) {
-        Bounds region = resolveFilterRegion(filter, context, targetBounds);
+    private static void applyFilterRegionClip(Node node, Bounds region) {
         if (region.getWidth() <= 0 || region.getHeight() <= 0) {
             return;
         }
