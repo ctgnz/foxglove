@@ -17,6 +17,7 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 
+import javafx.geometry.Point2D;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
@@ -93,12 +94,27 @@ public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradie
         if (stops.size() < 2) {
             return getDegeneratePaint(stops);
         }
-        return new LinearGradient(
-            ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getX1), 0.0),
-            ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getY1), 0.0),
-            ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getX2), 1.0),
-            ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getY2), 0.0),
-            isEffectivelyProportional(index), getEffectiveCycleMethod(index), stops);
+        double x1 = ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getX1), 0.0);
+        double y1 = ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getY1), 0.0);
+        double x2 = ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getX2), 1.0);
+        double y2 = ISvgGradientElement.coordinate(effective(index, SvgLinearGradient::getY2), 0.0);
+
+        String transformText = getEffectiveGradientTransform(index);
+        GradientTransform transform = GradientTransform.parse(transformText);
+        if (transform != null) {
+            if (transform.preservesLinearAxis(x1, y1, x2, y2)) {
+                // the axis carries the whole gradient: transforming its endpoints is the entire transformation
+                Point2D start = transform.apply(x1, y1);
+                Point2D end = transform.apply(x2, y2);
+                x1 = start.getX();
+                y1 = start.getY();
+                x2 = end.getX();
+                y2 = end.getY();
+            } else {
+                GradientTransform.reportUnrepresentable(getId(), transformText);
+            }
+        }
+        return new LinearGradient(x1, y1, x2, y2, isEffectivelyProportional(index), getEffectiveCycleMethod(index), stops);
     }
 
     /**
