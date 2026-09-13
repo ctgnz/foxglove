@@ -46,17 +46,27 @@ public interface ISvgGradientElement extends ISvgElement, ISvgLinkable {
     String getSpreadMethod();
 
     /**
-     * Parsed, but not applied.
+     * This element's own {@code gradientTransform}, unresolved - see {@link #getEffectiveGradientTransform}.
      * <p>
-     * A JavaFX gradient carries no transform, so there is nowhere to put one. A translate or a scale along the
-     * gradient axis could be baked into the computed coordinates, but a rotation or a skew changes the shape of the
-     * gradient itself and cannot be represented at all. Rather than support a subset that silently produces the
-     * wrong picture for everything else, this is left unimplemented and recorded as its own issue.
-     * <p>
-     * Not inherited via {@code xlink:href} for the same reason - there would be nothing for the effective value to
-     * do.
+     * A JavaFX gradient carries no transform, so honouring one means folding it into the coordinates the gradient is
+     * built from. That is exact for some transforms and impossible for others; {@link GradientTransform} draws the
+     * line and says why. Until #52 none of it was applied at all, on the reasoning that a subset which silently
+     * produced the wrong picture elsewhere was worse than nothing - what changed is that the unsupported cases now
+     * say so rather than failing quietly.
      */
     String getGradientTransform();
+
+    /**
+     * As {@link #getGradientTransform()}, but resolving via the {@code xlink:href} chain - {@code gradientTransform}
+     * is inherited across a reference like {@code gradientUnits} and {@code spreadMethod}, including across a
+     * linear/radial boundary, since it describes the gradient's coordinate system rather than its geometry.
+     * <p>
+     * This javadoc used to record the opposite, that it was deliberately not inherited because "there would be
+     * nothing for the effective value to do". That was true only while the attribute was ignored.
+     */
+    default String getEffectiveGradientTransform(SvgElementIndex index) {
+        return effectiveCommon(index, ISvgGradientElement::getGradientTransform);
+    }
 
     /**
      * Builds the JavaFX paint for this gradient, resolving any attribute the element itself does not specify - and,

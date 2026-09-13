@@ -17,6 +17,7 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
@@ -112,6 +113,27 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
         double focusY = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getFy), centreY);
         double offsetX = focusX - centreX;
         double offsetY = focusY - centreY;
+
+        String transformText = getEffectiveGradientTransform(index);
+        GradientTransform transform = GradientTransform.parse(transformText);
+        if (transform != null) {
+            if (transform.isSimilarity()) {
+                Point2D centre = transform.apply(centreX, centreY);
+                centreX = centre.getX();
+                centreY = centre.getY();
+                radius *= transform.uniformScale();
+                // the focus's offset from the centre is a direction, so it transforms without the translation. Doing
+                // it this way rather than adding the transform's rotation angle is what keeps a reflection right -
+                // scale(1 -1) is a perfectly good similarity, and an angle added to it comes out 180 degrees wrong
+                Point2D offset = transform.applyToDirection(offsetX, offsetY);
+                offsetX = offset.getX();
+                offsetY = offset.getY();
+            } else {
+                GradientTransform.reportUnrepresentable(getId(), transformText);
+            }
+        }
+        // a similarity scales this offset by exactly the factor it scaled the radius by, so the ratio is unchanged -
+        // but deriving it after the transform rather than asserting that keeps the two in step by construction
         double focusDistance = Math.clamp(Math.hypot(offsetX, offsetY) / radius, 0.0, 1.0);
         double focusAngle = Math.toDegrees(Math.atan2(offsetY, offsetX));
         return new RadialGradient(focusAngle, focusDistance, centreX, centreY, radius,
