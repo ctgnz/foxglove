@@ -47,7 +47,8 @@ public final class SvgMarkerRenderer {
     /**
      * Wraps {@code node} with its markers when {@code child} is a markable shape with at least one of
      * {@code marker-start}/{@code marker-mid}/{@code marker-end} set, or returns {@code node} unchanged otherwise -
-     * which covers every shape that doesn't use markers, the overwhelming majority.
+     * which covers every shape that doesn't use markers, the overwhelming majority. That majority is established
+     * first and costs nothing beyond three attribute reads; see the comment at the top of the method body.
      * <p>
      * {@code node}'s own {@code transforms} (from its {@code transform} attribute) are relocated onto the returned
      * wrapper, so the shape and its markers share exactly the same outer transform - verified empirically that this
@@ -55,6 +56,21 @@ public final class SvgMarkerRenderer {
      * transform placed directly on its only child produce an identical result.
      */
     public static Node applyMarkers(Node node, ISvgElement child, RenderContext context) {
+        // Established before computing anything, deliberately (#121). Every child of every container comes through
+        // here, markers are rare, and working out a shape's vertices is not free - for a <path> it means parsing and
+        // flattening the whole `d` attribute. Doing that first and discarding it was pure waste on nearly every
+        // element, and it needlessly widened the blast radius of anything going wrong in path parsing: it is how
+        // #115's NumberFormatException reached a document that declares no markers at all.
+        if (!(child instanceof ISvgPresentationAttributes attrs)) {
+            return node;
+        }
+        String startHref = attrs.getMarkerStart();
+        String midHref = attrs.getMarkerMid();
+        String endHref = attrs.getMarkerEnd();
+        if (StringUtils.isBlank(startHref) && StringUtils.isBlank(midHref) && StringUtils.isBlank(endHref)) {
+            return node;
+        }
+
         List<Point2D> vertices;
         List<Double> angles;
         if (child instanceof SvgLine line) {
@@ -95,13 +111,7 @@ public final class SvgMarkerRenderer {
             return node;
         }
 
-        if (!(child instanceof ISvgPresentationAttributes attrs) || vertices == null || vertices.size() < 2) {
-            return node;
-        }
-        String startHref = attrs.getMarkerStart();
-        String midHref = attrs.getMarkerMid();
-        String endHref = attrs.getMarkerEnd();
-        if (StringUtils.isBlank(startHref) && StringUtils.isBlank(midHref) && StringUtils.isBlank(endHref)) {
+        if (vertices == null || vertices.size() < 2) {
             return node;
         }
 
