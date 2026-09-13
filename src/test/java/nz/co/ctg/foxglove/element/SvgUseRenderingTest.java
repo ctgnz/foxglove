@@ -193,6 +193,34 @@ public class SvgUseRenderingTest {
         assertThat(renderedChild.getWidth(), closeTo(200, 1e-9));
     }
 
+    /**
+     * An {@code <svg>} reached through {@code <use>} is a nested viewport, not the document root, so its own
+     * {@code x}/{@code y} still position it - the rule #113 added applies to being outermost, not to {@code <svg>}
+     * elements in general, and this is the path most likely to be broken by confusing the two.
+     */
+    @Test
+    public void testUseOfANestedSvgStillAppliesTheTargetsOwnXAndY() throws Exception {
+        SvgGraphic target = new SvgGraphic();
+        target.setId("nested");
+        target.setX(px(25));
+        target.setY(px(35));
+        target.setWidth(px(100));
+        target.setHeight(px(100));
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(target);
+
+        SvgUse use = new SvgUse();
+        use.setXlinkHref("#nested");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(use);
+
+        Group renderedNested = (Group) ((Group) render(root).getChildren().get(0)).getChildren().get(0);
+        assertThat(renderedNested.getTranslateX(), closeTo(25, 1e-9));
+        assertThat(renderedNested.getTranslateY(), closeTo(35, 1e-9));
+    }
+
     @Test
     public void testReferencedContentInheritsFromTheUseSiteNotItsDeclaration() throws Exception {
         SvgRectangle target = rect("shape");
