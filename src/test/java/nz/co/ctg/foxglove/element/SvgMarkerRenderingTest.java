@@ -15,6 +15,7 @@ import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -394,6 +395,67 @@ public class SvgMarkerRenderingTest {
         // and it actually renders, end to end, through the real parsed document
         Group wrapper = (Group) svg.createGroup().getChildren().get(0);
         assertThat(wrapper.getChildren(), hasSize(2));
+    }
+
+    // --- the no-markers fast path (#121) ------------------------------------
+
+    /**
+     * Working out a shape's vertices is not free - for a {@code <path>} it means parsing and flattening the whole
+     * {@code d} attribute - and this runs for every child of every container, while markers are rare. The
+     * marker attributes are therefore read first, and nothing else happens when none is set.
+     * <p>
+     * Asserted through a {@code <path>} that counts reads of its own {@code d}, since that is the single thing the
+     * expensive branch needs and the only observable evidence that it was entered at all. Ordering is easy to undo
+     * by accident in a later edit, and the cost of getting it wrong is invisible.
+     */
+    @Test
+    public void testAPathWithNoMarkersIsNeverParsed() throws Exception {
+        CountingPath path = new CountingPath();
+        path.setD("M0,0 C10,0 20,10 20,20 C30,30 40,40 50,50 Z");
+
+        Node rendered = render(groupOf(path));
+
+        assertThat("a path with no markers should not have its d parsed at all", path.reads, is(0));
+        assertThat(rendered, is(notNullValue()));
+    }
+
+    /** The counterpart: declaring a marker does take the expensive path, so the fast path is not simply always on. */
+    @Test
+    public void testAPathWithAMarkerIsStillParsed() throws Exception {
+        CountingPath path = new CountingPath();
+        path.setD("M0,0 L10,0 L20,10");
+        path.setMarkerEnd("url(#m)");
+
+        SvgMarker marker = new SvgMarker();
+        marker.setId("m");
+        marker.getContent().add(new SvgRectangle());
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(marker);
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(path);
+        render(root);
+
+        assertThat("a path that declares a marker must still be parsed", path.reads > 0, is(true));
+    }
+
+    /** Counts how many times its path data is read - see {@link #testAPathWithNoMarkersIsNeverParsed}. */
+    private static final class CountingPath extends SvgPath {
+
+        private int reads;
+
+        @Override
+        public String getD() {
+            reads++;
+            return super.getD();
+        }
+    }
+
+    private static SvgGroup groupOf(nz.co.ctg.foxglove.ISvgElement child) {
+        SvgGroup group = new SvgGroup();
+        group.getContent().add(child);
+        return group;
     }
 
     private static Group render(SvgGroup root) {
