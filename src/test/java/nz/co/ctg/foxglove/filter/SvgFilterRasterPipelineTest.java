@@ -306,6 +306,40 @@ public class SvgFilterRasterPipelineTest {
         assertThat(node.getEffect(), is(nullValue()));
     }
 
+    // --- the element's own opacity (#129) ------------------------------------
+
+    /**
+     * SVG applies {@code opacity} to the filter's <i>result</i>, not its input, so {@code SourceGraphic} is the
+     * element before it. Leaving the node's opacity on while snapshotting applied it twice - once baked into the
+     * source raster, and again when JavaFX painted the {@code ImageInput} built from it.
+     * <p>
+     * Asserted on the pipeline's own output buffer, which is the filter result <i>before</i> JavaFX applies node
+     * opacity on top: a correct {@code SourceGraphic} is fully opaque there. Note an opaque element could not catch
+     * this at all, and neither could sampling the final rendering without accounting for the one legitimate
+     * application.
+     */
+    @Test
+    public void testTheElementsOwnOpacityIsNotBakedIntoSourceGraphic() throws Exception {
+        SvgRectangle rect = redRect();
+        rect.setOpacity("0.5");
+
+        Image result = filtered(rect, filterOf(passThrough("SourceGraphic")));
+
+        assertThat("SourceGraphic should be the element before its own opacity",
+            colorAt(result, 25, 25).getOpacity(), closeTo(1.0, 0.02));
+    }
+
+    /** And the node keeps its opacity afterwards, so the one legitimate application still happens. */
+    @Test
+    public void testTheElementKeepsItsOpacityAfterFiltering() throws Exception {
+        SvgRectangle rect = redRect();
+        rect.setOpacity("0.5");
+
+        Node node = onFxThread(() -> render(rect, filterOf(passThrough("SourceGraphic"))));
+
+        assertThat(node.getOpacity(), closeTo(0.5, 1e-9));
+    }
+
     // --- colour-interpolation space (#108) -----------------------------------
 
     /**

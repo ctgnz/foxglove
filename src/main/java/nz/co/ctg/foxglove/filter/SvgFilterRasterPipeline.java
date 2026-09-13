@@ -162,10 +162,19 @@ final class SvgFilterRasterPipeline {
 
     /**
      * Snapshots {@code node} over the filter region, the same technique {@code SvgMaskRenderer.rasterize} and
-     * {@code SvgPattern} already use - the node's own transforms are cleared first, since an explicit snapshot
-     * viewport is read in post-transform space while the region is in the pre-transform local space
-     * {@code getBoundsInLocal} gave it. Unlike masking, which discards its node, everything is put back afterwards:
-     * this node goes on to be rendered for real.
+     * {@code SvgPattern} already use. Two of the node's own properties are taken off first, for different reasons,
+     * and both are put back afterwards - unlike masking, which discards its node, this one goes on to be rendered
+     * for real:
+     * <ul>
+     * <li>its <b>transforms</b> (and {@code translateX}/{@code translateY}), because an explicit snapshot viewport is
+     * read in post-transform space while the region is in the pre-transform local space {@code getBoundsInLocal}
+     * gave it;
+     * <li>its <b>opacity</b>, because {@code SourceGraphic} is the element before its own opacity - SVG applies that
+     * to the filter's result, not its input. Leaving it on applied it twice (#129): once baked into this snapshot,
+     * and again when JavaFX paints the {@link ImageInput} built from it.
+     * </ul>
+     * A {@code clip} from {@code clip-path} is likewise still on the node and likewise re-applied afterwards, but
+     * clipping twice with the same clip is idempotent, so it needs no equivalent treatment.
      * <p>
      * Returns {@code null} when snapshotting is not possible at all - most usually because the caller is not on the
      * JavaFX Application Thread, which {@code Node.snapshot} requires. That is the same constraint masking already
@@ -175,11 +184,16 @@ final class SvgFilterRasterPipeline {
         List<Transform> ownTransforms = List.copyOf(node.getTransforms());
         double translateX = node.getTranslateX();
         double translateY = node.getTranslateY();
+        double opacity = node.getOpacity();
         Group holder = new Group();
         try {
             node.getTransforms().clear();
             node.setTranslateX(0);
             node.setTranslateY(0);
+            // SourceGraphic is the element before its own opacity, which SVG applies to the filter's result rather
+            // than its input. Leaving it on double-applies it (#129): once baked into this snapshot, and again when
+            // JavaFX paints the ImageInput built from it, since node opacity still applies to the effect's output
+            node.setOpacity(1.0);
 
             holder.getChildren().add(node);
             new Scene(holder);
@@ -196,6 +210,7 @@ final class SvgFilterRasterPipeline {
             node.getTransforms().setAll(ownTransforms);
             node.setTranslateX(translateX);
             node.setTranslateY(translateY);
+            node.setOpacity(opacity);
         }
     }
 
