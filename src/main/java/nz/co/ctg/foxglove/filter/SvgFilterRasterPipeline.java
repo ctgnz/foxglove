@@ -46,7 +46,9 @@ import javafx.scene.transform.Transform;
  * {@code feDisplacementMap}, {@code feTile}, {@code feImage}, the lighting primitives), per-primitive subregions
  * ({@code x}/{@code y}/{@code width}/{@code height} on an individual {@code fe*}), and {@code in="BackgroundImage"}.
  * Separately, and unlike those: this works in <b>sRGB</b> where the specification's default working space for
- * filters is linearRGB, so colours from the interpolating primitives differ from a fully conformant renderer's.
+ * filters is linearRGB, so colours from the interpolating primitives differ from a fully conformant renderer's -
+ * structure and geometry are right, the values are not. Tracked as #108, and the largest remaining source of error
+ * against the W3C suite's {@code filters} chapter.
  */
 final class SvgFilterRasterPipeline {
 
