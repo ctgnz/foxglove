@@ -49,10 +49,20 @@ import javafx.scene.shape.Rectangle;
  * stays vector, so it scales crisply and costs no rasterisation - with the raster pipeline picking up everything it
  * cannot express. Only when that fails too does {@code node} render unfiltered.
  * <p>
- * One consequence of that layering, deliberate but worth knowing: {@code feColorMatrix}'s
- * {@code saturate}/{@code hueRotate} keep the approximate {@link ColorAdjust} treatment below when the rest of the
- * chain is effect-expressible, but are computed exactly when the filter falls back to raster for some other reason.
- * Always preferring raster would be more accurate but would regress filters that render fine today.
+ * Two consequences of that layering, both deliberate and both worth knowing, since they mean the same document can
+ * render differently depending on which path takes it:
+ * <ul>
+ * <li>{@code feColorMatrix}'s {@code saturate}/{@code hueRotate} keep the approximate {@link ColorAdjust} treatment
+ * below when the rest of the chain is effect-expressible, but are computed exactly when the filter falls back to
+ * raster for some other reason.
+ * <li>The raster pipeline honours {@code color-interpolation-filters} and works in linearRGB by default, per the
+ * specification (#108). This path cannot: JavaFX effects operate in sRGB and expose no way to ask otherwise -
+ * verified by blurring a hard black/white edge, whose midpoint comes back at {@code 0.52} rather than the
+ * {@code 0.735} a linear-light blur would give. So an effect-expressible filter is still evaluated in sRGB.
+ * </ul>
+ * Always preferring raster would be more accurate on both counts but would rasterise every filter in the library,
+ * including the many that render perfectly well - and crisply, at any scale - as an effect chain today. Tracked
+ * as #126.
  * <p>
  * Unlike {@code mask} (#25), this mutates {@code node} in place ({@code setEffect}/{@code setClip}) rather than
  * replacing it, so it needs none of masking's consumer-side indirection - {@code AbstractSvgShape}'s narrower

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
+import nz.co.ctg.foxglove.ISvgPresentationAttributes;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.RenderContext.UnitsMode;
 
@@ -45,10 +46,11 @@ import javafx.scene.transform.Transform;
  * not listed in {@link #evaluate} ({@code feTurbulence}, {@code feConvolveMatrix}, {@code feMorphology},
  * {@code feDisplacementMap}, {@code feTile}, {@code feImage}, the lighting primitives), per-primitive subregions
  * ({@code x}/{@code y}/{@code width}/{@code height} on an individual {@code fe*}), and {@code in="BackgroundImage"}.
- * Separately, and unlike those: this works in <b>sRGB</b> where the specification's default working space for
- * filters is linearRGB, so colours from the interpolating primitives differ from a fully conformant renderer's -
- * structure and geometry are right, the values are not. Tracked as #108, and the largest remaining source of error
- * against the W3C suite's {@code filters} chapter.
+ * <p>
+ * Primitives evaluate in <b>linearRGB</b> by default, per the specification, honouring
+ * {@code color-interpolation-filters} per primitive - see {@link FilterColorSpace}. Working in sRGB instead was
+ * #77's largest documented inaccuracy, fixed in #108: it left structure and geometry right but every interpolated
+ * value systematically too dark.
  */
 final class SvgFilterRasterPipeline {
 
@@ -71,6 +73,9 @@ final class SvgFilterRasterPipeline {
     private FilterRaster sourceAlpha;
     private FilterRaster previous;
     private boolean first = true;
+
+    /** The space the primitive currently being evaluated works in - see {@link #run} and {@link #resolveInput}. */
+    private FilterColorSpace colorSpace = FilterColorSpace.LINEAR_RGB;
 
     private SvgFilterRasterPipeline(SvgFilter filter, RenderContext context, Bounds targetBounds, Bounds region, int width, int height) {
         this.filter = filter;
@@ -112,7 +117,11 @@ final class SvgFilterRasterPipeline {
         try {
             FilterRaster result = null;
             for (ISvgFilterPrimitive primitive : primitives) {
+                // each primitive declares the space it works in, so this is per-primitive rather than set once
+                // for the filter - resolveInput converts whatever it is handed into it
+                colorSpace = primitiveColorSpace(primitive);
                 result = evaluate(primitive);
+                result.setColorSpace(colorSpace);
                 previous = result;
                 first = false;
                 String name = StringUtils.trimToEmpty(primitive.getResult());
@@ -120,10 +129,35 @@ final class SvgFilterRasterPipeline {
                     namedResults.put(name, result);
                 }
             }
-            return result;
+            // whatever space the last primitive worked in, what gets displayed is sRGB
+            return result == null ? null : result.toColorSpace(FilterColorSpace.SRGB);
         } catch (UnsupportedFilterException e) {
             return null;
         }
+    }
+
+    /**
+     * The space a primitive works in when it declares none of its own: the {@code <filter>}'s, falling back to
+     * SVG's own default of linearRGB.
+     * <p>
+     * {@code color-interpolation-filters} is a properly inherited property, so strictly this should also consult the
+     * {@code <filter>} element's ancestors. Resolving primitive → filter → default covers how it is actually written
+     * in practice and is a documented simplification, not an oversight - a {@code <filter>} normally sits in
+     * {@code <defs>}, whose ancestors are not the referencing element's and carry nothing meaningful.
+     */
+    private FilterColorSpace filterColorSpace() {
+        return FilterColorSpace.parse(filter.getColorInterpolationFilters(), FilterColorSpace.LINEAR_RGB);
+    }
+
+    /**
+     * {@link ISvgFilterPrimitive} carries only the {@code in}/{@code result}/subregion attributes common to every
+     * primitive, not the presentation properties - but every concrete {@code fe*} class extends
+     * {@code AbstractSvgStylable} and so does have them, and the binding files declare
+     * {@code color-interpolation-filters} on all of them.
+     */
+    private FilterColorSpace primitiveColorSpace(ISvgFilterPrimitive primitive) {
+        String declared = primitive instanceof ISvgPresentationAttributes attrs ? attrs.getColorInterpolationFilters() : null;
+        return FilterColorSpace.parse(declared, filterColorSpace());
     }
 
     /**
@@ -194,12 +228,21 @@ final class SvgFilterRasterPipeline {
     }
 
     /**
-     * Resolves a primitive's {@code in}: blank means {@code SourceGraphic} for the very first primitive and the
-     * previous primitive's result thereafter, per spec. Unlike the effect-chain path, {@code SourceAlpha} and any
-     * earlier named {@code result} both resolve here - retaining every result, rather than only the previous one, is
-     * exactly what lets a branching or out-of-order graph work. {@code BackgroundImage} and friends still abort.
+     * Resolves a primitive's {@code in}, <b>in the space that primitive works in</b>: blank means
+     * {@code SourceGraphic} for the very first primitive and the previous primitive's result thereafter, per spec.
+     * Unlike the effect-chain path, {@code SourceAlpha} and any earlier named {@code result} both resolve here -
+     * retaining every result, rather than only the previous one, is exactly what lets a branching or out-of-order
+     * graph work. {@code BackgroundImage} and friends still abort.
+     * <p>
+     * Converting here, rather than once for the whole filter, is what makes a per-primitive
+     * {@code color-interpolation-filters} work at all (#108): {@code SourceGraphic} arrives in sRGB, a named result
+     * arrives in whatever space the primitive that produced it declared, and each consumer gets it in its own.
      */
     private FilterRaster resolveInput(String in) {
+        return resolve(in).toColorSpace(colorSpace);
+    }
+
+    private FilterRaster resolve(String in) {
         String ref = StringUtils.trimToEmpty(in);
         if (ref.isEmpty()) {
             return first ? sourceGraphic : previous;
@@ -238,9 +281,11 @@ final class SvgFilterRasterPipeline {
         float alpha = (float) (color.getOpacity() * (opacity != null ? opacity : 1.0));
         FilterRaster result = new FilterRaster(width, height);
         float[] data = result.getData();
-        float red = (float) color.getRed() * alpha;
-        float green = (float) color.getGreen() * alpha;
-        float blue = (float) color.getBlue() * alpha;
+        // flood-color is authored in sRGB whatever space this primitive works in, so it converts on the way in -
+        // unlike every other input, which arrives as a buffer resolveInput can convert wholesale
+        float red = colorSpace.convert((float) color.getRed()) * alpha;
+        float green = colorSpace.convert((float) color.getGreen()) * alpha;
+        float blue = colorSpace.convert((float) color.getBlue()) * alpha;
         for (int i = 0; i < data.length; i += 4) {
             data[i] = red;
             data[i + 1] = green;

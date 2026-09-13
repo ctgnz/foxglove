@@ -306,6 +306,90 @@ public class SvgFilterRasterPipelineTest {
         assertThat(node.getEffect(), is(nullValue()));
     }
 
+    // --- colour-interpolation space (#108) -----------------------------------
+
+    /**
+     * SVG's default filter working space is linearRGB, not sRGB, and getting that wrong makes every interpolated
+     * value systematically too dark.
+     * <p>
+     * Note what it takes to see the difference at all: {@code 0} and {@code 1} are fixed points of the sRGB transfer
+     * function, so a test built from saturated primaries - as every other test in this class is, quite reasonably,
+     * since they make the geometry legible - passes identically in either space. The difference only shows in the
+     * midtones, so this halves white and looks at where it lands: {@code 0.5} in linear light is {@code 0.735} once
+     * encoded back to sRGB, against {@code 0.5} if the maths had been done in sRGB throughout. Nothing subtle about
+     * a 60-level gap; it is invisible only if you never test a midtone.
+     */
+    @Test
+    public void testPrimitivesEvaluateInLinearRgbByDefault() throws Exception {
+        Image result = filtered(whiteRect(), filterOf(halveEveryChannel()));
+
+        assertThat(colorAt(result, 25, 25).getRed(), closeTo(0.7354, 0.005));
+    }
+
+    /** {@code color-interpolation-filters="sRGB"} on the {@code <filter>} opts the whole graph out. */
+    @Test
+    public void testTheFilterCanOptIntoSrgb() throws Exception {
+        SvgFilter filter = filterOf(halveEveryChannel());
+        filter.setColorInterpolationFilters("sRGB");
+
+        assertThat(colorAt(filtered(whiteRect(), filter), 25, 25).getRed(), closeTo(0.5, 0.005));
+    }
+
+    /** And an individual primitive can opt out on its own, overriding the filter around it. */
+    @Test
+    public void testAPrimitiveCanOptIntoSrgbOnItsOwn() throws Exception {
+        FeComponentTransfer transfer = halveEveryChannel();
+        transfer.setColorInterpolationFilters("sRGB");
+        SvgFilter filter = filterOf(transfer);
+        filter.setColorInterpolationFilters("linearRGB");
+
+        assertThat(colorAt(filtered(whiteRect(), filter), 25, 25).getRed(), closeTo(0.5, 0.005));
+    }
+
+    /**
+     * {@code flood-color} is authored in sRGB whatever space the primitive works in, so a flood that passes through
+     * untouched has to come back out exactly as authored - the conversion in and the conversion out must cancel.
+     * A midtone grey, since a primary would survive either way.
+     */
+    @Test
+    public void testAFloodColourSurvivesTheRoundTripThroughLinearRgb() throws Exception {
+        FeFlood flood = new FeFlood();
+        flood.setFloodColor("#808080");
+        flood.setResult("flooded");
+
+        // feFlood alone is effect-expressible; the no-op feOffset reading it both forces the raster path and
+        // leaves the flood as the graph's result
+        Image result = filtered(whiteRect(), filterOf(flood, passThrough("flooded")));
+        assertThat(colorAt(result, 25, 25).getRed(), closeTo(0x80 / 255.0, 0.01));
+    }
+
+    /** Halves every colour channel in whatever space the primitive is working in. */
+    private static FeComponentTransfer halveEveryChannel() {
+        FeComponentTransfer transfer = new FeComponentTransfer();
+        FeFunctionRed red = new FeFunctionRed();
+        red.setType("linear");
+        red.setSlope("0.5");
+        transfer.setFeFuncR(red);
+        FeFunctionGreen green = new FeFunctionGreen();
+        green.setType("linear");
+        green.setSlope("0.5");
+        transfer.setFeFuncG(green);
+        FeFunctionBlue blue = new FeFunctionBlue();
+        blue.setType("linear");
+        blue.setSlope("0.5");
+        transfer.setFeFuncB(blue);
+        return transfer;
+    }
+
+    /** An {@code feOffset} of zero reading a named result - a way to end a graph on a chosen input. */
+    private static FeOffset passThrough(String in) {
+        FeOffset offset = new FeOffset();
+        offset.setIn(in);
+        offset.setDx("0");
+        offset.setDy("0");
+        return offset;
+    }
+
     // --- helpers -------------------------------------------------------------
 
     /**
@@ -329,8 +413,17 @@ public class SvgFilterRasterPipelineTest {
     }
 
     private static SvgRectangle redRect() {
+        return rectFilled(Color.RED);
+    }
+
+    /** White, for the colour-space tests: its channels are 1.0, which halving moves into the revealing midtones. */
+    private static SvgRectangle whiteRect() {
+        return rectFilled(Color.WHITE);
+    }
+
+    private static SvgRectangle rectFilled(Color fill) {
         SvgRectangle rect = new SvgRectangle(0, 0, 50, 50);
-        rect.setFill(Color.RED);
+        rect.setFill(fill);
         rect.setFilter("url(#f)");
         return rect;
     }
