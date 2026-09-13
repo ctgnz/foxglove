@@ -21,10 +21,51 @@ final class FilterRaster {
     private final int height;
     private final float[] data;
 
+    /**
+     * Which colour space {@link #data}'s colour channels are currently in - see {@link #toColorSpace} and
+     * {@code color-interpolation-filters} (#108). Carried on the buffer rather than tracked alongside it because
+     * intermediate results outlive the primitive that produced them: a named {@code result} can be consumed much
+     * later by a primitive operating in the other space, and only the buffer itself knows what it holds.
+     */
+    private FilterColorSpace colorSpace = FilterColorSpace.SRGB;
+
     FilterRaster(int width, int height) {
         this.width = width;
         this.height = height;
         this.data = new float[Math.max(0, width * height * 4)];
+    }
+
+    FilterColorSpace getColorSpace() {
+        return colorSpace;
+    }
+
+    void setColorSpace(FilterColorSpace colorSpace) {
+        this.colorSpace = colorSpace;
+    }
+
+    /**
+     * This buffer converted into {@code target}, or itself when already there.
+     * <p>
+     * Colour channels only: alpha is a coverage fraction, not a colour, and converting it would be meaningless. The
+     * buffer is premultiplied and the transfer function is non-linear, so each pixel has to be unpremultiplied,
+     * converted and repremultiplied - applying the curve to a premultiplied value would fold the alpha into the
+     * gamma and darken every partially covered pixel.
+     */
+    FilterRaster toColorSpace(FilterColorSpace target) {
+        if (colorSpace == target) {
+            return this;
+        }
+        FilterRaster result = newLike();
+        result.colorSpace = target;
+        float[] rgba = new float[4];
+        for (int i = 0; i < data.length; i += 4) {
+            unpremultiply(data, i, rgba);
+            for (int c = 0; c < 3; c++) {
+                rgba[c] = target.convert(rgba[c]);
+            }
+            premultiply(result.data, i, rgba);
+        }
+        return result;
     }
 
     int getWidth() {
