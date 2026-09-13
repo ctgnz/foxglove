@@ -246,9 +246,18 @@ public final class SvgFilterRenderer {
         return adjust;
     }
 
+    /**
+     * Per SVG 1.1, {@code in} is image A and {@code in2} is image B, and every {@code feBlend} formula composites A
+     * over B - {@code normal} is {@code cr = (1 - qa) * cb + ca}, plain source-over with A as the source. So
+     * {@code in} is the <b>top</b> layer, which is what {@link Blend#topInputProperty()} means too.
+     * <p>
+     * These were the wrong way round until #107, so an asymmetric mode rendered with its operands swapped whenever
+     * the two inputs overlapped with partial coverage. {@link SvgFilterRasterPipeline#blend} always had it right,
+     * which meant the same document rendered differently depending on which of the two paths happened to take it.
+     */
     private static Blend buildBlend(FeBlend blend, Effect previousResult, boolean first, Map<String, Effect> namedResults) {
-        Effect bottom = resolveInput(blend.getIn(), previousResult, first, namedResults);
-        Effect top = resolveInput(blend.getIn2(), previousResult, first, namedResults);
+        Effect top = resolveInput(blend.getIn(), previousResult, first, namedResults);
+        Effect bottom = resolveInput(blend.getIn2(), previousResult, first, namedResults);
         Blend result = new Blend(mapBlendMode(blend.getMode()));
         result.setBottomInput(bottom);
         result.setTopInput(top);

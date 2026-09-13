@@ -23,7 +23,11 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Bounds;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.ColorAdjust;
@@ -295,8 +299,10 @@ public class SvgFilterRenderingTest {
         Blend built = (Blend) render(rect, filter).getEffect();
         assertThat(built, notNullValue());
         assertThat(built.getMode(), is(BlendMode.MULTIPLY));
-        assertThat(built.getBottomInput(), instanceOf(ColorInput.class)); // flood's own result
-        assertThat(built.getTopInput(), is(nullValue())); // SourceGraphic - the plain node itself
+        // in (blank, so the flood's own result) is image A, the TOP layer; in2 is image B, the bottom. This asserted
+        // the reverse until #107 - it encoded the bug rather than the specification.
+        assertThat(built.getTopInput(), instanceOf(ColorInput.class));
+        assertThat(built.getBottomInput(), is(nullValue())); // SourceGraphic - the plain node itself
     }
 
     @Test
@@ -333,6 +339,82 @@ public class SvgFilterRenderingTest {
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
 
         assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
+    }
+
+    // --- feBlend operand order (#107) ------------------------------------
+
+    /**
+     * The assertions above say which slot each input landed in; this says what it actually looks like, which is the
+     * only way to catch the two being swapped.
+     * <p>
+     * Both inputs are fully opaque and cover the sampled point, so under {@code normal} the top layer wins outright:
+     * red if {@code in} is the top (correct), blue if the operands are reversed. There is no tolerance to hide in.
+     */
+    @Test
+    public void testFeBlendNormalPutsInOnTopOfIn2() throws Exception {
+        FeFlood red = new FeFlood();
+        red.setFloodColor("red");
+        red.setResult("red");
+
+        FeBlend blend = new FeBlend();
+        blend.setIn("red");
+        blend.setIn2("SourceGraphic"); // an opaque blue rectangle
+        blend.setMode("normal");
+
+        assertThat(renderedColourAt(filterOf(red, blend), 25, 25), is(Color.RED));
+    }
+
+    /**
+     * The same document down the raster pipeline instead, forced by a no-op {@code feOffset} the effect chain cannot
+     * express (#77). The two paths disagreeing on identical input was the real damage here: which one a document got
+     * depended on whether something unrelated elsewhere in the filter happened to be effect-expressible.
+     */
+    @Test
+    public void testTheRasterPipelineAgreesAboutWhichInputIsOnTop() throws Exception {
+        FeFlood red = new FeFlood();
+        red.setFloodColor("red");
+        red.setResult("red");
+
+        FeOffset forceRaster = new FeOffset();
+        forceRaster.setIn("SourceGraphic");
+        forceRaster.setDx("0");
+        forceRaster.setDy("0");
+        forceRaster.setResult("source");
+
+        FeBlend blend = new FeBlend();
+        blend.setIn("red");
+        blend.setIn2("source");
+        blend.setMode("normal");
+
+        assertThat(renderedColourAt(filterOf(red, forceRaster, blend), 25, 25), is(Color.RED));
+    }
+
+    /**
+     * Renders an opaque blue 50x50 rectangle through {@code filter} and samples the result, so the assertion is
+     * about pixels rather than about which JavaFX object ended up in which property.
+     */
+    private static Color renderedColourAt(SvgFilter filter, int x, int y) throws Exception {
+        filter.setId("f");
+        filter.setFilterUnits("userSpaceOnUse");
+        filter.setX(px(0));
+        filter.setY(px(0));
+        filter.setWidth(px(100));
+        filter.setHeight(px(100));
+
+        SvgRectangle rect = rect(0, 0, 50, 50, "url(#f)");
+        rect.setFill(Color.BLUE);
+
+        return onFxThread(() -> {
+            SvgGraphic svg = new SvgGraphic();
+            svg.getContent().add(filter);
+            Node node = rect.createGraphic(RenderContext.root(svg.getElementIndex(), 0, 0));
+            Group root = new Group(node);
+            new Scene(root);
+            SnapshotParameters params = new SnapshotParameters();
+            params.setFill(Color.TRANSPARENT);
+            params.setViewport(new Rectangle2D(0, 0, 100, 100));
+            return root.snapshot(params, null).getPixelReader().getColor(x, y);
+        });
     }
 
     // --- helpers ---------------------------------------------------------
