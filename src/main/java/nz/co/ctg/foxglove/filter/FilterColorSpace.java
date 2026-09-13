@@ -2,6 +2,8 @@ package nz.co.ctg.foxglove.filter;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nz.co.ctg.foxglove.ISvgPresentationAttributes;
+
 /**
  * The colour space a filter primitive operates in - what {@code color-interpolation-filters} selects (#108).
  * <p>
@@ -50,6 +52,35 @@ enum FilterColorSpace {
      * near black is what keeps dark values from collapsing.
      */
     abstract float convert(float value);
+
+    /**
+     * The space {@code primitive} operates in: its own {@code color-interpolation-filters}, else the
+     * {@code <filter>}'s, else SVG's default of linearRGB.
+     * <p>
+     * Lives here rather than on either renderer because <b>both</b> paths have to agree about it - the raster
+     * pipeline to know what to convert, and {@link SvgFilterRenderer} to know whether it may use an effect chain at
+     * all (#126). Two copies of this rule drifting apart is exactly the failure #107 was.
+     * <p>
+     * {@link ISvgFilterPrimitive} carries only the {@code in}/{@code result}/subregion attributes common to every
+     * primitive, not the presentation properties - but every concrete {@code fe*} class extends
+     * {@code AbstractSvgStylable} and so does have them, and the binding files declare the attribute on all of them.
+     */
+    static FilterColorSpace of(ISvgFilterPrimitive primitive, SvgFilter filter) {
+        String declared = primitive instanceof ISvgPresentationAttributes attrs ? attrs.getColorInterpolationFilters() : null;
+        return parse(declared, of(filter));
+    }
+
+    /**
+     * The space a {@code <filter>} establishes for primitives that declare none of their own.
+     * <p>
+     * {@code color-interpolation-filters} is a properly inherited property, so strictly this should also consult the
+     * {@code <filter>} element's ancestors. Resolving primitive → filter → default covers how it is actually written
+     * in practice and is a documented simplification, not an oversight - a {@code <filter>} normally sits in
+     * {@code <defs>}, whose ancestors are not the referencing element's and carry nothing meaningful.
+     */
+    static FilterColorSpace of(SvgFilter filter) {
+        return parse(filter.getColorInterpolationFilters(), LINEAR_RGB);
+    }
 
     /**
      * The space named by a {@code color-interpolation-filters} value, or {@code fallback} when it is absent, blank,

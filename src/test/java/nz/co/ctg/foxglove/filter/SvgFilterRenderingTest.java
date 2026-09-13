@@ -341,6 +341,73 @@ public class SvgFilterRenderingTest {
         assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
     }
 
+    // --- which path a filter takes (#126) --------------------------------
+
+    /**
+     * The change itself. This filter is perfectly effect-expressible, but declares no colour space - so it defaults
+     * to linearRGB, which JavaFX effects cannot work in, and it goes to the raster pipeline instead.
+     * <p>
+     * Note this is the <i>common</i> case, not the exotic one: exactly one document in the whole W3C suite mentions
+     * {@code color-interpolation-filters} at all, so in practice the chain now runs only where a document asks for
+     * it. That was a deliberate trade, measured on #126 - the chain is more crisp under magnification, the raster
+     * pipeline measurably more accurate.
+     */
+    @Test
+    public void testAnEffectExpressibleFilterWithNoColourSpaceGoesToRaster() throws Exception {
+        SvgFilter filter = new SvgFilter(); // deliberately not the srgbFilter() helper
+        filter.setId("f");
+        filter.getContent().add(blur("5"));
+        SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
+
+        assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
+    }
+
+    @Test
+    public void testTheSameFilterDeclaringSrgbStillBuildsAnEffectChain() throws Exception {
+        SvgFilter filter = filterOf(blur("5")); // identical but for the sRGB declaration
+        filter.setId("f");
+        SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
+
+        assertThat(render(rect, filter).getEffect(), instanceOf(GaussianBlur.class));
+    }
+
+    /** Every primitive has to agree: an effect chain cannot change colour space partway through a graph. */
+    @Test
+    public void testOnePrimitiveOptingBackIntoLinearRgbSendsTheWholeFilterToRaster() throws Exception {
+        FeGaussianBlur linear = blur("5");
+        linear.setColorInterpolationFilters("linearRGB");
+        SvgFilter filter = filterOf(blur("5"), linear);
+        filter.setId("f");
+        SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
+
+        assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
+    }
+
+    /**
+     * The actual acceptance criterion: the two paths agree about the same document. Counterpart to #107's
+     * cross-path test, and the thing that was untrue before #126 - the identical filter rendered differently
+     * depending on which path happened to take it.
+     * <p>
+     * Uses a flood, whose colour is fixed rather than interpolated, so the comparison is about the paths agreeing
+     * rather than about either one's blending arithmetic.
+     */
+    @Test
+    public void testBothPathsAgreeOnTheSameDocument() throws Exception {
+        assertThat(floodColourVia(true), is(floodColourVia(false)));
+    }
+
+    private static Color floodColourVia(boolean effectChain) throws Exception {
+        FeFlood flood = new FeFlood();
+        flood.setFloodColor("#3366cc");
+
+        SvgFilter filter = new SvgFilter();
+        if (effectChain) {
+            filter.setColorInterpolationFilters("sRGB");
+        }
+        filter.getContent().add(flood);
+        return renderedColourAt(filter, 25, 25);
+    }
+
     // --- feBlend operand order (#107) ------------------------------------
 
     /**
@@ -429,11 +496,23 @@ public class SvgFilterRenderingTest {
         return blur;
     }
 
+    /**
+     * Every filter here declares {@code color-interpolation-filters="sRGB"}, because since #126 that is what the
+     * effect chain requires: SVG's default is linearRGB, which JavaFX effects cannot work in, so an undeclared
+     * filter goes to the raster pipeline. The tests in this class are about the chain builder, so they opt in.
+     * {@link #testAnEffectExpressibleFilterWithNoColourSpaceGoesToRaster} covers the other side deliberately.
+     */
     private static SvgFilter filterOf(ISvgElement... primitives) {
-        SvgFilter filter = new SvgFilter();
+        SvgFilter filter = srgbFilter();
         for (ISvgElement primitive : primitives) {
             filter.getContent().add(primitive);
         }
+        return filter;
+    }
+
+    private static SvgFilter srgbFilter() {
+        SvgFilter filter = new SvgFilter();
+        filter.setColorInterpolationFilters("sRGB");
         return filter;
     }
 
