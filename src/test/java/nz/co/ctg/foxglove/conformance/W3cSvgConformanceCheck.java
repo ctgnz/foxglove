@@ -80,32 +80,36 @@ public class W3cSvgConformanceCheck {
         Path pngDir = suiteDir.resolve("png");
         List<Path> tests = listTests(svgDir, pngDir);
 
-        Map<String, Boolean> actual = new TreeMap<>();
-        Map<String, String> failureReasons = new TreeMap<>();
+        Path reportDir = Path.of("target/conformance-report");
+        Map<String, ConformanceResult> results = new TreeMap<>();
         JavaFxTestSupport.onFxThread(() -> {
             for (Path svgFile : tests) {
                 String name = baseName(svgFile);
                 try {
-                    actual.put(name, runOne(svgFile, pngDir.resolve(name + ".png")));
+                    results.put(name, runOne(svgFile, pngDir.resolve(name + ".png"), reportDir));
                 } catch (Throwable e) {
                     // a renderer bug (including a StackOverflowError from a real cycle-guard gap) is itself a
                     // conformance failure worth recording, not something that should crash the whole 525-test run
-                    actual.put(name, false);
-                    failureReasons.put(name, String.valueOf(e));
+                    results.put(name, new ConformanceResult(name, false, 0, 0, ConformanceTolerances.DEFAULT_MAX_DIFFERING_RATIO,
+                        passCriteria(svgFile), String.valueOf(e)));
                 }
             }
             return null;
         }, 5, TimeUnit.MINUTES);
 
+        Map<String, Boolean> actual = new TreeMap<>();
+        results.forEach((name, result) -> actual.put(name, result.passed()));
+
         printChapterSummary(actual);
-        if (!failureReasons.isEmpty()) {
-            System.out.println(failureReasons.size() + " test(s) threw during render/compare:");
-            failureReasons.forEach((name, reason) -> System.out.println("  " + name + ": " + reason));
+        List<ConformanceResult> threw = results.values().stream().filter(r -> r.failureReason() != null).toList();
+        if (!threw.isEmpty()) {
+            System.out.println(threw.size() + " test(s) threw during render/compare:");
+            threw.forEach(r -> System.out.println("  " + r.name() + ": " + r.failureReason()));
         }
 
         // Written unconditionally, before the pass/fail branch below - #92's dashboard needs to keep showing a
         // regression, not go stale because the run that found it also failed its own assertion.
-        ConformanceReport.write(actual, Path.of("target/conformance-report/index.html"));
+        ConformanceReport.write(results, reportDir);
 
         String mode = System.getProperty("conformance.mode", "verify");
         if ("record".equals(mode)) {
@@ -135,7 +139,13 @@ public class W3cSvgConformanceCheck {
         return tests;
     }
 
-    private boolean runOne(Path svgFile, Path pngFile) throws Exception {
+    /**
+     * Renders one test, compares it, and writes the two images its report page shows - this renderer's own output
+     * and the diff. They are written here, as each test is rendered, rather than handed back for
+     * {@link ConformanceReport} to write later: 525 pairs of 480x360 images held at once would cost the better part
+     * of a gigabyte, and there is no reason to hold them.
+     */
+    private ConformanceResult runOne(Path svgFile, Path pngFile, Path reportDir) throws Exception {
         Image reference = new Image(pngFile.toUri().toString());
         int width = (int) Math.round(reference.getWidth());
         int height = (int) Math.round(reference.getHeight());
@@ -156,14 +166,30 @@ public class W3cSvgConformanceCheck {
         ConformanceComparator.Result result = ConformanceComparator.compare(actualImage, referenceImage, width, height, cropFromY,
             tolerance);
 
-        String debugTarget = System.getProperty("conformance.debug");
-        if (baseName(svgFile).equals(debugTarget)) {
+        String name = baseName(svgFile);
+        WritableImage diffImage = ConformanceComparator.diff(actualImage, referenceImage, width, height, cropFromY);
+        Path chapterDir = reportDir.resolve(chapterOf(name));
+        Files.createDirectories(chapterDir);
+        writePng(actualImage, width, height, chapterDir.resolve(name + ".png").toString());
+        writePng(diffImage, width, height, chapterDir.resolve(name + "-diff.png").toString());
+
+        if (name.equals(System.getProperty("conformance.debug"))) {
             System.out.printf("DEBUG %s: %dx%d, cropFromY=%d, differingRatio=%.4f, comparedPixels=%d, tolerance=%.4f%n",
-                baseName(svgFile), width, height, cropFromY, result.differingRatio(), result.comparedPixels(), tolerance);
+                name, width, height, cropFromY, result.differingRatio(), result.comparedPixels(), tolerance);
             writePng(actualImage, width, height, "target/debug-actual.png");
             writePng(referenceImage, width, height, "target/debug-reference.png");
         }
-        return result.passed();
+        return new ConformanceResult(name, result.passed(), result.contentSimilarity(), result.contentPixels(), tolerance,
+            passCriteria(svgFile), null);
+    }
+
+    /** Never fatal: a report page missing its prose is far better than a run aborted over unreadable furniture. */
+    private static String passCriteria(Path svgFile) {
+        try {
+            return ConformanceTestDescription.passCriteria(svgFile);
+        } catch (RuntimeException e) {
+            return "";
+        }
     }
 
     /**
