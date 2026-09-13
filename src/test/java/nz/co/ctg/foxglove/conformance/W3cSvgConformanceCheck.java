@@ -25,6 +25,7 @@ import nz.co.ctg.foxglove.SvgGraphic;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import javafx.geometry.Bounds;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
@@ -147,9 +148,7 @@ public class W3cSvgConformanceCheck {
         RenderContext context = RenderContext.root(svg.getElementIndex(), width, height).withNodeRegistry(registry);
         Node built = svg.createGraphic(context);
 
-        SnapshotParameters params = new SnapshotParameters();
-        params.setFill(Color.TRANSPARENT);
-        WritableImage actualImage = built.snapshot(params, new WritableImage(width, height));
+        WritableImage actualImage = snapshot(built, width, height);
         WritableImage referenceImage = new WritableImage(reference.getPixelReader(), width, height);
 
         int cropFromY = revisionCropFromY(svg, registry, height);
@@ -165,6 +164,23 @@ public class W3cSvgConformanceCheck {
             writePng(referenceImage, width, height, "target/debug-reference.png");
         }
         return result.passed();
+    }
+
+    /**
+     * Renders {@code built} into a {@code width}x{@code height} image of the document's <b>viewport</b>.
+     * <p>
+     * The explicit viewport is the whole point, and is not optional (#111): {@code Node.snapshot} with none set
+     * renders from the node's own {@code boundsInLocal} origin, not from {@code (0, 0)}. Any document whose content
+     * extends left of or above the origin - {@code coords-coord-01-t} draws a {@code stroke-width="5"} line along
+     * {@code x=0}, so its ink reaches {@code x=-2.5} - would otherwise have its <i>entire</i> rendering displaced by
+     * that overhang, content and test frame alike, and mismatch the reference for a reason that has nothing to do
+     * with how well it renders. {@code SvgFilterRasterPipeline.rasterizeSource} sets one for the same reason.
+     */
+    static WritableImage snapshot(Node built, int width, int height) {
+        SnapshotParameters params = new SnapshotParameters();
+        params.setFill(Color.TRANSPARENT);
+        params.setViewport(new Rectangle2D(0, 0, width, height));
+        return built.snapshot(params, new WritableImage(width, height));
     }
 
     /**
