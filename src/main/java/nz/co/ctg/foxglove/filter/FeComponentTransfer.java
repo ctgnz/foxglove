@@ -25,16 +25,18 @@ public class FeComponentTransfer extends AbstractSvgStylable implements ISvgFilt
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     private String in;
 
-    @XmlElement(name = "feFuncR")
+    // the namespace is not optional: this package's elementFormDefault is UNQUALIFIED, so a binding that omits it
+    // matches an element in no namespace at all, never the SVG-namespaced children a real document actually carries
+    @XmlElement(name = "feFuncR", namespace = "http://www.w3.org/2000/svg")
     private FeFunctionRed feFuncR;
 
-    @XmlElement(name = "feFuncG")
+    @XmlElement(name = "feFuncG", namespace = "http://www.w3.org/2000/svg")
     private FeFunctionGreen feFuncG;
 
-    @XmlElement(name = "feFuncB")
+    @XmlElement(name = "feFuncB", namespace = "http://www.w3.org/2000/svg")
     private FeFunctionBlue feFuncB;
 
-    @XmlElement(name = "feFuncA")
+    @XmlElement(name = "feFuncA", namespace = "http://www.w3.org/2000/svg")
     private FeFunctionAlpha feFuncA;
 
     public String getIn() {
