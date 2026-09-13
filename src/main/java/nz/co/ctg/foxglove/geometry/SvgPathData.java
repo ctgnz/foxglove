@@ -19,9 +19,16 @@ import javafx.scene.shape.Path;
  * Curves are flattened by evaluating their parametric form at a fixed number of steps rather than computing an
  * analytic arc length - Bezier arc length has no closed form anyway, so this is the standard approach. Only the
  * first subpath is used: parsing stops at a second {@code M}/{@code m} or once a {@code Z}/{@code z} closes the
- * first, since text-on-path against multi-subpath data is not a case this needs to handle. Compact arc-flag
- * concatenation (two single-digit flags with no separator, e.g. {@code "A1 1 0 0111 2"}) is a known SVG quirk this
- * parser does not attempt - rare in practice, and flagged here rather than silently mishandled.
+ * first, since text-on-path against multi-subpath data is not a case this needs to handle.
+ * <p>
+ * Compact arc-flag concatenation ({@code "A1 1 0 0111 2"}) <b>is</b> handled, as of #115 - it was previously
+ * documented here as an unhandled quirk, but it is not rare enough to leave alone and it did not merely mishandle
+ * the path: reading a flag as a number shifts every later argument along, which walked a trailing {@code z} into a
+ * coordinate slot and threw {@code NumberFormatException} out of the renderer. See {@link #tokenize}.
+ * <p>
+ * Malformed path data never throws from here. SVG 1.1 says a path containing an error renders up to but not
+ * including the point of that error, so each of the three entry points below returns whatever it had accumulated
+ * when parsing stopped - the same degrade their {@code default:} case already applied to an unrecognised command.
  */
 public final class SvgPathData {
 
@@ -47,7 +54,15 @@ public final class SvgPathData {
         if (d == null || d.isBlank()) {
             return points;
         }
-        List<String> tokens = tokenize(d);
+        try {
+            flattenInto(points, tokenize(d));
+        } catch (RuntimeException e) {
+            // malformed path data: keep what was parsed before the error - see #115 and collectSubpaths below
+        }
+        return points;
+    }
+
+    private static void flattenInto(List<Point2D> points, List<String> tokens) {
         int i = 0;
         double curX = 0;
         double curY = 0;
@@ -67,7 +82,7 @@ public final class SvgPathData {
             switch (Character.toUpperCase(command)) {
                 case 'M': {
                     if (subpathStarted) {
-                        return points;
+                        return;
                     }
                     double x = parseDouble(tokens.get(i++));
                     double y = parseDouble(tokens.get(i++));
@@ -195,8 +210,8 @@ public final class SvgPathData {
                     double rx = parseDouble(tokens.get(i++));
                     double ry = parseDouble(tokens.get(i++));
                     double rotation = parseDouble(tokens.get(i++));
-                    boolean largeArc = parseDouble(tokens.get(i++)) != 0;
-                    boolean sweep = parseDouble(tokens.get(i++)) != 0;
+                    boolean largeArc = parseFlag(tokens.get(i++));
+                    boolean sweep = parseFlag(tokens.get(i++));
                     double x = parseDouble(tokens.get(i++));
                     double y = parseDouble(tokens.get(i++));
                     if (Character.isLowerCase(command)) {
@@ -210,14 +225,14 @@ public final class SvgPathData {
                 }
                 case 'Z': {
                     points.add(new Point2D(subpathStartX, subpathStartY));
-                    return points;
+                    return;
                 }
                 default:
-                    return points;
+                    return;
             }
             prevCommand = command;
         }
-        return points;
+        return;
     }
 
     /**
@@ -239,7 +254,18 @@ public final class SvgPathData {
         if (d == null || d.isBlank()) {
             return subpaths;
         }
-        List<String> tokens = tokenize(d);
+        try {
+            collectSubpaths(subpaths, tokenize(d));
+        } catch (RuntimeException e) {
+            // malformed path data: keep the subpaths completed before the error, per SVG 1.1's own rule that a path
+            // containing an error renders up to but not including the point of that error (#115). The subpath that
+            // was in progress at that moment is dropped rather than half-finished - this feeds marker placement,
+            // where markers derived from data that failed to parse would be worse than none.
+        }
+        return subpaths;
+    }
+
+    private static void collectSubpaths(List<Subpath> subpaths, List<String> tokens) {
         int i = 0;
         double curX = 0;
         double curY = 0;
@@ -384,8 +410,8 @@ public final class SvgPathData {
                     double rx = parseDouble(tokens.get(i++));
                     double ry = parseDouble(tokens.get(i++));
                     double rotation = parseDouble(tokens.get(i++));
-                    boolean largeArc = parseDouble(tokens.get(i++)) != 0;
-                    boolean sweep = parseDouble(tokens.get(i++)) != 0;
+                    boolean largeArc = parseFlag(tokens.get(i++));
+                    boolean sweep = parseFlag(tokens.get(i++));
                     double x = parseDouble(tokens.get(i++));
                     double y = parseDouble(tokens.get(i++));
                     if (Character.isLowerCase(command)) {
@@ -404,7 +430,7 @@ public final class SvgPathData {
                     curX = subpathStartX;
                     curY = subpathStartY;
                     if (i >= tokens.size() || !isCommand(tokens.get(i)) || Character.toUpperCase(tokens.get(i).charAt(0)) != 'M') {
-                        return subpaths;
+                        return;
                     }
                     break;
                 }
@@ -412,14 +438,14 @@ public final class SvgPathData {
                     if (current != null) {
                         subpaths.add(new Subpath(current, false));
                     }
-                    return subpaths;
+                    return;
             }
             prevCommand = command;
         }
         if (current != null) {
             subpaths.add(new Subpath(current, false));
         }
-        return subpaths;
+        return;
     }
 
     /**
@@ -443,7 +469,15 @@ public final class SvgPathData {
         if (d == null || d.isBlank()) {
             return path;
         }
-        List<String> tokens = tokenize(d);
+        try {
+            buildPath(path, tokenize(d));
+        } catch (RuntimeException e) {
+            // malformed path data: keep the elements built before the error - see #115 and collectSubpaths above
+        }
+        return path;
+    }
+
+    private static void buildPath(Path path, List<String> tokens) {
         int i = 0;
         double curX = 0;
         double curY = 0;
@@ -585,8 +619,8 @@ public final class SvgPathData {
                     double rx = parseDouble(tokens.get(i++));
                     double ry = parseDouble(tokens.get(i++));
                     double rotation = parseDouble(tokens.get(i++));
-                    boolean largeArc = parseDouble(tokens.get(i++)) != 0;
-                    boolean sweep = parseDouble(tokens.get(i++)) != 0;
+                    boolean largeArc = parseFlag(tokens.get(i++));
+                    boolean sweep = parseFlag(tokens.get(i++));
                     double x = parseDouble(tokens.get(i++));
                     double y = parseDouble(tokens.get(i++));
                     if (Character.isLowerCase(command)) {
@@ -605,11 +639,11 @@ public final class SvgPathData {
                     break;
                 }
                 default:
-                    return path;
+                    return;
             }
             prevCommand = command;
         }
-        return path;
+        return;
     }
 
     private static void appendFlattenedCubic(Path path, double x0, double y0, double x1, double y1, double x2, double y2, double x3,
@@ -736,13 +770,68 @@ public final class SvgPathData {
         return Double.parseDouble(token);
     }
 
+    /**
+     * An elliptical arc's {@code large-arc-flag} or {@code sweep-flag}, which the grammar defines as
+     * {@code flag ::= "0" | "1"} - a single character, not a number, which is why {@link #tokenize} has to hand one
+     * over already isolated. Anything else puts the path in error.
+     */
+    private static boolean parseFlag(String token) {
+        if ("0".equals(token)) {
+            return false;
+        }
+        if ("1".equals(token)) {
+            return true;
+        }
+        throw new IllegalArgumentException("arc flag must be 0 or 1, was: " + token);
+    }
+
+    /**
+     * Splits path data into command letters and numbers - with one piece of context-sensitivity that cannot be
+     * avoided (#115).
+     * <p>
+     * An elliptical arc's two flags are each a <b>single character</b> in SVG's grammar
+     * ({@code flag ::= "0" | "1"}), not numbers, so a separator between them is optional and {@code a25,25 0 10 -25,25}
+     * means {@code large-arc-flag=1 sweep-flag=0}, not a flag of ten. Matching numbers greedily reads {@code 10} as
+     * one token, which shifts every remaining argument along by one - in a path ending {@code 25,25z} that walks the
+     * final coordinate onto the {@code z}, and {@code Double.parseDouble("z")} throws. Three real forms in the W3C
+     * suite's own arc-syntax test depend on getting this right.
+     * <p>
+     * So the scan tracks which argument of an {@code A}/{@code a} it is at (modulo seven, since arc arguments
+     * repeat without the letter being restated) and, at either flag position, emits just the first character and
+     * resumes from immediately after it. Everything else - and every other command - tokenizes exactly as before.
+     * Whether the character is actually {@code 0} or {@code 1} is {@link #parseFlag}'s business, not this method's.
+     */
     private static List<String> tokenize(String d) {
         List<String> tokens = new ArrayList<>();
         Matcher matcher = TOKEN.matcher(d);
-        while (matcher.find()) {
-            tokens.add(matcher.group());
+        char command = 0;
+        int argument = 0;
+        int from = 0;
+        while (matcher.find(from)) {
+            String token = matcher.group();
+            if (isCommand(token)) {
+                command = token.charAt(0);
+                argument = 0;
+                tokens.add(token);
+                from = matcher.end();
+                continue;
+            }
+            if (Character.toUpperCase(command) == 'A' && isArcFlagPosition(argument)) {
+                tokens.add(token.substring(0, 1));
+                from = matcher.start() + 1;
+            } else {
+                tokens.add(token);
+                from = matcher.end();
+            }
+            argument++;
         }
         return tokens;
+    }
+
+    /** The 4th and 5th of an arc's seven arguments - {@code rx ry rotation large-arc-flag sweep-flag x y}. */
+    private static boolean isArcFlagPosition(int argument) {
+        int position = argument % 7;
+        return position == 3 || position == 4;
     }
 
 }

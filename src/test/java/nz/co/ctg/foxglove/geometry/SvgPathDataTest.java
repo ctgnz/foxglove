@@ -187,4 +187,94 @@ public class SvgPathDataTest {
         assertThat(SvgPathData.toJavaFxPath(null).getElements(), hasSize(0));
     }
 
+    // --- elliptical arc flags (#115) ----------------------------------------
+
+    /**
+     * SVG's grammar defines an arc flag as a single character, {@code flag ::= "0" | "1"}, not as a number - so a
+     * separator between the two flags is optional and {@code 10} means {@code large-arc-flag=1 sweep-flag=0}.
+     * Reading it as the number ten instead shifts every later argument along by one, which is how a path ending
+     * {@code 25,25z} used to walk its final coordinate onto the {@code z} and throw.
+     */
+    @Test
+    public void testArcFlagsNeedNoSeparatorBetweenThem() throws Exception {
+        assertArcEquivalent("M120,120 h25 a25,25 0 10 -25,25z", "M120,120 h25 a25,25 0 1,0 -25,25 z");
+    }
+
+    /** Nor between the second flag and the coordinate pair that follows it. */
+    @Test
+    public void testArcFlagsNeedNoSeparatorBeforeTheCoordinatePair() throws Exception {
+        assertArcEquivalent("M120,200 h25 a25,25 0 1 1-25,-25 z", "M120,200 h25 a25,25 0 1,1 -25,-25 z");
+    }
+
+    /** Both at once: {@code 1125,25} is flag 1, flag 1, then the pair 25,25. */
+    @Test
+    public void testArcFlagsAndCoordinatesCanAllRunTogether() throws Exception {
+        assertArcEquivalent("M200,120 h-25 a25,25 0 1125,25 z", "M200,120 h-25 a25,25 0 1,1 25,25 z");
+    }
+
+    /**
+     * Asserts the two forms flatten identically <i>and</i> that they actually produced an arc - without the second
+     * check, two paths that both degraded to the same truncated prefix would satisfy the first one happily.
+     */
+    private static void assertArcEquivalent(String compact, String canonical) {
+        List<Point2D> expected = SvgPathData.flatten(canonical);
+        assertThat("the canonical form should itself flatten a real arc", expected.size() > 10, is(true));
+        assertThat(SvgPathData.flatten(compact), is(expected));
+    }
+
+    @Test
+    public void testAnArcFlagOutOfRangePutsThePathInError() throws Exception {
+        // 6 is not a flag, so the path renders up to that point - the preceding M and h, and nothing of the arc
+        assertThat(SvgPathData.flatten("M280,120 h25 a25,25 0 6 0 -25,25 z"),
+            is(SvgPathData.flatten("M280,120 h25")));
+    }
+
+    @Test
+    public void testANegativeArcFlagPutsThePathInError() throws Exception {
+        assertThat(SvgPathData.flatten("M360,120 h-25 a25,25 0 1 -1 25,25 z"),
+            is(SvgPathData.flatten("M360,120 h-25")));
+    }
+
+    /**
+     * The separator <i>before</i> the first flag is required, unlike the ones between and after - so the arc's
+     * {@code ry} and rotation greedily swallow the digits the flags needed, and the path is in error.
+     */
+    @Test
+    public void testAMissingSeparatorBeforeTheFlagsPutsThePathInError() throws Exception {
+        assertThat(SvgPathData.flatten("M200,200 h-25 a25,2501 025,-25 z"),
+            is(SvgPathData.flatten("M200,200 h-25")));
+    }
+
+    // --- malformed data degrades rather than throwing (#115) ----------------
+
+    /**
+     * The crash this issue was filed for. A path whose arguments have been shifted along lands a command letter in
+     * a coordinate slot; that used to reach {@code Double.parseDouble} and throw {@code NumberFormatException} out
+     * of the renderer, taking the whole document with it.
+     */
+    @Test
+    public void testACommandLetterInACoordinateSlotDoesNotThrow() throws Exception {
+        assertThat(SvgPathData.flatten("M10,10 L20,20 L30,z"), is(SvgPathData.flatten("M10,10 L20,20")));
+    }
+
+    /** A path that simply runs out of arguments mid-command keeps what came before it. */
+    @Test
+    public void testATruncatedPathKeepsWhatCameBefore() throws Exception {
+        assertThat(SvgPathData.flatten("M10,10 L20,20 L30"), is(SvgPathData.flatten("M10,10 L20,20")));
+    }
+
+    @Test
+    public void testSubpathsDegradesRatherThanThrowing() throws Exception {
+        List<SvgPathData.Subpath> subpaths = SvgPathData.subpaths("M0,0 L10,0 Z M20,20 L30,z");
+        // the first subpath completed before the error and is kept; the broken one is not
+        assertThat(subpaths, hasSize(1));
+        assertThat(subpaths.get(0).closed(), is(true));
+    }
+
+    @Test
+    public void testToJavaFxPathDegradesRatherThanThrowing() throws Exception {
+        javafx.scene.shape.Path path = SvgPathData.toJavaFxPath("M10,10 L20,20 L30,z");
+        assertThat(path.getElements(), hasSize(SvgPathData.toJavaFxPath("M10,10 L20,20").getElements().size()));
+    }
+
 }
