@@ -27,15 +27,17 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="java.lang.String" />
-  			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.lang.String" />
-  			<xml-attribute java-attribute="stroke-dashoffset" name="stroke-dashoffset" type="java.lang.String" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
+  			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
+  				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
+  			</xml-attribute>
+  			<xml-attribute java-attribute="stroke-dashoffset" name="stroke-dashoffset" type="java.lang.Double" />
   			<xml-attribute java-attribute="stroke-linecap" name="stroke-linecap" type="javafx.scene.shape.StrokeLineCap" />
-  			<xml-attribute java-attribute="stroke-linejoin" name="stroke-linejoin" type="java.lang.String" />
-  			<xml-attribute java-attribute="stroke-miterlimit" name="stroke-miterlimit" type="java.lang.String" />
-  			<xml-attribute java-attribute="stroke-width" name="stroke-width" type="java.lang.String" />
+  			<xml-attribute java-attribute="stroke-linejoin" name="stroke-linejoin" type="javafx.scene.shape.StrokeLineJoin" />
+  			<xml-attribute java-attribute="stroke-miterlimit" name="stroke-miterlimit" type="java.lang.Double" />
+  			<xml-attribute java-attribute="stroke-width" name="stroke-width" type="java.lang.Double" />
   			<xml-attribute java-attribute="color" name="color" type="java.lang.String" />
   			<xml-attribute java-attribute="color-interpolation" name="color-interpolation" type="java.lang.String" />
   			<xml-attribute java-attribute="color-rendering" name="color-rendering" type="java.lang.String" />
@@ -110,15 +112,17 @@
   			<xml-attribute java-attribute="color-interpolation-filters" name="color-interpolation-filters" type="java.lang.String" />
   			<xml-attribute java-attribute="cursor" name="cursor" type="java.lang.String" />
   			<!-- ISvgGraphicsAttributes -->
-  			<xml-attribute java-attribute="fill" name="fill" type="java.lang.String" />
+  			<xml-attribute java-attribute="fill" name="fill" type="nz.co.ctg.foxglove.type.SvgPaint" />
   			<xml-attribute java-attribute="fill-rule" name="fill-rule" type="javafx.scene.shape.FillRule" />
-  			<xml-attribute java-attribute="stroke" name="stroke" type="java.lang.String" />
-  			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.lang.String" />
-  			<xml-attribute java-attribute="stroke-dashoffset" name="stroke-dashoffset" type="java.lang.String" />
+  			<xml-attribute java-attribute="stroke" name="stroke" type="nz.co.ctg.foxglove.type.SvgPaint" />
+  			<xml-attribute java-attribute="stroke-dasharray" name="stroke-dasharray" type="java.util.List">
+  				<xml-java-type-adapter value="nz.co.ctg.foxglove.adapter.DoubleListAdapter"/>
+  			</xml-attribute>
+  			<xml-attribute java-attribute="stroke-dashoffset" name="stroke-dashoffset" type="java.lang.Double" />
   			<xml-attribute java-attribute="stroke-linecap" name="stroke-linecap" type="javafx.scene.shape.StrokeLineCap" />
-  			<xml-attribute java-attribute="stroke-linejoin" name="stroke-linejoin" type="java.lang.String" />
-  			<xml-attribute java-attribute="stroke-miterlimit" name="stroke-miterlimit" type="java.lang.String" />
-  			<xml-attribute java-attribute="stroke-width" name="stroke-width" type="java.lang.String" />
+  			<xml-attribute java-attribute="stroke-linejoin" name="stroke-linejoin" type="javafx.scene.shape.StrokeLineJoin" />
+  			<xml-attribute java-attribute="stroke-miterlimit" name="stroke-miterlimit" type="java.lang.Double" />
+  			<xml-attribute java-attribute="stroke-width" name="stroke-width" type="java.lang.Double" />
   			<xml-attribute java-attribute="color" name="color" type="java.lang.String" />
   			<xml-attribute java-attribute="color-interpolation" name="color-interpolation" type="java.lang.String" />
   			<xml-attribute java-attribute="color-rendering" name="color-rendering" type="java.lang.String" />
