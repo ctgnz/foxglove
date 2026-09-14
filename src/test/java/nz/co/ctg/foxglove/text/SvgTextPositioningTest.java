@@ -1,9 +1,12 @@
 package nz.co.ctg.foxglove.text;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import nz.co.ctg.foxglove.FoxgloveParser;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.element.SvgGroup;
 
@@ -131,6 +134,101 @@ public class SvgTextPositioningTest {
 
         double width = startNode.getLayoutBounds().getWidth();
         assertThat(endNode.getTranslateX(), closeTo(-width, 1e-6));
+    }
+
+    // --- vertical writing-mode (#139) ----------------------------------------
+
+    /**
+     * {@code writing-mode="tb"} stacks glyphs top-to-bottom instead of laying them left-to-right: the cursor
+     * advances {@code y} by one em per character (the specification's own default for {@code vert-adv-y}) rather
+     * than {@code x} by the glyph's own width, and each glyph is centred horizontally on the column - the usual
+     * convention for vertical layout, and this renderer's approximation of {@code vert-origin-x}'s own default.
+     */
+    @Test
+    public void testVerticalWritingModeStacksGlyphsTopToBottomOneEmApart() throws Exception {
+        SvgText text = new SvgText();
+        text.setWritingMode("tb");
+        text.getContent().add("AB");
+
+        Group rendered = (Group) render(text);
+        List<Node> children = rendered.getChildren();
+        assertThat(children, hasSize(2));
+        Text a = (Text) children.get(0);
+        Text b = (Text) children.get(1);
+
+        assertThat("the first glyph starts at the flow's origin", a.getY(), closeTo(0.0, 1e-6));
+        assertThat("one em (the default font size) further down, not sideways - the whole point of #139",
+            b.getY(), closeTo(16.0, 1e-6));
+        assertThat("no horizontal drift between characters", b.getX(), closeTo(a.getX(), 1e-6));
+        assertThat("centred on the column, not flush against it - applied as a translate, not x itself",
+            a.getTranslateX(), closeTo(-a.getLayoutBounds().getWidth() / 2.0, 1e-6));
+    }
+
+    /** As {@link #testTextAnchorMiddleCentresTheLine}, but along the flow axis {@code writing-mode="tb"} swaps to y. */
+    @Test
+    public void testTextAnchorMiddleCentresVerticalTextAlongY() throws Exception {
+        SvgText start = new SvgText();
+        start.setWritingMode("tb");
+        start.getContent().add("AB");
+        Group startNode = (Group) render(start);
+        double height = ((Text) startNode.getChildren().get(1)).getY() + 16.0; // 2 ems, one per glyph
+
+        SvgText middle = new SvgText();
+        middle.setWritingMode("tb");
+        middle.setTextAnchor("middle");
+        middle.getContent().add("AB");
+        Node middleNode = render(middle);
+
+        assertThat(middleNode.getTranslateX(), closeTo(0.0, 1e-6));
+        assertThat(middleNode.getTranslateY(), closeTo(-height / 2.0, 1e-6));
+    }
+
+    /** As {@link #testTextAnchorEndAlignsTheLineToItsEnd}, but along the flow axis {@code writing-mode="tb"} swaps to y. */
+    @Test
+    public void testTextAnchorEndAlignsVerticalTextToItsEndAlongY() throws Exception {
+        SvgText start = new SvgText();
+        start.setWritingMode("tb");
+        start.getContent().add("AB");
+        Group startNode = (Group) render(start);
+        double height = ((Text) startNode.getChildren().get(1)).getY() + 16.0;
+
+        SvgText end = new SvgText();
+        end.setWritingMode("tb");
+        end.setTextAnchor("end");
+        end.getContent().add("AB");
+        Node endNode = render(end);
+
+        assertThat(endNode.getTranslateX(), closeTo(0.0, 1e-6));
+        assertThat(endNode.getTranslateY(), closeTo(-height, 1e-6));
+    }
+
+    /**
+     * An SVG font's own vertical metrics are never read (#139's own documented scope limit) - a run resolving to
+     * one falls through to the ordinary horizontal path regardless of {@code writing-mode}, rather than silently
+     * mispositioning glyphs using metrics nothing actually declared. Parse-driven, per this codebase's own standing
+     * rule for anything touching an SVG font binding (#105/#119/#136): an in-memory fixture through typed setters
+     * would prove nothing about whether {@code writing-mode} and an inline {@code <font>} actually interact the way
+     * this asserts, only that the Java objects can be constructed.
+     */
+    @Test
+    public void testVerticalWritingModeIsIgnoredWhenTheRunUsesAnSvgFont() throws Exception {
+        String document = """
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50">
+              <defs>
+                <font horiz-adv-x="500">
+                  <font-face font-family="VerticalTestFont" units-per-em="1000" ascent="800" descent="-200"/>
+                  <glyph unicode="A" horiz-adv-x="500" d="M0,0 L10,0 L10,10 Z"/>
+                </font>
+              </defs>
+              <text id="subject" font-family="VerticalTestFont" writing-mode="tb">A</text>
+            </svg>
+            """;
+        SvgGraphic svg = new FoxgloveParser().parse(new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8)));
+        Node rendered = svg.createGroup().getChildren().get(0);
+
+        // a single glyph from an SVG font is a bare outline node, not split/centred the way vertical plain text is -
+        // confirming this took the ordinary horizontal path rather than throwing or silently mispositioning it
+        assertThat(rendered, instanceOf(javafx.scene.shape.Path.class));
     }
 
     @Test
