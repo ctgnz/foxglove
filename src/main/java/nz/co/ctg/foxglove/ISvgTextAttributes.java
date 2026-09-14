@@ -237,9 +237,20 @@ public interface ISvgTextAttributes extends ISvgAttributes {
      *
      * @param parent the style inherited from the ancestors, already resolved - see {@link SvgInheritedStyle}
      */
+    /**
+     * The font size an already-resolved style asks for, falling back to the initial 16px.
+     * <p>
+     * Exposed separately because an SVG font (#61) renders each glyph as a {@code Path}, which has no font to be
+     * asked afterwards - the layout needs the size up front to scale outlines and place baselines, rather than
+     * reading it back off a {@code Text} node it would no longer be building.
+     */
+    static Size resolveFontSize(ISvgStylable style) {
+        return StringUtils.isBlank(style.getFontSize()) ? INITIAL_FONT_SIZE : SizeAdapter.parse(style.getFontSize());
+    }
+
     default void applyTextProperties(ISvgStylable parent, Text svgText) {
         ISvgStylable style = SvgInheritedStyle.resolve(parent, this);
-        Size size = StringUtils.isBlank(style.getFontSize()) ? INITIAL_FONT_SIZE : SizeAdapter.parse(style.getFontSize());
+        Size size = resolveFontSize(style);
         String fontFamily = StringUtils.defaultIfBlank(style.getFontFamily(), "sans-serif");
         switch (fontFamily) {
             case "monospace":

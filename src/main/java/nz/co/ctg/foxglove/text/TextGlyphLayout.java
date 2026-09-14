@@ -9,6 +9,7 @@ import java.util.function.Function;
 import org.apache.commons.lang3.StringUtils;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.ISvgTextAttributes;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgInheritedStyle;
 import nz.co.ctg.foxglove.geometry.PathLengthLookup;
@@ -20,6 +21,8 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 
 /**
  * Positions the runs {@link TextRunBuilder} (#27) produces onto one baseline, applying #28's positioning
@@ -47,11 +50,25 @@ final class TextGlyphLayout {
     private TextGlyphLayout() {
     }
 
+    /**
+     * One laid-out character (or whole run): the node to draw, and how far it advances the cursor.
+     * <p>
+     * The advance is carried rather than measured back off the node, because the two glyph sources disagree about
+     * where it comes from. A {@code Text} knows its own rendered width; an SVG-font glyph's advance is declared by
+     * the font as {@code horiz-adv-x} and is <b>not</b> its outline's width - a space has a real advance and no
+     * outline at all. Reading bounds back would work for one source and silently mis-space the other.
+     */
+    private record Glyph(Node node, double advance) {
+    }
+
     static Node layout(SvgText root, RenderContext context) {
         List<TextRunBuilder.Run> runs = TextRunBuilder.build(root, context);
-        List<Text> nodes = new ArrayList<>();
+        List<Node> nodes = new ArrayList<>();
         double cursorX = 0;
         double cursorY = 0;
+        double totalAdvance = 0;
+        double anchorStartX = 0;
+        boolean anchorStarted = false;
         SvgTextPath currentPath = null;
         PathLengthLookup currentPathLookup = null;
         double pathCursor = 0;
@@ -68,23 +85,22 @@ final class TextGlyphLayout {
                     pathCursor = currentPathLookup == null ? 0 : resolveStartOffset(currentPath, currentPathLookup);
                 }
                 if (currentPathLookup != null) {
+                    SvgFontGlyphs pathFont = svgFontFor(run, context);
+                    double pathFontSize = fontSizeFor(run, context);
                     for (String piece : codePoints(run.text())) {
-                        Text node = new Text(piece);
-                        run.owner().applyGraphicsProperties(run.ownerContext(), node);
-                        run.owner().applyTextProperties(run.ownerContext(), node);
-
                         Point2D point = currentPathLookup.pointAt(pathCursor);
                         double angle = currentPathLookup.angleAt(pathCursor);
-                        node.setX(point.getX());
-                        node.setY(point.getY());
-                        node.getTransforms().add(new Rotate(angle, point.getX(), point.getY()));
-                        nodes.add(node);
+                        Glyph glyph = glyphOf(piece, run, pathFont, pathFontSize, point.getX(), point.getY(),
+                            angle, point.getX(), point.getY());
+                        if (glyph.node() != null) {
+                            nodes.add(glyph.node());
+                        }
 
-                        pathCursor += node.getLayoutBounds().getWidth();
+                        pathCursor += glyph.advance();
                         // Text after </textPath> cannot follow the curve, but leaving the linear cursor where it
                         // was before the path would make it overlap the path's own text instead - continuing in a
                         // straight line from the last glyph is only an approximation, but a far less broken one.
-                        cursorX = point.getX() + node.getLayoutBounds().getWidth();
+                        cursorX = point.getX() + glyph.advance();
                         cursorY = point.getY();
                     }
                 }
@@ -99,15 +115,15 @@ final class TextGlyphLayout {
             // splitting into glyphs only matters once there is more than one position to assign, or for `rotate`,
             // which always rotates each character individually rather than the run as one rigid block.
             boolean perGlyph = xs.size() > 1 || ys.size() > 1 || dxs.size() > 1 || dys.size() > 1 || !rotates.isEmpty();
-            List<String> pieces = perGlyph ? codePoints(run.text()) : List.of(run.text());
+            SvgFontGlyphs runFont = svgFontFor(run, context);
+            double runFontSize = fontSizeFor(run, context);
+            // an SVG font draws one Path per character, so a run using one is always split even when no positioning
+            // list asks for it - there is no single node that could carry the whole string
+            List<String> pieces = perGlyph || runFont != null ? codePoints(run.text()) : List.of(run.text());
             int baseIndex = ownerIndex.getOrDefault(run.owner(), 0);
 
             for (int k = 0; k < pieces.size(); k++) {
                 int i = baseIndex + k;
-                Text node = new Text(pieces.get(k));
-                run.owner().applyGraphicsProperties(run.ownerContext(), node);
-                run.owner().applyTextProperties(run.ownerContext(), node);
-
                 Double explicitX = i < xs.size() ? xs.get(i) : null;
                 Double explicitY = i < ys.size() ? ys.get(i) : null;
                 double dx = i < dxs.size() ? dxs.get(i) : 0.0;
@@ -116,23 +132,27 @@ final class TextGlyphLayout {
 
                 double flowX = (explicitX != null ? explicitX : cursorX) + dx;
                 double flowY = (explicitY != null ? explicitY : cursorY) + dy;
-                double displayY = flowY + baselineOffset(run, node.getFont().getSize());
+                double displayY = flowY + baselineOffset(run, runFontSize);
 
-                node.setX(flowX);
-                node.setY(displayY);
-                if (rotate != null) {
-                    node.getTransforms().add(new Rotate(rotate, flowX, displayY));
+                Glyph glyph = glyphOf(pieces.get(k), run, runFont, runFontSize, flowX, displayY,
+                    rotate, flowX, displayY);
+                if (glyph.node() != null) {
+                    nodes.add(glyph.node());
                 }
-                nodes.add(node);
+                if (!anchorStarted) {
+                    anchorStartX = flowX;
+                    anchorStarted = true;
+                }
+                totalAdvance = Math.max(totalAdvance, flowX + glyph.advance() - anchorStartX);
 
-                cursorX = flowX + node.getLayoutBounds().getWidth();
+                cursorX = flowX + glyph.advance();
                 cursorY = flowY;
             }
             ownerIndex.put(run.owner(), baseIndex + pieces.size());
         }
 
         Node result = nodes.size() == 1 ? nodes.get(0) : groupOf(nodes);
-        applyTextAnchor(root, context, nodes, result);
+        applyTextAnchor(root, context, totalAdvance, result);
         result.setId(root.getId());
         root.applyTransforms(result);
         return result;
@@ -180,10 +200,59 @@ final class TextGlyphLayout {
         return text.codePoints().mapToObj(Character::toString).toList();
     }
 
-    private static Group groupOf(List<Text> nodes) {
+    private static Group groupOf(List<Node> nodes) {
         Group group = new Group();
         group.getChildren().addAll(nodes);
         return group;
+    }
+
+    /**
+     * One character as a node plus its advance, from whichever source the run's font resolves to.
+     * <p>
+     * The SVG-font branch builds its transforms as a list rather than using {@code translateX}/{@code translateY},
+     * deliberately: JavaFX applies those node properties <i>outside</i> everything in the transforms list, so a
+     * {@code Rotate} added there would pivot in the glyph's own untranslated space rather than about the baseline
+     * point. Ordering them explicitly - rotate, then translate, then scale, outermost first - keeps the pivot where
+     * the caller meant it. (The same trap #19 hit composing {@code <use>}'s x/y with its own transform.)
+     */
+    private static Glyph glyphOf(String piece, TextRunBuilder.Run run, SvgFontGlyphs font, double fontSize,
+        double x, double y, Double rotation, double pivotX, double pivotY) {
+        if (font == null) {
+            Text node = new Text(piece);
+            run.owner().applyGraphicsProperties(run.ownerContext(), node);
+            run.owner().applyTextProperties(run.ownerContext(), node);
+            node.setX(x);
+            node.setY(y);
+            if (rotation != null) {
+                node.getTransforms().add(new Rotate(rotation, pivotX, pivotY));
+            }
+            return new Glyph(node, node.getLayoutBounds().getWidth());
+        }
+
+        Node outline = font.glyphFor(piece, fontSize);
+        double advance = font.advanceFor(piece, fontSize);
+        if (outline == null) {
+            // a space: a real advance, nothing to draw
+            return new Glyph(null, advance);
+        }
+        run.owner().applyGraphicsProperties(run.ownerContext(), (javafx.scene.shape.Shape) outline);
+        List<Transform> transforms = new ArrayList<>();
+        if (rotation != null) {
+            transforms.add(new Rotate(rotation, pivotX, pivotY));
+        }
+        transforms.add(new Translate(x, y));
+        transforms.addAll(outline.getTransforms());
+        outline.getTransforms().setAll(transforms);
+        return new Glyph(outline, advance);
+    }
+
+    /** The SVG font this run's {@code font-family} names, or null to render through the JavaFX text system. */
+    private static SvgFontGlyphs svgFontFor(TextRunBuilder.Run run, RenderContext context) {
+        return SvgFontResolver.resolve(SvgInheritedStyle.resolve(run.ownerContext(), run.owner()).getFontFamily(), context);
+    }
+
+    private static double fontSizeFor(TextRunBuilder.Run run, RenderContext context) {
+        return ISvgTextAttributes.resolveFontSize(SvgInheritedStyle.resolve(run.ownerContext(), run.owner())).pixels();
     }
 
     /**
@@ -192,8 +261,8 @@ final class TextGlyphLayout {
      * {@code translateX} on the finished node/group rather than by rewriting each glyph's own {@code x} and any
      * {@code Rotate} pivot, which would otherwise need recomputing too.
      */
-    private static void applyTextAnchor(SvgText root, RenderContext context, List<Text> nodes, Node result) {
-        if (nodes.isEmpty()) {
+    private static void applyTextAnchor(SvgText root, RenderContext context, double totalWidth, Node result) {
+        if (totalWidth <= 0) {
             return;
         }
         String anchor = StringUtils.trimToEmpty(SvgInheritedStyle.resolve(context, root).getTextAnchor());
@@ -201,9 +270,6 @@ final class TextGlyphLayout {
         if (fraction == 0.0) {
             return;
         }
-        Text first = nodes.get(0);
-        Text last = nodes.get(nodes.size() - 1);
-        double totalWidth = (last.getX() + last.getLayoutBounds().getWidth()) - first.getX();
         result.setTranslateX(result.getTranslateX() - fraction * totalWidth);
     }
 
