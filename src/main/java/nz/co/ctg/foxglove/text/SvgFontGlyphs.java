@@ -1,5 +1,6 @@
 package nz.co.ctg.foxglove.text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +40,15 @@ public final class SvgFontGlyphs {
 
     private final Map<String, SvgGlyph> glyphsByUnicode;
     private final SvgMissingGlyph missingGlyph;
+    private final SvgFontKerning kerning;
     private final double unitsPerEm;
     private final double defaultAdvance;
 
-    private SvgFontGlyphs(Map<String, SvgGlyph> glyphsByUnicode, SvgMissingGlyph missingGlyph, double unitsPerEm, double defaultAdvance) {
+    private SvgFontGlyphs(Map<String, SvgGlyph> glyphsByUnicode, SvgMissingGlyph missingGlyph, SvgFontKerning kerning,
+        double unitsPerEm, double defaultAdvance) {
         this.glyphsByUnicode = glyphsByUnicode;
         this.missingGlyph = missingGlyph;
+        this.kerning = kerning;
         this.unitsPerEm = unitsPerEm;
         this.defaultAdvance = defaultAdvance;
     }
@@ -52,6 +56,7 @@ public final class SvgFontGlyphs {
     /** Indexes {@code font}'s glyphs by the character each one renders, taking metrics from its {@code <font-face>}. */
     static SvgFontGlyphs of(SvgFont font) {
         Map<String, SvgGlyph> glyphs = new HashMap<>();
+        List<SvgHorizontalKerning> kerningPairs = new ArrayList<>();
         SvgMissingGlyph missing = null;
         SvgFontFace face = null;
         for (ISvgElement child : font.getContent()) {
@@ -65,10 +70,13 @@ public final class SvgFontGlyphs {
                 missing = candidate;
             } else if (child instanceof SvgFontFace candidate) {
                 face = candidate;
+            } else if (child instanceof SvgHorizontalKerning candidate) {
+                kerningPairs.add(candidate);
             }
         }
         double unitsPerEm = face == null ? DEFAULT_UNITS_PER_EM : number(face.getUnitsPerEm(), DEFAULT_UNITS_PER_EM);
-        return new SvgFontGlyphs(glyphs, missing, unitsPerEm, number(font.getHorizAdvX(), unitsPerEm));
+        return new SvgFontGlyphs(glyphs, missing, SvgFontKerning.of(kerningPairs), unitsPerEm,
+            number(font.getHorizAdvX(), unitsPerEm));
     }
 
     /** Whether this font can draw {@code character} at all, ignoring the {@code <missing-glyph>} fallback. */
@@ -105,6 +113,15 @@ public final class SvgFontGlyphs {
         return advance * fontSize / unitsPerEm;
     }
 
+    /**
+     * How much closer {@code right} should sit to the {@code left} that precedes it at {@code fontSize}, from the
+     * font's {@code <hkern>} pairs (#136), or zero when no pair matches. Subtracted from the cursor, so a positive
+     * result tightens the gap.
+     */
+    public double kerningBetween(String left, String right, double fontSize) {
+        return kerning.kern(left, glyphNameOf(left), right, glyphNameOf(right)) * fontSize / unitsPerEm;
+    }
+
     public double getUnitsPerEm() {
         return unitsPerEm;
     }
@@ -112,6 +129,12 @@ public final class SvgFontGlyphs {
     /** How many glyphs this font defines - mostly so a test can prove a font was loaded rather than defaulted. */
     public int size() {
         return glyphsByUnicode.size();
+    }
+
+    /** The {@code glyph-name} of the glyph drawing {@code character}, which {@code g1}/{@code g2} pairs match on. */
+    private String glyphNameOf(String character) {
+        SvgGlyph glyph = glyphsByUnicode.get(character);
+        return glyph == null ? null : glyph.getGlyphName();
     }
 
     private String outlineOf(String character) {
@@ -128,7 +151,8 @@ public final class SvgFontGlyphs {
     }
 
     /** For {@link SvgFontResolver}'s cache to record "this URI holds no usable font" without re-loading it. */
-    static final SvgFontGlyphs NONE = new SvgFontGlyphs(Map.of(), null, DEFAULT_UNITS_PER_EM, DEFAULT_UNITS_PER_EM);
+    static final SvgFontGlyphs NONE = new SvgFontGlyphs(Map.of(), null, SvgFontKerning.NONE, DEFAULT_UNITS_PER_EM,
+        DEFAULT_UNITS_PER_EM);
 
     static SvgFontGlyphs firstFontIn(List<SvgFont> fonts, String fragmentId) {
         for (SvgFont font : fonts) {

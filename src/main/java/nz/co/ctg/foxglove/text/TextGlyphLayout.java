@@ -87,7 +87,12 @@ final class TextGlyphLayout {
                 if (currentPathLookup != null) {
                     SvgFontGlyphs pathFont = svgFontFor(run, context);
                     double pathFontSize = fontSizeFor(run, context);
-                    for (String piece : codePoints(run.text())) {
+                    List<String> pathPieces = codePoints(run.text());
+                    for (int k = 0; k < pathPieces.size(); k++) {
+                        String piece = pathPieces.get(k);
+                        if (k > 0 && pathFont != null) {
+                            pathCursor -= pathFont.kerningBetween(pathPieces.get(k - 1), piece, pathFontSize);
+                        }
                         Point2D point = currentPathLookup.pointAt(pathCursor);
                         double angle = currentPathLookup.angleAt(pathCursor);
                         Glyph glyph = glyphOf(piece, run, pathFont, pathFontSize, point.getX(), point.getY(),
@@ -130,7 +135,12 @@ final class TextGlyphLayout {
                 double dy = i < dys.size() ? dys.get(i) : 0.0;
                 Double rotate = rotates.isEmpty() ? null : rotates.get(Math.min(i, rotates.size() - 1));
 
-                double flowX = (explicitX != null ? explicitX : cursorX) + dx;
+                // Kerning tightens the gap left by the previous glyph's advance, so it applies only where the cursor
+                // is actually carrying that gap - an explicit x positions the glyph absolutely and is left alone.
+                double kern = k > 0 && runFont != null && explicitX == null
+                    ? runFont.kerningBetween(pieces.get(k - 1), pieces.get(k), runFontSize)
+                    : 0;
+                double flowX = (explicitX != null ? explicitX : cursorX - kern) + dx;
                 double flowY = (explicitY != null ? explicitY : cursorY) + dy;
                 double displayY = flowY + baselineOffset(run, runFontSize);
 
