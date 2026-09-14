@@ -46,12 +46,16 @@ import javafx.scene.paint.Color;
  * <p>
  * <b>Every test's own "furniture" is a problem verified empirically, not assumed</b>: each of the 525 test
  * documents renders a {@code <text id="revision">} legend near the bottom of the canvas, styled with an embedded
- * SVG font ({@code font-face}/{@code font-face-uri}) this renderer doesn't support (SVG fonts, #61, won't-fix,
- * deprecated in SVG2). That legend renders in a fallback font and would mismatch the reference for nearly every
- * single test regardless of what is actually being verified, so its actual rendered bounds (looked up via {@link
+ * SVG font ({@code font-face}/{@code font-face-uri}). Its actual rendered bounds (looked up via {@link
  * RenderContext#withNodeRegistry}, the same mechanism #43's Cucumber {@code RenderingSteps} already uses) are
  * cropped out of both images before comparing - not a hardcoded pixel offset, since 6 of the 525 tests don't use
  * the suite's usual 480x360 canvas at all.
+ * <p>
+ * That crop exists because SVG fonts were unsupported, so the legend rendered in a fallback font and mismatched the
+ * reference for nearly every test regardless of what was actually being verified. #61 has since implemented them
+ * and the legend now draws from the font's own glyph outlines, but <b>the crop deliberately stays</b>: removing it
+ * would move every baseline in the suite at once, and is worth deciding on its own evidence rather than as a side
+ * effect of the font work.
  * <p>
  * <b>The entire {@code animate-} chapter (and any other genuinely time-based test) is a known, documented harness
  * limitation, not a rendering defect</b>: this check renders one static frame via {@code createGraphic}, with no
