@@ -20,7 +20,9 @@ import javafx.scene.text.Text;
  * The position used to arrive only as a side effect of the {@code <text>} owning the first run, which happens just
  * when it has character data of its own. {@code <text x="0" y="100">Hello <tspan>world</tspan></text>} therefore
  * worked while {@code <text x="0" y="100"><tspan>Hello</tspan></text>} silently rendered at the origin - and
- * wrapping a whole {@code <text>} in one {@code <tspan>} is an everyday authoring shape.
+ * wrapping a whole {@code <text>} in one {@code <tspan>} is an everyday authoring shape. #143 later generalised the
+ * mechanism this relies on to whole subtrees rather than a single seeded value; see
+ * {@link SvgTextPositionInheritanceTest} for that broader coverage.
  */
 public class SvgTextLeadingChildPositionTest {
 
@@ -61,23 +63,25 @@ public class SvgTextLeadingChildPositionTest {
     }
 
     /**
-     * A leading child and the text's own following characters share one baseline.
+     * A leading child and the text's own following characters share one baseline, and the second flows after the
+     * first rather than landing on top of it.
      * <p>
-     * Only the baseline is asserted. Their horizontal relationship is the subject of <b>#143</b>: the {@code <text>}
-     * consumes {@code x[0]} a second time for its own first character, so "B" here lands back on top of "A" instead
-     * of flowing after it. That is a separate defect in how positioning lists are indexed - this fix makes it
-     * visible rather than causing it, and asserting the present behaviour would only entrench it.
+     * That second part was #143: the {@code <text>} consumed {@code x[0]} a second time for its own first
+     * character, since nothing recorded that the leading {@code <tspan>} had already used it. Fixed there; this
+     * asserts the resolution rather than merely the part that worked all along.
      */
     @Test
-    public void testTextFollowingALeadingTspanSharesItsBaseline() {
+    public void testTextFollowingALeadingTspanContinuesFromIt() {
         SvgTextSpan span = new SvgTextSpan();
         span.getContent().add("A");
         SvgText text = text(30, 100, span);
         text.getContent().add("B");
 
         Group rendered = (Group) render(text);
-        assertThat(((Text) rendered.getChildren().get(0)).getY(), closeTo(100, 1e-6));
-        assertThat(((Text) rendered.getChildren().get(1)).getY(), closeTo(100, 1e-6));
+        Text a = (Text) rendered.getChildren().get(0);
+        Text b = (Text) rendered.getChildren().get(1);
+        assertThat(b.getY(), closeTo(100, 1e-6));
+        assertThat(b.getX(), closeTo(a.getX() + a.getLayoutBounds().getWidth(), 1e-6));
     }
 
     /** A {@code <text>} declaring no position at all still starts at the origin. */

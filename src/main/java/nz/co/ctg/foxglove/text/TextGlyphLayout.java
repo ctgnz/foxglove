@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove.text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,16 +27,25 @@ import javafx.scene.transform.Translate;
 
 /**
  * Positions the runs {@link TextRunBuilder} (#27) produces onto one baseline, applying #28's positioning
- * attributes: list-valued {@code x}/{@code y}/{@code dx}/{@code dy} and {@code rotate} (each indexing into the
- * characters of the run's own owning element - see {@link ISvgGlyphPositioned}), {@code text-anchor}, and an
- * em-based approximation of {@code baseline-shift}/{@code alignment-baseline}/{@code dominant-baseline} (JavaFX's
- * {@code Text} exposes no font ascent/descent metrics, so this is not a precise implementation of the CSS baseline
- * algorithm - it covers the common superscript/subscript/centring cases).
+ * attributes: list-valued {@code x}/{@code y}/{@code dx}/{@code dy} and {@code rotate} (see
+ * {@link ISvgGlyphPositioned}), {@code text-anchor}, and an em-based approximation of {@code baseline-shift}/
+ * {@code alignment-baseline}/{@code dominant-baseline} (JavaFX's {@code Text} exposes no font ascent/descent
+ * metrics, so this is not a precise implementation of the CSS baseline algorithm - it covers the common
+ * superscript/subscript/centring cases).
  * <p>
- * A run whose owner declares none of these lists stays a single {@code Text} node, exactly as in #27; only a run
- * that actually uses per-character positioning is split into one node per Unicode code point. {@code textLength}/
- * {@code lengthAdjust} and {@code letter-spacing}/{@code word-spacing}/{@code kerning} are out of scope - the
- * former is absent from #28's acceptance criteria, the latter would need their own per-glyph advance model.
+ * A list addresses the characters of its element's <b>whole subtree, including descendants</b> (#143), not just
+ * those the element owns directly - {@code <text x="10 20 30"><tspan>AB</tspan>C</text>} places A/B/C at 10/20/30
+ * even though {@code <tspan>} has no list of its own. Each run is resolved against its full ancestor chain,
+ * innermost first: the nearest element with a list that still reaches this character wins, and a list that is
+ * present but already exhausted at this index falls through to the next element out rather than stopping there.
+ * Bookkeeping (how many characters of an element's own list have been consumed) advances for every element in a
+ * run's chain, not just its immediate owner - otherwise an ancestor's own later run would re-offer indices its
+ * descendants' runs already used.
+ * <p>
+ * A run whose whole chain declares none of these lists stays a single {@code Text} node, exactly as in #27; only a
+ * run that actually uses per-character positioning is split into one node per Unicode code point. {@code
+ * textLength}/{@code lengthAdjust} and {@code letter-spacing}/{@code word-spacing}/{@code kerning} are out of scope
+ * - the former is absent from #28's acceptance criteria, the latter would need their own per-glyph advance model.
  * <p>
  * A run under a {@code <textPath>} (#29) is laid out differently: always split per code point regardless of its
  * own {@code x}/{@code y}/{@code dx}/{@code dy}/{@code rotate} (not applied while on a path - out of scope), each
@@ -64,21 +74,20 @@ final class TextGlyphLayout {
     static Node layout(SvgText root, RenderContext context) {
         List<TextRunBuilder.Run> runs = TextRunBuilder.build(root, context);
         List<Node> nodes = new ArrayList<>();
-        // The <text>'s own x/y seed the cursor, rather than being left to arrive when the <text> happens to own the
-        // first run (#142). It only owns one when it has character data of its own, so a <text> whose content opens
-        // with a child element - <text x="0" y="100"><tspan>A</tspan></text>, a thoroughly ordinary shape - would
-        // otherwise start that child at the origin and lose the position entirely.
-        double cursorX = firstPosition(root, ISvgGlyphPositioned::getX);
-        double cursorY = firstPosition(root, ISvgGlyphPositioned::getY);
+        double cursorX = 0;
+        double cursorY = 0;
         double totalAdvance = 0;
         double anchorStartX = 0;
         boolean anchorStarted = false;
         SvgTextPath currentPath = null;
         PathLengthLookup currentPathLookup = null;
         double pathCursor = 0;
-        // How many of an owner's own x/y/dx/dy/rotate list entries have already been consumed - an element can
-        // contribute more than one run (text directly inside it, both before and after a nested child), and the
-        // list indexes that element's *own* characters as a whole, not each run independently.
+        // How many of each element's own x/y/dx/dy/rotate list entries have already been consumed - keyed by every
+        // positioning element in a run's ancestor chain, not just its immediate owner, since a list addresses a
+        // whole subtree's characters (#143): <text x="30"><tspan>A</tspan>B</text> must not let "B" re-consume
+        // x[0] just because <tspan>'s "A" was never counted against <text>'s own index. This also subsumes #142's
+        // former special-cased cursor seed - the root is always the outermost element of every chain, so a leading
+        // child with nothing of its own falls through to it via the same mechanism, with no separate seed needed.
         Map<AbstractSvgStylable, Integer> ownerIndex = new IdentityHashMap<>();
 
         for (TextRunBuilder.Run run : runs) {
@@ -112,18 +121,23 @@ final class TextGlyphLayout {
                         cursorX = point.getX() + glyph.advance();
                         cursorY = point.getY();
                     }
+                    // A run inside a <textPath> isn't itself positioned by x/y/dx/dy/rotate (out of scope, per the
+                    // class doc), but its characters still occupy indices in an enclosing element's subtree - an
+                    // ancestor's list must not be re-offered characters a <textPath> already consumed (#143).
+                    bumpAncestors(ownerIndex, run.ancestors(), pathPieces.size());
                 }
                 continue;
             }
-            List<Double> xs = positions(run.owner(), ISvgGlyphPositioned::getX);
-            List<Double> ys = positions(run.owner(), ISvgGlyphPositioned::getY);
-            List<Double> dxs = positions(run.owner(), ISvgGlyphPositioned::getDx);
-            List<Double> dys = positions(run.owner(), ISvgGlyphPositioned::getDy);
-            List<Double> rotates = positions(run.owner(), ISvgGlyphPositioned::getRotate);
+            // Innermost first: a run's own owner gets to decide before any ancestor is even consulted (#143). The
+            // chain is root-to-owner, so this is simply that order reversed.
+            List<AbstractSvgStylable> innermostFirst = new ArrayList<>(run.ancestors());
+            Collections.reverse(innermostFirst);
             // A single x/y/dx/dy value positions the run's start exactly like the pre-#28 scalar attributes did -
-            // splitting into glyphs only matters once there is more than one position to assign, or for `rotate`,
-            // which always rotates each character individually rather than the run as one rigid block.
-            boolean perGlyph = xs.size() > 1 || ys.size() > 1 || dxs.size() > 1 || dys.size() > 1 || !rotates.isEmpty();
+            // splitting into glyphs only matters once there is more than one position to assign anywhere in the
+            // chain, or for `rotate`, which always rotates each character individually. Checked across every
+            // ancestor, not just the owner: a <tspan> with no list of its own inside a multi-valued <text> still
+            // has to split, or the inherited per-character values it falls through to (#143) would never land.
+            boolean perGlyph = run.ancestors().stream().anyMatch(TextGlyphLayout::hasMultiValuedPositioning);
             SvgFontGlyphs runFont = svgFontFor(run, context);
             double runFontSize = fontSizeFor(run, context);
             // an <altGlyph> draws the glyphs it names instead of its own characters (#138); an unresolved reference
@@ -137,15 +151,15 @@ final class TextGlyphLayout {
                 : List.of(run.text());
             // a substitution replaces the run's characters wholesale, so the glyphs it names drive the loop instead
             int count = substitutes != null ? substitutes.size() : pieces.size();
-            int baseIndex = ownerIndex.getOrDefault(run.owner(), 0);
 
             for (int k = 0; k < count; k++) {
-                int i = baseIndex + k;
-                Double explicitX = i < xs.size() ? xs.get(i) : null;
-                Double explicitY = i < ys.size() ? ys.get(i) : null;
-                double dx = i < dxs.size() ? dxs.get(i) : 0.0;
-                double dy = i < dys.size() ? dys.get(i) : 0.0;
-                Double rotate = rotates.isEmpty() ? null : rotates.get(Math.min(i, rotates.size() - 1));
+                Double explicitX = resolvePositionedValue(innermostFirst, ownerIndex, k, ISvgGlyphPositioned::getX, false);
+                Double explicitY = resolvePositionedValue(innermostFirst, ownerIndex, k, ISvgGlyphPositioned::getY, false);
+                Double explicitDx = resolvePositionedValue(innermostFirst, ownerIndex, k, ISvgGlyphPositioned::getDx, false);
+                Double explicitDy = resolvePositionedValue(innermostFirst, ownerIndex, k, ISvgGlyphPositioned::getDy, false);
+                double dx = explicitDx == null ? 0.0 : explicitDx;
+                double dy = explicitDy == null ? 0.0 : explicitDy;
+                Double rotate = resolvePositionedValue(innermostFirst, ownerIndex, k, ISvgGlyphPositioned::getRotate, true);
 
                 // Kerning tightens the gap left by the previous glyph's advance, so it applies only where the cursor
                 // is actually carrying that gap - an explicit x positions the glyph absolutely and is left alone.
@@ -172,7 +186,7 @@ final class TextGlyphLayout {
                 cursorX = flowX + glyph.advance();
                 cursorY = flowY;
             }
-            ownerIndex.put(run.owner(), baseIndex + count);
+            bumpAncestors(ownerIndex, run.ancestors(), count);
         }
 
         Node result = nodes.size() == 1 ? nodes.get(0) : groupOf(nodes);
@@ -220,14 +234,57 @@ final class TextGlyphLayout {
         return owner instanceof ISvgGlyphPositioned positioned ? getter.apply(positioned) : List.of();
     }
 
+    /** Whether {@code element} has any list that would force per-glyph splitting (#143) - see {@code perGlyph}. */
+    private static boolean hasMultiValuedPositioning(AbstractSvgStylable element) {
+        return positions(element, ISvgGlyphPositioned::getX).size() > 1
+            || positions(element, ISvgGlyphPositioned::getY).size() > 1
+            || positions(element, ISvgGlyphPositioned::getDx).size() > 1
+            || positions(element, ISvgGlyphPositioned::getDy).size() > 1
+            || !positions(element, ISvgGlyphPositioned::getRotate).isEmpty();
+    }
+
     /**
-     * The first entry of one of {@code root}'s own positioning lists, or 0 where it declares none - the origin the
-     * flow starts from (#142). Only the first matters here: any further entries are consumed per-glyph by the run
-     * that owns them, through {@link #positions}.
+     * The value one positioning list contributes to the {@code k}-th character of a run, searched from the run's own
+     * owner outward through its ancestors, or null where nothing in the chain has one (#143).
+     * <p>
+     * An element's list, once found non-empty, does not automatically win outright: if it does not yet reach index
+     * {@code k} within <i>that element's own</i> running count, the search keeps going outward rather than stopping
+     * - {@code <tspan x="1">AB</tspan>} inside {@code <text x="100 200 300">} must let "B" (beyond the tspan's single
+     * entry) fall through to the {@code <text>}'s own list, even though the {@code <tspan>} does have a list of its
+     * own. {@code rotate} is the one exception ({@code holdLast}): its existing behaviour never runs out once
+     * present (the last value repeats), so the first ancestor with any entries at all wins outright.
+     * <p>
+     * {@code ownerIndex} is read, not written, here - safe because a run's own bookkeeping update happens only after
+     * every character of it has been resolved, so the map does not change mid-run.
      */
-    private static double firstPosition(SvgText root, Function<ISvgGlyphPositioned, List<Double>> getter) {
-        List<Double> values = positions(root, getter);
-        return values.isEmpty() ? 0 : values.get(0);
+    private static Double resolvePositionedValue(List<AbstractSvgStylable> innermostFirst,
+        Map<AbstractSvgStylable, Integer> ownerIndex, int k, Function<ISvgGlyphPositioned, List<Double>> getter, boolean holdLast) {
+        for (AbstractSvgStylable element : innermostFirst) {
+            List<Double> values = positions(element, getter);
+            if (values.isEmpty()) {
+                continue;
+            }
+            int index = ownerIndex.getOrDefault(element, 0) + k;
+            if (holdLast) {
+                return values.get(Math.min(index, values.size() - 1));
+            }
+            if (index < values.size()) {
+                return values.get(index);
+            }
+            // this element does have a list, but it doesn't reach this character - keep searching outward
+        }
+        return null;
+    }
+
+    /**
+     * Records that {@code count} more characters have flowed through every element in {@code ancestors}' subtree
+     * (#143) - not just the run's immediate owner, so that when an ancestor later owns a run of its own directly, it
+     * correctly resumes from where its whole subtree left off rather than only from what it itself has produced.
+     */
+    private static void bumpAncestors(Map<AbstractSvgStylable, Integer> ownerIndex, List<AbstractSvgStylable> ancestors, int count) {
+        for (AbstractSvgStylable ancestor : ancestors) {
+            ownerIndex.merge(ancestor, count, Integer::sum);
+        }
     }
 
     private static List<String> codePoints(String text) {
