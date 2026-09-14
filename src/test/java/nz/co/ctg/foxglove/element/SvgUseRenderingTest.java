@@ -1,12 +1,18 @@
 package nz.co.ctg.foxglove.element;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import nz.co.ctg.foxglove.FoxgloveParser;
+import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.type.ViewBox;
 
+import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -16,6 +22,8 @@ import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Affine;
@@ -27,9 +35,16 @@ import javafx.scene.transform.Affine;
  * {@code <use>} is rejected without hanging. Also covers #95: a reference cycle reachable only through
  * {@code xlink:href} chains between otherwise-unrelated elements (not each other's static-containment ancestor,
  * so the ancestor check alone misses it) must be rejected the same way, without a {@code StackOverflowError} - and
- * two independent siblings legitimately reusing the same target must not be mistaken for one.
+ * two independent siblings legitimately reusing the same target must not be mistaken for one. Also covers #101:
+ * {@code <use>} of an {@code <image>} target, which needs the JavaFX Application Thread to construct (see
+ * {@link JavaFxTestSupport}) unlike every other target type above.
  */
 public class SvgUseRenderingTest {
+
+    @BeforeAll
+    public static void initJFX() throws Exception {
+        JavaFxTestSupport.ensureStarted();
+    }
 
     private static Size px(double value) {
         return new Size(value, SizeUnits.PX);
@@ -91,6 +106,78 @@ public class SvgUseRenderingTest {
         Point2D origin = renderedUse.localToParent(0, 0);
         assertThat(origin.getX(), closeTo(130, 1e-9));
         assertThat(origin.getY(), closeTo(40, 1e-9));
+    }
+
+    /**
+     * #101: {@code <use>} of an {@code <image>} target - found via the W3C conformance harness's own
+     * {@code struct-use-01-t}, which showed a blank row where the reference PNG had an embedded raster swatch.
+     * Reproducing that exact document directly (not just this minimal in-memory case) found the underlying
+     * rendering already correct - {@link SvgUse#buildReferenced}'s generic {@code FxGraphic<?>} dispatch already
+     * calls {@link SvgImage#createGraphic} like any other target type, and {@link nz.co.ctg.foxglove.RenderContext}'s
+     * base URI already threads through {@code <use>}'s own {@code resolveChild}/{@code withActiveUseTarget} calls
+     * unchanged, the same as every other {@code withXxx} on that class - there was nothing left to fix. No test
+     * exercised this specific target-type/reference combination before, so nothing had ever pinned the fix in place;
+     * this does. See {@link #testUseOfAnImageWithARelativeHrefParsedFromAFile} for the base-URI-threading half of
+     * this, which a {@code data:} URI alone (this test) cannot exercise.
+     */
+    @Test
+    public void testUseOfAnImageRendersTheReferencedRasterImage() throws Exception {
+        // a real 1x1 transparent PNG, the same fixture SvgImageRenderingTest uses
+        String dotPng = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQAB0NcObQAAAABJRU5ErkJggg==";
+        SvgImage target = new SvgImage();
+        target.setId("pic");
+        target.setXlinkHref(dotPng);
+        target.setWidth(px(10));
+        target.setHeight(px(10));
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent().add(target);
+
+        SvgUse use = new SvgUse();
+        use.setXlinkHref("#pic");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent().add(defs);
+        root.getContent().add(use);
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(root);
+        Node rendered = onFxThread(svg::createGroup);
+
+        ImageView imageView = findImageView(rendered);
+        assertThat("the referenced <image> actually decoded, not an error placeholder", imageView.getImage(), notNullValue());
+        assertThat(imageView.getImage().isError(), is(false));
+    }
+
+    /**
+     * The base-URI-threading half of #101 - a relative {@code xlink:href} on the referenced {@code <image>} must
+     * still resolve against the document's own base URI (see {@link FoxgloveParser#parseFile}) when reached through
+     * a {@code <use>} indirection, exactly the structure the real {@code struct-use-01-t} conformance document uses.
+     */
+    @Test
+    public void testUseOfAnImageWithARelativeHrefParsedFromAFile() throws Exception {
+        SvgGraphic svg = new FoxgloveParser().parseFile("/image-relative-via-use.svg");
+        assertThat(svg.getBaseUri(), notNullValue());
+
+        Node rendered = onFxThread(svg::createGroup);
+        ImageView imageView = findImageView(rendered);
+        assertThat(imageView.getImage(), notNullValue());
+        assertThat(imageView.getImage().isError(), is(false));
+        assertThat(imageView.getImage().getWidth(), closeTo(4, 1e-9));
+    }
+
+    private static ImageView findImageView(Node node) {
+        if (node instanceof ImageView imageView) {
+            return imageView;
+        }
+        if (node instanceof Group group) {
+            for (Node child : group.getChildren()) {
+                ImageView found = findImageView(child);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
     }
 
     @Test
