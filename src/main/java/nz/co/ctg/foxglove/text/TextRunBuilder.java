@@ -17,14 +17,23 @@ import nz.co.ctg.foxglove.RenderContext;
  */
 final class TextRunBuilder {
 
-    /** One run ready to become a {@code Text} node. {@code enclosingPath} is non-null when it (or an ancestor) is a
-     * {@code <textPath>}, meaning it lays out along a path (#29) rather than the ordinary linear flow. */
-    record Run(AbstractSvgStylable owner, RenderContext ownerContext, String text, SvgTextPath enclosingPath) {
+    /**
+     * One run ready to become a {@code Text} node. {@code enclosingPath} is non-null when it (or an ancestor) is a
+     * {@code <textPath>}, meaning it lays out along a path (#29) rather than the ordinary linear flow.
+     * <p>
+     * {@code ancestors} is the chain from the root {@code <text>} down to (and including) {@code owner} - every
+     * element whose {@code x}/{@code y}/{@code dx}/{@code dy}/{@code rotate} list could apply to this run's
+     * characters, since those lists address a whole subtree, not just the characters an element owns directly
+     * (#143). Always non-empty: {@code owner} is its own last element.
+     */
+    record Run(AbstractSvgStylable owner, RenderContext ownerContext, String text, SvgTextPath enclosingPath,
+        List<AbstractSvgStylable> ancestors) {
     }
 
-    private record RawRun(AbstractSvgStylable owner, RenderContext ownerContext, String text, String spaceMode, SvgTextPath enclosingPath) {
+    private record RawRun(AbstractSvgStylable owner, RenderContext ownerContext, String text, String spaceMode,
+        SvgTextPath enclosingPath, List<AbstractSvgStylable> ancestors) {
         RawRun withText(String replacement) {
-            return new RawRun(owner, ownerContext, replacement, spaceMode, enclosingPath);
+            return new RawRun(owner, ownerContext, replacement, spaceMode, enclosingPath, ancestors);
         }
 
         boolean isPreserve() {
@@ -37,12 +46,14 @@ final class TextRunBuilder {
 
     static List<Run> build(SvgText root, RenderContext context) {
         List<RawRun> raw = new ArrayList<>();
-        walk(root, context, "default", null, raw);
+        walk(root, context, "default", null, List.of(), raw);
         List<RawRun> processed = collapseWhitespace(raw);
         if (processed.isEmpty()) {
-            return List.of(new Run(root, context, "", null));
+            return List.of(new Run(root, context, "", null, List.of(root)));
         }
-        return processed.stream().map(run -> new Run(run.owner(), run.ownerContext(), run.text(), run.enclosingPath())).toList();
+        return processed.stream()
+            .map(run -> new Run(run.owner(), run.ownerContext(), run.text(), run.enclosingPath(), run.ancestors()))
+            .toList();
     }
 
     /**
@@ -50,27 +61,36 @@ final class TextRunBuilder {
      * {@code createGraphic} used to make directly) and resolving {@code xml:space}, which is inherited, before
      * descending into any child. {@code enclosingPath} carries the nearest {@code <textPath>} ancestor (including
      * {@code owner} itself) down to every run it contains, so a nested {@code tspan}/{@code tref}/{@code altGlyph}
-     * inside a {@code <textPath>} still lays out along the path.
+     * inside a {@code <textPath>} still lays out along the path. {@code parentAncestors} is the chain built so far,
+     * not yet including {@code owner} - extended by exactly one element here, then carried down to every run this
+     * element or its descendants produce (#143).
      */
     private static void walk(AbstractSvgStylable owner, RenderContext ownerContext, String inheritedSpaceMode, SvgTextPath enclosingPath,
-        List<RawRun> out) {
+        List<AbstractSvgStylable> parentAncestors, List<RawRun> out) {
         owner.applyStyle(ownerContext);
         String spaceMode = StringUtils.defaultIfBlank(owner.getXmlSpace(), inheritedSpaceMode);
         SvgTextPath path = owner instanceof SvgTextPath textPath ? textPath : enclosingPath;
+        List<AbstractSvgStylable> ancestors = extend(parentAncestors, owner);
         if (owner instanceof AbstractSvgTextContentElement container) {
             RenderContext childContext = ownerContext.resolveChild(owner);
             for (Object item : container.getContent()) {
                 if (item instanceof String text) {
-                    out.add(new RawRun(owner, ownerContext, text, spaceMode, path));
+                    out.add(new RawRun(owner, ownerContext, text, spaceMode, path, ancestors));
                 } else if (item instanceof AbstractSvgStylable child) {
-                    walk(child, childContext, spaceMode, path, out);
+                    walk(child, childContext, spaceMode, path, ancestors, out);
                 }
             }
         } else if (owner instanceof SvgTextReference reference) {
-            out.add(new RawRun(owner, ownerContext, resolveReferencedText(reference, ownerContext), spaceMode, path));
+            out.add(new RawRun(owner, ownerContext, resolveReferencedText(reference, ownerContext), spaceMode, path, ancestors));
         } else if (owner instanceof SvgAltGlyph altGlyph) {
-            out.add(new RawRun(owner, ownerContext, StringUtils.defaultString(altGlyph.getValue()), spaceMode, path));
+            out.add(new RawRun(owner, ownerContext, StringUtils.defaultString(altGlyph.getValue()), spaceMode, path, ancestors));
         }
+    }
+
+    private static List<AbstractSvgStylable> extend(List<AbstractSvgStylable> ancestors, AbstractSvgStylable owner) {
+        List<AbstractSvgStylable> extended = new ArrayList<>(ancestors);
+        extended.add(owner);
+        return List.copyOf(extended);
     }
 
     /**
