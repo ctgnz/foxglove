@@ -3,8 +3,10 @@ package nz.co.ctg.foxglove.text;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,11 +19,17 @@ import nz.co.ctg.foxglove.SvgGraphic;
 /**
  * Finds the SVG font a {@code font-family} names, if the document defines one (#61).
  * <p>
- * An SVG font is declared by a {@code <font-face>} whose {@code font-family} matches, pointing through
- * {@code <font-face-src><font-face-uri>} at a document holding the actual {@code <font>} and its glyph outlines.
- * That indirection is the common case by a wide margin: every one of the 525 documents in the W3C suite labels
- * itself this way, against 37 that declare a {@code <font>} inline - which is why the external path is what this
- * implements first.
+ * A font can be named in either of two shapes, and both are resolved here:
+ * <ul>
+ * <li><b>External</b> (#61) - a {@code <font-face>} whose {@code font-family} matches, pointing through
+ * {@code <font-face-src><font-face-uri>} at another document holding the {@code <font>} and its glyph outlines.
+ * Every one of the 525 documents in the W3C suite labels itself this way.
+ * <li><b>Inline</b> (#137) - a {@code <font>} in this very document, identified by its own {@code <font-face>}
+ * child. This is how a document that carries its own glyphs declares them, and how 15 of the 17 {@code fonts}
+ * chapter tests are written.
+ * </ul>
+ * A locally declared {@code <font>} is preferred where both would match: it is the more specific declaration, and a
+ * document carrying its own glyphs meant to use them.
  * <p>
  * {@code font-family} is a <b>list</b> ({@code "SVGFreeSansASCII,sans-serif"}), so each name is tried in turn and
  * the first that resolves wins. A family naming no SVG font at all - which is almost every real document - resolves
@@ -33,6 +41,17 @@ import nz.co.ctg.foxglove.SvgGraphic;
 public final class SvgFontResolver {
 
     private static final Map<URI, SvgFontGlyphs> CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Inline fonts, cached by the {@code <font>} element itself rather than by URI (#137).
+     * <p>
+     * The key matters: two documents can each declare a different font under the same family name, and one can
+     * declare the same family twice, so anything keyed by name would serve one document's glyphs to another. The
+     * element has identity semantics, which is exactly the right key. Weak, so a parsed document that is finished
+     * with does not pin its fonts in memory for the life of the JVM.
+     */
+    private static final Map<SvgFont, SvgFontGlyphs> INLINE_CACHE =
+        Collections.synchronizedMap(new WeakHashMap<>());
 
     private SvgFontResolver() {
     }
@@ -46,7 +65,8 @@ public final class SvgFontResolver {
             return null;
         }
         List<SvgFontFace> faces = context.getElementIndex().getElementsOfType(SvgFontFace.class);
-        if (faces.isEmpty()) {
+        List<SvgFont> fonts = context.getElementIndex().getElementsOfType(SvgFont.class);
+        if (faces.isEmpty() && fonts.isEmpty()) {
             return null;
         }
         for (String family : fontFamily.split(",")) {
@@ -54,17 +74,51 @@ public final class SvgFontResolver {
             if (wanted.isEmpty()) {
                 continue;
             }
+            // A <font> declared in this document is tried first: it is the more local declaration, and the document
+            // went to the trouble of carrying the glyphs itself rather than pointing somewhere else for them.
+            SvgFontGlyphs inline = inlineFont(wanted, fonts);
+            if (inline != null) {
+                return inline;
+            }
             for (SvgFontFace face : faces) {
-                if (!wanted.equalsIgnoreCase(unquote(StringUtils.trimToEmpty(face.getFontFamily())))) {
+                if (!matchesFamily(wanted, face)) {
                     continue;
                 }
                 SvgFontGlyphs glyphs = load(face, context);
-                if (glyphs != null && glyphs.size() > 0) {
+                if (glyphs != null && glyphs.isUsable()) {
                     return glyphs;
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * A {@code <font>} in this document whose own {@code <font-face>} child names {@code family} (#137).
+     * <p>
+     * This is how an inline font is declared in practice - the {@code <font-face>} sits <i>inside</i> the
+     * {@code <font>} and carries no {@code <font-face-src>}, there being nothing to point at. Every one of the 15
+     * {@code fonts}-chapter documents that declares a font of its own is shaped this way.
+     * <p>
+     * Where two fonts claim the same family the first in document order wins, which is what
+     * {@code fonts-desc-01-t} - the one suite document that declares the same family twice - expects.
+     */
+    private static SvgFontGlyphs inlineFont(String family, List<SvgFont> fonts) {
+        for (SvgFont font : fonts) {
+            for (ISvgElement child : font.getContent()) {
+                if (child instanceof SvgFontFace face && matchesFamily(family, face)) {
+                    SvgFontGlyphs glyphs = INLINE_CACHE.computeIfAbsent(font, SvgFontGlyphs::of);
+                    if (glyphs.isUsable()) {
+                        return glyphs;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private static boolean matchesFamily(String wanted, SvgFontFace face) {
+        return wanted.equalsIgnoreCase(unquote(StringUtils.trimToEmpty(face.getFontFamily())));
     }
 
     /** Follows a {@code <font-face>}'s {@code <font-face-src><font-face-uri>} to the document holding its glyphs. */
@@ -98,8 +152,12 @@ public final class SvgFontResolver {
         String fragmentId = StringUtils.substringAfter(reference, "#");
         String withoutFragment = StringUtils.substringBefore(reference, "#");
         if (withoutFragment.isEmpty()) {
-            // "#id" alone means a <font> in this very document, which is the inline case this does not yet cover
-            return null;
+            // "#id" alone names a <font> in this very document. No suite document does this - families there are
+            // matched by name - but it is the plain reading of the reference and costs one lookup to honour.
+            return context.getElementIndex().resolve(reference, SvgFont.class)
+                .map(font -> INLINE_CACHE.computeIfAbsent(font, SvgFontGlyphs::of))
+                .filter(SvgFontGlyphs::isUsable)
+                .orElse(null);
         }
 
         URI resolved = context.getBaseUri().map(base -> base.resolve(withoutFragment)).orElse(null);

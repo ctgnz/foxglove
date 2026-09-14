@@ -131,6 +131,17 @@ public final class SvgFontGlyphs {
         return glyphsByUnicode.size();
     }
 
+    /**
+     * Whether this font can draw anything at all, and so is worth using in preference to the JavaFX text system.
+     * <p>
+     * A {@code <missing-glyph>} on its own is enough, and deliberately so: the suite's {@code MissingInAction} font
+     * declares nothing but one, precisely so that every character renders as its box. Judging usability on glyph
+     * count alone would reject it and silently render real text where the reference shows boxes.
+     */
+    public boolean isUsable() {
+        return !glyphsByUnicode.isEmpty() || missingGlyph != null;
+    }
+
     /** The {@code glyph-name} of the glyph drawing {@code character}, which {@code g1}/{@code g2} pairs match on. */
     private String glyphNameOf(String character) {
         SvgGlyph glyph = glyphsByUnicode.get(character);
