@@ -71,6 +71,17 @@ public class FoxgloveParser {
             // application uses) - to a generous bound rather than disabled outright (0/unlimited), so this still
             // offers some protection against a genuinely malicious, unbounded entity.
             xmlInputFactory.setProperty("jdk.xml.maxParameterEntitySizeLimit", 100_000);
+            // A document declaring a DOCTYPE with an external SYSTEM/PUBLIC identifier must never cause this parser
+            // to make an outbound network request while parsing (#158) - regardless of what host it names, and
+            // regardless of whether the catalog above happens to already redirect it to a local resource. Catalog
+            // resolution is unaffected by this: once the resolver rewrites a systemId to a classpath/local URI, the
+            // resulting fetch is local, not "external" in the sense this property governs - confirmed empirically,
+            // not merely assumed, that a Full-profile document (whose DTD is fully catalog-resolved locally) still
+            // parses correctly with this disabled, while a document whose reference the catalog cannot redirect at
+            // all no longer silently reaches the network for it. Internally-declared general entities (a document's
+            // own inline <!ENTITY Name "..."> declarations, used throughout the W3C suite) are unaffected either
+            // way - this property concerns only entities whose value comes from another resource, not inline text.
+            xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to create JAXB context: " + e.getMessage(), e);
         }
