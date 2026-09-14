@@ -55,9 +55,23 @@ public final class SvgAttributeRegistry {
     }
 
     /**
-     * Mirrors each shape's own {@code createShape} - including {@code rx}/{@code ry} mapping directly onto
-     * {@code Rectangle}'s {@code arcWidth}/{@code arcHeight} with no doubling, matching what
-     * {@code SvgRectangle.createShape} already does today. Not this issue's place to second-guess that.
+     * Mirrors each shape's own {@code createShape} - including {@code rx}/{@code ry} (#99, the same doubling #93
+     * already fixed for the static case): JavaFX's {@code arcWidth}/{@code arcHeight} are a diameter, matching
+     * AWT's {@code RoundRectangle2D} convention, while SVG's {@code rx}/{@code ry} are radii, so the parser used
+     * here doubles the parsed value before it ever reaches the property - every other piece of animation math
+     * (interpolation, {@code additive}/{@code accumulate} offsetting against the current, already-doubled property
+     * value, {@code fill="remove"}'s revert) then operates consistently in that one doubled space with no further
+     * special-casing needed, the same way {@code opacity}'s own custom parser below needs no extra handling either.
+     * <p>
+     * Deliberately narrower than the static resolution's own full semantics, matching this registry's usual "one
+     * attribute, one property" shape: SVG's rx/ry defaulting (an omitted one takes the other's value) and clamping
+     * (either is capped at half its own dimension) are both evaluated once, at construction, by
+     * {@code SvgRectangle.createShape} - by the time {@code <animate attributeName="rx">} runs, {@code ry} already
+     * holds whatever the static resolution decided, and this binding only ever touches the one axis it names, not a
+     * second, dependent property. Making {@code rx} alone drag a never-explicitly-set {@code ry} along, or clamp
+     * against the rectangle's own live (and possibly also-animating) width every frame, would need this binding to
+     * depend on more than the one property it targets - a genuinely different, larger shape of binding than anything
+     * else here, and not something any W3C conformance test exercises.
      */
     private static Optional<SvgAttributeBinding<?>> resolveGeometry(Node node, String attributeName) {
         if (node instanceof Rectangle rectangle) {
@@ -66,8 +80,8 @@ public final class SvgAttributeRegistry {
                 case "y" -> Optional.of(lengthBinding(rectangle.yProperty()));
                 case "width" -> Optional.of(lengthBinding(rectangle.widthProperty()));
                 case "height" -> Optional.of(lengthBinding(rectangle.heightProperty()));
-                case "rx" -> Optional.of(lengthBinding(rectangle.arcWidthProperty()));
-                case "ry" -> Optional.of(lengthBinding(rectangle.arcHeightProperty()));
+                case "rx" -> Optional.of(lengthBinding(rectangle.arcWidthProperty(), raw -> 2 * SizeAdapter.parse(raw).pixels()));
+                case "ry" -> Optional.of(lengthBinding(rectangle.arcHeightProperty(), raw -> 2 * SizeAdapter.parse(raw).pixels()));
                 default -> Optional.empty();
             };
         }
