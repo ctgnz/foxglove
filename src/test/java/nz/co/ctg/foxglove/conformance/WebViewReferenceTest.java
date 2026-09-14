@@ -74,6 +74,35 @@ public class WebViewReferenceTest {
         }
     }
 
+    /**
+     * #153: this engine's {@code <animateColor>} support is not merely hard to seek into - it is entirely absent,
+     * confirmed by an isolated probe that stayed at its base colour forever, in real time with no seeking involved
+     * at all. {@link WebViewReference#load} rewrites {@code <animateColor>} to the functionally identical
+     * {@code <animate>} before handing the document to this engine, restoring a signal a plain seek can never
+     * produce by itself. Without that rewrite this test fails exactly like #153 originally reported: the colour
+     * never leaves black at any seeked time, including well past {@code fill="freeze"}'s own endpoint.
+     */
+    @Test
+    public void testAnimateColorIsRewrittenSoTheEngineActuallyAnimatesIt() throws Exception {
+        String doc = """
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+              <rect width="20" height="20" fill="#000000">
+                <animateColor attributeName="fill" from="#000000" to="#00ff00" dur="4s" fill="freeze"/>
+              </rect>
+            </svg>
+            """;
+        Path document = documents.resolve("animate-color.svg");
+        Files.writeString(document, doc, StandardCharsets.UTF_8);
+
+        try (WebViewReference reference = WebViewReference.open(20, 20)) {
+            assertThat(reference.load(document), is(true));
+
+            reference.seek(Duration.seconds(4));
+            assertThat("seeked to fill=\"freeze\"'s own endpoint, the rect should have reached full green",
+                reference.snapshot().getPixelReader().getColor(10, 10).getGreen(), is(1.0));
+        }
+    }
+
     /** A document the engine cannot make sense of is a recordable result, not an exception. */
     @Test
     public void testAnUnloadableDocumentReportsFailureRatherThanThrowing() throws Exception {
