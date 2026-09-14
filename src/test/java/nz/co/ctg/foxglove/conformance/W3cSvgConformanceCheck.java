@@ -155,7 +155,12 @@ public class W3cSvgConformanceCheck {
             svg = new FoxgloveParser().parse(in);
         }
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
-        RenderContext context = RenderContext.root(svg.getElementIndex(), width, height).withNodeRegistry(registry);
+        // The base URI is the test file's own location, so a reference out of the document resolves the way it does
+        // for any other consumer (#20's <image>, #61's <font-face-uri>). Without it every such reference silently
+        // resolved to nothing, and the harness scored documents as if the resource simply did not exist.
+        RenderContext context = RenderContext.root(svg.getElementIndex(), width, height)
+            .withBaseUri(svgFile.toUri())
+            .withNodeRegistry(registry);
         Node built = svg.createGraphic(context);
 
         WritableImage actualImage = snapshot(built, width, height);
