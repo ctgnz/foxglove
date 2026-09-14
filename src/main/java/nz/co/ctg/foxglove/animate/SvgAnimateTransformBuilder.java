@@ -12,6 +12,7 @@ import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.beans.value.WritableValue;
 import javafx.scene.Node;
@@ -58,21 +59,45 @@ public final class SvgAnimateTransformBuilder {
 
         SvgAnimationTiming timing = SvgAnimationTiming.parse(element);
         Duration simpleDuration = timing.duration();
+        boolean finiteRepeat = timing.repeatCount() != Animation.INDEFINITE && timing.repeatCount() > 0;
 
         Transform transform = kind.create();
         List<WritableValue<Number>> properties = kind.properties(transform);
 
         boolean accumulate = "sum".equalsIgnoreCase(StringUtils.trimToEmpty(element.getAccumulate()));
-        Timeline timeline;
-        if (accumulate && timing.repeatCount() != Animation.INDEFINITE && timing.repeatCount() > 0) {
-            timeline = buildAccumulatedTimeline(kind, properties, values, keyTimes, interpolators, simpleDuration, timing.repeatCount());
+        // fill="remove" never applies to something that never ends (#149) - same reasoning as SvgValueAnimationBuilder.
+        boolean removeOnFinish = timing.fill() == SvgAnimationTiming.FillBehavior.REMOVE && finiteRepeat;
+
+        Timeline core;
+        if (accumulate && finiteRepeat) {
+            core = buildAccumulatedTimeline(kind, properties, values, keyTimes, interpolators, simpleDuration, timing.repeatCount());
         } else {
-            timeline = new Timeline(buildKeyFrames(kind, properties, values, keyTimes, interpolators, simpleDuration, null, 0)
+            // Without accumulate, every repeat plays the identical value list, restarting from its own first value
+            // each time - exactly what JavaFX's native cycleCount already does for free (same reasoning as
+            // SvgValueAnimationBuilder's own non-accumulate branch).
+            core = new Timeline(buildKeyFrames(kind, properties, values, keyTimes, interpolators, simpleDuration, null, 0)
                 .toArray(new KeyFrame[0]));
+            if (removeOnFinish) {
+                core.setCycleCount(timing.repeatCount());
+            }
         }
 
         target.getTransforms().add(transform);
-        return Optional.of(timeline);
+        if (!removeOnFinish) {
+            return Optional.of(core);
+        }
+        // Reverting to this type's identity - through toPropertyValues, so skewX/skewY correctly revert their shear
+        // *factor* to tan(0)=0, not the raw angle 0 - makes the transform contribute nothing, without needing to
+        // remove it from target.getTransforms() at all. Same SequentialTransition rationale as
+        // SvgValueAnimationBuilder: a separate, once-played Timeline avoids both the same-instant-KeyFrame concern
+        // (accumulate branch) and the repeat-every-cycle concern (plain branch).
+        double[] identity = kind.toPropertyValues(kind.identity());
+        KeyValue[] revertValues = new KeyValue[properties.size()];
+        for (int p = 0; p < properties.size(); p++) {
+            revertValues[p] = new KeyValue(properties.get(p), identity[p], Interpolator.DISCRETE);
+        }
+        Timeline revert = new Timeline(new KeyFrame(Duration.ZERO, revertValues));
+        return Optional.of(new SequentialTransition(core, revert));
     }
 
     // --- value list resolution -------------------------------------------------

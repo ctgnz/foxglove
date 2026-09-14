@@ -14,6 +14,7 @@ import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.beans.value.WritableValue;
 import javafx.scene.Node;
@@ -58,16 +59,41 @@ public final class SvgValueAnimationBuilder {
 
         SvgAnimationTiming timing = SvgAnimationTiming.parse(element);
         Duration simpleDuration = timing.duration();
+        boolean finiteRepeat = timing.repeatCount() != Animation.INDEFINITE && timing.repeatCount() > 0;
 
         boolean accumulate = numeric && "sum".equalsIgnoreCase(StringUtils.trimToEmpty(element.getAccumulate()));
-        if (accumulate && timing.repeatCount() != Animation.INDEFINITE && timing.repeatCount() > 0) {
-            Timeline timeline = buildAccumulatedTimeline(binding.property(), values, keyTimes, interpolators, baseValue,
-                simpleDuration, timing.repeatCount());
-            return Optional.of(timeline);
-        }
+        // fill="remove" never applies to something that never ends - repeatCount="indefinite" plays forever, so
+        // there is no "after dur" for the property to revert at (#149).
+        boolean removeOnFinish = timing.fill() == SvgAnimationTiming.FillBehavior.REMOVE && finiteRepeat;
 
-        List<KeyFrame> frames = buildKeyFrames(binding.property(), values, keyTimes, interpolators, baseValue, simpleDuration, 0);
-        return Optional.of(new Timeline(frames.toArray(new KeyFrame[0])));
+        Timeline core;
+        if (accumulate && finiteRepeat) {
+            // accumulate="sum" shifts each cycle by the previous cycle's own delta - something JavaFX's own
+            // cycleCount replay cannot express (it always restarts a Timeline from its own t=0 unchanged), so this
+            // must be unrolled into one continuous, non-repeating Timeline spanning every cycle up front.
+            core = new Timeline(buildRepeatedFrames(binding.property(), values, keyTimes, interpolators, baseValue,
+                simpleDuration, timing.repeatCount()).toArray(new KeyFrame[0]));
+        } else {
+            // Without accumulate, every repeat plays the identical value list, restarting from its own first value
+            // each time - exactly what JavaFX's native cycleCount already does for free, so nothing here needs
+            // unrolling; repeatCount is applied directly to this single-cycle Timeline.
+            core = new Timeline(buildKeyFrames(binding.property(), values, keyTimes, interpolators, baseValue, simpleDuration, 0)
+                .toArray(new KeyFrame[0]));
+            if (removeOnFinish) {
+                core.setCycleCount(timing.repeatCount());
+            }
+        }
+        if (!removeOnFinish) {
+            return Optional.of(core);
+        }
+        // The revert lives in its own Timeline, played once, strictly after core finishes (SequentialTransition) -
+        // rather than as one more KeyFrame appended inside core itself. That sidesteps two separate problems: inside
+        // the accumulate branch, core's own final KeyFrame already sits at the exact same instant a same-Timeline
+        // revert frame would want, an unverified same-instant tie-break between two KeyFrames on one property;
+        // inside the non-accumulate branch, core now plays with cycleCount>1 itself, so a revert frame baked into
+        // it would repeat at the end of *every* cycle rather than only the very last one.
+        Timeline revert = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(binding.property(), currentValue, Interpolator.DISCRETE)));
+        return Optional.of(new SequentialTransition(core, revert));
     }
 
     @SuppressWarnings("unchecked")
@@ -293,16 +319,23 @@ public final class SvgValueAnimationBuilder {
     }
 
     /**
-     * {@code accumulate="sum"} with a finite {@code repeatCount}: unrolls every repeat into one continuous {@code
-     * Timeline} spanning the entire repeated duration, so {@code cycleCount} is left at {@code 1} - the correct
-     * value, since JavaFX's own cycling always replays a {@code Timeline} from its start with no way to shift values
-     * between cycles, which is exactly why this must be unrolled manually rather than left to {@code cycleCount}.
-     * {@link SvgAnimationController#withTiming} recognises this case (by element type/attributes, not by inspecting
-     * {@code cycleCount}) and skips its own generic {@code repeatCount} wrapping accordingly. Consecutive cycles
-     * deliberately share a single {@code KeyFrame} at the boundary (cycle {@code n}'s last value equals cycle
-     * {@code n+1}'s first value by construction) rather than emitting a duplicate at the same time.
+     * {@code accumulate="sum"} with a finite {@code repeatCount}: unrolls every repeat into one continuous sequence
+     * of {@code KeyFrame}s spanning the entire repeated duration, each cycle shifted by the previous cycle's own
+     * delta - something JavaFX's own {@code cycleCount} replay cannot express, since it always restarts a
+     * {@code Timeline} from its own start unchanged. The {@code Timeline} built from the result is played with
+     * {@code cycleCount} left at {@code 1} - {@link SvgAnimationController#withTiming} recognises this case (by
+     * element type/attributes, not by inspecting {@code cycleCount}) and skips its own generic {@code repeatCount}
+     * wrapping accordingly. Consecutive cycles deliberately share a single {@code KeyFrame} at the boundary (cycle
+     * {@code n}'s last value equals cycle {@code n+1}'s first value by construction) rather than emitting a
+     * duplicate at the same time.
+     * <p>
+     * Deliberately not reused for plain {@code repeatCount} replay with no {@code accumulate} (#149): that case has
+     * no shift between cycles at all, each one independently replaying the same value list from its own start, which
+     * is exactly what JavaFX's native cycling already does - unrolling it here would instead skip every cycle's own
+     * first value (the boundary-sharing behaviour above, only valid when cycles truly are continuous), collapsing a
+     * repeated ramp into a single ramp followed by a flat hold.
      */
-    private static Timeline buildAccumulatedTimeline(WritableValue<Object> property, List<Object> values, List<Double> keyTimes,
+    private static List<KeyFrame> buildRepeatedFrames(WritableValue<Object> property, List<Object> values, List<Double> keyTimes,
         List<Interpolator> interpolators, double baseValue, Duration simpleDuration, int cycles) {
         double firstValue = ((Number) values.get(0)).doubleValue();
         double lastValue = ((Number) values.get(values.size() - 1)).doubleValue();
@@ -317,7 +350,7 @@ public final class SvgValueAnimationBuilder {
                 frames.add(new KeyFrame(timeShift.add(frame.getTime()), frame.getValues().toArray(new KeyValue[0])));
             }
         }
-        return new Timeline(frames.toArray(new KeyFrame[0]));
+        return frames;
     }
 
     private SvgValueAnimationBuilder() {
