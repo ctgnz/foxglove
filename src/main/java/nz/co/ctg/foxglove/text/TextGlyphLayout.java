@@ -260,6 +260,7 @@ final class TextGlyphLayout {
             return new Glyph(null, advance);
         }
         run.owner().applyGraphicsProperties(run.ownerContext(), (javafx.scene.shape.Shape) outline);
+        font.descaleStroke((javafx.scene.shape.Shape) outline, fontSize);
         List<Transform> transforms = new ArrayList<>();
         if (rotation != null) {
             transforms.add(new Rotate(rotation, pivotX, pivotY));
