@@ -106,7 +106,13 @@ public class AnimationSamplingTest {
         return W3cSvgAnimationCheck.sampleTimes(animated);
     }
 
-    /** A rectangle whose width animates, so the controller has something real to report a duration for. */
+    /**
+     * A rectangle whose width animates, so the controller has something real to report a duration for.
+     * {@code fill="freeze"} keeps the built duration an exact, round number of seconds - this test is about the
+     * sampling window, not fill semantics, and the SVG default {@code fill="remove"} would otherwise add its own
+     * 1ms revert (#152) on top, shifting every assertion below by a fraction of a millisecond for a reason
+     * unrelated to what this test actually checks.
+     */
     private static SvgGraphic animation(String duration, String repeatCount) {
         SvgRectangle rect = new SvgRectangle(0, 0, 10, 10);
         rect.setId("target");
@@ -115,6 +121,7 @@ public class AnimationSamplingTest {
         animate.setFrom("10");
         animate.setTo("50");
         animate.setDuration(duration);
+        animate.setFill("freeze");
         if (repeatCount != null) {
             animate.setRepeatCount(repeatCount);
         }

@@ -204,9 +204,10 @@ public class SvgAnimationControllerTest {
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
             RenderContext.root(svg.getElementIndex(), 0, 0));
 
-        // 3 cycles of 1s (core, cycled internally) + an instantaneous revert = 3s total - if the controller
-        // (wrongly) re-applied repeatCount=3 on top of that, this would come out around 9s instead
-        assertThat(controller.getTotalDuration(), is(Duration.seconds(3)));
+        // 3 cycles of 1s (core, cycled internally) + a 1ms revert (Duration.millis(1), not .ZERO - #152) = 3001ms
+        // total - if the controller (wrongly) re-applied repeatCount=3 on top of that, this would come out around
+        // 9s instead
+        assertThat(controller.getTotalDuration(), is(Duration.millis(3001)));
     }
 
     /**
@@ -243,6 +244,75 @@ public class SvgAnimationControllerTest {
         });
         assertThat("halfway through a 0->100 animation, seeked to directly with no prior play()",
             onFxThread(node::getX), closeTo(50.0, 1e-6));
+    }
+
+    /**
+     * <b>#152's own regression coverage.</b> {@code fill="remove"}'s revert lives in its own {@code Timeline},
+     * played after {@code core} via {@code SequentialTransition} - but a {@code Timeline} whose only {@code KeyFrame}
+     * sits at {@code Duration.ZERO} has zero temporal footprint inside a {@code SequentialTransition}: it never
+     * counts toward {@code getTotalDuration()}, and seeking past the end never applies it, even though real
+     * uninterrupted playback does apply it correctly on entry. This seeks (never calling {@code play()} to actual
+     * completion) well past the animation's 1s active duration - exactly how #112's conformance harness and any
+     * scrub-bar UI consume this controller - and fails against a reverted {@code Duration.ZERO} KeyFrame, passing
+     * only once the revert is given a real (if tiny) span.
+     */
+    @Test
+    public void testFillRemoveRevertsWhenSeekedPastTheEnd() throws Exception {
+        SvgAnimateAttribute animate = new SvgAnimateAttribute();
+        animate.setAttributeName("x");
+        animate.setDuration("1s");
+        animate.setFrom("0");
+        animate.setTo("100");
+        animate.setFill("remove");
+
+        SvgRectangle target = new SvgRectangle();
+        target.getContent().add(animate);
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(target);
+
+        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        Rectangle node = new Rectangle();
+        node.setX(7);
+        registry.put(target, node);
+        SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
+            RenderContext.root(svg.getElementIndex(), 0, 0));
+
+        onFxThread(() -> {
+            controller.seek(Duration.seconds(5)); // well past the 1s active duration
+            return null;
+        });
+        assertThat("seeked past the end, fill=remove must have reverted to the pre-animation value",
+            onFxThread(node::getX), closeTo(7.0, 1e-6));
+    }
+
+    /** As above, for {@link SvgAnimateTransformBuilder}'s own identical {@code fill="remove"} revert (#152). */
+    @Test
+    public void testFillRemoveOnAnimateTransformRevertsWhenSeekedPastTheEnd() throws Exception {
+        SvgAnimateTransform animate = new SvgAnimateTransform();
+        animate.setType("rotate");
+        animate.setDuration("1s");
+        animate.setFrom("0");
+        animate.setTo("90");
+        animate.setFill("remove");
+
+        SvgRectangle target = new SvgRectangle();
+        target.getContent().add(animate);
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(target);
+
+        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        Rectangle node = new Rectangle();
+        registry.put(target, node);
+        SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
+            RenderContext.root(svg.getElementIndex(), 0, 0));
+
+        onFxThread(() -> {
+            controller.seek(Duration.seconds(5)); // well past the 1s active duration
+            return null;
+        });
+        double angle = onFxThread(() -> ((javafx.scene.transform.Rotate) node.getTransforms().get(0)).getAngle());
+        assertThat("seeked past the end, fill=remove must have reverted the rotation to its identity (angle 0)",
+            angle, closeTo(0.0, 1e-6));
     }
 
     @Test

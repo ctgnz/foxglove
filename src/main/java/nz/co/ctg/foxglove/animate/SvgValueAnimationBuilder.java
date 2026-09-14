@@ -92,7 +92,12 @@ public final class SvgValueAnimationBuilder {
         // revert frame would want, an unverified same-instant tie-break between two KeyFrames on one property;
         // inside the non-accumulate branch, core now plays with cycleCount>1 itself, so a revert frame baked into
         // it would repeat at the end of *every* cycle rather than only the very last one.
-        Timeline revert = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(binding.property(), currentValue, Interpolator.DISCRETE)));
+        // Duration.millis(1), not Duration.ZERO (#152): a Timeline whose only KeyFrame sits at Duration.ZERO has zero
+        // temporal footprint inside a SequentialTransition - it never appears in getTotalDuration() and seeking past
+        // the end never applies it, even though real uninterrupted playback does apply it correctly on entry. The
+        // 1ms offset gives it a real span, so both playback and seeking revert consistently.
+        Timeline revert = new Timeline(
+            new KeyFrame(Duration.millis(1), new KeyValue(binding.property(), currentValue, Interpolator.DISCRETE)));
         return Optional.of(new SequentialTransition(core, revert));
     }
 
