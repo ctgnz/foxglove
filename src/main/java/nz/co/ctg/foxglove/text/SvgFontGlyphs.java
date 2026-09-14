@@ -13,6 +13,7 @@ import nz.co.ctg.foxglove.geometry.SvgPathData;
 
 import javafx.scene.Node;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Shape;
 import javafx.scene.transform.Scale;
 
 /**
@@ -124,6 +125,34 @@ public final class SvgFontGlyphs {
 
     public double getUnitsPerEm() {
         return unitsPerEm;
+    }
+
+    /**
+     * Cancels this glyph's own outline scale out of a shape's stroke-related lengths, so a document's
+     * {@code stroke-width} (and dash pattern) renders at the width it declared rather than multiplied by
+     * {@code fontSize / unitsPerEm} (#145).
+     * <p>
+     * JavaFX applies a node's own transforms to everything it paints, stroke included - the same {@code Scale} that
+     * turns a font-unit outline into a rendered glyph also scales its stroke, which SVG does not: {@code
+     * stroke-width} is defined in the surrounding document's user units, independent of how large the glyph is drawn.
+     * Left uncorrected, a modest {@code units-per-em} - the suite's own {@code HappySad} font declares 8 - inflates a
+     * 5-unit stroke into dozens of screen pixels, enough for adjacent glyphs to merge into a solid blob.
+     * <p>
+     * Must run <b>after</b> {@code applyGraphicsProperties} has set the shape's stroke width from the document, and
+     * before the glyph's {@code Scale} transform (already on the node from {@link #glyphFor}) is left in place to do
+     * its job on the outline geometry itself.
+     */
+    public void descaleStroke(Shape shape, double fontSize) {
+        double scale = fontSize / unitsPerEm;
+        if (scale == 0 || Double.isNaN(scale)) {
+            return;
+        }
+        shape.setStrokeWidth(shape.getStrokeWidth() / scale);
+        shape.setStrokeDashOffset(shape.getStrokeDashOffset() / scale);
+        if (!shape.getStrokeDashArray().isEmpty()) {
+            List<Double> descaled = shape.getStrokeDashArray().stream().map(length -> length / scale).toList();
+            shape.getStrokeDashArray().setAll(descaled);
+        }
     }
 
     /** How many glyphs this font defines - mostly so a test can prove a font was loaded rather than defaulted. */
