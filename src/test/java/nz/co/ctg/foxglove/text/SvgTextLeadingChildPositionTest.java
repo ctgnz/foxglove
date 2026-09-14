@@ -1,0 +1,131 @@
+package nz.co.ctg.foxglove.text;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.shape.SvgPath;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.number.IsCloseTo.closeTo;
+
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.text.Text;
+
+/**
+ * Covers #142: a {@code <text>}'s own {@code x}/{@code y} apply even when its content opens with a child element.
+ * <p>
+ * The position used to arrive only as a side effect of the {@code <text>} owning the first run, which happens just
+ * when it has character data of its own. {@code <text x="0" y="100">Hello <tspan>world</tspan></text>} therefore
+ * worked while {@code <text x="0" y="100"><tspan>Hello</tspan></text>} silently rendered at the origin - and
+ * wrapping a whole {@code <text>} in one {@code <tspan>} is an everyday authoring shape.
+ */
+public class SvgTextLeadingChildPositionTest {
+
+    @Test
+    public void testALeadingTspanInheritsTheTextPosition() {
+        SvgTextSpan span = new SvgTextSpan();
+        span.getContent().add("A");
+
+        Text rendered = (Text) render(text(30, 100, span));
+        assertThat(rendered.getX(), closeTo(30, 1e-6));
+        assertThat(rendered.getY(), closeTo(100, 1e-6));
+    }
+
+    /** A {@code <tspan>} carrying its own position still overrides the inherited one. */
+    @Test
+    public void testALeadingTspanWithItsOwnPositionStillWins() {
+        SvgTextSpan span = new SvgTextSpan();
+        span.setX(List.of(70.0));
+        span.setY(List.of(20.0));
+        span.getContent().add("A");
+
+        Text rendered = (Text) render(text(30, 100, span));
+        assertThat(rendered.getX(), closeTo(70, 1e-6));
+        assertThat(rendered.getY(), closeTo(20, 1e-6));
+    }
+
+    /** The long-standing case - leading character data - must be unchanged. */
+    @Test
+    public void testLeadingCharacterDataIsUnaffected() {
+        SvgText text = new SvgText();
+        text.setX(List.of(30.0));
+        text.setY(List.of(100.0));
+        text.getContent().add("A");
+
+        Text rendered = (Text) render(text);
+        assertThat(rendered.getX(), closeTo(30, 1e-6));
+        assertThat(rendered.getY(), closeTo(100, 1e-6));
+    }
+
+    /**
+     * A leading child and the text's own following characters share one baseline.
+     * <p>
+     * Only the baseline is asserted. Their horizontal relationship is the subject of <b>#143</b>: the {@code <text>}
+     * consumes {@code x[0]} a second time for its own first character, so "B" here lands back on top of "A" instead
+     * of flowing after it. That is a separate defect in how positioning lists are indexed - this fix makes it
+     * visible rather than causing it, and asserting the present behaviour would only entrench it.
+     */
+    @Test
+    public void testTextFollowingALeadingTspanSharesItsBaseline() {
+        SvgTextSpan span = new SvgTextSpan();
+        span.getContent().add("A");
+        SvgText text = text(30, 100, span);
+        text.getContent().add("B");
+
+        Group rendered = (Group) render(text);
+        assertThat(((Text) rendered.getChildren().get(0)).getY(), closeTo(100, 1e-6));
+        assertThat(((Text) rendered.getChildren().get(1)).getY(), closeTo(100, 1e-6));
+    }
+
+    /** A {@code <text>} declaring no position at all still starts at the origin. */
+    @Test
+    public void testATextWithNoPositionStartsAtTheOrigin() {
+        SvgTextSpan span = new SvgTextSpan();
+        span.getContent().add("A");
+        SvgText text = new SvgText();
+        text.getContent().add(span);
+
+        Text rendered = (Text) render(text);
+        assertThat(rendered.getX(), closeTo(0, 1e-6));
+        assertThat(rendered.getY(), closeTo(0, 1e-6));
+    }
+
+    /** The same inheritance reaches a {@code <textPath>}, which is also a leading child. */
+    @Test
+    public void testALeadingTextPathStillResolves() {
+        SvgTextPath textPath = new SvgTextPath();
+        textPath.setXlinkHref("#p");
+        textPath.getContent().add("A");
+
+        SvgPath path = new SvgPath();
+        path.setId("p");
+        path.setD("M0,50 L1000,50");
+
+        SvgText text = text(30, 100, textPath);
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(path);
+        svg.getContent().add(text);
+
+        // a textPath takes its position from the path, not from the text - the point is that it still renders
+        Text rendered = (Text) svg.createGroup().getChildren().get(1);
+        assertThat(rendered.getY(), closeTo(50, 1e-6));
+    }
+
+    private static SvgText text(double x, double y, nz.co.ctg.foxglove.AbstractSvgStylable child) {
+        SvgText text = new SvgText();
+        text.setX(List.of(x));
+        text.setY(List.of(y));
+        text.getContent().add(child);
+        return text;
+    }
+
+    private static Node render(SvgText text) {
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(text);
+        return svg.createGroup().getChildren().get(0);
+    }
+
+}

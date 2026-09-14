@@ -64,8 +64,12 @@ final class TextGlyphLayout {
     static Node layout(SvgText root, RenderContext context) {
         List<TextRunBuilder.Run> runs = TextRunBuilder.build(root, context);
         List<Node> nodes = new ArrayList<>();
-        double cursorX = 0;
-        double cursorY = 0;
+        // The <text>'s own x/y seed the cursor, rather than being left to arrive when the <text> happens to own the
+        // first run (#142). It only owns one when it has character data of its own, so a <text> whose content opens
+        // with a child element - <text x="0" y="100"><tspan>A</tspan></text>, a thoroughly ordinary shape - would
+        // otherwise start that child at the origin and lose the position entirely.
+        double cursorX = firstPosition(root, ISvgGlyphPositioned::getX);
+        double cursorY = firstPosition(root, ISvgGlyphPositioned::getY);
         double totalAdvance = 0;
         double anchorStartX = 0;
         boolean anchorStarted = false;
@@ -204,6 +208,16 @@ final class TextGlyphLayout {
 
     private static List<Double> positions(AbstractSvgStylable owner, Function<ISvgGlyphPositioned, List<Double>> getter) {
         return owner instanceof ISvgGlyphPositioned positioned ? getter.apply(positioned) : List.of();
+    }
+
+    /**
+     * The first entry of one of {@code root}'s own positioning lists, or 0 where it declares none - the origin the
+     * flow starts from (#142). Only the first matters here: any further entries are consumed per-glyph by the run
+     * that owns them, through {@link #positions}.
+     */
+    private static double firstPosition(SvgText root, Function<ISvgGlyphPositioned, List<Double>> getter) {
+        List<Double> values = positions(root, getter);
+        return values.isEmpty() ? 0 : values.get(0);
     }
 
     private static List<String> codePoints(String text) {
