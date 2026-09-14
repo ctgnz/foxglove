@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove.conformance;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -75,22 +77,59 @@ public final class WebViewReference implements AutoCloseable {
      * whether it loaded at all - a document the engine rejects is a result worth recording, not an exception.
      */
     public boolean load(Path document) throws Exception {
-        CompletableFuture<Boolean> loaded = new CompletableFuture<>();
-        JavaFxTestSupport.onFxThread(() -> {
-            view.getEngine().getLoadWorker().stateProperty().addListener((observable, was, is) -> {
-                if (is == Worker.State.SUCCEEDED) {
-                    loaded.complete(true);
-                } else if (is == Worker.State.FAILED || is == Worker.State.CANCELLED) {
-                    loaded.complete(false);
-                }
+        Path toLoad = withAnimateColorRewrittenToAnimate(document);
+        try {
+            CompletableFuture<Boolean> loaded = new CompletableFuture<>();
+            JavaFxTestSupport.onFxThread(() -> {
+                view.getEngine().getLoadWorker().stateProperty().addListener((observable, was, is) -> {
+                    if (is == Worker.State.SUCCEEDED) {
+                        loaded.complete(true);
+                    } else if (is == Worker.State.FAILED || is == Worker.State.CANCELLED) {
+                        loaded.complete(false);
+                    }
+                });
+                view.getEngine().load(toLoad.toUri().toString());
+                return null;
             });
-            view.getEngine().load(document.toUri().toString());
-            return null;
-        });
-        if (!loaded.get(LOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
-            return false;
+            if (!loaded.get(LOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+                return false;
+            }
+            return script("document.documentElement.pauseAnimations(); true;") != null;
+        } finally {
+            if (toLoad != document) {
+                Files.deleteIfExists(toLoad);
+            }
         }
-        return script("document.documentElement.pauseAnimations(); true;") != null;
+    }
+
+    /**
+     * #153: this engine's {@code <animateColor>} support is not merely slow to seek into - it is entirely absent.
+     * Confirmed directly, not inferred: an isolated probe document with nothing but one {@code <animateColor>}
+     * stayed at its un-animated base colour forever, across every sampled moment including well past its own
+     * {@code fill="freeze"} endpoint, and <b>in real time with no pause/seek involved at all</b> - ruling out any
+     * connection to this class's own {@code pauseAnimations}/{@code setCurrentTime} sequence, or to #151's unrelated
+     * "never played" warm-up problem on our own side. The identical probe using {@code <animate attributeName="fill">}
+     * instead animated correctly and froze at the right colour. That is a real, load-bearing distinction to this
+     * engine (a legacy WebKit fork that predates SVG2 folding {@code <animateColor>} into plain {@code <animate>}),
+     * not a difference this renderer's own {@link nz.co.ctg.foxglove.animate.SvgValueAnimationBuilder} makes - its
+     * own javadoc already treats the two identically, one code path either way.
+     * <p>
+     * Rewriting the tag name only for what this reference engine is fed - never touching what is actually under
+     * test, still parsed and rendered by this project's own {@code FoxgloveParser} unmodified - turns a reference
+     * that can never show the right answer for six of this chapter's documents back into one that can, restoring a
+     * real comparison instead of a permanently-wrong one. A plain tolerance override would have hidden this signal
+     * for good, rather than fixing it - the wrong tool for a reference that is not "close, with noise" but simply
+     * inert.
+     */
+    private static Path withAnimateColorRewrittenToAnimate(Path document) throws IOException {
+        String content = Files.readString(document);
+        if (!content.contains("animateColor")) {
+            return document;
+        }
+        String rewritten = content.replace("animateColor", "animate");
+        Path temp = Files.createTempFile(document.getParent(), "reference-", ".svg");
+        Files.writeString(temp, rewritten);
+        return temp;
     }
 
     /** Moves the loaded document's SMIL clock to {@code time} and waits for the engine to repaint. */
