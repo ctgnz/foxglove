@@ -59,6 +59,26 @@ public class SvgValueAnimationBuilderTest {
         assertThat(doubleValue(frames.get(1)), closeTo(8.0, 1e-9));
     }
 
+    /**
+     * #99: {@code rx}/{@code ry} are the one geometry attribute where {@link SvgAttributeRegistry} doesn't write the
+     * parsed value straight through - it doubles it first, since {@code arcWidth}/{@code arcHeight} are a diameter
+     * and SVG's {@code rx}/{@code ry} are radii (the same distinction #93 already fixed for the static resolution).
+     * End-to-end through the real builder, not just {@link SvgAttributeRegistryTest}'s own lower-level unit test -
+     * this is the shape the issue itself asked for.
+     */
+    @Test
+    public void testAnimatingRxOnARectangleDoublesTheParsedValue() {
+        Timeline timeline = build(a -> {
+            a.setAttributeName("rx");
+            a.setFrom("5");
+            a.setTo("15");
+        }, new Rectangle(0, 0, 100, 100));
+
+        List<KeyFrame> frames = timeline.getKeyFrames();
+        assertThat("rx=5 is a radius; arcWidth is the full diameter", doubleValue(frames.get(0)), closeTo(10.0, 1e-9));
+        assertThat("rx=15 is a radius; arcWidth is the full diameter", doubleValue(frames.get(1)), closeTo(30.0, 1e-9));
+    }
+
     @Test
     public void testToAloneStartsFromTheNodesCurrentValue() {
         Rectangle rect = new Rectangle(0, 0, 10, 10);

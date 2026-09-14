@@ -35,8 +35,27 @@ public class SvgAttributeRegistryTest {
         assertResolvesAndWrites(rect, "y", rect::getY);
         assertResolvesAndWrites(rect, "width", rect::getWidth);
         assertResolvesAndWrites(rect, "height", rect::getHeight);
-        assertResolvesAndWrites(rect, "rx", rect::getArcWidth);
-        assertResolvesAndWrites(rect, "ry", rect::getArcHeight);
+        // rx/ry are NOT 1:1 like the above - see testRectangleRxRyDoubleTheParsedValue, #99.
+    }
+
+    /**
+     * #99: the same radius-vs-diameter doubling #93 already fixed for {@code SvgRectangle.createShape}'s static
+     * resolution also has to happen here, in the {@code <animate>}/{@code <set>} binding - otherwise an animated
+     * {@code rx}/{@code ry} lands on {@code arcWidth}/{@code arcHeight} at half the intended size. Deliberately its
+     * own test, not folded into {@link #testRectangleGeometryResolvesToTheRightProperty}'s generic
+     * {@code assertResolvesAndWrites} helper, which assumes a parsed value writes back unchanged - true for every
+     * other geometry attribute, but not this one.
+     */
+    @Test
+    public void testRectangleRxRyDoubleTheParsedValue() {
+        Rectangle rect = new Rectangle(0, 0, 10, 10);
+        SvgAttributeBinding<Number> rx = resolveTyped(rect, "rx");
+        rx.property().setValue(rx.parser().apply("15").orElseThrow());
+        assertThat("rx=15 is a radius; arcWidth is the full diameter", rect.getArcWidth(), closeTo(30.0, 1e-9));
+
+        SvgAttributeBinding<Number> ry = resolveTyped(rect, "ry");
+        ry.property().setValue(ry.parser().apply("8").orElseThrow());
+        assertThat("ry=8 is a radius; arcHeight is the full diameter", rect.getArcHeight(), closeTo(16.0, 1e-9));
     }
 
     @Test
