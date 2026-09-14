@@ -126,12 +126,20 @@ final class TextGlyphLayout {
             boolean perGlyph = xs.size() > 1 || ys.size() > 1 || dxs.size() > 1 || dys.size() > 1 || !rotates.isEmpty();
             SvgFontGlyphs runFont = svgFontFor(run, context);
             double runFontSize = fontSizeFor(run, context);
+            // an <altGlyph> draws the glyphs it names instead of its own characters (#138); an unresolved reference
+            // leaves the run to render those characters exactly as it did before
+            List<SvgAltGlyphs.Substitute> substitutes = run.owner() instanceof SvgAltGlyph altGlyph
+                ? SvgAltGlyphs.resolve(altGlyph, context)
+                : null;
             // an SVG font draws one Path per character, so a run using one is always split even when no positioning
             // list asks for it - there is no single node that could carry the whole string
-            List<String> pieces = perGlyph || runFont != null ? codePoints(run.text()) : List.of(run.text());
+            List<String> pieces = perGlyph || runFont != null || substitutes != null ? codePoints(run.text())
+                : List.of(run.text());
+            // a substitution replaces the run's characters wholesale, so the glyphs it names drive the loop instead
+            int count = substitutes != null ? substitutes.size() : pieces.size();
             int baseIndex = ownerIndex.getOrDefault(run.owner(), 0);
 
-            for (int k = 0; k < pieces.size(); k++) {
+            for (int k = 0; k < count; k++) {
                 int i = baseIndex + k;
                 Double explicitX = i < xs.size() ? xs.get(i) : null;
                 Double explicitY = i < ys.size() ? ys.get(i) : null;
@@ -141,15 +149,17 @@ final class TextGlyphLayout {
 
                 // Kerning tightens the gap left by the previous glyph's advance, so it applies only where the cursor
                 // is actually carrying that gap - an explicit x positions the glyph absolutely and is left alone.
-                double kern = k > 0 && runFont != null && explicitX == null
+                // Substituted glyphs are named individually rather than spelt, so no character pair applies.
+                double kern = k > 0 && runFont != null && explicitX == null && substitutes == null
                     ? runFont.kerningBetween(pieces.get(k - 1), pieces.get(k), runFontSize)
                     : 0;
                 double flowX = (explicitX != null ? explicitX : cursorX - kern) + dx;
                 double flowY = (explicitY != null ? explicitY : cursorY) + dy;
                 double displayY = flowY + baselineOffset(run, runFontSize);
 
-                Glyph glyph = glyphOf(pieces.get(k), run, runFont, runFontSize, flowX, displayY,
-                    rotate, flowX, displayY);
+                Glyph glyph = substitutes != null
+                    ? substituteGlyph(substitutes.get(k), run, runFontSize, flowX, displayY, rotate)
+                    : glyphOf(pieces.get(k), run, runFont, runFontSize, flowX, displayY, rotate, flowX, displayY);
                 if (glyph.node() != null) {
                     nodes.add(glyph.node());
                 }
@@ -162,7 +172,7 @@ final class TextGlyphLayout {
                 cursorX = flowX + glyph.advance();
                 cursorY = flowY;
             }
-            ownerIndex.put(run.owner(), baseIndex + pieces.size());
+            ownerIndex.put(run.owner(), baseIndex + count);
         }
 
         Node result = nodes.size() == 1 ? nodes.get(0) : groupOf(nodes);
@@ -264,6 +274,34 @@ final class TextGlyphLayout {
         List<Transform> transforms = new ArrayList<>();
         if (rotation != null) {
             transforms.add(new Rotate(rotation, pivotX, pivotY));
+        }
+        transforms.add(new Translate(x, y));
+        transforms.addAll(outline.getTransforms());
+        outline.getTransforms().setAll(transforms);
+        return new Glyph(outline, advance);
+    }
+
+    /**
+     * One glyph an {@code <altGlyph>} named, drawn in place of a character it would otherwise have spelt (#138).
+     * <p>
+     * Scale and advance come from the font that <i>owns the glyph</i>, carried on the substitute, not from the run's
+     * own {@code font-family}: the two are routinely different fonts, and {@code text-altglyph-01-b} makes the point
+     * by substituting glyphs whose em is 8 units into text set in Arial.
+     */
+    private static Glyph substituteGlyph(SvgAltGlyphs.Substitute substitute, TextRunBuilder.Run run, double fontSize,
+        double x, double y, Double rotation) {
+        SvgFontGlyphs font = substitute.font();
+        Node outline = font.glyphNodeOf(substitute.glyph(), fontSize);
+        double advance = font.advanceOf(substitute.glyph(), fontSize);
+        if (outline == null) {
+            return new Glyph(null, advance);
+        }
+        run.owner().applyGraphicsProperties(run.ownerContext(), (javafx.scene.shape.Shape) outline);
+        // #145: the substituted glyph's own outline scale, not the run's font, is what the paint transform carries.
+        font.descaleStroke((javafx.scene.shape.Shape) outline, fontSize);
+        List<Transform> transforms = new ArrayList<>();
+        if (rotation != null) {
+            transforms.add(new Rotate(rotation, x, y));
         }
         transforms.add(new Translate(x, y));
         transforms.addAll(outline.getTransforms());
