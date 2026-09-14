@@ -10,6 +10,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
@@ -109,6 +110,18 @@ public class W3cSvgConformanceCheck {
         if (!threw.isEmpty()) {
             System.out.println(threw.size() + " test(s) threw during render/compare:");
             threw.forEach(r -> System.out.println("  " + r.name() + ": " + r.failureReason()));
+        }
+        // A thrown exception on an already-failing document never trips the manifest-diff regression check below -
+        // it was already recorded FAIL, for whatever reason - so #155's own bug (a Basic/Tiny-profile document's DTD
+        // fetched over the network, HTTP 429'd by w3.org under CI's repeated runs) could throw on every single run
+        // without ever failing the build, visible only as a scary exception dump buried in the log. Checked directly
+        // against these real documents rather than a synthetic reproduction: nothing short of the genuine internal
+        // subset + external DTD combination they declare was found to trigger the same resolution path at all.
+        Set<String> nonFullProfile = Set.of("coords-viewattr-01-b", "coords-viewattr-02-b", "coords-viewattr-04-f",
+            "render-elems-03-t");
+        List<String> unexpectedlyThrew = threw.stream().map(ConformanceResult::name).filter(nonFullProfile::contains).toList();
+        if (!unexpectedlyThrew.isEmpty()) {
+            fail("Basic/Tiny-profile document(s) threw rather than resolving their DTD locally: " + unexpectedlyThrew);
         }
 
         // Written unconditionally, before the pass/fail branch below - #92's dashboard needs to keep showing a
