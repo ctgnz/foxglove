@@ -315,6 +315,105 @@ public class SvgAnimationControllerTest {
             angle, closeTo(0.0, 1e-6));
     }
 
+    /**
+     * <b>#86, the composition case that already works.</b> Two {@code <animate>} elements on the same attribute with
+     * disjoint active windows - {@code [0s, 3s)} then {@code [3s, 6s)}, exactly the shape every real same-attribute
+     * case in the W3C suite takes (see {@code animate-elem-32-t}) - correctly hand off from one to the other rather
+     * than clobbering, which is an emergent property of this class's own document-ordered {@link
+     * SvgAnimationController#build}/{@link SvgAnimationController#seek}, not a deliberate composition feature; see
+     * this class's own javadoc for why. Sampled across both windows and past the end, where {@code fill="freeze"}
+     * on the second (and therefore document-order-last, therefore seek-order-last) element must win.
+     */
+    @Test
+    public void testSequentialAnimationsOnTheSameAttributeHandOffCorrectly() throws Exception {
+        SvgAnimateAttribute first = new SvgAnimateAttribute();
+        first.setAttributeName("width");
+        first.setFrom("0");
+        first.setTo("25");
+        first.setBegin("0s");
+        first.setDuration("3s");
+        first.setFill("freeze");
+
+        SvgAnimateAttribute second = new SvgAnimateAttribute();
+        second.setAttributeName("width");
+        second.setFrom("25");
+        second.setTo("0");
+        second.setBegin("3s");
+        second.setDuration("3s");
+        second.setFill("freeze");
+
+        SvgRectangle target = new SvgRectangle();
+        target.getContent().add(first);
+        target.getContent().add(second);
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(target);
+
+        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        Rectangle node = new Rectangle();
+        registry.put(target, node);
+        SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
+            RenderContext.root(svg.getElementIndex(), 0, 0));
+
+        double[] times = {0, 1.5, 3, 4.5, 6, 7};
+        double[] expected = {0, 12.5, 25, 12.5, 0, 0};
+        for (int i = 0; i < times.length; i++) {
+            double time = times[i];
+            double width = onFxThread(() -> {
+                controller.seek(Duration.seconds(time));
+                return node.getWidth();
+            });
+            assertThat("at t=" + time + "s", width, closeTo(expected[i], 1e-6));
+        }
+    }
+
+    /**
+     * <b>#86, the composition case that is deliberately not implemented.</b> Two {@code <animate>} elements with
+     * {@code additive="sum"} and genuinely <i>overlapping</i> active windows (both {@code [0s, 4s)}) should, under
+     * SMIL's real model, sum their two contributions at every instant - here the later one in document order simply
+     * overwrites the property, discarding the earlier one's contribution entirely. This test pins that known,
+     * documented gap (see this class's own javadoc) rather than the SMIL-correct sum, so a future change to this
+     * behaviour is a deliberate decision, not an accidental regression this suite fails to notice either way.
+     */
+    @Test
+    public void testOverlappingAdditiveSumOnTheSameAttributeIsNotComposed() throws Exception {
+        SvgAnimateAttribute first = new SvgAnimateAttribute();
+        first.setAttributeName("width");
+        first.setFrom("0");
+        first.setTo("10");
+        first.setBegin("0s");
+        first.setDuration("4s");
+        first.setFill("freeze");
+        first.setAdditive("sum");
+
+        SvgAnimateAttribute second = new SvgAnimateAttribute();
+        second.setAttributeName("width");
+        second.setFrom("0");
+        second.setTo("100");
+        second.setBegin("0s");
+        second.setDuration("4s");
+        second.setFill("freeze");
+        second.setAdditive("sum");
+
+        SvgRectangle target = new SvgRectangle();
+        target.getContent().add(first);
+        target.getContent().add(second);
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(target);
+
+        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        Rectangle node = new Rectangle();
+        registry.put(target, node);
+        SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
+            RenderContext.root(svg.getElementIndex(), 0, 0));
+
+        onFxThread(() -> {
+            controller.seek(Duration.seconds(2));
+            return null;
+        });
+        assertThat("the SMIL-correct composed value would be 55 (2.5*2 + 25*2) - only the document-order-last "
+            + "element's own value survives", onFxThread(node::getWidth), closeTo(50.0, 1e-6));
+    }
+
     @Test
     public void testPlayPauseStopAndSeekFanOutToEveryBuiltAnimation() throws Exception {
         StubAnimation stub = new StubAnimation();
