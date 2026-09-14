@@ -7,6 +7,21 @@
     <public publicId="-//W3C//DTD SVG 1.1//EN" uri="svg.dtd"/>
     <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" uri="svg.dtd"/>
     <system systemId="svg11.dtd" uri="svg.dtd"/>
+    <!--
+      Basic and Tiny both point at the same bundled Full-profile DTD (#155), deliberately - it is used here only for
+      parsing (default attribute values, predefined entities), never to validate that a document actually conforms
+      to its declared profile's own restrictions, which this renderer does not do for any profile. Both are
+      grammatically restricted subsets of Full, so nothing they need is missing from it. Without an entry a document
+      declaring either falls through this catalog and the parser fetches the real DTD from w3.org over the network -
+      confirmed as the cause of intermittent HTTP 429s breaking CI, since w3.org rate-limits the repeated fetches a
+      run against the whole suite makes.
+    -->
+    <public publicId="-//W3C//DTD SVG 1.1 Basic//EN" uri="svg.dtd"/>
+    <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd" uri="svg.dtd"/>
+    <system systemId="svg11-basic.dtd" uri="svg.dtd"/>
+    <public publicId="-//W3C//DTD SVG 1.1 Tiny//EN" uri="svg.dtd"/>
+    <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd" uri="svg.dtd"/>
+    <system systemId="svg11-tiny.dtd" uri="svg.dtd"/>
     <system systemId="http://www.w3.org/1999/xlink" uri="xlink.dtd"/>
   </group>
 </catalog>
