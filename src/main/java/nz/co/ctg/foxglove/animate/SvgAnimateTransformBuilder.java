@@ -96,7 +96,8 @@ public final class SvgAnimateTransformBuilder {
         for (int p = 0; p < properties.size(); p++) {
             revertValues[p] = new KeyValue(properties.get(p), identity[p], Interpolator.DISCRETE);
         }
-        Timeline revert = new Timeline(new KeyFrame(Duration.ZERO, revertValues));
+        // Duration.millis(1), not Duration.ZERO (#152) - see SvgValueAnimationBuilder's identical fix for why.
+        Timeline revert = new Timeline(new KeyFrame(Duration.millis(1), revertValues));
         return Optional.of(new SequentialTransition(core, revert));
     }
 
