@@ -159,6 +159,7 @@ public class SvgAnimationControllerTest {
         animate.setValues("0;10");
         animate.setAccumulate("sum");
         animate.setRepeatCount("3");
+        animate.setFill("freeze"); // isolate accumulate+repeatCount interaction from #149's own fill=remove revert
 
         SvgRectangle target = new SvgRectangle();
         target.getContent().add(animate);
@@ -171,6 +172,39 @@ public class SvgAnimationControllerTest {
             RenderContext.root(svg.getElementIndex(), 0, 0));
 
         // 3 accumulated 1s cycles = 3s total - if repeatCount were (wrongly) re-applied, this would be 9s
+        assertThat(controller.getTotalDuration(), is(Duration.seconds(3)));
+    }
+
+    /**
+     * The controller-level half of #149's {@code fill="remove"} support: {@link SvgValueAnimationBuilder} returns a
+     * {@code SequentialTransition} whose first child (a {@code Timeline} playing with {@code cycleCount=3} itself)
+     * already spans every repeat, and this must be played with the controller's own {@code cycleCount} left at 1,
+     * not re-wrapped in the controller's generic {@code repeatCount} on top of that. A one-cycle {@code Timeline}
+     * wrongly wrapped in {@code repeatCount=3} <i>again</i> at the controller level would report roughly double -
+     * the class of bug a purely {@link SvgValueAnimationBuilder}-level test cannot see at all, since building the
+     * raw {@code Animation} never touches the controller's own {@code cycleCount} to begin with.
+     */
+    @Test
+    public void testFillRemoveWithFiniteRepeatCountIsNotDoubleWrapped() throws Exception {
+        SvgAnimateAttribute animate = new SvgAnimateAttribute();
+        animate.setAttributeName("x");
+        animate.setDuration("1s");
+        animate.setValues("0;10");
+        animate.setRepeatCount("3");
+        animate.setFill("remove");
+
+        SvgRectangle target = new SvgRectangle();
+        target.getContent().add(animate);
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(target);
+
+        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        registry.put(target, new Rectangle());
+        SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
+            RenderContext.root(svg.getElementIndex(), 0, 0));
+
+        // 3 cycles of 1s (core, cycled internally) + an instantaneous revert = 3s total - if the controller
+        // (wrongly) re-applied repeatCount=3 on top of that, this would come out around 9s instead
         assertThat(controller.getTotalDuration(), is(Duration.seconds(3)));
     }
 

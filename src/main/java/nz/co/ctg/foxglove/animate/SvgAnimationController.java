@@ -59,17 +59,21 @@ public final class SvgAnimationController {
      * nothing to reset yet in this issue, since {@link ISvgAnimationElement#buildAnimation} has no concrete
      * override anywhere yet.
      * <p>
-     * {@code accumulate="sum"} with a finite {@code repeatCount} (see {@link ISvgAccumulatableAnimationElement}'s
-     * implementations - {@link SvgValueAnimationBuilder} for {@code <animate>}/{@code <animateColor>},
-     * {@code SvgAnimateTransformBuilder} for {@code <animateTransform>}) is a genuine exception to generic
-     * {@code repeatCount} wrapping: JavaFX's {@code cycleCount} can only replay a {@code Timeline} from its own start
-     * every time, with no way to shift values between cycles, so each of those builders manually unrolls every
-     * repeat into one continuous {@code Timeline} spanning the *entire* repeated duration and plays it exactly once
-     * ({@code cycleCount} left at its correct value, {@code 1}). Re-applying {@code repeatCount} here on top of that
-     * would replay the already-fully-unrolled sequence {@code repeatCount} times over - a real playback bug, not a
-     * harmless no-op - so this case is recognised by element type/attributes (the only reliable signal; {@code
-     * cycleCount} itself is legitimately {@code 1} either way) and skipped rather than inferred from {@code
-     * animation}'s own state.
+     * Two independent element/attribute combinations (see {@link SvgValueAnimationBuilder} for {@code <animate>}/
+     * {@code <animateColor>}, {@code SvgAnimateTransformBuilder} for {@code <animateTransform>}) are genuine
+     * exceptions to generic {@code repeatCount} wrapping, because JavaFX's {@code cycleCount} can only replay a
+     * {@code Timeline} from its own start every time, with no way to vary what happens between cycles - so each
+     * builder manually unrolls every repeat into one continuous {@code Timeline} spanning the *entire* repeated
+     * duration and plays it exactly once ({@code cycleCount} left at its correct value, {@code 1}) whenever either
+     * applies: {@code accumulate="sum"} with a finite {@code repeatCount} ({@link ISvgAccumulatableAnimationElement}
+     * - each cycle's values shift by the previous cycle's own delta, which plain replay can't express), or
+     * {@code fill="remove"} with a finite {@code repeatCount} (#149 - a revert appended once must not repeat at the
+     * end of every cycle). Re-applying {@code repeatCount} here on top of either would replay the already-unrolled
+     * sequence {@code repeatCount} times over - a real playback bug, not a harmless no-op - so both cases are
+     * recognised by element type/attributes (the only reliable signal; {@code cycleCount} itself is legitimately
+     * {@code 1} either way) and skipped rather than inferred from {@code animation}'s own state. {@code
+     * SvgSetAttribute} implements neither interface: its own per-cycle revert is already correct for its constant
+     * value (see its own javadoc), so it is deliberately not matched here.
      */
     private static Animation withTiming(ISvgAnimationElement element, Animation animation, SvgAnimationTiming timing) {
         if (!repeatCountAlreadyHandled(element, timing)) {
@@ -83,10 +87,15 @@ public final class SvgAnimationController {
     }
 
     private static boolean repeatCountAlreadyHandled(ISvgAnimationElement element, SvgAnimationTiming timing) {
-        return element instanceof ISvgAccumulatableAnimationElement value
-            && "sum".equalsIgnoreCase(StringUtils.trimToEmpty(value.getAccumulate()))
-            && timing.repeatCount() != Animation.INDEFINITE
-            && timing.repeatCount() > 0;
+        boolean finiteRepeat = timing.repeatCount() != Animation.INDEFINITE && timing.repeatCount() > 0;
+        if (!finiteRepeat) {
+            return false;
+        }
+        boolean accumulateSum = element instanceof ISvgAccumulatableAnimationElement value
+            && "sum".equalsIgnoreCase(StringUtils.trimToEmpty(value.getAccumulate()));
+        boolean removeOnFinish = (element instanceof ISvgValueAnimationElement || element instanceof SvgAnimateTransform)
+            && timing.fill() == SvgAnimationTiming.FillBehavior.REMOVE;
+        return accumulateSum || removeOnFinish;
     }
 
     public void play() {

@@ -9,12 +9,14 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -230,6 +232,121 @@ public class SvgValueAnimationBuilderTest {
         assertThat(doubleValue(frames.get(1)), closeTo(10.0, 1e-9));
     }
 
+    // --- fill="remove" (#149) -------------------------------------------------
+    //
+    // fill="remove" returns a SequentialTransition(core, revert), never a bare Timeline, so these tests build
+    // directly against SvgValueAnimationBuilder.build(...) rather than through the Timeline-casting build() helper.
+
+    @Test
+    public void testFillRemoveRevertsToThePreAnimationValueAfterDur() {
+        Rectangle target = new Rectangle(0, 0, 10, 10);
+        target.setX(42);
+        SequentialTransition result = buildSequential(a -> {
+            a.setAttributeName("x");
+            a.setDuration("1s");
+            a.setFrom("5");
+            a.setTo("15");
+            a.setFill("remove");
+        }, target);
+
+        List<Animation> children = result.getChildren();
+        assertThat(children, hasSize(2));
+        Timeline core = (Timeline) children.get(0);
+        Timeline revert = (Timeline) children.get(1);
+        assertThat("core is the untouched, unreverted animation", core.getKeyFrames().size(), is(2));
+        assertThat(doubleValue(core.getKeyFrames().get(1)), closeTo(15.0, 1e-9));
+        assertThat("the revert plays after core, back to the pre-animation value",
+            doubleValue(revert.getKeyFrames().get(0)), closeTo(42.0, 1e-9));
+        assertThat("the revert is a hard jump, not an interpolated glide back",
+            interpolator(revert.getKeyFrames().get(0)), is(Interpolator.DISCRETE));
+    }
+
+    /** {@code fill="freeze"} (this file's own fixture default) must be entirely unaffected - a regression check. */
+    @Test
+    public void testFillFreezeAddsNoRevertFrame() {
+        Timeline timeline = build(a -> {
+            a.setAttributeName("x");
+            a.setFrom("5");
+            a.setTo("15");
+        }, new Rectangle(0, 0, 10, 10));
+
+        assertThat(timeline.getKeyFrames().size(), is(2));
+    }
+
+    /**
+     * <b>The inconvenient case.</b> {@code fill="remove"} with {@code repeatCount="3"} must revert only once, after
+     * the third cycle - not at the end of every cycle. Also proves each cycle independently replays the whole value
+     * list (0 -> 10, 0 -> 10, 0 -> 10) via JavaFX's own {@code cycleCount}, rather than being wrongly unrolled into a
+     * single ramp followed by a flat hold - the exact regression a mutation test caught during development: a first
+     * implementation reused the {@code accumulate="sum"} unrolling machinery for this case too, which silently
+     * dropped every cycle's own first value (valid only when cycles truly are continuous) and produced a flat hold
+     * from t=1s to t=3s instead of two more repeats of the ramp.
+     */
+    @Test
+    public void testFillRemoveWithFiniteRepeatCountRevertsOnlyOnceAfterEveryCycleReplays() {
+        Rectangle target = new Rectangle(0, 0, 10, 10);
+        target.setX(7);
+        SequentialTransition result = buildSequential(a -> {
+            a.setAttributeName("x");
+            a.setDuration("1s");
+            a.setValues("0;10");
+            a.setRepeatCount("3");
+            a.setFill("remove");
+        }, target);
+
+        List<Animation> children = result.getChildren();
+        Timeline core = (Timeline) children.get(0);
+        Timeline revert = (Timeline) children.get(1);
+
+        assertThat("each cycle independently replays the same 2-frame value list",
+            core.getKeyFrames().size(), is(2));
+        assertThat(doubleValue(core.getKeyFrames().get(0)), closeTo(0.0, 1e-9));
+        assertThat(doubleValue(core.getKeyFrames().get(1)), closeTo(10.0, 1e-9));
+        assertThat("JavaFX's own cycling replays core, not a manual unroll", core.getCycleCount(), is(3));
+        assertThat(doubleValue(revert.getKeyFrames().get(0)), closeTo(7.0, 1e-9));
+    }
+
+    /** {@code accumulate="sum"} and {@code fill="remove"} are independent triggers and must compose. */
+    @Test
+    public void testAccumulateSumWithFillRemoveStillRevertsAtTheEnd() {
+        Rectangle target = new Rectangle(0, 0, 10, 10);
+        target.setX(99);
+        SequentialTransition result = buildSequential(a -> {
+            a.setAttributeName("x");
+            a.setDuration("1s");
+            a.setValues("0;10");
+            a.setAccumulate("sum");
+            a.setRepeatCount("3");
+            a.setFill("remove");
+        }, target);
+
+        List<Animation> children = result.getChildren();
+        Timeline core = (Timeline) children.get(0);
+        Timeline revert = (Timeline) children.get(1);
+
+        assertThat("accumulate still needs its own unroll - cycleCount stays 1 on core, unlike the plain case",
+            core.getCycleCount(), is(1));
+        List<KeyFrame> coreFrames = core.getKeyFrames();
+        // the accumulated end value (0 + 3*10 = 30) is core's own last frame, not reset early by the revert
+        assertThat(doubleValue(coreFrames.get(coreFrames.size() - 1)), closeTo(30.0, 1e-9));
+        assertThat(doubleValue(revert.getKeyFrames().get(0)), closeTo(99.0, 1e-9));
+    }
+
+    /** {@code fill="remove"} with {@code repeatCount="indefinite"} never ends, so nothing is ever built to revert. */
+    @Test
+    public void testFillRemoveWithIndefiniteRepeatCountNeverAppendsARevertFrame() {
+        Timeline timeline = build(a -> {
+            a.setAttributeName("x");
+            a.setDuration("1s");
+            a.setFrom("5");
+            a.setTo("15");
+            a.setRepeatCount("indefinite");
+            a.setFill("remove");
+        }, new Rectangle(0, 0, 10, 10));
+
+        assertThat(timeline.getKeyFrames().size(), is(2));
+    }
+
     // --- colour bindings -----------------------------------------------------
 
     @Test
@@ -269,6 +386,7 @@ public class SvgValueAnimationBuilderTest {
         animateColor.setAttributeName("fill");
         animateColor.setFrom("black");
         animateColor.setTo("white");
+        animateColor.setFill("freeze"); // match animate's fixture default (see the animate() helper) for parity
 
         Timeline first = (Timeline) SvgValueAnimationBuilder.build(animate, rectForAnimate, null).orElseThrow();
         Timeline second = (Timeline) SvgValueAnimationBuilder.build(animateColor, rectForAnimateColor, null).orElseThrow();
@@ -304,14 +422,26 @@ public class SvgValueAnimationBuilderTest {
 
     // --- helpers -----------------------------------------------------------
 
+    /**
+     * Defaults {@code fill="freeze"} - the SVG default is {@code "remove"} (#149), which would add a revert
+     * {@code KeyFrame} to every one of these fixtures and break their frame-count assertions for a reason unrelated
+     * to whatever each test actually exercises. Tests specifically about {@code fill="remove"} override it via their
+     * own {@code configure} lambda, which runs after this and so wins.
+     */
     private static SvgAnimateAttribute animate(Consumer<SvgAnimateAttribute> configure) {
         SvgAnimateAttribute element = new SvgAnimateAttribute();
+        element.setFill("freeze");
         configure.accept(element);
         return element;
     }
 
     private static Timeline build(Consumer<SvgAnimateAttribute> configure, Rectangle target) {
         return (Timeline) SvgValueAnimationBuilder.build(animate(configure), target, null).orElseThrow();
+    }
+
+    /** For {@code fill="remove"} tests, whose result is a {@link SequentialTransition}, not a bare {@link Timeline}. */
+    private static SequentialTransition buildSequential(Consumer<SvgAnimateAttribute> configure, Rectangle target) {
+        return (SequentialTransition) SvgValueAnimationBuilder.build(animate(configure), target, null).orElseThrow();
     }
 
     private static double doubleValue(KeyFrame frame) {
