@@ -36,6 +36,17 @@ public final class SvgAnimationController {
 
     public SvgAnimationController(SvgElementIndex index, Map<ISvgElement, Node> nodeRegistry, RenderContext context) {
         this.animations = build(index, nodeRegistry, context);
+        // Warm-up (#151): a JavaFX Animation that has never been play()ed does not apply anything to its target
+        // property when jumpTo() is called - confirmed empirically, not merely assumed - so seek() alone, called
+        // before any play(), was a silent no-op for every animation in the document. Playing and immediately
+        // pausing each one here, before the caller ever sees this controller, makes every later seek()/play() work
+        // correctly regardless of call order. This happens off-screen (construction, before any node is typically
+        // shown) and produces no visible flash: JavaFX only paints at a pulse, and no pulse occurs between the
+        // synchronous play() and pause() calls below.
+        this.animations.forEach(animation -> {
+            animation.play();
+            animation.pause();
+        });
     }
 
     private static List<Animation> build(SvgElementIndex index, Map<ISvgElement, Node> nodeRegistry, RenderContext context) {

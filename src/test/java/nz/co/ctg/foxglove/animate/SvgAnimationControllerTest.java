@@ -17,6 +17,7 @@ import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
@@ -206,6 +207,42 @@ public class SvgAnimationControllerTest {
         // 3 cycles of 1s (core, cycled internally) + an instantaneous revert = 3s total - if the controller
         // (wrongly) re-applied repeatCount=3 on top of that, this would come out around 9s instead
         assertThat(controller.getTotalDuration(), is(Duration.seconds(3)));
+    }
+
+    /**
+     * <b>The inconvenient case, and #151's own regression coverage.</b> A JavaFX {@code Animation} that has never
+     * been {@code play()}ed does not apply anything to its target property when {@code jumpTo()} is called -
+     * confirmed empirically, not merely assumed. {@link SvgAnimationController#seek} was a complete no-op for a
+     * caller who seeks before ever calling {@code play()} - exactly how the #112 conformance harness uses it, and
+     * how a scrub-bar UI would too. The constructor now warms up every built animation with a discreet
+     * {@code play()}/{@code pause()} so seeking works regardless of call order; this asserts that specifically,
+     * never touching {@link SvgAnimationController#play()} at all.
+     */
+    @Test
+    public void testSeekAppliesTheCorrectValueEvenWhenPlayWasNeverCalled() throws Exception {
+        SvgAnimateAttribute animate = new SvgAnimateAttribute();
+        animate.setAttributeName("x");
+        animate.setDuration("10s");
+        animate.setFrom("0");
+        animate.setTo("100");
+
+        SvgRectangle target = new SvgRectangle();
+        target.getContent().add(animate);
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent().add(target);
+
+        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        Rectangle node = new Rectangle();
+        registry.put(target, node);
+        SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
+            RenderContext.root(svg.getElementIndex(), 0, 0));
+
+        onFxThread(() -> {
+            controller.seek(Duration.seconds(5));
+            return null;
+        });
+        assertThat("halfway through a 0->100 animation, seeked to directly with no prior play()",
+            onFxThread(node::getX), closeTo(50.0, 1e-6));
     }
 
     @Test
