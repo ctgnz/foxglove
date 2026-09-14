@@ -54,6 +54,18 @@ import javafx.scene.transform.Translate;
  * synced to the last glyph's position afterward (an approximation - it cannot itself follow the curve) so text
  * after a {@code </textPath>} continues from roughly there rather than jumping back to wherever the linear flow
  * was before the path started.
+ * <p>
+ * {@code writing-mode="tb"}/{@code "tb-rl"} (#139) swaps which axis the cursor advances along: each character still
+ * places at {@code (x, y)} the same way, but the <i>next</i> character's position comes from stepping {@code y}
+ * forward by one em (the specification's own default for {@code vert-adv-y}, since no suite document declares one)
+ * rather than {@code x} forward by the glyph's own width, and is centred horizontally on the column rather than
+ * starting flush against it (the usual convention for vertical CJK layout, and this renderer's approximation of
+ * {@code vert-origin-x}'s own default of half the glyph's advance). Deliberately narrower than #139's own full scope:
+ * no suite document uses an SVG font, {@code glyph-orientation-vertical} other than {@code 0} (upright, unrotated
+ * glyphs - the only value applied), or a positioning list together with vertical text, so none of those are handled
+ * - a run resolving to an SVG font falls through to this class's ordinary horizontal handling regardless of
+ * {@code writing-mode}, which is honest about what is actually supported rather than silently mispositioning glyphs
+ * a font's own vertical metrics were never read for.
  */
 final class TextGlyphLayout {
 
@@ -77,7 +89,9 @@ final class TextGlyphLayout {
         double cursorX = 0;
         double cursorY = 0;
         double totalAdvance = 0;
-        double anchorStartX = 0;
+        // The flow axis's own start coordinate - x normally, y under writing-mode="tb"/"tb-rl" (#139); only one
+        // axis is ever active for a given <text> element in practice, so one variable serves both.
+        double anchorFlowStart = 0;
         boolean anchorStarted = false;
         SvgTextPath currentPath = null;
         PathLengthLookup currentPathLookup = null;
@@ -145,9 +159,13 @@ final class TextGlyphLayout {
             List<SvgAltGlyphs.Substitute> substitutes = run.owner() instanceof SvgAltGlyph altGlyph
                 ? SvgAltGlyphs.resolve(altGlyph, context)
                 : null;
+            // #139: vertical layout is only handled for plain (non-SVG-font) text - see this class's own javadoc for
+            // why an SVG font falls through to the ordinary horizontal path regardless of writing-mode.
+            boolean vertical = runFont == null && substitutes == null && writingModeVertical(run, context);
             // an SVG font draws one Path per character, so a run using one is always split even when no positioning
-            // list asks for it - there is no single node that could carry the whole string
-            List<String> pieces = perGlyph || runFont != null || substitutes != null ? codePoints(run.text())
+            // list asks for it - there is no single node that could carry the whole string; vertical text is always
+            // split too, since JavaFX's Text has no notion of laying its own characters out top-to-bottom.
+            List<String> pieces = perGlyph || vertical || runFont != null || substitutes != null ? codePoints(run.text())
                 : List.of(run.text());
             // a substitution replaces the run's characters wholesale, so the glyphs it names drive the loop instead
             int count = substitutes != null ? substitutes.size() : pieces.size();
@@ -164,7 +182,9 @@ final class TextGlyphLayout {
                 // Kerning tightens the gap left by the previous glyph's advance, so it applies only where the cursor
                 // is actually carrying that gap - an explicit x positions the glyph absolutely and is left alone.
                 // Substituted glyphs are named individually rather than spelt, so no character pair applies.
-                double kern = k > 0 && runFont != null && explicitX == null && substitutes == null
+                // Vertical text never kerns (#139) - kerning is a horizontal-advance concept, and no suite document
+                // declares vertical kerning data for this class to read even if it did.
+                double kern = k > 0 && runFont != null && explicitX == null && substitutes == null && !vertical
                     ? runFont.kerningBetween(pieces.get(k - 1), pieces.get(k), runFontSize)
                     : 0;
                 double flowX = (explicitX != null ? explicitX : cursorX - kern) + dx;
@@ -175,16 +195,31 @@ final class TextGlyphLayout {
                     ? substituteGlyph(substitutes.get(k), run, runFontSize, flowX, displayY, rotate)
                     : glyphOf(pieces.get(k), run, runFont, runFontSize, flowX, displayY, rotate, flowX, displayY);
                 if (glyph.node() != null) {
+                    if (vertical) {
+                        // Centred on the column (an approximation of vert-origin-x's own default, half the glyph's
+                        // advance) rather than starting flush against it, the usual convention for vertical layout.
+                        // glyphOf already measured this width as the glyph's own advance for the plain-Text branch
+                        // vertical text is restricted to (see this class's own javadoc), so no extra measurement.
+                        glyph.node().setTranslateX(glyph.node().getTranslateX() - glyph.advance() / 2);
+                    }
                     nodes.add(glyph.node());
                 }
                 if (!anchorStarted) {
-                    anchorStartX = flowX;
+                    anchorFlowStart = vertical ? flowY : flowX;
                     anchorStarted = true;
                 }
-                totalAdvance = Math.max(totalAdvance, flowX + glyph.advance() - anchorStartX);
+                // One em, not glyph.advance() (the glyph's own width - the wrong axis here): the specification's
+                // own default for vert-adv-y, used unconditionally since no suite document declares a real one.
+                double advance = vertical ? runFontSize : glyph.advance();
+                totalAdvance = Math.max(totalAdvance, (vertical ? flowY : flowX) + advance - anchorFlowStart);
 
-                cursorX = flowX + glyph.advance();
-                cursorY = flowY;
+                if (vertical) {
+                    cursorX = flowX;
+                    cursorY = flowY + advance;
+                } else {
+                    cursorX = flowX + advance;
+                    cursorY = flowY;
+                }
             }
             bumpAncestors(ownerIndex, run.ancestors(), count);
         }
@@ -376,21 +411,41 @@ final class TextGlyphLayout {
     }
 
     /**
-     * Shifts the whole result horizontally so it is centred ({@code middle}) or ends ({@code end}) at the flow's
-     * start position, rather than beginning there ({@code start}, the initial value) - applied as a
-     * {@code translateX} on the finished node/group rather than by rewriting each glyph's own {@code x} and any
-     * {@code Rotate} pivot, which would otherwise need recomputing too.
+     * Shifts the whole result along the flow axis so it is centred ({@code middle}) or ends ({@code end}) at the
+     * flow's start position, rather than beginning there ({@code start}, the initial value) - applied as a single
+     * {@code translateX}/{@code translateY} on the finished node/group rather than by rewriting each glyph's own
+     * position and any {@code Rotate} pivot, which would otherwise need recomputing too. The flow axis is {@code y}
+     * under {@code writing-mode="tb"}/{@code "tb-rl"} (#139), {@code x} otherwise.
      */
-    private static void applyTextAnchor(SvgText root, RenderContext context, double totalWidth, Node result) {
-        if (totalWidth <= 0) {
+    private static void applyTextAnchor(SvgText root, RenderContext context, double totalAdvance, Node result) {
+        if (totalAdvance <= 0) {
             return;
         }
-        String anchor = StringUtils.trimToEmpty(SvgInheritedStyle.resolve(context, root).getTextAnchor());
+        SvgInheritedStyle style = SvgInheritedStyle.resolve(context, root);
+        String anchor = StringUtils.trimToEmpty(style.getTextAnchor());
         double fraction = "middle".equalsIgnoreCase(anchor) ? 0.5 : "end".equalsIgnoreCase(anchor) ? 1.0 : 0.0;
         if (fraction == 0.0) {
             return;
         }
-        result.setTranslateX(result.getTranslateX() - fraction * totalWidth);
+        if (isVerticalWritingMode(style.getWritingMode())) {
+            result.setTranslateY(result.getTranslateY() - fraction * totalAdvance);
+        } else {
+            result.setTranslateX(result.getTranslateX() - fraction * totalAdvance);
+        }
+    }
+
+    /**
+     * Whether {@code run}'s fully-resolved (inherited) {@code writing-mode} is one of the two vertical values -
+     * {@code "tb"}/{@code "tb-rl"}, top-to-bottom - rather than a horizontal one (#139). Resolved the same way
+     * {@link #svgFontFor}/{@link #fontSizeFor} resolve their own inherited properties.
+     */
+    private static boolean writingModeVertical(TextRunBuilder.Run run, RenderContext context) {
+        return isVerticalWritingMode(SvgInheritedStyle.resolve(run.ownerContext(), run.owner()).getWritingMode());
+    }
+
+    private static boolean isVerticalWritingMode(String writingMode) {
+        String mode = StringUtils.trimToEmpty(writingMode);
+        return "tb".equalsIgnoreCase(mode) || "tb-rl".equalsIgnoreCase(mode);
     }
 
     /**
