@@ -91,7 +91,28 @@ public final class SvgFontGlyphs {
      * space to every document.
      */
     public Node glyphFor(String character, double fontSize) {
-        String outline = outlineOf(character);
+        return outlineNode(outlineOf(character), fontSize);
+    }
+
+    /**
+     * One named {@code <glyph>} of this font as a renderable node, for an {@code <altGlyph>} that asked for that
+     * glyph specifically rather than for whatever draws a character (#138).
+     * <p>
+     * The glyph must be one of <i>this</i> font's, because the scale it is drawn at comes from this font's
+     * {@code units-per-em}. A substituted glyph routinely comes from a different font than the text around it - the
+     * suite's {@code text-altglyph-01-b} sets {@code font-family="Arial"} and substitutes glyphs out of a font whose
+     * em is 8 units - so taking the surrounding text's metrics would scale it by a factor of over a hundred.
+     */
+    public Node glyphNodeOf(SvgGlyph glyph, double fontSize) {
+        return outlineNode(glyph.getD(), fontSize);
+    }
+
+    /** How far a named {@code <glyph>} of this font advances the cursor at {@code fontSize} (#138). */
+    public double advanceOf(SvgGlyph glyph, double fontSize) {
+        return number(glyph.getHorizAdvX(), defaultAdvance) * fontSize / unitsPerEm;
+    }
+
+    private Node outlineNode(String outline, double fontSize) {
         if (StringUtils.isBlank(outline)) {
             return null;
         }

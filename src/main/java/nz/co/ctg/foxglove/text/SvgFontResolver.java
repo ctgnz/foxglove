@@ -117,6 +117,11 @@ public final class SvgFontResolver {
         return null;
     }
 
+    /** {@code font} as loaded glyphs, from the shared cache - the way an {@code <altGlyph>} (#138) reaches metrics. */
+    static SvgFontGlyphs glyphsOf(SvgFont font) {
+        return INLINE_CACHE.computeIfAbsent(font, SvgFontGlyphs::of);
+    }
+
     private static boolean matchesFamily(String wanted, SvgFontFace face) {
         return wanted.equalsIgnoreCase(unquote(StringUtils.trimToEmpty(face.getFontFamily())));
     }
