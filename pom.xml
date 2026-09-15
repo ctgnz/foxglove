@@ -280,7 +280,7 @@
                 <configuration>
                     <source>25</source>
                     <target>25</target>
-                    <encoding>ISO-8859-1</encoding>
+                    <encoding>UTF-8</encoding>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
                         <arg>-Werror</arg>
