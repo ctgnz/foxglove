@@ -35,12 +35,11 @@ public record ConformanceResult(String name, boolean passed, double similarity, 
     }
 
     /**
-     * Whether a static frame can meaningfully be compared against this test's reference at all. The whole {@code animate} chapter cannot: the harness renders one unanimated frame,
-     * and nothing in a test document records which moment in time its reference image was captured at, so a correct SMIL implementation and a broken one are equally likely to
-     * mismatch. Reporting those as ordinary failures overstates how much is actually broken - see #112 for the comparison that would work instead.
+     * #201: which of the three fundamentally different kinds of test
+     * ({@link ConformanceCategory#STATIC}/{@link ConformanceCategory#ANIMATION}/{@link ConformanceCategory#INTERACTION}) this is.
      */
-    public boolean staticallyComparable() {
-        return !"animate".equals(chapter());
+    public ConformanceCategory category() {
+        return ConformanceCategory.of(name);
     }
 
 }

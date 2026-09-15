@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -76,34 +77,89 @@ public final class ConformanceReport {
      *            omits the line entirely (used by {@link #write(Map, Path)}, and by any caller with no such manifest to read).
      */
     public static void write(Map<String, ConformanceResult> results, Path outputDirectory, String referenceProvenance) {
-        Map<String, List<ConformanceResult>> chapters = new TreeMap<>();
+        // Every test's own page always lives at its raw <chapter>/<test>.html, unconditionally, whatever category
+        // it turns out to be - #201 only changes which *listing* pages a test is linked from, never where its own
+        // page lives or whether it gets one. This keeps that part of the site untouched from before #201.
+        Map<String, List<ConformanceResult>> rawChapters = new TreeMap<>();
         for (ConformanceResult result : new TreeMap<>(results).values()) {
-            chapters.computeIfAbsent(result.chapter(), c -> new ArrayList<>())
+            rawChapters.computeIfAbsent(result.chapter(), c -> new ArrayList<>())
                 .add(result);
         }
-
-        writeFile(outputDirectory.resolve("index.html"), indexPage(chapters, referenceProvenance));
-        for (Map.Entry<String, List<ConformanceResult>> entry : chapters.entrySet()) {
-            String chapter = entry.getKey();
-            writeFile(outputDirectory.resolve(chapter)
-                .resolve("index.html"), chapterPage(chapter, entry.getValue()));
+        for (Map.Entry<String, List<ConformanceResult>> entry : rawChapters.entrySet()) {
             for (ConformanceResult result : entry.getValue()) {
-                writeFile(outputDirectory.resolve(chapter)
+                writeFile(outputDirectory.resolve(entry.getKey())
                     .resolve(result.name() + ".html"), testPage(result));
             }
         }
+
+        // #201: static chapter listing pages only ever show that chapter's STATIC-category subset - a chapter with
+        // no static tests at all (interact/script/svgdom, entirely interaction; animate, entirely
+        // animation+interaction) is skipped here rather than writing a confusing empty listing.
+        for (Map.Entry<String, List<ConformanceResult>> entry : rawChapters.entrySet()) {
+            List<ConformanceResult> staticTests = entry.getValue()
+                .stream()
+                .filter(r -> r.category() == ConformanceCategory.STATIC)
+                .toList();
+            if (!staticTests.isEmpty()) {
+                writeFile(outputDirectory.resolve(entry.getKey())
+                    .resolve("index.html"), chapterPage(entry.getKey(), staticTests));
+            }
+        }
+
+        List<ConformanceResult> animationTests = category(results, ConformanceCategory.ANIMATION);
+        List<ConformanceResult> interactionTests = category(results, ConformanceCategory.INTERACTION);
+        if (!animationTests.isEmpty()) {
+            writeFile(outputDirectory.resolve("animate")
+                .resolve("index.html"), chapterPage("animate", animationTests));
+        }
+        if (!interactionTests.isEmpty()) {
+            writeFile(outputDirectory.resolve("interaction")
+                .resolve("index.html"), interactionPage(interactionTests));
+        }
+
+        writeFile(outputDirectory.resolve("index.html"),
+            indexPage(staticChapters(rawChapters), animationTests, interactionTests, referenceProvenance));
+    }
+
+    private static List<ConformanceResult> category(Map<String, ConformanceResult> results, ConformanceCategory category) {
+        return new TreeMap<>(results).values()
+            .stream()
+            .filter(r -> r.category() == category)
+            .toList();
+    }
+
+    /** The static-only view of {@code rawChapters} that {@link #indexPage}'s own chapter table needs - chapters left with nothing static are dropped entirely. */
+    private static Map<String, List<ConformanceResult>> staticChapters(Map<String, List<ConformanceResult>> rawChapters) {
+        Map<String, List<ConformanceResult>> result = new TreeMap<>();
+        for (Map.Entry<String, List<ConformanceResult>> entry : rawChapters.entrySet()) {
+            List<ConformanceResult> staticTests = entry.getValue()
+                .stream()
+                .filter(r -> r.category() == ConformanceCategory.STATIC)
+                .toList();
+            if (!staticTests.isEmpty()) {
+                result.put(entry.getKey(), staticTests);
+            }
+        }
+        return result;
     }
 
     // --- level 1: overall ----------------------------------------------------
 
-    private static String indexPage(Map<String, List<ConformanceResult>> chapters, String referenceProvenance) {
-        List<ConformanceResult> all = chapters.values()
+    /**
+     * #201: three separately-reported sections, not one blended chapter table - {@code staticChapters} (already filtered to each chapter's static-only subset by the caller) keeps
+     * the original chapter-table headline exactly as before #201 (so a static-only input, as every existing {@code ConformanceReportTest} case is, produces byte-identical headline
+     * text); {@code animationTests}/{@code interactionTests} each get one summary row linking to their own single listing page instead of a full chapter breakdown - see
+     * {@link #write} for why neither needs one.
+     */
+    private static String indexPage(Map<String, List<ConformanceResult>> staticChapters, List<ConformanceResult> animationTests,
+                                    List<ConformanceResult> interactionTests, String referenceProvenance) {
+        List<ConformanceResult> allStatic = staticChapters.values()
             .stream()
             .flatMap(List::stream)
             .toList();
 
         StringBuilder rows = new StringBuilder();
-        for (Map.Entry<String, List<ConformanceResult>> entry : chapters.entrySet()) {
+        for (Map.Entry<String, List<ConformanceResult>> entry : staticChapters.entrySet()) {
             List<ConformanceResult> tests = entry.getValue();
             rows.append("<tr><td><a href=\"")
                 .append(escape(entry.getKey()))
@@ -125,7 +181,7 @@ public final class ConformanceReport {
 
         StringBuilder html = page("Foxglove - W3C SVG 1.1 conformance");
         html.append("<h1>Foxglove - W3C SVG 1.1 (Second Edition) conformance</h1>\n");
-        html.append(headline(all));
+        html.append(headline(allStatic));
         html.append("<table>\n<thead><tr><th>Chapter</th><th class=\"num\">Passing</th><th class=\"num\">%</th>")
             .append("<th class=\"num\">Ink matched</th></tr></thead>\n<tbody>\n")
             .append(rows)
@@ -150,8 +206,35 @@ public final class ConformanceReport {
                 .append(escape(referenceProvenance))
                 .append("</div>\n");
         }
+        html.append(categorySection("Animation", "animate/index.html", animationTests, ConformanceCategory.ANIMATION));
+        html.append(categorySection("Interaction", "interaction/index.html", interactionTests, ConformanceCategory.INTERACTION));
         return html.append(footer(""))
             .toString();
+    }
+
+    /**
+     * One summary row for a non-{@link ConformanceCategory#STATIC} category on the index page - a heading, the pass count/ink-matched figures, a link to that category's own single
+     * listing page, and the category's own {@link ConformanceCategory#noteHtml()} explaining why the number isn't a target to chase. {@code tests} empty (nothing of that category
+     * in this run) omits the section entirely rather than showing a confusing "0 / 0".
+     */
+    private static String categorySection(String heading, String href, List<ConformanceResult> tests, ConformanceCategory category) {
+        if (tests.isEmpty()) {
+            return "";
+        }
+        StringBuilder html = new StringBuilder();
+        html.append("<h2>")
+            .append(escape(heading))
+            .append("</h2>\n");
+        html.append(headline(tests));
+        html.append("<p><a href=\"")
+            .append(href)
+            .append("\">View all ")
+            .append(tests.size())
+            .append(" ")
+            .append(escape(heading.toLowerCase(Locale.ROOT)))
+            .append(" tests &rarr;</a></p>\n");
+        html.append(unmeasurableNote(category));
+        return html.toString();
     }
 
     // --- level 2: one chapter ------------------------------------------------
@@ -185,7 +268,48 @@ public final class ConformanceReport {
             .append(escape(chapter))
             .append("</h1>\n");
         html.append(headline(tests));
-        html.append(unmeasurableNote(chapter));
+        html.append(unmeasurableNote(tests.isEmpty() ? ConformanceCategory.STATIC : tests.get(0)
+            .category()));
+        html.append("<table>\n<thead><tr><th>Test</th><th>Result</th><th class=\"num\">Ink matched</th></tr></thead>\n<tbody>\n")
+            .append(rows)
+            .append("</tbody>\n</table>\n");
+        return html.append(footer("../"))
+            .toString();
+    }
+
+    /**
+     * #201: the interaction category's one flat listing page - unlike {@link #chapterPage}, its tests are scattered across many different raw chapters (`struct`, `types`,
+     * `interact`, `script`, `svgdom`, ...), not co-located in one directory, so each row links back up into that test's own real chapter directory (`../<chapter>/<test>.html`)
+     * rather than a same-directory file. Otherwise the same shape as a chapter page: most-similar-first, the category's own explanatory note.
+     */
+    private static String interactionPage(List<ConformanceResult> tests) {
+        List<ConformanceResult> ordered = new ArrayList<>(tests);
+        ordered.sort(Comparator.comparingDouble(ConformanceResult::similarity)
+            .reversed()
+            .thenComparing(ConformanceResult::name));
+
+        StringBuilder rows = new StringBuilder();
+        for (ConformanceResult result : ordered) {
+            rows.append("<tr><td><a href=\"../")
+                .append(escape(result.chapter()))
+                .append("/")
+                .append(escape(result.name()))
+                .append(".html\">")
+                .append(escape(result.name()))
+                .append("</a></td>")
+                .append("<td>")
+                .append(verdict(result))
+                .append("</td>")
+                .append("<td class=\"num\">")
+                .append(percent(result.similarityPercent()))
+                .append("</td></tr>\n");
+        }
+
+        StringBuilder html = page("Foxglove conformance - interaction");
+        html.append("<nav><a href=\"../index.html\">&larr; All chapters</a></nav>\n");
+        html.append("<h1>interaction</h1>\n");
+        html.append(headline(tests));
+        html.append(unmeasurableNote(ConformanceCategory.INTERACTION));
         html.append("<table>\n<thead><tr><th>Test</th><th>Result</th><th class=\"num\">Ink matched</th></tr></thead>\n<tbody>\n")
             .append(rows)
             .append("</tbody>\n</table>\n");
@@ -197,10 +321,20 @@ public final class ConformanceReport {
 
     private static String testPage(ConformanceResult result) {
         String name = result.name();
+        ConformanceCategory category = result.category();
         StringBuilder html = page("Foxglove conformance - " + name);
-        html.append("<nav><a href=\"../index.html\">All chapters</a> / <a href=\"index.html\">")
-            .append(escape(result.chapter()))
-            .append("</a></nav>\n");
+        // an INTERACTION test's own raw chapter (interact/script/svgdom, entirely interaction; or struct/types/...,
+        // mixed) never has a same-directory listing page that includes it - see write()'s own static-only filter -
+        // so its breadcrumb points at the shared interaction listing instead, not its raw chapter's own index.
+        html.append("<nav><a href=\"../index.html\">All chapters</a> / ");
+        if (category == ConformanceCategory.INTERACTION) {
+            html.append("<a href=\"../interaction/index.html\">interaction</a>");
+        } else {
+            html.append("<a href=\"index.html\">")
+                .append(escape(result.chapter()))
+                .append("</a>");
+        }
+        html.append("</nav>\n");
         html.append("<h1>")
             .append(escape(name))
             .append("</h1>\n");
@@ -213,7 +347,7 @@ public final class ConformanceReport {
             .append(result.contentPixels())
             .append(" pixels carrying ink in either image.</div>\n");
 
-        html.append(unmeasurableNote(result.chapter()));
+        html.append(unmeasurableNote(category));
         if (result.failureReason() != null) {
             html.append("<div class=\"note\"><strong>This test did not finish rendering.</strong> ")
                 .append(escape(result.failureReason()))
@@ -271,23 +405,17 @@ public final class ConformanceReport {
     }
 
     /**
-     * The {@code animate} chapter is not a rendering failure but an unanswerable question - see {@link ConformanceResult#staticallyComparable}. Saying so where the numbers appear
-     * stops the report implying that 78 tests' worth of SMIL is broken, when what is actually missing is a way to measure it.
+     * #201: a non-{@link ConformanceCategory#STATIC} category's own results are not a rendering failure but an unanswerable question (animation) or a permanent, by-design
+     * architectural limitation (interaction) - saying so where the numbers appear stops the report implying either is broken rendering, when what is actually missing (animation)
+     * or simply out of scope (interaction) is something else entirely. {@code category.noteHtml()} is {@code null}, hence {@code ""} here, only for
+     * {@link ConformanceCategory#STATIC}.
      */
-    private static String unmeasurableNote(String chapter) {
-        if (!"animate".equals(chapter)) {
+    private static String unmeasurableNote(ConformanceCategory category) {
+        String noteHtml = category.noteHtml();
+        if (noteHtml == null) {
             return "";
         }
-        return """
-                        <div class="note">
-                        <strong>These results are not meaningful.</strong> This check renders a single static frame, and nothing
-                        in a test document records which moment in time its reference image was captured at - so a correct SMIL
-                        implementation and a broken one are equally likely to mismatch. Animation behaviour is covered by
-                        dedicated unit tests instead; see
-                        <a href="https://github.com/ctgnz/foxglove/issues/112">ctgnz/foxglove#112</a> for the comparison that
-                        would actually work.
-                        </div>
-                        """;
+        return "<div class=\"note\">" + noteHtml + "</div>\n";
     }
 
     private static String verdict(ConformanceResult result) {

@@ -106,10 +106,19 @@ public class W3cSvgConformanceCheck {
             return null;
         }, 5, TimeUnit.MINUTES);
 
+        // #201: only STATIC results feed the regression-tracked baseline - ANIMATION and INTERACTION are real,
+        // separately-reported categories (see ConformanceCategory), not ordinary pass/fail static rendering
+        // failures, and blending either into this manifest would either overstate what's broken (animation - a
+        // single static frame can't meaningfully judge it) or make a permanently-near-0% bucket look like a
+        // regression waiting to happen (interaction - out of scope by design, never going to pass).
         Map<String, Boolean> actual = new TreeMap<>();
-        results.forEach((name, result) -> actual.put(name, result.passed()));
+        results.forEach((name, result) -> {
+            if (result.category() == ConformanceCategory.STATIC) {
+                actual.put(name, result.passed());
+            }
+        });
 
-        printChapterSummary(actual);
+        printSummary(results);
         List<ConformanceResult> threw = results.values()
             .stream()
             .filter(r -> r.failureReason() != null)
@@ -306,18 +315,33 @@ public class W3cSvgConformanceCheck {
         return Math.max(0, (int) Math.floor(bounds.getMinY()) - 4);
     }
 
-    private static void printChapterSummary(Map<String, Boolean> actual) {
+    /**
+     * #201: three separate summaries, not one blended table - a per-chapter breakdown (as before) for {@link ConformanceCategory#STATIC} only, then a single flat count each for
+     * {@link ConformanceCategory#ANIMATION} and {@link ConformanceCategory#INTERACTION}. Neither of those two needs a chapter-by-chapter table: {@code animate} is already one
+     * chapter, and interaction isn't being chased chapter-by-chapter at all (see the category's own {@link ConformanceCategory#unmeasurableNote()}) - a flat count is honest and
+     * sufficient for both.
+     */
+    private static void printSummary(Map<String, ConformanceResult> results) {
         Map<String, int[]> chapters = new TreeMap<>();
-        for (Map.Entry<String, Boolean> entry : actual.entrySet()) {
-            int[] counts = chapters.computeIfAbsent(chapterOf(entry.getKey()), c -> new int[2]);
-            counts[1]++;
-            if (entry.getValue()) {
-                counts[0]++;
+        int[] animation = new int[2];
+        int[] interaction = new int[2];
+        for (ConformanceResult result : results.values()) {
+            switch (result.category()) {
+                case STATIC -> {
+                    int[] counts = chapters.computeIfAbsent(chapterOf(result.name()), c -> new int[2]);
+                    counts[1]++;
+                    if (result.passed()) {
+                        counts[0]++;
+                    }
+                }
+                case ANIMATION -> tally(animation, result.passed());
+                case INTERACTION -> tally(interaction, result.passed());
             }
         }
+
         int totalPass = 0;
         int total = 0;
-        System.out.println("W3C SVG 1.1 conformance results by chapter:");
+        System.out.println("W3C SVG 1.1 conformance results by chapter (static only):");
         for (Map.Entry<String, int[]> entry : chapters.entrySet()) {
             int pass = entry.getValue()[0];
             int all = entry.getValue()[1];
@@ -325,7 +349,22 @@ public class W3cSvgConformanceCheck {
             total += all;
             System.out.printf("  %-12s %4d / %4d (%.1f%%)%n", entry.getKey(), pass, all, 100.0 * pass / all);
         }
-        System.out.printf("TOTAL: %d / %d (%.1f%%)%n", totalPass, total, total == 0 ? 0.0 : 100.0 * totalPass / total);
+        System.out.printf("STATIC TOTAL: %d / %d (%.1f%%)%n", totalPass, total, total == 0 ? 0.0 : 100.0 * totalPass / total);
+        printCategoryTotal("ANIMATION", animation);
+        printCategoryTotal("INTERACTION", interaction);
+    }
+
+    private static void tally(int[] counts, boolean passed) {
+        counts[1]++;
+        if (passed) {
+            counts[0]++;
+        }
+    }
+
+    private static void printCategoryTotal(String label, int[] counts) {
+        int pass = counts[0];
+        int all = counts[1];
+        System.out.printf("%s TOTAL: %d / %d (%.1f%%)%n", label, pass, all, all == 0 ? 0.0 : 100.0 * pass / all);
     }
 
     private static String chapterOf(String testName) {
