@@ -34,6 +34,19 @@ jobs:
           cache: 'maven'
       - name: Install Xvfb
         run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Fetch latest browser-generated reference images
+        # #198: W3cSvgConformanceCheck reads from here (conformance.reference.dir), not the suite's own stale png/ -
+        # see #196/#197. A missing/unfetchable artifact is a harder failure than "the comparison found
+        # regressions" below, so this step is not continue-on-error - it should stop the job clearly.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RUN_ID=$(gh run list --repo ${{ github.repository }} --workflow=generate-conformance-references.yml --status=success --limit 1 --json databaseId -q '.[0].databaseId')
+          if [ -z "$RUN_ID" ]; then
+            echo "::error::No successful run of generate-conformance-references.yml found - trigger it manually first."
+            exit 1
+          fi
+          gh run download "$RUN_ID" --repo ${{ github.repository }} -n w3c-svg-references -D target/w3c-svg-references-generated
       - name: Run the W3C SVG conformance suite
         id: conformance
         # Deliberately non-fatal here: the dashboard below must still publish (and show the regression) even when

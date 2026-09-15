@@ -34,13 +34,23 @@ import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
 
 /**
- * #44: renders every test document in the W3C SVG 1.1 (Second Edition) conformance suite and fuzzy-compares it against its reference PNG, checking the result against a checked-in
+ * #44: renders every test document in the W3C SVG 1.1 (Second Edition) conformance suite and fuzzy-compares it against a reference image, checking the result against a checked-in
  * baseline manifest ({@link ConformanceManifest}) rather than asserting on raw pass/fail counts - "400 tests fail" says nothing about whether that is progress or a regression.
  * <p>
  * <b>The suite itself is deliberately not vendored</b> - it carries its own W3C copyright/licence terms and is fetched by the {@code conformance} Maven profile ({@code pom.xml})
  * into {@code target/w3c-svg-testsuite}, from {@code https://www.w3.org/Graphics/SVG/Test/20110816/archives/W3C_SVG_11_TestSuite.tar.gz} (SHA-256 pinned in the profile for
  * integrity). This class's own name deliberately does not match Surefire's default test-discovery patterns, so it never runs as part of the default build - only
  * {@code mvn -Pconformance test} includes it.
+ * <p>
+ * <b>#198: the reference images are not the suite's own {@code png/} directory</b> - those were rendered by whatever engine the W3C used circa 2011 and no longer represent how an
+ * actively-maintained renderer draws (confirmed directly: a 1px stroke centred on an integer coordinate antialiases across two 50%-opacity pixel columns in both this renderer's
+ * and live Chrome's output, but the suite's own reference PNG snaps it to one crisp opaque column instead - costing ~2% ink on every single test regardless of what is under test,
+ * with no way to reach a meaningful 100% against it). Instead this reads from {@code target/w3c-svg-references-generated} (overridable via the {@code conformance.reference.dir}
+ * system property, the same convention {@code conformance.suite.dir} already uses) - {@link W3cSvgReferenceGenerator}'s own fresh, headless-Chromium-rendered output (#196), either
+ * generated locally (<code>mvn -Pconformance test -Dtest=W3cSvgReferenceGenerator</code>) or fetched from the latest CI run that published it (#197):
+ * <code>gh run download --repo ctgnz/foxglove -n w3c-svg-references -D target/w3c-svg-references-generated</code>. This class fails fast, with both of those commands named in the
+ * message, if that directory does not exist at all - deliberately not a silent fallback to the stale suite PNGs, which would quietly perpetuate the exact comparison this replaces,
+ * and deliberately not a silent "0 tests found" either, which {@link #listTests}'s own exists-filter would otherwise produce unnoticed.
  * <p>
  * <b>Every test's own "furniture" is a problem verified empirically, not assumed</b>: each of the 525 test documents renders a {@code <text id="revision">} legend near the bottom
  * of the canvas, styled with an embedded SVG font ({@code font-face}/{@code font-face-uri}). Its actual rendered bounds (looked up via {@link RenderContext#withNodeRegistry}, the
@@ -72,8 +82,12 @@ public class W3cSvgConformanceCheck {
     public void verifyAgainstW3cSvgTestSuite() throws Exception {
         Path suiteDir = Path.of(System.getProperty("conformance.suite.dir", "target/w3c-svg-testsuite"));
         Path svgDir = suiteDir.resolve("svg");
-        Path pngDir = suiteDir.resolve("png");
-        List<Path> tests = listTests(svgDir, pngDir);
+        Path referenceDir = Path.of(System.getProperty("conformance.reference.dir", "target/w3c-svg-references-generated"));
+        if (!Files.isDirectory(referenceDir)) {
+            fail("No reference images at " + referenceDir + " - generate them locally (mvn -Pconformance test -Dtest=W3cSvgReferenceGenerator, #196) "
+                 + "or fetch the latest CI-published set (gh run download --repo ctgnz/foxglove -n w3c-svg-references -D " + referenceDir + ", #197).");
+        }
+        List<Path> tests = listTests(svgDir, referenceDir);
 
         Path reportDir = Path.of("target/conformance-report");
         Map<String, ConformanceResult> results = new TreeMap<>();
@@ -81,7 +95,7 @@ public class W3cSvgConformanceCheck {
             for (Path svgFile : tests) {
                 String name = baseName(svgFile);
                 try {
-                    results.put(name, runOne(svgFile, pngDir.resolve(name + ".png"), reportDir));
+                    results.put(name, runOne(svgFile, referenceDir.resolve(name + ".png"), reportDir));
                 } catch (Throwable e) {
                     // a renderer bug (including a StackOverflowError from a real cycle-guard gap) is itself a
                     // conformance failure worth recording, not something that should crash the whole 525-test run
@@ -142,12 +156,12 @@ public class W3cSvgConformanceCheck {
         }
     }
 
-    private static List<Path> listTests(Path svgDir, Path pngDir) throws IOException {
+    private static List<Path> listTests(Path svgDir, Path referenceDir) throws IOException {
         List<Path> tests = new ArrayList<>();
         try (var stream = Files.list(svgDir)) {
             stream.filter(p -> p.toString()
                 .endsWith(".svg"))
-                .filter(p -> Files.exists(pngDir.resolve(baseName(p) + ".png")))
+                .filter(p -> Files.exists(referenceDir.resolve(baseName(p) + ".png")))
                 .sorted()
                 .forEach(tests::add);
         }
@@ -159,8 +173,8 @@ public class W3cSvgConformanceCheck {
      * rather than handed back for {@link ConformanceReport} to write later: 525 pairs of 480x360 images held at once would cost the better part of a gigabyte, and there is no
      * reason to hold them.
      */
-    private ConformanceResult runOne(Path svgFile, Path pngFile, Path reportDir) throws Exception {
-        Image reference = new Image(pngFile.toUri()
+    private ConformanceResult runOne(Path svgFile, Path referenceFile, Path reportDir) throws Exception {
+        Image reference = new Image(referenceFile.toUri()
             .toString());
         int width = (int) Math.round(reference.getWidth());
         int height = (int) Math.round(reference.getHeight());
