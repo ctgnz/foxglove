@@ -115,6 +115,9 @@ public class ConformanceReportTest {
             result("interact-order-01-b", false, 0.1));
 
         String index = read("index.html");
+        assertThat(index, containsString("<h2>Static</h2>"));
+        assertThat(index, containsString("<h2>Animation</h2>"));
+        assertThat(index, containsString("<h2>Interaction</h2>"));
         assertThat(index, containsString("href=\"animate/index.html\""));
         assertThat(index, containsString("href=\"interaction/index.html\""));
         // the primary headline is static-only, unaffected by the other two categories being present

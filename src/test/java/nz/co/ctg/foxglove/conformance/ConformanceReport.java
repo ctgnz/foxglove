@@ -181,6 +181,7 @@ public final class ConformanceReport {
 
         StringBuilder html = page("Foxglove - W3C SVG 1.1 conformance");
         html.append("<h1>Foxglove - W3C SVG 1.1 (Second Edition) conformance</h1>\n");
+        html.append("<h2>Static</h2>\n");
         html.append(headline(allStatic));
         html.append("<table>\n<thead><tr><th>Chapter</th><th class=\"num\">Passing</th><th class=\"num\">%</th>")
             .append("<th class=\"num\">Ink matched</th></tr></thead>\n<tbody>\n")
