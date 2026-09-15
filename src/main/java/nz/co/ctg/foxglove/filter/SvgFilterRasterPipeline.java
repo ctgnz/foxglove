@@ -1,9 +1,14 @@
 package nz.co.ctg.foxglove.filter;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import javafx.css.Size;
+import javafx.css.SizeUnits;
+import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -11,16 +16,26 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.effect.ImageInput;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import nz.co.ctg.foxglove.FxGraphic;
+import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
 import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.RenderContext.Axis;
 import nz.co.ctg.foxglove.RenderContext.UnitsMode;
+import nz.co.ctg.foxglove.adapter.SizeAdapter;
+import nz.co.ctg.foxglove.type.PreserveAspectRatio;
+import nz.co.ctg.foxglove.type.ViewBox;
 
 /**
  * Stage 3 of the filter work (#77): evaluates a {@code <filter>}'s primitive graph as real pixels, for everything {@link SvgFilterRenderer}'s JavaFX-effect chain cannot express -
@@ -37,8 +52,8 @@ import nz.co.ctg.foxglove.RenderContext.UnitsMode;
  * {@link Group}. That is spec-aligned in principle, since filters are defined on a pixel grid, though {@code filterRes} is not honoured.
  * <p>
  * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: the primitives not listed in {@link #evaluate} ({@code feConvolveMatrix},
- * {@code feMorphology}, {@code feDisplacementMap}, {@code feTile}, {@code feImage}, the lighting primitives), per-primitive subregions
- * ({@code x}/{@code y}/{@code width}/{@code height} on an individual {@code fe*}), and {@code in="BackgroundImage"}.
+ * {@code feMorphology}, {@code feDisplacementMap}, {@code feTile}, the lighting primitives), per-primitive subregions on any primitive other than {@code feImage} (see
+ * {@link #resolveSubregion}, added for #174 - every other primitive still implicitly fills the whole filter region), and {@code in="BackgroundImage"}.
  * <p>
  * Primitives evaluate in <b>linearRGB</b> by default, per the specification, honouring {@code color-interpolation-filters} per primitive - see {@link FilterColorSpace}. Working in
  * sRGB instead was #77's largest documented inaccuracy, fixed in #108: it left structure and geometry right but every interpolated value systematically too dark.
@@ -52,6 +67,7 @@ final class SvgFilterRasterPipeline {
     private static final int MAX_DIMENSION = 4096;
 
     private final SvgFilter filter;
+    private final RenderContext context;
     private final Bounds targetBounds;
     private final Bounds region;
     private final int width;
@@ -68,6 +84,7 @@ final class SvgFilterRasterPipeline {
 
     private SvgFilterRasterPipeline(SvgFilter filter, RenderContext context, Bounds targetBounds, Bounds region, int width, int height) {
         this.filter = filter;
+        this.context = context;
         this.targetBounds = targetBounds;
         this.region = region;
         this.width = width;
@@ -203,6 +220,9 @@ final class SvgFilterRasterPipeline {
         }
         if (primitive instanceof FeTurbulence turbulence) {
             return turbulence(turbulence);
+        }
+        if (primitive instanceof FeImage image) {
+            return image(image);
         }
         throw new UnsupportedFilterException();
     }
@@ -684,6 +704,144 @@ final class SvgFilterRasterPipeline {
             }
         }
         return result;
+    }
+
+    // --- feImage (#174) --------------------------------------------------------
+
+    /**
+     * {@code feImage} has no input - it renders a referenced raster image or, per spec, a same-document element, fitted into its own primitive subregion (see
+     * {@link #resolveSubregion}) rather than filling the whole filter region the way every other primitive does.
+     * <p>
+     * A same-document {@code #id} reference is rendered and fitted with a plain translate and clip only - not the spec's full "as if it were a stand-alone document, using
+     * x/y/width/height in place of a viewBox" treatment, which would additionally scale the referenced content to fill the subregion. No W3C test exercises this case (every
+     * failing {@code filters-image-*} test references an external raster file), so this is a documented, honest simplification rather than a silent one - revisit if a real
+     * document needs the full treatment.
+     */
+    private FilterRaster image(FeImage image) {
+        Bounds subregion = resolveSubregion(image);
+        if (subregion.getWidth() <= 0 || subregion.getHeight() <= 0) {
+            return new FilterRaster(width, height);
+        }
+        String href = StringUtils.trimToEmpty(image.getXlinkHref());
+        if (href.isEmpty()) {
+            return new FilterRaster(width, height);
+        }
+
+        Optional<ISvgElement> element = context.getElementIndex()
+            .resolve(href);
+        Node content = element.isPresent() ? renderReferencedElement(element.get(), subregion)
+            : loadFittedImageView(href, subregion, image.getPreserveAspectRatio());
+        if (content == null) {
+            return new FilterRaster(width, height);
+        }
+        return rasterizeIntoRegion(content, subregion);
+    }
+
+    /** The same-document-element case - see {@link #image}'s note on why this is a plain translate/clip rather than the spec's full viewBox-style treatment. */
+    private Node renderReferencedElement(ISvgElement element, Bounds subregion) {
+        if (!(element instanceof FxGraphic<?> graphic)) {
+            return null;
+        }
+        Node rendered = graphic.createGraphic(context);
+        if (rendered == null) {
+            return null;
+        }
+        Group clipped = new Group(rendered);
+        clipped.setClip(new Rectangle(subregion.getWidth(), subregion.getHeight()));
+        return clipped;
+    }
+
+    /**
+     * The external-raster-file case: resolved relative to the document's own base URI - never an absolute reference given directly, the same trust boundary
+     * {@link nz.co.ctg.foxglove.element.SvgImage} and {@link nz.co.ctg.foxglove.SvgElementIndex}'s external-document support already apply - then fitted into {@code subregion} via
+     * the identical {@link ViewBox}/{@link PreserveAspectRatio} machinery {@code SvgImage.createGraphic} uses for {@code <image>}.
+     */
+    private Node loadFittedImageView(String href, Bounds subregion, String preserveAspectRatio) {
+        Image sourceImage = loadImage(href);
+        if (sourceImage == null || sourceImage.isError()) {
+            return null;
+        }
+        ImageView view = new ImageView(sourceImage);
+        Group fitted = new Group(view);
+        ViewBox intrinsic = new ViewBox(new BoundingBox(0, 0, sourceImage.getWidth(), sourceImage.getHeight()));
+        Transform fit = intrinsic.createTransform(subregion.getWidth(), subregion.getHeight(), PreserveAspectRatio.parse(preserveAspectRatio));
+        if (fit != null) {
+            fitted.getTransforms()
+                .add(fit);
+        }
+        fitted.setClip(new Rectangle(subregion.getWidth(), subregion.getHeight()));
+        return fitted;
+    }
+
+    private Image loadImage(String href) {
+        try {
+            if (href.startsWith("data:")) {
+                return new Image(StringUtils.deleteWhitespace(href));
+            }
+            URI uri = new URI(href);
+            if (uri.isAbsolute()) {
+                return null;
+            }
+            return context.getBaseUri()
+                .map(base -> base.resolve(uri))
+                .map(resolved -> new Image(resolved.toString(), false))
+                .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Snapshots {@code content} - already fitted/clipped to {@code subregion}'s own size, in {@code subregion}'s own local space - positioned at its true absolute location, the
+     * same technique {@link #rasterizeSource} already uses: the snapshot viewport is the filter region's own absolute bounds, so content placed at its real absolute position lines
+     * up with the pixel buffer automatically.
+     */
+    private FilterRaster rasterizeIntoRegion(Node content, Bounds subregion) {
+        // Inserted at index 0 (outermost - the first transform in the list applies last), not appended: `content`
+        // may already carry its own fit-scale transform (see loadFittedImageView), which must apply in the
+        // subregion's own local space before this translate carries the result out to its absolute position -
+        // appending here would nest this translate inside that scale instead, scaling the offset itself.
+        content.getTransforms()
+            .add(0, new Translate(subregion.getMinX(), subregion.getMinY()));
+        Group holder = new Group(content);
+        try {
+            new Scene(holder);
+            SnapshotParameters params = new SnapshotParameters();
+            params.setFill(Color.TRANSPARENT);
+            params.setViewport(new Rectangle2D(region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight()));
+            WritableImage snapshot = content.snapshot(params, null);
+            return FilterRaster.fromImage(snapshot, width, height);
+        } catch (Throwable e) {
+            return new FilterRaster(width, height);
+        }
+    }
+
+    /**
+     * A primitive's own filter primitive subregion ({@code x}/{@code y}/{@code width}/{@code height} on the {@code fe*} element itself) - the same shape as
+     * {@link SvgFilterRenderer#resolveFilterRegion}'s filter-region resolution one level down: relative to {@code primitiveUnits} rather than {@code filterUnits}, defaulting each
+     * unset axis to {@code 0%}/{@code 0%}/{@code 100%}/{@code 100%} per spec (a primitive with no input, like {@code feImage}, has no input-image bounds to default against
+     * either). {@link ISvgFilterPrimitive}'s own {@code x}/{@code y}/{@code width}/{@code height} are plain {@code String}s, unlike {@code SvgFilter}'s typed {@code Size} -
+     * unneeded until now, since no other primitive reads its own subregion - so parsed here via the same {@link SizeAdapter} {@code SvgFilter}'s own binding already uses.
+     */
+    private Bounds resolveSubregion(ISvgFilterPrimitive primitive) {
+        Size x = parseSubregionSize(primitive.getX(), 0);
+        Size y = parseSubregionSize(primitive.getY(), 0);
+        Size subregionWidth = parseSubregionSize(primitive.getWidth(), 100);
+        Size subregionHeight = parseSubregionSize(primitive.getHeight(), 100);
+
+        if (primitiveUnits() == UnitsMode.OBJECT_BOUNDING_BOX) {
+            double rx = targetBounds.getMinX() + RenderContext.resolveFraction(x) * targetBounds.getWidth();
+            double ry = targetBounds.getMinY() + RenderContext.resolveFraction(y) * targetBounds.getHeight();
+            double rw = RenderContext.resolveFraction(subregionWidth) * targetBounds.getWidth();
+            double rh = RenderContext.resolveFraction(subregionHeight) * targetBounds.getHeight();
+            return new BoundingBox(rx, ry, rw, rh);
+        }
+        return new BoundingBox(context.resolveLength(x, Axis.HORIZONTAL), context.resolveLength(y, Axis.VERTICAL),
+                               context.resolveLength(subregionWidth, Axis.HORIZONTAL), context.resolveLength(subregionHeight, Axis.VERTICAL));
+    }
+
+    private static Size parseSubregionSize(String raw, double defaultPercent) {
+        return StringUtils.isBlank(raw) ? new Size(defaultPercent, SizeUnits.PERCENT) : SizeAdapter.parse(raw);
     }
 
     // --- value parsing -------------------------------------------------------

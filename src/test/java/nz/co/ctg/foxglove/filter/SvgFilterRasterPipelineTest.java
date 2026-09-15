@@ -7,6 +7,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
+import java.net.URI;
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.scene.Node;
@@ -21,6 +22,7 @@ import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.element.SvgDefinitions;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 
 /**
@@ -320,6 +322,126 @@ public class SvgFilterRasterPipelineTest {
         assertThat(actual.getOpacity(), closeTo(0.3622668705784611, 0.002));
     }
 
+    // --- feImage (#174) --------------------------------------------------------
+
+    /**
+     * {@code wide.png} (the same 4x2 solid-red fixture {@link #WIDE_PNG} uses, this time as a real file) fitted exactly into an explicit subregion whose aspect ratio already
+     * matches the image's own (2:1) - no letterboxing/cropping to reason about, isolating subregion positioning itself from {@code preserveAspectRatio} fitting.
+     */
+    @Test
+    public void testFeImageOfARelativeRasterReferenceRendersAtItsExplicitSubregion() throws Exception {
+        FeImage image = new FeImage();
+        image.setXlinkHref("wide.png");
+        image.setX("10");
+        image.setY("10");
+        image.setWidth("20");
+        image.setHeight("10");
+
+        Image result = filteredWithBaseUri(redRect(), filterOf(image), wideBaseUri());
+        assertColor(result, 20, 15, Color.RED);
+        assertThat(colorAt(result, 90, 90).getOpacity(), closeTo(0.0, 0.02));
+    }
+
+    /** No {@code x}/{@code y}/{@code width}/{@code height} on {@code feImage} defaults its subregion to the whole filter region, per spec - not to a zero-size box. */
+    @Test
+    public void testFeImageWithNoSubregionFillsTheWholeFilterRegion() throws Exception {
+        FeImage image = new FeImage();
+        image.setXlinkHref("wide.png");
+
+        Image result = filteredWithBaseUri(redRect(), filterOf(image), wideBaseUri());
+        // default preserveAspectRatio (xMidYMid meet) fits the 4x2 image into the 100x100 region at scale 25,
+        // centred vertically (y 25..75) - sampled within that band, at both horizontal extremes
+        assertColor(result, 5, 50, Color.RED);
+        assertColor(result, 95, 50, Color.RED);
+    }
+
+    /** {@code xMidYMid meet} (the default) letterboxes rather than cropping - some of the subregion is left empty. */
+    @Test
+    public void testFeImagePreserveAspectRatioMeetLetterboxesWithinTheSubregion() throws Exception {
+        FeImage image = new FeImage();
+        image.setXlinkHref("wide.png");
+        image.setX("45");
+        image.setY("45");
+        image.setWidth("10");
+        image.setHeight("10");
+        image.setPreserveAspectRatio("xMidYMid meet");
+
+        Image result = filteredWithBaseUri(redRect(), filterOf(image), wideBaseUri());
+        // 4x2 into 10x10, meet: scaled to 10x5, centred vertically - the top of the subregion is left transparent
+        assertThat(colorAt(result, 50, 46).getOpacity(), closeTo(0.0, 0.05));
+        assertColor(result, 50, 50, Color.RED);
+    }
+
+    /** {@code xMidYMid slice} crops rather than letterboxing - the whole subregion is covered, right up to its edges. */
+    @Test
+    public void testFeImagePreserveAspectRatioSliceFillsTheWholeSubregion() throws Exception {
+        FeImage image = new FeImage();
+        image.setXlinkHref("wide.png");
+        image.setX("45");
+        image.setY("45");
+        image.setWidth("10");
+        image.setHeight("10");
+        image.setPreserveAspectRatio("xMidYMid slice");
+
+        Image result = filteredWithBaseUri(redRect(), filterOf(image), wideBaseUri());
+        assertColor(result, 50, 46, Color.RED);
+        assertColor(result, 50, 50, Color.RED);
+    }
+
+    /** {@code primitiveUnits="objectBoundingBox"}: a fractional subregion resolves against the target's own bounding box, not the viewport. */
+    @Test
+    public void testFeImageSubregionUnderObjectBoundingBoxResolvesAgainstTheTargetsBounds() throws Exception {
+        FeImage image = new FeImage();
+        image.setXlinkHref("wide.png");
+        image.setX("0");
+        image.setY("0");
+        image.setWidth("1");
+        image.setHeight("1");
+
+        SvgFilter filter = filterOf(image);
+        filter.setPrimitiveUnits("objectBoundingBox");
+
+        Image result = filteredWithBaseUri(redRect(), filter, wideBaseUri());
+        // redRect() is 50x50 at (0,0) - width/height=1 (100%) of that bbox, letterboxed (meet) within it
+        assertColor(result, 25, 25, Color.RED);
+        // outside the 50x50 bbox but still inside the 100x100 filter region - not covered by this primitive at all
+        assertThat(colorAt(result, 80, 80).getOpacity(), closeTo(0.0, 0.02));
+    }
+
+    /**
+     * The acceptance criterion no conformance test actually exercises: a same-document {@code #id} reference renders that element's own content - fitted with a plain
+     * translate/clip here rather than the spec's full viewBox-style treatment (see {@code SvgFilterRasterPipeline.image}'s own note on why), so the target is deliberately sized to
+     * exactly match the subregion to keep the test meaningful either way.
+     */
+    @Test
+    public void testFeImageOfASameDocumentElementRendersItsContent() throws Exception {
+        SvgRectangle target = new SvgRectangle(0, 0, 20, 20);
+        target.setId("box");
+        target.setFill(Color.LIME);
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent()
+            .add(target);
+
+        FeImage image = new FeImage();
+        image.setXlinkHref("#box");
+        image.setX("10");
+        image.setY("10");
+        image.setWidth("20");
+        image.setHeight("20");
+
+        Image result = filteredWithExtraContent(redRect(), filterOf(image), defs);
+        assertColor(result, 20, 20, Color.LIME);
+    }
+
+    @Test
+    public void testFeImageWithAnUnresolvableReferenceDegradesToEmptyWithoutThrowing() throws Exception {
+        FeImage image = new FeImage();
+        image.setXlinkHref("does-not-exist.png");
+
+        Image result = filteredWithBaseUri(redRect(), filterOf(image), wideBaseUri());
+        assertThat(colorAt(result, 50, 50).getOpacity(), closeTo(0.0, 0.02));
+    }
+
     // --- arbitrary graphs ----------------------------------------------------
 
     /**
@@ -564,6 +686,48 @@ public class SvgFilterRasterPipelineTest {
         svg.getContent()
             .add(filter);
         return rect.createGraphic(RenderContext.root(svg.getElementIndex(), 0, 0));
+    }
+
+    /**
+     * {@code wide.png}'s own classpath location, as a base URI a relative {@code xlink:href="wide.png"} resolves cleanly against - the file itself, per {@link URI#resolve}'s own
+     * "replace the last path segment" semantics.
+     */
+    private static URI wideBaseUri() throws Exception {
+        return SvgFilterRasterPipelineTest.class.getResource("/wide.png")
+            .toURI();
+    }
+
+    /**
+     * As {@link #render}, but with a base URI established for {@code feImage}'s own relative {@code xlink:href} resolution, extra document content (for a same-document reference)
+     * available to resolve against, and - unlike every other test in this file - a real 100x100 viewport: {@code feImage}'s own default subregion is {@code 0%}/{@code 0%}/
+     * {@code 100%}/{@code 100%} of the <i>current viewport</i> under {@code primitiveUnits="userSpaceOnUse"} (the default), which a {@code 0}-sized viewport (every other test's
+     * setup, never needing a viewport-relative percentage) would resolve to nothing.
+     */
+    private static Node renderWithContext(SvgRectangle rect, SvgFilter filter, URI baseUri, ISvgElement... extraContent) {
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent()
+            .add(filter);
+        for (ISvgElement extra : extraContent) {
+            svg.getContent()
+                .add(extra);
+        }
+        RenderContext context = RenderContext.root(svg.getElementIndex(), 100, 100);
+        if (baseUri != null) {
+            context = context.withBaseUri(baseUri);
+        }
+        return rect.createGraphic(context);
+    }
+
+    private static Image filteredWithBaseUri(SvgRectangle rect, SvgFilter filter, URI baseUri) throws Exception {
+        Node node = onFxThread(() -> renderWithContext(rect, filter, baseUri));
+        assertThat("expected the raster pipeline to have applied an ImageInput", node.getEffect(), notNullValue());
+        return ((ImageInput) node.getEffect()).getSource();
+    }
+
+    private static Image filteredWithExtraContent(SvgRectangle rect, SvgFilter filter, ISvgElement... extraContent) throws Exception {
+        Node node = onFxThread(() -> renderWithContext(rect, filter, null, extraContent));
+        assertThat("expected the raster pipeline to have applied an ImageInput", node.getEffect(), notNullValue());
+        return ((ImageInput) node.getEffect()).getSource();
     }
 
     private static Image filtered(SvgRectangle rect, SvgFilter filter) throws Exception {
