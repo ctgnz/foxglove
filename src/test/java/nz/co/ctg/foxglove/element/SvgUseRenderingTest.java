@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove.element;
 
 import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,6 +16,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Affine;
 
@@ -33,7 +35,8 @@ import nz.co.ctg.foxglove.type.ViewBox;
  * without hanging. Also covers #95: a reference cycle reachable only through {@code xlink:href} chains between otherwise-unrelated elements (not each other's static-containment
  * ancestor, so the ancestor check alone misses it) must be rejected the same way, without a {@code StackOverflowError} - and two independent siblings legitimately reusing the same
  * target must not be mistaken for one. Also covers #101: {@code <use>} of an {@code <image>} target, which needs the JavaFX Application Thread to construct (see
- * {@link JavaFxTestSupport}) unlike every other target type above.
+ * {@link JavaFxTestSupport}) unlike every other target type above. Also covers #175: {@code <use>} of a target resolved from another document, and that a cross-document reference
+ * cycle terminates the same way an in-document one already does.
  */
 public class SvgUseRenderingTest {
 
@@ -526,6 +529,50 @@ public class SvgUseRenderingTest {
             .get(0)).getChildren(), hasSize(1));
         assertThat(((Group) renderedRoot.getChildren()
             .get(1)).getChildren(), hasSize(1));
+    }
+
+    /**
+     * #175: {@code <use>} of a target resolved from another document - the referenced {@code <rect>}'s own {@code fill="url(#grad)"} is same-document relative to *that* file, not
+     * this test's referencing document, which declares no {@code #grad} at all. Rendering it as {@link Color#BLACK} (the unresolved-paint default, see {@code
+     * SvgPaintResolver.INITIAL_COLOR}) rather than the actual {@link LinearGradient} would mean the target's content rendered against the wrong document's index - the specific
+     * regression {@link nz.co.ctg.foxglove.RenderContext#withElementIndex} exists to prevent.
+     */
+    @Test
+    public void testUseOfAnExternalTargetResolvesTheTargetsOwnReferencesAgainstItsOwnDocument() throws Exception {
+        SvgGraphic svg = new FoxgloveParser().parseFile("/external-reference.svg");
+        assertThat(svg.getBaseUri(), notNullValue());
+
+        Node rendered = onFxThread(svg::createGroup);
+        Rectangle shape = findRectangle(rendered);
+        assertThat("the target's own gradient reference resolved against its own document", shape.getFill(), instanceOf(LinearGradient.class));
+    }
+
+    /**
+     * #175: a cross-document {@code <use>} cycle (A references B, B references back into A) must terminate the same way an in-document cycle already does (see
+     * {@link #testMutualSiblingReferenceCycleRendersEmptyWithoutHanging}), not hang or overflow the stack.
+     */
+    @Test
+    public void testCrossDocumentUseCycleTerminatesWithoutHanging() throws Exception {
+        SvgGraphic svg = new FoxgloveParser().parseFile("/cycle-a.svg");
+        assertThat(svg.getBaseUri(), notNullValue());
+
+        Node rendered = onFxThread(svg::createGroup);
+        assertThat(rendered, notNullValue());
+    }
+
+    private static Rectangle findRectangle(Node node) {
+        if (node instanceof Rectangle rectangle) {
+            return rectangle;
+        }
+        if (node instanceof Group group) {
+            for (Node child : group.getChildren()) {
+                Rectangle found = findRectangle(child);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
     }
 
     @Test

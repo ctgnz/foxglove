@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Paired with cycle-a.svg for #175's cross-document <use> cycle test. -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50">
+  <use id="ub" xlink:href="cycle-a.svg#ua"/>
+</svg>

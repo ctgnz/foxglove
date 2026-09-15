@@ -2,6 +2,8 @@ package nz.co.ctg.foxglove;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,13 +33,31 @@ import nz.co.ctg.foxglove.style.CssStylesheet;
  * Where a document declares the same {@code id} more than once it is in error, and the SVG specification leaves the outcome undefined. This index keeps the first element
  * encountered in document order and reports the offending id from {@link #getDuplicateIds()}.
  * <p>
- * Only same document references are resolved. A reference naming another document, such as {@code xlink:href="other.svg#id"}, yields an empty result rather than an error, leaving
- * room for external documents to be supported later without changing the signature.
+ * A reference naming another document, such as {@code xlink:href="other.svg#id"}, is also resolved (#175) - relative to this index's own document's base URI, never an absolute
+ * location given directly in the document (the same trust boundary {@link nz.co.ctg.foxglove.element.SvgImage} already applies to its own relative references) - by loading and
+ * indexing that document in turn. This only applies to a bare {@code xlink:href}-shaped reference; a {@code url(#id)} funciri (as used by {@code fill}, {@code clip-path}, and
+ * every other presentation attribute this class resolves) stays same-document-only, per the specification's own restriction on those properties.
  */
 public final class SvgElementIndex {
 
+    /**
+     * The element a reference resolves to, together with the {@link SvgElementIndex} that actually owns it - {@code this} for an ordinary same-document reference, or the loaded
+     * external document's own index for one naming another document. Only {@link nz.co.ctg.foxglove.element.SvgUse} needs the owner: it is the one caller that recurses into
+     * rendering the resolved target's own content, which must resolve any further reference inside that content against the right document.
+     */
+    public record ResolvedElement(SvgElementIndex index, ISvgElement element) {
+    }
+
     private static final String URL_PREFIX = "url(";
     private static final Map<Class<?>, List<Field>> CONTENT_FIELDS = Maps.newConcurrentMap();
+
+    /**
+     * A single {@link FoxgloveParser}, built at most once regardless of how many external references get resolved - construction is not free (a fresh {@code JAXBContext} every
+     * time), and nothing about parsing a referenced document needs a dedicated instance.
+     */
+    private static final class ExternalParserHolder {
+        private static final FoxgloveParser INSTANCE = new FoxgloveParser();
+    }
 
     /**
      * Builds an index over the given document. The whole tree is walked, including nested {@code <svg>} elements and the contents of {@code <defs>}.
@@ -46,6 +66,7 @@ public final class SvgElementIndex {
         SvgElementIndex index = new SvgElementIndex();
         if (root != null) {
             index.add(root, null, Sets.newIdentityHashSet());
+            index.baseUri = root.getBaseUri();
         }
         return index;
     }
@@ -81,6 +102,7 @@ public final class SvgElementIndex {
     private final List<SvgStyle> styleElements = new ArrayList<>();
     private final List<ISvgElement> allElements = new ArrayList<>();
     private CssStylesheet stylesheet;
+    private URI baseUri;
 
     private SvgElementIndex() {
     }
@@ -97,10 +119,58 @@ public final class SvgElementIndex {
     }
 
     /**
-     * Resolves a same document reference to the element it names.
+     * Resolves a reference - same document or, per this class's own javadoc, another document - to the element it names.
      */
     public Optional<ISvgElement> resolve(String reference) {
-        return parseReference(reference).map(elementsById::get);
+        return resolveWithOwner(reference).map(ResolvedElement::element);
+    }
+
+    /**
+     * Resolves a reference the same way {@link #resolve(String)} does, but also reports which {@link SvgElementIndex} owns the result - see {@link ResolvedElement}.
+     */
+    public Optional<ResolvedElement> resolveWithOwner(String reference) {
+        Optional<String> sameDocument = parseReference(reference);
+        if (sameDocument.isPresent()) {
+            return sameDocument.map(elementsById::get)
+                .map(element -> new ResolvedElement(this, element));
+        }
+        return resolveExternal(reference);
+    }
+
+    /**
+     * Resolves an {@code xlink:href}-shaped reference naming another document, such as {@code other.svg#id} or {@code ../images/svgRef4.svg#alpha} - {@link #parseReference}
+     * already rejected it as a same-document reference by the time this runs, since anything before a leading {@code #} (or absent entirely) means it names something other than a
+     * bare fragment. Absent a base URI, a blank document part, a blank fragment (nothing to look up - this is the {@code <image xlink:href="other.svg">} whole-file-as-image-source
+     * case, out of scope here, see #178), a malformed URI, or the document part being absolute (a network or {@code file:} location given directly in the document, rather than
+     * reached by resolving relative to the already-trusted base URI - the same restriction {@link nz.co.ctg.foxglove.element.SvgImage#resolveImage} already applies) - every one of
+     * these degrades to an empty result rather than throwing.
+     */
+    private Optional<ResolvedElement> resolveExternal(String reference) {
+        String iri = StringUtils.trimToEmpty(reference);
+        if (baseUri == null || iri.isEmpty()) {
+            return Optional.empty();
+        }
+        int hash = iri.indexOf('#');
+        String documentPart = hash < 0 ? iri : iri.substring(0, hash);
+        String fragmentPart = hash < 0 ? "" : iri.substring(hash + 1);
+        if (StringUtils.isBlank(documentPart) || StringUtils.isBlank(fragmentPart)) {
+            return Optional.empty();
+        }
+        URI target;
+        try {
+            target = new URI(documentPart);
+        } catch (URISyntaxException e) {
+            return Optional.empty();
+        }
+        if (target.isAbsolute()) {
+            return Optional.empty();
+        }
+        SvgGraphic externalGraphic = ExternalParserHolder.INSTANCE.parseFile(baseUri.resolve(target));
+        if (externalGraphic == null) {
+            return Optional.empty();
+        }
+        return externalGraphic.getElementIndex()
+            .resolveWithOwner("#" + fragmentPart);
     }
 
     /**

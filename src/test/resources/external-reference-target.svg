@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- #175's external-document fixture: referenced from external-reference.svg via
+     xlink:href="external-reference-target.svg#id". The rect's own fill="url(#grad)" is same-document *relative to this
+     file* - proves a <use> of #shape resolves that reference against this document, not the referencing one. -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100">
+  <defs>
+    <linearGradient id="grad">
+      <stop offset="0" stop-color="red"/>
+      <stop offset="1" stop-color="blue"/>
+    </linearGradient>
+  </defs>
+  <rect id="shape" width="10" height="10" fill="url(#grad)"/>
+  <text id="label">External text</text>
+</svg>

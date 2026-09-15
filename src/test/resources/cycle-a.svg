@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- #175: a cross-document <use> cycle (A -> B -> A), mirroring the W3C suite's own struct-use-08-b-cycles.svg case -
+     rendering must terminate rather than stack-overflow or hang. -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50">
+  <use id="ua" xlink:href="cycle-b.svg#ub"/>
+</svg>

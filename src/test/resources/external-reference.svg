@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Exercises #175's acceptance criteria: <use>/<tref> resolving xlink:href="external-reference-target.svg#id" into
+     another document. -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100">
+  <use id="useShape" xlink:href="external-reference-target.svg#shape"/>
+  <text id="text" x="0" y="50"><tref id="ref" xlink:href="external-reference-target.svg#label"/></text>
+</svg>
