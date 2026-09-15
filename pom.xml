@@ -148,6 +148,20 @@
             <version>2.0.2-beta</version>
             <scope>test</scope>
         </dependency>
+
+        <!--
+            #196: drives headless Chromium to generate fresh W3C conformance reference images, replacing the
+            suite's own stale (circa-2011) reference PNGs - see W3cSvgReferenceGenerator. A plain test-scope
+            dependency, not profile-scoped: declaring it doesn't download the Chromium binary itself (only
+            Playwright.create(), which only that one class calls, does that), and that class never runs as part of
+            the default `mvn test`/`mvn verify` the same way W3cSvgConformanceCheck/W3cSvgAnimationCheck don't.
+        -->
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>1.63.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     
     <profiles>
@@ -178,6 +192,38 @@
                                     <sha256>b5f46cca1ad79b670f9179770b2366c57efd5c671d084144090feab4b7ff1030</sha256>
                                     <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}/w3c-svg-testsuite</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!--
+                        #196: installs the headless Chromium W3cSvgReferenceGenerator drives, as a genuine separate
+                        OS process (the `exec` goal, not `java`) rather than a Playwright.CLI.main() call from
+                        inside the test itself or exec:java's own in-process classloader invocation - CLI.main()
+                        calls System.exit() and writes raw progress-bar output directly to native stdout, either of
+                        which corrupts or kills whatever JVM it runs inside (Surefire's forked test JVM, or even
+                        Maven's own JVM under exec:java's default in-process mode). Idempotent (a fast no-op once
+                        already installed), so unconditional here is fine - the same reasoning that already lets the
+                        suite fetch above run unconditionally regardless of which -Dtest= class actually needs it.
+                    -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.6.4</version>
+                        <executions>
+                            <execution>
+                                <id>install-playwright-chromium</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>java</executable>
+                                    <classpathScope>test</classpathScope>
+                                    <!-- %classpath is only substituted within commandlineArgs, not a per-element
+                                         <arguments> list - confirmed empirically after the <arguments> form passed
+                                         the literal string "%classpath" through unsubstituted. -->
+                                    <commandlineArgs>-cp %classpath com.microsoft.playwright.CLI install chromium</commandlineArgs>
                                 </configuration>
                             </execution>
                         </executions>
