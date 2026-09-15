@@ -11,12 +11,9 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import javafx.scene.Node;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.AnimatedGraphic;
@@ -25,6 +22,11 @@ import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
+
+import javafx.scene.Node;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 /**
  * #112: renders every {@code animate-} document in the W3C suite <b>at chosen moments</b> and compares it against a live browser engine seeked to the same moment.
@@ -42,6 +44,7 @@ import nz.co.ctg.foxglove.SvgGraphic;
  * here too. What that noise cannot do is <i>vary with time</i>: a genuine animation error shows up as divergence that changes across the sampled moments, which is the thing worth
  * watching.
  */
+@Tag("animation")
 public class W3cSvgAnimationCheck {
 
     /** Where in each animation to look. Endpoints included deliberately: {@code fill="freeze"} lives at the end. */

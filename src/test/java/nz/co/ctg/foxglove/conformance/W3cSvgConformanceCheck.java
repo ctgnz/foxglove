@@ -14,15 +14,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-import javafx.geometry.Bounds;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.FoxgloveParser;
@@ -30,6 +24,14 @@ import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
+
+import javafx.geometry.Bounds;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 /**
  * #44: renders every test document in the W3C SVG 1.1 (Second Edition) conformance suite and fuzzy-compares it against its reference PNG, checking the result against a checked-in
@@ -58,6 +60,7 @@ import nz.co.ctg.foxglove.SvgGraphic;
  * Every run also writes {@link ConformanceReport}'s static HTML dashboard to {@code target/conformance-report/} - unconditionally, before the pass/fail check below, so #92's
  * GitHub Actions publish step has something to deploy regardless of whether this run's own manifest-diff assertion passes.
  */
+@Tag("conformance")
 public class W3cSvgConformanceCheck {
 
     @BeforeAll
