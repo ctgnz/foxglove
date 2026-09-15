@@ -36,8 +36,8 @@ import nz.co.ctg.foxglove.RenderContext.UnitsMode;
  * Buffers are rasterised at one pixel per user unit and never supersampled - {@link ImageInput} has no scale of its own, unlike the {@code ImageView} masking wraps in a scaled
  * {@link Group}. That is spec-aligned in principle, since filters are defined on a pixel grid, though {@code filterRes} is not honoured.
  * <p>
- * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: the primitives not listed in {@link #evaluate} ({@code feTurbulence},
- * {@code feConvolveMatrix}, {@code feMorphology}, {@code feDisplacementMap}, {@code feTile}, {@code feImage}, the lighting primitives), per-primitive subregions
+ * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: the primitives not listed in {@link #evaluate} ({@code feConvolveMatrix},
+ * {@code feMorphology}, {@code feDisplacementMap}, {@code feTile}, {@code feImage}, the lighting primitives), per-primitive subregions
  * ({@code x}/{@code y}/{@code width}/{@code height} on an individual {@code fe*}), and {@code in="BackgroundImage"}.
  * <p>
  * Primitives evaluate in <b>linearRGB</b> by default, per the specification, honouring {@code color-interpolation-filters} per primitive - see {@link FilterColorSpace}. Working in
@@ -200,6 +200,9 @@ final class SvgFilterRasterPipeline {
         }
         if (primitive instanceof FeGaussianBlur blur) {
             return gaussianBlur(blur);
+        }
+        if (primitive instanceof FeTurbulence turbulence) {
+            return turbulence(turbulence);
         }
         throw new UnsupportedFilterException();
     }
@@ -624,6 +627,62 @@ final class SvgFilterRasterPipeline {
     private FilterRaster copyOf(FilterRaster in) {
         FilterRaster result = in.newLike();
         System.arraycopy(in.getData(), 0, result.getData(), 0, in.getData().length);
+        return result;
+    }
+
+    /**
+     * Generates {@code feTurbulence}'s output directly, pixel by pixel - unlike every other primitive, this one has no input image at all, only a procedural function of each
+     * output pixel's own user-space coordinate (see {@link PerlinTurbulence}, which implements the spec's algorithm exactly). Colour and alpha are all four generated
+     * independently, per SVG 1.1 15.24 - alpha is noise too, not derived from RGB - then mapped from {@code turbFunctionResult} to a {@code [0, 1]} channel value per the
+     * specification's own formula for each {@code type}, and premultiplied like any other primitive's output.
+     */
+    private FilterRaster turbulence(FeTurbulence turbulence) {
+        double[] freq = numberList(turbulence.getBaseFrequency());
+        double baseFreqX = freq.length > 0 ? freq[0] : 0;
+        double baseFreqY = freq.length > 1 ? freq[1] : baseFreqX;
+        if (baseFreqX < 0 || baseFreqY < 0) {
+            throw new UnsupportedFilterException();
+        }
+        int numOctaves = (int) number(turbulence.getNumOctaves(), 1);
+        boolean fractalSum = "fractalNoise".equals(turbulence.getType());
+        boolean stitching = "stitch".equals(turbulence.getStitchTiles());
+
+        PerlinTurbulence.StitchInfo stitchInfo = null;
+        if (stitching) {
+            double tileWidth = region.getWidth();
+            double tileHeight = region.getHeight();
+            if (baseFreqX != 0) {
+                double loFreq = Math.floor(tileWidth * baseFreqX) / tileWidth;
+                double hiFreq = Math.ceil(tileWidth * baseFreqX) / tileWidth;
+                baseFreqX = baseFreqX / loFreq < hiFreq / baseFreqX ? loFreq : hiFreq;
+            }
+            if (baseFreqY != 0) {
+                double loFreq = Math.floor(tileHeight * baseFreqY) / tileHeight;
+                double hiFreq = Math.ceil(tileHeight * baseFreqY) / tileHeight;
+                baseFreqY = baseFreqY / loFreq < hiFreq / baseFreqY ? loFreq : hiFreq;
+            }
+            int stitchWidth = (int) (tileWidth * baseFreqX + 0.5);
+            int stitchWrapX = (int) (region.getMinX() * baseFreqX + PerlinTurbulence.PERLIN_N + stitchWidth);
+            int stitchHeight = (int) (tileHeight * baseFreqY + 0.5);
+            int stitchWrapY = (int) (region.getMinY() * baseFreqY + PerlinTurbulence.PERLIN_N + stitchHeight);
+            stitchInfo = new PerlinTurbulence.StitchInfo(stitchWidth, stitchWrapX, stitchHeight, stitchWrapY);
+        }
+
+        PerlinTurbulence generator = new PerlinTurbulence(number(turbulence.getSeed(), 0));
+        FilterRaster result = new FilterRaster(width, height);
+        float[] out = result.getData();
+        float[] rgba = new float[4];
+        for (int py = 0; py < height; py++) {
+            double y = region.getMinY() + py;
+            for (int px = 0; px < width; px++) {
+                double x = region.getMinX() + px;
+                for (int c = 0; c < 4; c++) {
+                    double turb = generator.turbulence(c, x, y, baseFreqX, baseFreqY, numOctaves, fractalSum, stitchInfo);
+                    rgba[c] = (float) (fractalSum ? (turb + 1) / 2 : turb);
+                }
+                FilterRaster.premultiply(out, result.index(px, py), rgba);
+            }
+        }
         return result;
     }
 
