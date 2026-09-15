@@ -4,6 +4,7 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -64,7 +65,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public static RenderContext root(SvgElementIndex elementIndex, double viewportWidth, double viewportHeight) {
         return new RenderContext(SvgInheritedStyle.root(), elementIndex, viewportWidth, viewportHeight, null, null, Locale.getDefault(), null,
-                                 null, null, Collections.emptySet(), true);
+                                 null, null, Collections.emptySet(), Collections.emptySet(), true);
     }
 
     private final SvgInheritedStyle style;
@@ -78,12 +79,13 @@ public final class RenderContext implements ISvgStylable {
     private final ForeignObjectHandler foreignObjectHandler;
     private final Map<ISvgElement, Node> nodeRegistry;
     private final Set<ISvgElement> activeUseTargets;
+    private final Set<URI> activeImageSources;
     private final boolean documentRoot;
 
     private RenderContext(SvgInheritedStyle style, SvgElementIndex elementIndex, double viewportWidth, double viewportHeight,
                           Bounds objectBoundingBox, URI baseUri, Locale locale, Consumer<SvgAnchor> anchorActivationHandler,
                           ForeignObjectHandler foreignObjectHandler, Map<ISvgElement, Node> nodeRegistry, Set<ISvgElement> activeUseTargets,
-                          boolean documentRoot) {
+                          Set<URI> activeImageSources, boolean documentRoot) {
         this.style = style;
         this.elementIndex = elementIndex;
         this.viewportWidth = viewportWidth;
@@ -95,6 +97,7 @@ public final class RenderContext implements ISvgStylable {
         this.foreignObjectHandler = foreignObjectHandler;
         this.nodeRegistry = nodeRegistry;
         this.activeUseTargets = activeUseTargets;
+        this.activeImageSources = activeImageSources;
         this.documentRoot = documentRoot;
     }
 
@@ -118,7 +121,8 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext resolveChild(ISvgAttributes element) {
         return new RenderContext(SvgInheritedStyle.resolve(style, element), elementIndex, viewportWidth, viewportHeight, objectBoundingBox,
-                                 baseUri, locale, anchorActivationHandler, foreignObjectHandler, nodeRegistry, activeUseTargets, false);
+                                 baseUri, locale, anchorActivationHandler, foreignObjectHandler, nodeRegistry, activeUseTargets,
+                                 activeImageSources, false);
     }
 
     /**
@@ -127,7 +131,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withViewport(double width, double height) {
         return new RenderContext(style, elementIndex, width, height, null, baseUri, locale, anchorActivationHandler, foreignObjectHandler,
-                                 nodeRegistry, activeUseTargets, documentRoot);
+                                 nodeRegistry, activeUseTargets, activeImageSources, documentRoot);
     }
 
     /**
@@ -138,7 +142,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withElementIndex(SvgElementIndex elementIndex) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-                                 foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
+                                 foreignObjectHandler, nodeRegistry, activeUseTargets, activeImageSources, documentRoot);
     }
 
     /**
@@ -147,7 +151,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withObjectBoundingBox(Bounds bbox) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, bbox, baseUri, locale, anchorActivationHandler,
-                                 foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
+                                 foreignObjectHandler, nodeRegistry, activeUseTargets, activeImageSources, documentRoot);
     }
 
     /**
@@ -156,7 +160,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withBaseUri(URI baseUri) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-                                 foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
+                                 foreignObjectHandler, nodeRegistry, activeUseTargets, activeImageSources, documentRoot);
     }
 
     /**
@@ -165,7 +169,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withLocale(Locale locale) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-                                 foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
+                                 foreignObjectHandler, nodeRegistry, activeUseTargets, activeImageSources, documentRoot);
     }
 
     /**
@@ -176,7 +180,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withAnchorActivationHandler(Consumer<SvgAnchor> anchorActivationHandler) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-                                 foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
+                                 foreignObjectHandler, nodeRegistry, activeUseTargets, activeImageSources, documentRoot);
     }
 
     /**
@@ -185,7 +189,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withForeignObjectHandler(ForeignObjectHandler foreignObjectHandler) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-                                 foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
+                                 foreignObjectHandler, nodeRegistry, activeUseTargets, activeImageSources, documentRoot);
     }
 
     /**
@@ -196,7 +200,7 @@ public final class RenderContext implements ISvgStylable {
      */
     public RenderContext withNodeRegistry(Map<ISvgElement, Node> nodeRegistry) {
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
-                                 foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
+                                 foreignObjectHandler, nodeRegistry, activeUseTargets, activeImageSources, documentRoot);
     }
 
     /**
@@ -211,7 +215,8 @@ public final class RenderContext implements ISvgStylable {
         updated.addAll(activeUseTargets);
         updated.add(target);
         return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale,
-                                 anchorActivationHandler, foreignObjectHandler, nodeRegistry, Collections.unmodifiableSet(updated), documentRoot);
+                                 anchorActivationHandler, foreignObjectHandler, nodeRegistry, Collections.unmodifiableSet(updated),
+                                 activeImageSources, documentRoot);
     }
 
     /**
@@ -222,6 +227,38 @@ public final class RenderContext implements ISvgStylable {
      */
     public boolean isActiveUseTarget(ISvgElement target) {
         return activeUseTargets.contains(target);
+    }
+
+    /**
+     * The set of resolved locations currently being rendered as an {@code <image xlink:href="....svg">} source somewhere up this call chain, replacing whatever was there - unlike
+     * {@link #withActiveUseTarget}, which accumulates one element at a time onto an identity-based set threaded through the ordinary parent/child context chain, this instead
+     * <i>transplants</i> a whole set onto a freshly built root context (see {@code SvgImage#rasterizeSvg}): each external SVG document is rendered from its own
+     * {@link RenderContext#root}, since it has no inherited style/locale/handlers of its own, but still needs to carry forward which locations are already in progress so a cycle
+     * reachable through it is still caught. Value-equality (a plain {@link java.util.HashSet}), not identity: unlike {@code <use>} targets, which are elements of the one document
+     * being rendered, each recursion here parses a fresh, independent copy of whatever document it references, so no two occurrences of "the same" referenced document are ever the
+     * same object - only their resolved {@link URI} identifies them as the same location.
+     */
+    public RenderContext withActiveImageSources(Set<URI> activeImageSources) {
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
+                                 foreignObjectHandler, nodeRegistry, activeUseTargets, Collections.unmodifiableSet(new HashSet<>(activeImageSources)),
+                                 documentRoot);
+    }
+
+    /**
+     * The set passed to the most recent {@link #withActiveImageSources} up this call chain (empty by default) - what {@code SvgImage#rasterizeSvg} reads before transplanting it,
+     * together with the location it's about to recurse into, onto the external document's own fresh root context.
+     */
+    public Set<URI> getActiveImageSources() {
+        return activeImageSources;
+    }
+
+    /**
+     * Whether {@code resolved} is already being rendered as an {@code <image xlink:href="....svg">} source somewhere up this call chain - see {@link #withActiveImageSources}. An
+     * {@code <image>} resolving to a location this returns {@code true} for is a reference cycle - a same-document self-reference or a chain through one or more other files back
+     * to a location already in progress - and must not be rendered, rather than recursing until the stack overflows (#192).
+     */
+    public boolean isActiveImageSource(URI resolved) {
+        return activeImageSources.contains(resolved);
     }
 
     public double getViewportWidth() {

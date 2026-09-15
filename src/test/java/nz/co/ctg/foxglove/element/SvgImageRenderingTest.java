@@ -294,6 +294,45 @@ public class SvgImageRenderingTest {
         assertThat(rendered.getChildren(), is(empty()));
     }
 
+    /**
+     * #192: {@code image-cycle-self.svg}'s only {@code <image>} references its own containing document directly - a same-document cycle. Before the fix, rendering it recursed
+     * (re-parsing and re-rendering the same document) until the stack overflowed; the guard must instead terminate, with the outermost {@code <image>} itself still resolving to a
+     * real (if largely blank, since its own nested self-reference is what gets refused) rasterised image rather than an empty group - only the reference that would actually
+     * revisit an in-progress location is refused, not the whole render.
+     */
+    @Test
+    public void testSelfReferencingSvgSourceRendersWithoutStackOverflow() throws Exception {
+        FoxgloveParser parser = new FoxgloveParser();
+        SvgGraphic svg = parser.parseFile("/image-cycle-self.svg");
+        assertThat(svg.getBaseUri(), notNullValue());
+
+        Group rendered = (Group) onFxThread(svg::createGroup).getChildren()
+            .get(0);
+        ImageView imageView = findImageView(rendered);
+        assertThat(imageView.getImage(), notNullValue());
+        assertThat(imageView.getImage()
+            .isError(), is(false));
+    }
+
+    /**
+     * #192: {@code image-cycle-a.svg} references {@code image-cycle-b.svg}, which references back to {@code image-cycle-a.svg} - a two-file cycle, the shape {@code
+     * struct-image-12-b} (the W3C conformance test that originally surfaced this) actually exercises via a separate file rather than a same-document self-reference. Must terminate
+     * the same way {@link #testSelfReferencingSvgSourceRendersWithoutStackOverflow} does, not just the single-file case.
+     */
+    @Test
+    public void testTwoFileReferenceCycleRendersWithoutStackOverflow() throws Exception {
+        FoxgloveParser parser = new FoxgloveParser();
+        SvgGraphic svg = parser.parseFile("/image-cycle-a.svg");
+        assertThat(svg.getBaseUri(), notNullValue());
+
+        Group rendered = (Group) onFxThread(svg::createGroup).getChildren()
+            .get(0);
+        ImageView imageView = findImageView(rendered);
+        assertThat(imageView.getImage(), notNullValue());
+        assertThat(imageView.getImage()
+            .isError(), is(false));
+    }
+
     @Test
     public void testOpacityApplies() throws Exception {
         SvgImage image = new SvgImage();

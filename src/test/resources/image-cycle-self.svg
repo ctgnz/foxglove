@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- #192: this <image> references its own containing document directly - rendering it must not recurse forever. -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
+  <image id="pic" xlink:href="image-cycle-self.svg" width="10" height="10"/>
+</svg>

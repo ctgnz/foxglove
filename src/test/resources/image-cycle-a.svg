@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- #192: one half of a two-file reference cycle - references image-cycle-b.svg, which references back here. -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
+  <image id="pic" xlink:href="image-cycle-b.svg" width="10" height="10"/>
+</svg>
