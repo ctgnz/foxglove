@@ -35,6 +35,19 @@ public class FoxgloveParser {
 
     private static final Map<String, SvgGraphic> CACHE = Maps.newConcurrentMap();
 
+    /**
+     * A single {@link FoxgloveParser}, built at most once - construction is not free (a fresh {@code JAXBContext} every time). For internal use resolving further references found
+     * while rendering a document ({@link SvgElementIndex}'s external {@code xlink:href} targets, #175; {@code <image xlink:href="other.svg">}'s external SVG source, #178), never
+     * for an embedding application's own top-level parse.
+     */
+    private static final class SharedInstanceHolder {
+        private static final FoxgloveParser INSTANCE = new FoxgloveParser();
+    }
+
+    public static FoxgloveParser shared() {
+        return SharedInstanceHolder.INSTANCE;
+    }
+
     public static void cacheItem(String key, SvgGraphic graphic) {
         CACHE.put(key, graphic);
     }

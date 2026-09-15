@@ -52,14 +52,6 @@ public final class SvgElementIndex {
     private static final Map<Class<?>, List<Field>> CONTENT_FIELDS = Maps.newConcurrentMap();
 
     /**
-     * A single {@link FoxgloveParser}, built at most once regardless of how many external references get resolved - construction is not free (a fresh {@code JAXBContext} every
-     * time), and nothing about parsing a referenced document needs a dedicated instance.
-     */
-    private static final class ExternalParserHolder {
-        private static final FoxgloveParser INSTANCE = new FoxgloveParser();
-    }
-
-    /**
      * Builds an index over the given document. The whole tree is walked, including nested {@code <svg>} elements and the contents of {@code <defs>}.
      */
     public static SvgElementIndex of(SvgGraphic root) {
@@ -165,7 +157,8 @@ public final class SvgElementIndex {
         if (target.isAbsolute()) {
             return Optional.empty();
         }
-        SvgGraphic externalGraphic = ExternalParserHolder.INSTANCE.parseFile(baseUri.resolve(target));
+        SvgGraphic externalGraphic = FoxgloveParser.shared()
+            .parseFile(baseUri.resolve(target));
         if (externalGraphic == null) {
             return Optional.empty();
         }

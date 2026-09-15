@@ -3,11 +3,17 @@ package nz.co.ctg.foxglove.element;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javafx.geometry.BoundingBox;
+import javafx.geometry.Dimension2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
@@ -17,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
+import nz.co.ctg.foxglove.FoxgloveParser;
 import nz.co.ctg.foxglove.FxGraphic;
 import nz.co.ctg.foxglove.ISvgBounded;
 import nz.co.ctg.foxglove.ISvgConditionalFeatures;
@@ -26,6 +33,7 @@ import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.SvgInheritedStyle;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
@@ -94,9 +102,10 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
      * Renders the referenced raster image, fitted into this element's {@code x}/{@code y}/{@code width}/ {@code height} viewport per {@code preserveAspectRatio}, or an empty
      * {@link Group} - never {@code null} - when the reference is missing, malformed, unresolvable, or the viewport has no positive area.
      * <p>
-     * Only {@code data:} URIs and references relative to a known document base URI (see {@link nz.co.ctg.foxglove.FoxgloveParser#parseFile}) are supported. Any other absolute
-     * reference - a network URL or a bare {@code file:} URI given directly in the document - is out of scope for now and also fails cleanly, keeping the trust boundary to only the
-     * document's own embedded data and whatever the caller chose to parse from disk.
+     * A {@code data:} URI, a reference relative to a known document base URI (see {@link nz.co.ctg.foxglove.FoxgloveParser#parseFile}) to a raster format, and - #178 - one to
+     * another SVG document (rasterised at that document's own intrinsic size, then fitted into this element's viewport the same as any other image) are all supported. Any other
+     * absolute reference - a network URL or a bare {@code file:} URI given directly in the document - is out of scope for now and also fails cleanly, keeping the trust boundary to
+     * only the document's own embedded data and whatever the caller chose to parse from disk.
      * <p>
      * Per the specification, {@code translate(x,y)} is appended to the end of this element's own {@code transform} list rather than applied separately - both go into the JavaFX
      * {@code transforms} list, in that order, rather than using the {@code translateX}/{@code translateY} node properties, which are always outermost in JavaFX regardless of call
@@ -162,8 +171,57 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
             }
             return context.getBaseUri()
                 .map(base -> base.resolve(uri))
-                .map(resolved -> new Image(resolved.toString(), false))
+                .map(SvgImage::loadImage)
                 .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Loads the already-resolved, already-trust-checked {@code resolved} location - a bitmap via JavaFX's own {@link Image} decoder, unchanged from before #178, or - when the path
+     * looks like an SVG document - by rendering it and rasterising the result (see {@link #rasterizeSvg}). Detected by file extension rather than by attempting a bitmap decode
+     * first and falling back: the W3C suite and every realistic document name an SVG source with a {@code .svg} extension, and a single deterministic attempt avoids doing the
+     * (much more common) raster case's decode twice.
+     */
+    private static Image loadImage(URI resolved) {
+        String path = resolved.getPath();
+        if (path != null && path.toLowerCase(Locale.ROOT)
+            .endsWith(".svg")) {
+            return rasterizeSvg(resolved);
+        }
+        return new Image(resolved.toString(), false);
+    }
+
+    /**
+     * Parses and renders the SVG document at {@code resolved} at its own intrinsic size (see {@link SvgGraphic#getIntrinsicSize()}) - not this {@code <image>} element's own
+     * {@code width}/{@code height} - then snapshots it, the same technique {@code SvgMaskRenderer.rasterize}/{@code SvgPattern.rasterize} already use elsewhere in this codebase.
+     * Rendering at the referenced document's own size, rather than this element's box, keeps the result equivalent to a raster image of that same intrinsic size: {@code
+     * createGraphic}'s own existing {@code ViewBox}/{@code preserveAspectRatio} fit logic then scales it into this element's viewport exactly as it already does for a bitmap,
+     * rather than this element's own fit being bypassed by forcing the referenced document to fill the box outright.
+     * <p>
+     * Returns {@code null} - degrading to an empty group, the same as an unresolvable or errored raster reference - when the document fails to load or parse
+     * ({@link FoxgloveParser#parseFile(URI)} degrades to an empty, base-URI-less {@link SvgGraphic} rather than throwing; a {@code null} base URI here is exactly that failure,
+     * since a document that genuinely parsed - even an empty one - always has its base URI set), when it resolves to a zero-area intrinsic size, or when snapshotting itself is not
+     * possible (most usually because the caller is not on the JavaFX Application Thread, which {@code Node.snapshot} requires).
+     */
+    private static Image rasterizeSvg(URI resolved) {
+        SvgGraphic externalGraphic = FoxgloveParser.shared()
+            .parseFile(resolved);
+        if (externalGraphic.getBaseUri() == null) {
+            return null;
+        }
+        Dimension2D intrinsic = externalGraphic.getIntrinsicSize();
+        if (intrinsic.getWidth() <= 0 || intrinsic.getHeight() <= 0) {
+            return null;
+        }
+        try {
+            Node rendered = externalGraphic.createGroup();
+            new Scene(new Group(rendered));
+            SnapshotParameters params = new SnapshotParameters();
+            params.setFill(Color.TRANSPARENT);
+            params.setViewport(new Rectangle2D(0, 0, intrinsic.getWidth(), intrinsic.getHeight()));
+            return rendered.snapshot(params, null);
         } catch (Exception e) {
             return null;
         }
