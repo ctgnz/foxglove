@@ -52,11 +52,11 @@ import nz.co.ctg.foxglove.type.ViewBox;
  * Buffers are rasterised at one pixel per user unit and never supersampled - {@link ImageInput} has no scale of its own, unlike the {@code ImageView} masking wraps in a scaled
  * {@link Group}. That is spec-aligned in principle, since filters are defined on a pixel grid, though {@code filterRes} is not honoured.
  * <p>
- * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: {@code feTile} (not listed in {@link #evaluate} - needs
- * {@code feFlood}/{@code feOffset} to clip to their own subregion first, see #188), per-primitive subregions on any primitive other than {@code feImage} (see
- * {@link #resolveSubregion}, added for #174 - every other primitive still implicitly fills the whole filter region), and {@code in="BackgroundImage"}. The lighting primitives
- * ({@link #diffuseLighting}/{@link #specularLighting}) parse {@code kernelUnitLength} but do not honour it - like {@code filterRes}, doing so would mean resampling the input to a
- * different pixel grid and back, and no cited test exercises it.
+ * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: {@code in="BackgroundImage"} and friends, and the lighting primitives
+ * ({@link #diffuseLighting}/{@link #specularLighting}) parsing {@code kernelUnitLength} but not honouring it - like {@code filterRes}, doing so would mean resampling the input to
+ * a different pixel grid and back, and no cited test exercises it. Every primitive's own {@code x}/{@code y}/{@code width}/{@code height} filter primitive subregion (see
+ * {@link #resolveSubregion}, added for #174) now really does clip its result (#188) - defaulting, when entirely unset, to the whole filter region per SVG 1.1 15.7.5's own special
+ * case, not the ordinary per-axis percentage resolution a partially-set subregion still uses.
  * <p>
  * Primitives evaluate in <b>linearRGB</b> by default, per the specification, honouring {@code color-interpolation-filters} per primitive - see {@link FilterColorSpace}. Working in
  * sRGB instead was #77's largest documented inaccuracy, fixed in #108: it left structure and geometry right but every interpolated value systematically too dark.
@@ -77,9 +77,11 @@ final class SvgFilterRasterPipeline {
     private final int height;
 
     private final Map<String, FilterRaster> namedResults = new HashMap<>();
+    private final Map<String, Bounds> namedSubregions = new HashMap<>();
     private FilterRaster sourceGraphic;
     private FilterRaster sourceAlpha;
     private FilterRaster previous;
+    private Bounds previousSubregion;
     private boolean first = true;
 
     /** The space the primitive currently being evaluated works in - see {@link #run} and {@link #resolveInput}. */
@@ -129,11 +131,19 @@ final class SvgFilterRasterPipeline {
                 colorSpace = FilterColorSpace.of(primitive, filter);
                 result = evaluate(primitive);
                 result.setColorSpace(colorSpace);
+                // every primitive's x/y/width/height is a hard clip on its own result (SVG 1.1 15.7.5), defaulting
+                // to the whole filter region (see resolveSubregion) - a no-op for the overwhelming majority of
+                // primitives, which never set their own subregion, and already redundant-but-harmless for feImage,
+                // which clips itself to the identical Bounds via its own dedicated path
+                Bounds subregion = resolveSubregion(primitive);
+                clipToSubregion(result, subregion);
                 previous = result;
+                previousSubregion = subregion;
                 first = false;
                 String name = StringUtils.trimToEmpty(primitive.getResult());
                 if (!name.isEmpty()) {
                     namedResults.put(name, result);
+                    namedSubregions.put(name, subregion);
                 }
             }
             // whatever space the last primitive worked in, what gets displayed is sRGB
@@ -242,6 +252,9 @@ final class SvgFilterRasterPipeline {
         if (primitive instanceof FeSpecularLighting specular) {
             return specularLighting(specular);
         }
+        if (primitive instanceof FeTile tile) {
+            return tile(tile);
+        }
         throw new UnsupportedFilterException();
     }
 
@@ -273,6 +286,48 @@ final class SvgFilterRasterPipeline {
             throw new UnsupportedFilterException();
         }
         return named;
+    }
+
+    /** As {@link #resolve}, but returns the referenced primitive's own resolved subregion rather than its pixel data - see {@link #tile}, the one consumer that needs it. */
+    private Bounds resolveInputSubregion(String in) {
+        String ref = StringUtils.trimToEmpty(in);
+        if (ref.isEmpty()) {
+            return first ? region : previousSubregion;
+        }
+        if ("SourceGraphic".equals(ref) || "SourceAlpha".equals(ref)) {
+            return region;
+        }
+        Bounds subregion = namedSubregions.get(ref);
+        if (subregion == null) {
+            throw new UnsupportedFilterException();
+        }
+        return subregion;
+    }
+
+    /**
+     * Zeroes {@code raster}'s premultiplied pixel data outside {@code subregion}, in place - the "hard clip... on the filter primitive result" every primitive's own
+     * {@code x}/{@code y}/{@code width}/{@code height} is per SVG 1.1 15.7.5. {@code subregion} is in absolute user-space coordinates, converted to buffer-local pixel indices the
+     * same way {@link #resolveSubregion}'s own callers already do.
+     */
+    private void clipToSubregion(FilterRaster raster, Bounds subregion) {
+        int x0 = (int) Math.round(subregion.getMinX() - region.getMinX());
+        int y0 = (int) Math.round(subregion.getMinY() - region.getMinY());
+        int x1 = (int) Math.round(subregion.getMaxX() - region.getMinX());
+        int y1 = (int) Math.round(subregion.getMaxY() - region.getMinY());
+        float[] data = raster.getData();
+        for (int y = 0; y < height; y++) {
+            boolean insideY = y >= y0 && y < y1;
+            for (int x = 0; x < width; x++) {
+                if (insideY && x >= x0 && x < x1) {
+                    continue;
+                }
+                int idx = raster.index(x, y);
+                data[idx] = 0;
+                data[idx + 1] = 0;
+                data[idx + 2] = 0;
+                data[idx + 3] = 0;
+            }
+        }
     }
 
     /** {@code SourceGraphic}'s alpha channel alone, colour zeroed - built once, on first use. */
@@ -842,6 +897,16 @@ final class SvgFilterRasterPipeline {
      * unneeded until now, since no other primitive reads its own subregion - so parsed here via the same {@link SizeAdapter} {@code SvgFilter}'s own binding already uses.
      */
     private Bounds resolveSubregion(ISvgFilterPrimitive primitive) {
+        if (StringUtils.isBlank(primitive.getX()) && StringUtils.isBlank(primitive.getY()) && StringUtils.isBlank(primitive.getWidth())
+            && StringUtils.isBlank(primitive.getHeight())) {
+            // SVG 1.1 15.7.5: with no subregion attribute given at all, the default 0%/0%/100%/100% is "a special
+            // case" relative to the *filter region* itself - not primitiveUnits' own ordinary percentage-resolution
+            // space (the ambient viewport under userSpaceOnUse, or the target bbox under objectBoundingBox), which
+            // is what a *partially* set subregion's still-unset axes keep resolving against below (matching the
+            // spec's own primitiveUnits="objectBoundingBox" example: feFlood x="25%" resolves against the target
+            // bbox, not the filter region).
+            return region;
+        }
         Size x = parseSubregionSize(primitive.getX(), 0);
         Size y = parseSubregionSize(primitive.getY(), 0);
         Size subregionWidth = parseSubregionSize(primitive.getWidth(), 100);
@@ -1093,6 +1158,44 @@ final class SvgFilterRasterPipeline {
             case "B" -> 2;
             default -> 3;
         };
+    }
+
+    // --- feTile (#188) -----------------------------------------------------------
+
+    /**
+     * SVG 1.1 15.23: tiles {@code in}'s own <b>declared</b> subregion (not the bounding box of its actual ink) across the whole buffer, with wraparound sampling. Does not need to
+     * know or clip to its own subregion at all - the generic per-primitive output clip {@link #run} already applies (via {@link #resolveSubregion}, defaulting to the whole filter
+     * region per {@code feTile}'s own spec-cited special case) restricts this result to it immediately afterward, so this method only has to answer "what to repeat", not "how
+     * far".
+     */
+    private FilterRaster tile(FeTile tile) {
+        FilterRaster in = resolveInput(tile.getIn());
+        Bounds sourceSubregion = resolveInputSubregion(tile.getIn());
+        int tx0 = (int) Math.round(sourceSubregion.getMinX() - region.getMinX());
+        int ty0 = (int) Math.round(sourceSubregion.getMinY() - region.getMinY());
+        int tw = (int) Math.round(sourceSubregion.getWidth());
+        int th = (int) Math.round(sourceSubregion.getHeight());
+
+        FilterRaster result = in.newLike();
+        if (tw <= 0 || th <= 0) {
+            return result;
+        }
+        float[] source = in.getData();
+        float[] out = result.getData();
+        for (int y = 0; y < height; y++) {
+            int sy = ty0 + Math.floorMod(y - ty0, th);
+            if (sy < 0 || sy >= height) {
+                continue;
+            }
+            for (int x = 0; x < width; x++) {
+                int sx = tx0 + Math.floorMod(x - tx0, tw);
+                if (sx < 0 || sx >= width) {
+                    continue;
+                }
+                System.arraycopy(source, in.index(sx, sy), out, result.index(x, y), 4);
+            }
+        }
+        return result;
     }
 
     // --- feDiffuseLighting, feSpecularLighting (#173) ---------------------------
