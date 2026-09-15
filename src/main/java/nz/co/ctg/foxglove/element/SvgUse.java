@@ -95,12 +95,13 @@ public class SvgUse extends AbstractSvgStylable implements ISvgStructuralElement
 
         SvgElementIndex index = context.getElementIndex();
         RenderContext selfContext = context.withActiveUseTarget(this);
-        index.resolve(getXlinkHref())
-            .filter(target -> ISvgContainer.isRendered(target, context.getLocale()))
-            .filter(target -> !index.isSelfOrAncestor(target, this))
-            .filter(target -> !selfContext.isActiveUseTarget(target))
-            .map(target -> buildReferenced(target, selfContext.withActiveUseTarget(target)
-                .resolveChild(this)))
+        index.resolveWithOwner(getXlinkHref())
+            .filter(resolved -> ISvgContainer.isRendered(resolved.element(), context.getLocale()))
+            .filter(resolved -> !index.isSelfOrAncestor(resolved.element(), this))
+            .filter(resolved -> !selfContext.isActiveUseTarget(resolved.element()))
+            .map(resolved -> buildReferenced(resolved.element(), selfContext.withActiveUseTarget(resolved.element())
+                .resolveChild(this)
+                .withElementIndex(resolved.index())))
             .ifPresent(node -> group.getChildren()
                 .add(node));
         applyClip(context, group);

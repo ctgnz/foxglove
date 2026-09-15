@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove;
 import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -104,6 +105,24 @@ public class FoxgloveParser {
             try (InputStream in = Files.newInputStream(selectedFile.toPath())) {
                 SvgGraphic graphic = parse(in);
                 graphic.setBaseUri(selectedFile.toURI());
+                return graphic;
+            } catch (Exception e) {
+                return new SvgGraphic();
+            }
+        });
+    }
+
+    /**
+     * Loads and parses the document at {@code uri}, caching by the URI's own string form the same way {@link #parseFile(File)} caches by absolute path - a repeat resolution of the
+     * same external document (sibling {@code <use>}s, or the same document reached via more than one reference) reuses the cached {@link SvgGraphic}, giving its elements stable
+     * identity across every caller. Used by {@link SvgElementIndex} to load a document named by an {@code xlink:href="other.svg#id"} reference.
+     */
+    public SvgGraphic parseFile(URI uri) {
+        return CACHE.computeIfAbsent(uri.toString(), key -> {
+            try (InputStream in = uri.toURL()
+                .openStream()) {
+                SvgGraphic graphic = parse(in);
+                graphic.setBaseUri(uri);
                 return graphic;
             } catch (Exception e) {
                 return new SvgGraphic();

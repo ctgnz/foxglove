@@ -131,6 +131,17 @@ public final class RenderContext implements ISvgStylable {
     }
 
     /**
+     * The context with a different {@link SvgElementIndex} established - what {@code <use>} of a target resolved from another document (see
+     * {@link SvgElementIndex#resolveWithOwner}) hands to that target's own {@code createGraphic}/{@code appendContent}, so any further reference inside the target's own content
+     * resolves against the document it actually belongs to rather than the {@code <use>} site's document. A no-op for the ordinary same-document case, where the resolved owner is
+     * this context's own index already.
+     */
+    public RenderContext withElementIndex(SvgElementIndex elementIndex) {
+        return new RenderContext(style, elementIndex, viewportWidth, viewportHeight, objectBoundingBox, baseUri, locale, anchorActivationHandler,
+                                 foreignObjectHandler, nodeRegistry, activeUseTargets, documentRoot);
+    }
+
+    /**
      * The context while resolving {@code objectBoundingBox}-mode coordinates against {@code bbox}. Not yet populated by anything in this codebase - carried ahead of the paint
      * server and clip/mask/marker work that will call it.
      */
