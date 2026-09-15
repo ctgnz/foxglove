@@ -26,6 +26,11 @@ import java.util.TreeMap;
  * reference PNGs onto a public site would go further than that. W3C serves them itself at stable URLs, so the pages link there and publish only this renderer's own output and the
  * diff. Do not "simplify" this by copying the files in.
  * <p>
+ * <b>#199/#200: this display-only W3C image is no longer what the pass/fail verdict is actually computed against</b> - since #198, that comparison runs against a fresh,
+ * independently-rendered reference set (headless Chromium, #196), which for the exact same copyright reason above is never published here either (see #197's own reasoning for
+ * choosing a GitHub Actions artifact over a public Release asset). The W3C image stays purely for visual context, captioned as such, alongside a note on the index page - do not
+ * remove either without also removing this comment, since without them a reader has no way to know the number above a mismatched-looking W3C panel is correct.
+ * <p>
  * Written unconditionally on every run, before the harness's own pass/fail assertion, so a regression keeps being visible rather than leaving the published site stale.
  */
 public final class ConformanceReport {
@@ -56,18 +61,28 @@ public final class ConformanceReport {
                     footer { margin-top: 2rem; color: #888; font-size: 0.85rem; }
                     """;
 
+    /** As {@link #write(Map, Path, String)}, with no reference-image provenance to show - the four existing {@code ConformanceReportTest} call sites keep compiling unchanged. */
+    public static void write(Map<String, ConformanceResult> results, Path outputDirectory) {
+        write(results, outputDirectory, null);
+    }
+
     /**
      * Writes the whole site into {@code outputDirectory}: {@code index.html}, a {@code <chapter>/index.html} each, and a {@code <chapter>/<test>.html} each. The per-test PNGs are
      * not written here - the harness writes those as it renders, because holding 525 pairs of images in memory to pass into this method would cost the better part of a gigabyte.
+     *
+     * @param referenceProvenance
+     *            #199: a short line naming what the pass/fail comparison was actually run against - {@link W3cSvgConformanceCheck} reads this from the reference set's own
+     *            {@code generation-manifest.properties} (#196) and passes it through here so the published site says so, rather than a reader having to infer it. {@code null}
+     *            omits the line entirely (used by {@link #write(Map, Path)}, and by any caller with no such manifest to read).
      */
-    public static void write(Map<String, ConformanceResult> results, Path outputDirectory) {
+    public static void write(Map<String, ConformanceResult> results, Path outputDirectory, String referenceProvenance) {
         Map<String, List<ConformanceResult>> chapters = new TreeMap<>();
         for (ConformanceResult result : new TreeMap<>(results).values()) {
             chapters.computeIfAbsent(result.chapter(), c -> new ArrayList<>())
                 .add(result);
         }
 
-        writeFile(outputDirectory.resolve("index.html"), indexPage(chapters));
+        writeFile(outputDirectory.resolve("index.html"), indexPage(chapters, referenceProvenance));
         for (Map.Entry<String, List<ConformanceResult>> entry : chapters.entrySet()) {
             String chapter = entry.getKey();
             writeFile(outputDirectory.resolve(chapter)
@@ -81,7 +96,7 @@ public final class ConformanceReport {
 
     // --- level 1: overall ----------------------------------------------------
 
-    private static String indexPage(Map<String, List<ConformanceResult>> chapters) {
+    private static String indexPage(Map<String, List<ConformanceResult>> chapters, String referenceProvenance) {
         List<ConformanceResult> all = chapters.values()
             .stream()
             .flatMap(List::stream)
@@ -126,6 +141,15 @@ public final class ConformanceReport {
                         reference across the whole image, which is a stricter thing to ask.</p>
                         </div>
                         """);
+        if (referenceProvenance != null) {
+            html.append("<div class=\"note\"><strong>Reference images.</strong> The pass/fail verdict and ink-matched figure ")
+                .append("above are computed against a fresh, independently-rendered reference set, not the W3C image shown ")
+                .append("on each test's own page (that one is kept only because it is safely W3C-hosted, and may no longer ")
+                .append("visually agree pixel-for-pixel with what was actually compared). ")
+                .append("See <a href=\"https://github.com/ctgnz/foxglove/issues/200\">ctgnz/foxglove#200</a>.<br>")
+                .append(escape(referenceProvenance))
+                .append("</div>\n");
+        }
         return html.append(footer(""))
             .toString();
     }
@@ -200,7 +224,7 @@ public final class ConformanceReport {
         // broken panels - the reference still stands on its own, showing what should have been drawn
         boolean rendered = result.failureReason() == null;
         html.append("<div class=\"panels\">\n");
-        html.append(panel("W3C reference", W3C_SUITE_BASE + "/png/" + name + ".png"));
+        html.append(panel("W3C reference (context only, see #200)", W3C_SUITE_BASE + "/png/" + name + ".png"));
         if (rendered) {
             html.append(panel("Foxglove", name + ".png"));
             html.append(panel("Difference", name + "-diff.png"));

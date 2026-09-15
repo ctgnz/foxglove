@@ -136,7 +136,7 @@ public class W3cSvgConformanceCheck {
 
         // Written unconditionally, before the pass/fail branch below - #92's dashboard needs to keep showing a
         // regression, not go stale because the run that found it also failed its own assertion.
-        ConformanceReport.write(results, reportDir);
+        ConformanceReport.write(results, reportDir, referenceProvenance(referenceDir));
 
         String mode = System.getProperty("conformance.mode", "verify");
         if ("record".equals(mode)) {
@@ -217,6 +217,25 @@ public class W3cSvgConformanceCheck {
         }
         return new ConformanceResult(name, result.passed(), result.contentSimilarity(), result.contentPixels(), tolerance,
                                      passCriteria(svgFile), null);
+    }
+
+    /**
+     * #199: a short human-readable line naming what {@code referenceDir} actually is, for {@link ConformanceReport#write(Map, Path, String)} to publish - read straight off the
+     * {@code # Generated ...} line {@link W3cSvgReferenceGenerator} itself writes into {@code generation-manifest.properties} (not reparsed as a {@code Properties} file, since
+     * that would strip the comment - this line <i>is</i> the payload). Never fatal: a dashboard that can't say what it was compared against is still far better than a run aborted
+     * over it, so a missing/malformed manifest just omits the note entirely (see {@link ConformanceReport#write(Map, Path)}).
+     */
+    private static String referenceProvenance(Path referenceDir) {
+        try {
+            for (String line : Files.readAllLines(referenceDir.resolve("generation-manifest.properties"))) {
+                if (line.startsWith("# Generated ")) {
+                    return line.substring(2);
+                }
+            }
+        } catch (IOException e) {
+            // fall through to null below
+        }
+        return null;
     }
 
     /** Never fatal: a report page missing its prose is far better than a run aborted over unreadable furniture. */
