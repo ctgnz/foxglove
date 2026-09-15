@@ -7,6 +7,16 @@ on:
   push:
     branches: ["master"]
   workflow_dispatch:
+    inputs:
+      mode:
+        description: >-
+          conformance.mode - "verify" (default) checks against the checked-in baseline manifest; "record" (#199)
+          re-baselines it instead, and this run's own manifest-diff assertion never fails (the check exits after
+          writing the new baseline, before ever comparing against the old one) - download the "conformance-manifest"
+          artifact this produces and commit it manually, reviewing what changed first.
+        type: choice
+        options: [verify, record]
+        default: verify
 
 permissions:
   contents: read
@@ -51,8 +61,21 @@ jobs:
         id: conformance
         # Deliberately non-fatal here: the dashboard below must still publish (and show the regression) even when
         # this run's own manifest-diff assertion fails - the job is failed explicitly, after publishing, instead.
+        # In record mode there is no assertion to fail (the check returns right after writing the new baseline), so
+        # this step's outcome is 'success' either way and the final gate step below is a no-op.
         continue-on-error: true
-        run: xvfb-run --auto-servernum mvn -B -Pconformance test -Dconformance.mode=verify
+        run: xvfb-run --auto-servernum mvn -B -Pconformance test -Dconformance.mode=${{ inputs.mode || 'verify' }}
+      - name: Upload recorded baseline manifest
+        # #199: the only way to get a record-mode run's output back out of CI, since this job has no write access to
+        # commit it directly - download this artifact and commit src/test/resources/conformance/manifest.properties
+        # by hand after reviewing the diff, the same deliberate-not-automatic spirit as regenerating the reference
+        # images themselves (#196/#197). Not copyrighted W3C content (see ConformanceManifest's own javadoc - "small,
+        # our own data"), so an ordinary artifact upload, no durability/visibility concerns like #197's own.
+        if: inputs.mode == 'record'
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-manifest
+          path: src/test/resources/conformance/manifest.properties
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload dashboard artifact

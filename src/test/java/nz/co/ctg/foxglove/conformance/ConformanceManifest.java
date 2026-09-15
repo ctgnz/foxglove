@@ -60,7 +60,12 @@ public final class ConformanceManifest {
      */
     public static void record(Map<String, Boolean> actual) {
         record(PATH, actual, "# W3C SVG 1.1 conformance baseline (#44) - one PASS/FAIL line per test name.\n"
-                             + "# Regenerate deliberately with -Dconformance.mode=record after reviewing what changed.\n");
+                             + "# Since #198, compared against a browser-generated reference set (#196/#197/#200), not the W3C\n"
+                             + "# suite's own stale circa-2011 PNGs - so this baseline cannot be compared against one recorded\n"
+                             + "# before that change, and a rerecord after a real rendering fix should show only that fix's own\n"
+                             + "# tests changing, not a wall of unrelated regressions.\n"
+                             + "# Regenerate deliberately by dispatching .github/workflows/conformance-pages.yml with mode=record\n"
+                             + "# (see CLAUDE.md's Testing section), after reviewing what changed.\n");
     }
 
     /** As {@link #record(Map)}, to a named file and under its own {@code header} - see {@link #load(Path)}. */
