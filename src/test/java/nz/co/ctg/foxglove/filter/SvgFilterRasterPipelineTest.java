@@ -442,6 +442,152 @@ public class SvgFilterRasterPipelineTest {
         assertThat(colorAt(result, 50, 50).getOpacity(), closeTo(0.0, 0.02));
     }
 
+    // --- feConvolveMatrix, feMorphology, feDisplacementMap (#172) --------------
+
+    /** {@code filters-conv-01-f}'s own box-blur kernel, exactly - {@code order="3 3"}, all taps {@code 0.1111}. */
+    private static FeConvolveMatrix boxBlurKernel() {
+        FeConvolveMatrix matrix = new FeConvolveMatrix();
+        matrix.setOrder("3 3");
+        matrix.setKernelMatrix("0.1111 0.1111 0.1111 0.1111 0.1111 0.1111 0.1111 0.1111 0.1111");
+        return matrix;
+    }
+
+    /**
+     * The kernel-index derivation was cross-checked, term by term, against SVG 1.1 15.13's own worked example (a 5x5 image, a {@code 1 2 3 / 4 5 6 / 7 8 9} kernel, default
+     * {@code targetX}/{@code targetY}) before trusting it - see {@code SvgFilterRasterPipeline.convolveMatrix}'s own javadoc. This test instead checks the box-blur kernel
+     * end-to-end: at the last fully-red column of {@link #redRect()} (x=49), 6 of the 3x3 kernel's 9 taps land inside the rect (red, premultiplied alpha 1) and 3 land just outside
+     * it (transparent, {@code edgeMode="none"}) - a hand-computable {@code 6/9} opacity falloff, not just "doesn't throw".
+     */
+    @Test
+    public void testFeConvolveMatrixBoxBlurAveragesAcrossAnEdge() throws Exception {
+        FeConvolveMatrix matrix = boxBlurKernel();
+        matrix.setEdgeMode("none");
+
+        Image result = filtered(redRect(), filterOf(matrix));
+        Color edge = colorAt(result, 49, 25);
+        assertThat(edge.getRed(), closeTo(1.0, 0.02));
+        assertThat(edge.getOpacity(), closeTo(6.0 / 9.0, 0.02));
+        // well inside the rect, all 9 taps are red - unaffected
+        assertColor(result, 25, 25, Color.RED);
+    }
+
+    /**
+     * {@code preserveAlpha="true"}: the same edge pixel's colour is still blurred (6/9 red, 3/9 transparent-black contributing to the colour average), but its own alpha is left
+     * exactly as {@code SourceGraphic} had it - fully opaque, unlike the {@code 6/9} opacity the non-{@code preserveAlpha} case above computes for the identical kernel and pixel.
+     */
+    @Test
+    public void testFeConvolveMatrixPreserveAlphaLeavesTheOriginalAlphaUntouched() throws Exception {
+        FeConvolveMatrix matrix = boxBlurKernel();
+        matrix.setEdgeMode("none");
+        matrix.setPreserveAlpha("true");
+
+        Image result = filtered(redRect(), filterOf(matrix));
+        assertThat(colorAt(result, 49, 25).getOpacity(), closeTo(1.0, 0.02));
+    }
+
+    /**
+     * {@code edgeMode="wrap"} against a rect that fills the <i>entire</i> filter region (not just {@link #redRect()}'s 50x50 corner), so a buffer-edge pixel's kernel taps that
+     * fall outside the buffer wrap around to the opposite (also fully red) edge instead of reading transparent - the same pixel would show the {@code 6/9} falloff
+     * {@link #testFeConvolveMatrixBoxBlurAveragesAcrossAnEdge} computes for {@code edgeMode="none"}.
+     */
+    @Test
+    public void testFeConvolveMatrixEdgeModeWrapPullsFromTheOppositeEdge() throws Exception {
+        FeConvolveMatrix matrix = boxBlurKernel();
+        matrix.setEdgeMode("wrap");
+
+        Image result = filtered(fullRegionRedRect(), filterOf(matrix));
+        assertColor(result, 0, 50, Color.RED);
+    }
+
+    @Test
+    public void testFeConvolveMatrixWithAMismatchedKernelLengthDegradesToUnfiltered() throws Exception {
+        FeConvolveMatrix matrix = new FeConvolveMatrix();
+        matrix.setOrder("3 3");
+        matrix.setKernelMatrix("1 1 1"); // needs 9 values for a 3x3 order, not 3
+
+        Node node = onFxThread(() -> render(redRect(), filterOf(matrix)));
+        assertThat(node.getEffect(), is(nullValue()));
+    }
+
+    @Test
+    public void testFeMorphologyDilateSpreadsColourIntoTransparentNeighbours() throws Exception {
+        FeMorphology morphology = new FeMorphology();
+        morphology.setOperator("dilate");
+        morphology.setRadius("2");
+
+        Image result = filtered(redRect(), filterOf(morphology));
+        // 1px outside the rect's own right edge (x=50) - the radius-2 window reaches back to the rect's last red
+        // column (x=49), so this previously-transparent pixel is now covered by the dilation
+        assertColor(result, 51, 25, Color.RED);
+    }
+
+    @Test
+    public void testFeMorphologyErodeShrinksAwayFromTheEdge() throws Exception {
+        FeMorphology morphology = new FeMorphology();
+        morphology.setOperator("erode");
+        morphology.setRadius("2");
+
+        Image result = filtered(redRect(), filterOf(morphology));
+        // 2px in from the rect's own right edge (x=50) - the erosion window reaches the transparent outside, so
+        // this pixel is eroded away to transparent even though it was originally opaque red
+        assertThat(colorAt(result, 48, 25).getOpacity(), closeTo(0.0, 0.02));
+        // 3px in - just out of the radius-2 window's reach - still fully red, unaffected
+        assertColor(result, 47, 25, Color.RED);
+    }
+
+    /** SVG 1.1 15.20's own explicit special case: {@code radius="0"} is transparent black, not the identity/no-op a reader might assume. */
+    @Test
+    public void testFeMorphologyZeroRadiusIsExplicitlyTransparentNotIdentity() throws Exception {
+        FeMorphology morphology = new FeMorphology();
+        morphology.setOperator("dilate");
+        morphology.setRadius("0");
+
+        Image result = filtered(redRect(), filterOf(morphology));
+        assertThat(colorAt(result, 25, 25).getOpacity(), closeTo(0.0, 0.02));
+    }
+
+    /**
+     * A flood-filled {@code in2} gives a spatially <i>constant</i> displacement, isolating the displacement formula itself from any spatial variation in the map - {@code
+     * rgb(255,128,0)} gives {@code R=1.0} (a full, hand-computable x-shift) and {@code G} within rounding of {@code 0.5} (a near-zero y-shift, so only x moves).
+     */
+    @Test
+    public void testFeDisplacementMapShiftsTheSourceByTheSelectedChannels() throws Exception {
+        FeFlood flood = new FeFlood();
+        flood.setFloodColor("rgb(255,128,0)");
+        flood.setResult("map");
+
+        FeDisplacementMap displace = new FeDisplacementMap();
+        displace.setIn("SourceGraphic");
+        displace.setIn2("map");
+        displace.setScale("20");
+        displace.setXChannelSelector("R");
+        displace.setYChannelSelector("G");
+
+        Image result = filtered(redRect(), filterOf(flood, displace));
+        // output(x,y) = input(x + scale*(XC-0.5), y) = input(x+20*0.5, y) = input(x+10, y) - redRect() (originally
+        // red for x in [0,50)) appears shifted left by 10: still red at x=35 (35+10=45, inside), transparent at
+        // x=45 (45+10=55, outside)
+        assertColor(result, 35, 25, Color.RED);
+        assertThat(colorAt(result, 45, 25).getOpacity(), closeTo(0.0, 0.02));
+    }
+
+    /** SVG 1.1 15.15's own explicit special case: {@code scale="0"} "has no effect on the source image". */
+    @Test
+    public void testFeDisplacementMapZeroScaleLeavesTheSourceUnchanged() throws Exception {
+        FeFlood flood = new FeFlood();
+        flood.setFloodColor("white");
+        flood.setResult("map");
+
+        FeDisplacementMap displace = new FeDisplacementMap();
+        displace.setIn("SourceGraphic");
+        displace.setIn2("map");
+        displace.setScale("0");
+
+        Image result = filtered(redRect(), filterOf(flood, displace));
+        assertColor(result, 25, 25, Color.RED);
+        assertThat(colorAt(result, 75, 75).getOpacity(), closeTo(0.0, 0.02));
+    }
+
     // --- arbitrary graphs ----------------------------------------------------
 
     /**
@@ -651,6 +797,14 @@ public class SvgFilterRasterPipelineTest {
 
     private static SvgRectangle redRect() {
         return rectFilled(Color.RED);
+    }
+
+    /** Fills the whole 100x100 filter region {@link #filterOf} declares, rather than {@link #redRect()}'s 50x50 corner - for a test that needs the buffer's own edges covered. */
+    private static SvgRectangle fullRegionRedRect() {
+        SvgRectangle rect = new SvgRectangle(0, 0, 100, 100);
+        rect.setFill(Color.RED);
+        rect.setFilter("url(#f)");
+        return rect;
     }
 
     /** White, for the colour-space tests: its channels are 1.0, which halving moves into the revealing midtones. */

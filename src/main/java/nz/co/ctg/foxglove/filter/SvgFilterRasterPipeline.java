@@ -51,9 +51,9 @@ import nz.co.ctg.foxglove.type.ViewBox;
  * Buffers are rasterised at one pixel per user unit and never supersampled - {@link ImageInput} has no scale of its own, unlike the {@code ImageView} masking wraps in a scaled
  * {@link Group}. That is spec-aligned in principle, since filters are defined on a pixel grid, though {@code filterRes} is not honoured.
  * <p>
- * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: the primitives not listed in {@link #evaluate} ({@code feConvolveMatrix},
- * {@code feMorphology}, {@code feDisplacementMap}, {@code feTile}, the lighting primitives), per-primitive subregions on any primitive other than {@code feImage} (see
- * {@link #resolveSubregion}, added for #174 - every other primitive still implicitly fills the whole filter region), and {@code in="BackgroundImage"}.
+ * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: the primitives not listed in {@link #evaluate} ({@code feTile} - needs
+ * {@code feFlood}/{@code feOffset} to clip to their own subregion first, see #188 - and the lighting primitives), per-primitive subregions on any primitive other than
+ * {@code feImage} (see {@link #resolveSubregion}, added for #174 - every other primitive still implicitly fills the whole filter region), and {@code in="BackgroundImage"}.
  * <p>
  * Primitives evaluate in <b>linearRGB</b> by default, per the specification, honouring {@code color-interpolation-filters} per primitive - see {@link FilterColorSpace}. Working in
  * sRGB instead was #77's largest documented inaccuracy, fixed in #108: it left structure and geometry right but every interpolated value systematically too dark.
@@ -223,6 +223,15 @@ final class SvgFilterRasterPipeline {
         }
         if (primitive instanceof FeImage image) {
             return image(image);
+        }
+        if (primitive instanceof FeConvolveMatrix matrix) {
+            return convolveMatrix(matrix);
+        }
+        if (primitive instanceof FeMorphology morphology) {
+            return morphology(morphology);
+        }
+        if (primitive instanceof FeDisplacementMap displacementMap) {
+            return displacementMap(displacementMap);
         }
         throw new UnsupportedFilterException();
     }
@@ -842,6 +851,239 @@ final class SvgFilterRasterPipeline {
 
     private static Size parseSubregionSize(String raw, double defaultPercent) {
         return StringUtils.isBlank(raw) ? new Size(defaultPercent, SizeUnits.PERCENT) : SizeAdapter.parse(raw);
+    }
+
+    // --- feConvolveMatrix, feMorphology, feDisplacementMap (#172) --------------
+
+    /**
+     * SVG 1.1 15.13's own formula, transcribed directly: {@code COLOR[x,y] = (sum over the kernel of SOURCE[x-targetX+j, y-targetY+i] * kernelMatrix[orderX-j-1, orderY-i-1]) /
+     * divisor + bias}. Cross-checked index-for-index against the specification's own worked example (a 5x5 image, a {@code 1 2 3 / 4 5 6 / 7 8 9} kernel, default
+     * {@code targetX}/{@code targetY}) before trusting it. {@code preserveAlpha=false} (the default) applies the identical formula to all four premultiplied channels, alpha
+     * included - no unpremultiply step needed, since {@link FilterRaster}'s own storage is already premultiplied; {@code preserveAlpha=true} convolves colour only, leaving each
+     * pixel's own original alpha untouched (spec: {@code ALPHA[x,y] = SOURCE[x,y]}), unpremultiplying/re-premultiplying around just that.
+     */
+    private FilterRaster convolveMatrix(FeConvolveMatrix matrix) {
+        FilterRaster in = resolveInput(matrix.getIn());
+        double[] orderXY = numberList(matrix.getOrder());
+        int orderX = orderXY.length > 0 ? (int) orderXY[0] : 3;
+        int orderY = orderXY.length > 1 ? (int) orderXY[1] : orderX;
+        double[] kernel = numberList(matrix.getKernelMatrix());
+        if (orderX <= 0 || orderY <= 0 || kernel.length != orderX * orderY) {
+            throw new UnsupportedFilterException();
+        }
+        double kernelSum = 0;
+        for (double k : kernel) {
+            kernelSum += k;
+        }
+        double divisor = StringUtils.isNotBlank(matrix.getDivisor()) ? number(matrix.getDivisor(), 1) : (kernelSum == 0 ? 1 : kernelSum);
+        if (divisor == 0) {
+            throw new UnsupportedFilterException();
+        }
+        double bias = number(matrix.getBias(), 0);
+        int targetX = StringUtils.isNotBlank(matrix.getTargetX()) ? (int) number(matrix.getTargetX(), 0) : orderX / 2;
+        int targetY = StringUtils.isNotBlank(matrix.getTargetY()) ? (int) number(matrix.getTargetY(), 0) : orderY / 2;
+        if (targetX < 0 || targetX >= orderX || targetY < 0 || targetY >= orderY) {
+            throw new UnsupportedFilterException();
+        }
+        String edgeMode = matrix.getEdgeMode();
+        boolean preserveAlpha = "true".equals(matrix.getPreserveAlpha());
+
+        float[] source = in.getData();
+        float[] work = source;
+        if (preserveAlpha) {
+            work = new float[source.length];
+            float[] rgba = new float[4];
+            for (int i = 0; i < source.length; i += 4) {
+                FilterRaster.unpremultiply(source, i, rgba);
+                System.arraycopy(rgba, 0, work, i, 4);
+            }
+        }
+
+        FilterRaster result = in.newLike();
+        float[] out = result.getData();
+        float[] sample = new float[4];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                double r = 0;
+                double g = 0;
+                double b = 0;
+                double a = 0;
+                for (int i = 0; i < orderY; i++) {
+                    for (int j = 0; j < orderX; j++) {
+                        samplePixel(work, x - targetX + j, y - targetY + i, edgeMode, sample);
+                        double k = kernel[(orderX - j - 1) + (orderY - i - 1) * orderX];
+                        r += sample[0] * k;
+                        g += sample[1] * k;
+                        b += sample[2] * k;
+                        a += sample[3] * k;
+                    }
+                }
+                int idx = result.index(x, y);
+                if (preserveAlpha) {
+                    float[] rgba = {
+                        (float) (r / divisor + bias), (float) (g / divisor + bias), (float) (b / divisor + bias), work[in.index(x, y) + 3]
+                    };
+                    FilterRaster.premultiply(out, idx, rgba);
+                } else {
+                    out[idx] = FilterRaster.clamp((float) (r / divisor + bias));
+                    out[idx + 1] = FilterRaster.clamp((float) (g / divisor + bias));
+                    out[idx + 2] = FilterRaster.clamp((float) (b / divisor + bias));
+                    out[idx + 3] = FilterRaster.clamp((float) (a / divisor + bias));
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * One pixel of {@code data} (a {@code width x height} buffer, {@code R,G,B,A} order), extending past the edge per {@code edgeMode} - {@code duplicate} clamps to the nearest
+     * real pixel, {@code wrap} takes the opposite edge, {@code none} (and any other/unrecognised value - not spec'd, but the safest degrade) is transparent black. Written into
+     * {@code out} rather than returned, so the hot loop in {@link #convolveMatrix} does not allocate a new array per kernel tap.
+     */
+    private void samplePixel(float[] data, int x, int y, String edgeMode, float[] out) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            if ("wrap".equals(edgeMode)) {
+                x = Math.floorMod(x, width);
+                y = Math.floorMod(y, height);
+            } else if ("duplicate".equals(edgeMode)) {
+                x = Math.max(0, Math.min(width - 1, x));
+                y = Math.max(0, Math.min(height - 1, y));
+            } else {
+                out[0] = 0;
+                out[1] = 0;
+                out[2] = 0;
+                out[3] = 0;
+                return;
+            }
+        }
+        int index = (y * width + x) * 4;
+        System.arraycopy(data, index, out, 0, 4);
+    }
+
+    /**
+     * SVG 1.1 15.20: per-channel {@code min} ({@code erode}, the default operator) or {@code max} ({@code dilate}) of premultiplied {@code R,G,B,A} over a
+     * {@code (2*radiusX+1) x (2*radiusY+1)} window - operating on premultiplied values means colour can never exceed alpha in the result, exactly as the spec notes. A radius of
+     * {@code 0} on either axis is explicitly transparent black per spec (not identity - "disables the effect... i.e., the result is a transparent black image"). Samples outside
+     * the buffer count as {@code (0,0,0,0)} - the same "infinite transparent black extension" {@link #boxBlur} already relies on for {@code feGaussianBlur}.
+     */
+    private FilterRaster morphology(FeMorphology morphology) {
+        FilterRaster in = resolveInput(morphology.getIn());
+        double[] radii = numberList(morphology.getRadius());
+        double radiusX = radii.length > 0 ? radii[0] : 0;
+        double radiusY = radii.length > 1 ? radii[1] : radiusX;
+        if (primitiveUnits() == UnitsMode.OBJECT_BOUNDING_BOX) {
+            double diagonal = SvgFilterRenderer.bboxDiagonal(targetBounds);
+            radiusX *= diagonal;
+            radiusY *= diagonal;
+        }
+        if (radiusX < 0 || radiusY < 0) {
+            throw new UnsupportedFilterException();
+        }
+        int rx = (int) Math.round(radiusX);
+        int ry = (int) Math.round(radiusY);
+
+        FilterRaster result = in.newLike();
+        if (rx == 0 && ry == 0) {
+            return result;
+        }
+        boolean dilate = "dilate".equals(morphology.getOperator());
+        float[] source = in.getData();
+        float[] out = result.getData();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                float r = dilate ? 0f : 1f;
+                float g = dilate ? 0f : 1f;
+                float b = dilate ? 0f : 1f;
+                float a = dilate ? 0f : 1f;
+                for (int dy = -ry; dy <= ry; dy++) {
+                    int sy = y + dy;
+                    for (int dx = -rx; dx <= rx; dx++) {
+                        int sx = x + dx;
+                        float pr = 0;
+                        float pg = 0;
+                        float pb = 0;
+                        float pa = 0;
+                        if (sx >= 0 && sx < width && sy >= 0 && sy < height) {
+                            int idx = in.index(sx, sy);
+                            pr = source[idx];
+                            pg = source[idx + 1];
+                            pb = source[idx + 2];
+                            pa = source[idx + 3];
+                        }
+                        if (dilate) {
+                            r = Math.max(r, pr);
+                            g = Math.max(g, pg);
+                            b = Math.max(b, pb);
+                            a = Math.max(a, pa);
+                        } else {
+                            r = Math.min(r, pr);
+                            g = Math.min(g, pg);
+                            b = Math.min(b, pb);
+                            a = Math.min(a, pa);
+                        }
+                    }
+                }
+                int idx = result.index(x, y);
+                out[idx] = r;
+                out[idx + 1] = g;
+                out[idx + 2] = b;
+                out[idx + 3] = a;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * SVG 1.1 15.15: {@code P'(x,y) = P(x + scale*(XC(x,y)-0.5), y + scale*(YC(x,y)-0.5))} - {@code in} stays premultiplied and is sampled as-is, but {@code in2}'s selected
+     * channel is read <b>unpremultiplied</b> (spec: "calculations using in2 are performed using non-premultiplied color values"). Nearest-neighbour sampling - the spec only
+     * recommends bilinear for "high quality viewers", it does not require it, and every other pixel lookup in this pipeline (e.g. {@code feOffset}) already works on the same
+     * integer grid.
+     */
+    private FilterRaster displacementMap(FeDisplacementMap displacementMap) {
+        FilterRaster in = resolveInput(displacementMap.getIn());
+        FilterRaster in2 = resolveInput(displacementMap.getIn2());
+        double scale = number(displacementMap.getScale(), 0);
+        if (primitiveUnits() == UnitsMode.OBJECT_BOUNDING_BOX) {
+            scale *= SvgFilterRenderer.bboxDiagonal(targetBounds);
+        }
+        int xChannel = channelIndex(displacementMap.getXChannelSelector());
+        int yChannel = channelIndex(displacementMap.getYChannelSelector());
+
+        float[] source = in.getData();
+        float[] map = in2.getData();
+        FilterRaster result = in.newLike();
+        float[] out = result.getData();
+        float[] rgba = new float[4];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                FilterRaster.unpremultiply(map, in2.index(x, y), rgba);
+                int sx = (int) Math.round(x + scale * (rgba[xChannel] - 0.5));
+                int sy = (int) Math.round(y + scale * (rgba[yChannel] - 0.5));
+                int outIdx = result.index(x, y);
+                if (sx < 0 || sx >= width || sy < 0 || sy >= height) {
+                    out[outIdx] = 0;
+                    out[outIdx + 1] = 0;
+                    out[outIdx + 2] = 0;
+                    out[outIdx + 3] = 0;
+                } else {
+                    System.arraycopy(source, in.index(sx, sy), out, outIdx, 4);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * {@code "R"}/{@code "G"}/{@code "B"} select that channel's index; {@code "A"} and anything else (including unset, which the getters already default to {@code "A"}) select
+     * alpha.
+     */
+    private static int channelIndex(String selector) {
+        return switch (StringUtils.trimToEmpty(selector)) {
+            case "R" -> 0;
+            case "G" -> 1;
+            case "B" -> 2;
+            default -> 3;
+        };
     }
 
     // --- value parsing -------------------------------------------------------
