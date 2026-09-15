@@ -163,7 +163,14 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
         }
         try {
             if (href.startsWith("data:")) {
-                return new Image(href);
+                // A tool that line-wraps its base64 output (Inkscape, at ~76 characters per line, is common) embeds
+                // newlines the payload itself never contains meaningfully - every browser strips all ASCII
+                // whitespace from a data: URL before decoding it (WHATWG Fetch's data: URL processing), but
+                // JavaFX's own Image does not: it throws IllegalArgumentException on an embedded newline rather
+                // than tolerating it, which this method's own catch below then silently turns into an empty image -
+                // #181, found via a real Inkscape-exported document that rendered blank in foxglove but fine in a
+                // WebView reference.
+                return new Image(StringUtils.deleteWhitespace(href));
             }
             URI uri = new URI(href);
             if (uri.isAbsolute()) {

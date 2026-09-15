@@ -41,6 +41,10 @@ public class SvgImageRenderingTest {
     // a real 4x2 solid-red PNG, for exercising non-square meet/slice fitting
     private static final String WIDE_PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg==";
 
+    // #181: the same payload as DOT_PNG, line-wrapped the way Inkscape (and other tools) export base64 data -
+    // JavaFX's own Image throws on the embedded newline rather than tolerating it the way a browser does
+    private static final String DOT_PNG_LINE_WRAPPED = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4\nnGMAAQAABQAB0NcObQAAAABJRU5ErkJggg==";
+
     @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
@@ -54,6 +58,25 @@ public class SvgImageRenderingTest {
     public void testDataUriImageRenders() throws Exception {
         SvgImage image = new SvgImage();
         image.setXlinkHref(DOT_PNG);
+        image.setWidth(px(10));
+        image.setHeight(px(10));
+
+        Group rendered = render(image);
+        ImageView imageView = findImageView(rendered);
+        assertThat(imageView.getImage(), notNullValue());
+        assertThat(imageView.getImage()
+            .isError(), is(false));
+    }
+
+    /**
+     * #181: a line-wrapped base64 payload (the common real-world form - see {@link #DOT_PNG_LINE_WRAPPED}) must decode and render the same as the unwrapped payload does, not
+     * silently degrade to an empty image the way {@code SvgImage.resolveImage}'s blanket exception handling previously turned JavaFX's own {@code IllegalArgumentException} on the
+     * embedded newline into.
+     */
+    @Test
+    public void testDataUriWithLineWrappedBase64PayloadStillRenders() throws Exception {
+        SvgImage image = new SvgImage();
+        image.setXlinkHref(DOT_PNG_LINE_WRAPPED);
         image.setWidth(px(10));
         image.setHeight(px(10));
 
