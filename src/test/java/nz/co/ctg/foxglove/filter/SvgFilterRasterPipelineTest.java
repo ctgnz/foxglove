@@ -752,6 +752,121 @@ public class SvgFilterRasterPipelineTest {
         assertColor(result, 50, 50, Color.LIME);
     }
 
+    // --- feTile, and real primitive-subregion clipping (#188) ------------------
+
+    /**
+     * A bare {@code feFlood} with an explicit subregion narrower than the filter region - unlike every other test in this file, which leaves every primitive's subregion unset (and
+     * so was never able to tell a real clip from a no-op), this one is the filter's only primitive, so its own clipped buffer <i>is</i> the final output.
+     */
+    @Test
+    public void testFeFloodClipsToItsOwnPrimitiveSubregion() throws Exception {
+        FeFlood flood = new FeFlood();
+        flood.setFloodColor("lime");
+        flood.setX("20");
+        flood.setY("20");
+        flood.setWidth("30");
+        flood.setHeight("30");
+
+        Image result = filtered(redRect(), filterOf(flood));
+
+        assertColor(result, 30, 30, Color.LIME);
+        assertThat(colorAt(result, 10, 10).getOpacity(), closeTo(0.0, 0.02));
+        assertThat(colorAt(result, 60, 60).getOpacity(), closeTo(0.0, 0.02));
+    }
+
+    /**
+     * {@code feOffset}'s own subregion clips its <i>shifted</i> result, not the union of its source's own footprint - a 20x10 flood shifted right by 5 would occupy x:[5,35)
+     * unclipped, but {@code feOffset}'s own narrower x:[0,20) box cuts off everything from x=20 on. Deliberately the filter's last primitive (no {@code feTile} downstream):
+     * {@code feTile} only ever samples strictly inside its input's own declared subregion regardless of whether that subregion was actually enforced on the pixel data, so a tiling
+     * test alone could not tell a real clip from a no-op here either - this is the one shape that can.
+     */
+    @Test
+    public void testFeOffsetClipsToItsOwnShiftedSubregionNotTheWholeShiftedSource() throws Exception {
+        FeFlood flood = new FeFlood();
+        flood.setFloodColor("lime");
+        flood.setX("0");
+        flood.setY("0");
+        flood.setWidth("30");
+        flood.setHeight("10");
+
+        FeOffset offset = new FeOffset();
+        offset.setDx("5");
+        offset.setDy("0");
+        offset.setX("0");
+        offset.setY("0");
+        offset.setWidth("20");
+        offset.setHeight("10");
+
+        Image result = filtered(redRect(), filterOf(flood, offset));
+
+        // inside both the shifted content (x >= 5) and offset's own clip box (x < 20)
+        assertColor(result, 10, 5, Color.LIME);
+        // left of the shifted content entirely - transparent regardless of clipping
+        assertThat(colorAt(result, 2, 5).getOpacity(), closeTo(0.0, 0.02));
+        // inside the shifted content (x=25 < 35) but outside offset's own x:[0,20) clip box - only transparent if
+        // the clip is real
+        assertThat(colorAt(result, 25, 5).getOpacity(), closeTo(0.0, 0.02));
+    }
+
+    /**
+     * SVG 1.1 15.23, traced by hand against the real {@code filters-tile-01-b} graph (feFlood, at a subregion wider than feOffset's own; feOffset, shifted and clipped to its own
+     * subregion; a subregion-less {@code feTile} defaulting to the whole filter region): a lime patch offset within its own tile cell, repeating with a transparent margin - "a
+     * green rectangle over a larger transparent rectangle", per that test's own description.
+     * <p>
+     * Here: a 20x20 flood shifted (4,4) and clipped to feOffset's own 16x8 box leaves a 12x4 lime patch at (4,4)-(16,8) <i>within</i> that box - {@code feTile} then repeats the
+     * whole 16x8 box (not the smaller lime patch alone) across the 100x100 filter region.
+     */
+    @Test
+    public void testFeTileRepeatsItsInputsDeclaredSubregionWithWraparound() throws Exception {
+        FeFlood flood = new FeFlood();
+        flood.setFloodColor("lime");
+        flood.setX("0");
+        flood.setY("0");
+        flood.setWidth("20");
+        flood.setHeight("20");
+
+        FeOffset offset = new FeOffset();
+        offset.setDx("4");
+        offset.setDy("4");
+        offset.setX("0");
+        offset.setY("0");
+        offset.setWidth("16");
+        offset.setHeight("8");
+        offset.setResult("offset");
+
+        FeTile tile = new FeTile();
+
+        Image result = filtered(redRect(), filterOf(flood, offset, tile));
+
+        // first tile cell: (10,6) is within the lime patch, x in [4,16) and y in [4,8)
+        assertColor(result, 10, 6, Color.LIME);
+        // same cell, but x < 4 - the transparent margin within the tile
+        assertThat(colorAt(result, 2, 6).getOpacity(), closeTo(0.0, 0.02));
+        // one tile-width (16px) to the right: the pattern repeats
+        assertColor(result, 26, 6, Color.LIME);
+        // one tile-height (8px) down: the pattern repeats on the other axis too
+        assertColor(result, 10, 14, Color.LIME);
+        // one tile-width right of the transparent margin - still transparent, not a one-off
+        assertThat(colorAt(result, 17, 6).getOpacity(), closeTo(0.0, 0.02));
+    }
+
+    /**
+     * SVG 1.1 15.7.5's own special case: a primitive with <i>no</i> subregion attributes at all defaults to the whole filter region, not the ordinary per-axis percentage
+     * resolution (the ambient viewport under {@code userSpaceOnUse}) a partially-set subregion still uses. {@link #render}'s own viewport is a 0x0 square - sharply different from
+     * {@link #filterOf}'s 100x100 region - so a flood reaching every corner of the buffer here is only possible if the default subregion is genuinely the filter region, not
+     * degenerately resolved against that empty viewport.
+     */
+    @Test
+    public void testUnsetSubregionDefaultsToTheFilterRegionNotTheAmbientViewport() throws Exception {
+        FeFlood flood = new FeFlood();
+        flood.setFloodColor("lime");
+
+        Image result = filtered(redRect(), filterOf(flood));
+
+        assertColor(result, 0, 0, Color.LIME);
+        assertColor(result, 99, 99, Color.LIME);
+    }
+
     // --- arbitrary graphs ----------------------------------------------------
 
     /**
