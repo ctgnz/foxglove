@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- #178: xlink:href resolves relative to this file's own base URI, established by FoxgloveParser.parseFile. -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="50">
+  <image id="pic" xlink:href="image-svg-source.svg" width="10" height="10"/>
+</svg>

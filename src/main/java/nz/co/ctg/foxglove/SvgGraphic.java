@@ -12,6 +12,7 @@ import java.util.Map;
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Bounds;
+import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.transform.Transform;
@@ -188,6 +189,20 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
         applyClip(parentContext, group);
         applyFilter(parentContext, group);
         return group;
+    }
+
+    /**
+     * This element's own intrinsic pixel size - its {@code width}/{@code height} attributes where usable, falling back to its {@code viewBox}, then the standard UA default - with
+     * no real parent viewport to resolve a percentage against (the same "no parent" case {@link #createGroup()} itself establishes for the document root). What a caller needs to
+     * know before rendering this document standalone, the way a referenced raster image's own pixel dimensions are known before it is fitted anywhere - {@code <image
+     * xlink:href="other.svg">} (#178) is the first such caller, rasterising the referenced document at its own size before fitting that into the {@code <image>}'s box exactly like
+     * a bitmap.
+     */
+    public Dimension2D getIntrinsicSize() {
+        RenderContext noParentViewport = RenderContext.root(getElementIndex(), 0, 0);
+        double width = resolveIntrinsicLength(getWidth(), noParentViewport, Axis.HORIZONTAL, DEFAULT_WIDTH);
+        double height = resolveIntrinsicLength(getHeight(), noParentViewport, Axis.VERTICAL, DEFAULT_HEIGHT);
+        return new Dimension2D(width, height);
     }
 
     /**

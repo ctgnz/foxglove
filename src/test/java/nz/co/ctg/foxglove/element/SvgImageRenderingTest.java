@@ -26,7 +26,9 @@ import nz.co.ctg.foxglove.SvgGraphic;
 
 /**
  * Exercises #20's acceptance criteria: a {@code data:} URI image renders, a file-relative reference renders when the base URI is known and fails cleanly when it is not,
- * {@code preserveAspectRatio} including {@code slice} positions and clips correctly, and a missing or malformed reference never throws out of {@code createGraphic}.
+ * {@code preserveAspectRatio} including {@code slice} positions and clips correctly, and a missing or malformed reference never throws out of {@code createGraphic}. Also covers
+ * #178: a relative reference to another SVG document (no fragment) renders that document's own content, rasterised at its own intrinsic size and fitted into this element's
+ * viewport exactly like a bitmap, and a reference to an SVG document that fails to load degrades the same way a broken raster reference already does.
  * <p>
  * {@code javafx.scene.image.Image} construction requires the JavaFX Application Thread - see {@link JavaFxTestSupport} and {@code PatternParseTest}, which has the same requirement
  * for a different reason.
@@ -180,6 +182,59 @@ public class SvgImageRenderingTest {
             .isError(), is(false));
         assertThat(imageView.getImage()
             .getWidth(), closeTo(4, 1e-9));
+    }
+
+    /**
+     * #178: {@code xlink:href} naming another SVG document (no fragment - the whole file as the image source, per {@code struct-image-05-b}) renders that document's own content,
+     * rasterised at its own intrinsic size - here 4x2, declared on {@code image-svg-source.svg}'s own root, the same dimensions {@link #WIDE_PNG} uses for the equivalent raster
+     * fit tests below.
+     */
+    @Test
+    public void testRelativeHrefToAnSvgDocumentRendersItsContentParsedFromAFile() throws Exception {
+        FoxgloveParser parser = new FoxgloveParser();
+        SvgGraphic svg = parser.parseFile("/image-relative-svg-source.svg");
+        assertThat(svg, notNullValue());
+        assertThat(svg.getBaseUri(), notNullValue());
+
+        Group rendered = onFxThread(svg::createGroup);
+        Group imageGroup = (Group) rendered.getChildren()
+            .get(0);
+        ImageView imageView = findImageView(imageGroup);
+        assertThat(imageView.getImage(), notNullValue());
+        assertThat(imageView.getImage()
+            .isError(), is(false));
+        assertThat(imageView.getImage()
+            .getWidth(), closeTo(4, 1e-9));
+        assertThat(imageView.getImage()
+            .getHeight(), closeTo(2, 1e-9));
+    }
+
+    /**
+     * The referenced document is rasterised at its own intrinsic size, not stretched to fill this element's box outright - {@code <image>}'s own {@code preserveAspectRatio}
+     * (default {@code xMidYMid meet}) then fits that intrinsic-sized result into the declared 10x10 viewport exactly like a raster image, the identical 2.5x scale
+     * {@link #testMeetFitsWithinBoundsPreservingAspectRatio} computes for the same 4x2-into-10x10 case via {@link #WIDE_PNG}.
+     */
+    @Test
+    public void testSvgSourceFitsWithinBoundsPreservingAspectRatio() throws Exception {
+        FoxgloveParser parser = new FoxgloveParser();
+        SvgGraphic svg = parser.parseFile("/image-relative-svg-source.svg");
+
+        Group rendered = (Group) onFxThread(svg::createGroup).getChildren()
+            .get(0);
+        Affine transform = fitTransformOf(rendered);
+        assertThat(transform.getMxx(), closeTo(2.5, 1e-9));
+        assertThat(transform.getMyy(), closeTo(2.5, 1e-9));
+    }
+
+    @Test
+    public void testUnresolvableExternalSvgDocumentRendersEmptyWithoutThrowing() throws Exception {
+        FoxgloveParser parser = new FoxgloveParser();
+        SvgGraphic svg = parser.parseFile("/image-missing-svg-source.svg");
+        assertThat(svg.getBaseUri(), notNullValue());
+
+        Group rendered = (Group) onFxThread(svg::createGroup).getChildren()
+            .get(0);
+        assertThat(rendered.getChildren(), is(empty()));
     }
 
     @Test

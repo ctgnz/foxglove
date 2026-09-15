@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- #178 fixture: referenced from image-relative-svg-source.svg via xlink:href="image-svg-source.svg" (no fragment) -
+     the whole document is the image source, rasterised at its own intrinsic size (4x2, declared below), matching the
+     dimensions of the WIDE_PNG fixture SvgImageRenderingTest already uses for the equivalent raster-image fit tests. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="4" height="2">
+  <rect width="4" height="2" fill="#ff0000"/>
+</svg>
