@@ -14,6 +14,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.effect.ImageInput;
 import javafx.scene.image.ImageView;
 import javafx.scene.transform.Affine;
 
@@ -22,7 +23,10 @@ import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.FoxgloveParser;
 import nz.co.ctg.foxglove.JavaFxTestSupport;
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.filter.FeFlood;
+import nz.co.ctg.foxglove.filter.SvgFilter;
 
 /**
  * Exercises #20's acceptance criteria: a {@code data:} URI image renders, a file-relative reference renders when the base URI is known and fails cleanly when it is not,
@@ -66,6 +70,36 @@ public class SvgImageRenderingTest {
         assertThat(imageView.getImage(), notNullValue());
         assertThat(imageView.getImage()
             .isError(), is(false));
+    }
+
+    /**
+     * #193: {@code filter="..."} was silently ignored by this class alone - every other graphics element wires it up via {@code ISvgGraphicsAttributes.applyFilter}, but
+     * {@code SvgImage.createGraphic} never called it. A plain {@code feFlood} (linearRGB by default, so this necessarily exercises {@code SvgFilterRasterPipeline}, not the
+     * sRGB-only effect chain) forces a real {@link ImageInput} effect onto the rendered node if - and only if - the filter is actually applied at all.
+     */
+    @Test
+    public void testFilterAttributeIsApplied() throws Exception {
+        FeFlood flood = new FeFlood();
+        flood.setFloodColor("lime");
+        SvgFilter filter = new SvgFilter();
+        filter.setId("f");
+        filter.getContent()
+            .add(flood);
+
+        SvgImage image = new SvgImage();
+        image.setXlinkHref(DOT_PNG);
+        image.setWidth(px(10));
+        image.setHeight(px(10));
+        image.setFilter("url(#f)");
+
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent()
+            .add(filter);
+        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
+        Node rendered = onFxThread(() -> image.createGraphic(context));
+
+        assertThat(rendered.getEffect(), notNullValue());
+        assertThat(rendered.getEffect() instanceof ImageInput, is(true));
     }
 
     /**

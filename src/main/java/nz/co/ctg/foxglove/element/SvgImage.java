@@ -140,6 +140,11 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
         // local space, which - since `fitted`'s own scale transform already ran to produce group's child - is
         // exactly the fitted image's post-scale coordinates, not the image's raw pixels
         group.setClip(new Rectangle(width, height));
+        // #193: unlike every other graphics element, this class never called applyFilter at all - filter="..." was
+        // silently ignored. This plays the role of applyClip's own required ordering (see that method's javadoc):
+        // the slice-fit clip just above is the "existing clip" a filter region needs to already be there to
+        // intersect correctly with.
+        applyFilter(context, group);
 
         applyNodeProperties(context, group);
         String visibility = SvgInheritedStyle.resolve(context, this)
