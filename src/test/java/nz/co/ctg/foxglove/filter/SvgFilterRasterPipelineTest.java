@@ -588,6 +588,170 @@ public class SvgFilterRasterPipelineTest {
         assertThat(colorAt(result, 75, 75).getOpacity(), closeTo(0.0, 0.02));
     }
 
+    // --- feDiffuseLighting, feSpecularLighting (#173) --------------------------
+
+    /**
+     * A vertical {@code feDistantLight} ({@code elevation="90"}) makes {@code L=(0,0,1)}, so {@code N.L} reduces to {@code N}'s own {@code z} component - a closed-form check of
+     * the surface normal alone, independent of the light-vector maths exercised separately below. {@link #insetRedRect()}'s 1px transparent border reaches every one of the 9 Sobel
+     * boundary kernels with a genuine, non-degenerate alpha gradient - unlike a rect flush with the buffer edge (as in every other test in this file), whose neighbourhood is flat
+     * everywhere and could not tell a correct boundary kernel from a wrong one.
+     */
+    @Test
+    public void testFeDiffuseLightingSurfaceNormalUsesTheCorrectSobelKernelAtEdgesAndCorners() throws Exception {
+        FeDistantLight light = new FeDistantLight();
+        light.setAzimuth("0");
+        light.setElevation("90");
+        FeDiffuseLighting diffuse = new FeDiffuseLighting();
+        diffuse.setSurfaceScale("0.5");
+        diffuse.setDiffuseConstant("1");
+        diffuse.getLightSources()
+            .add(light);
+        SvgFilter filter = filterOf(diffuse);
+        filter.setColorInterpolationFilters("sRGB");
+
+        Image result = filtered(insetRedRect(), filter);
+
+        // deep interior: alpha is 1 throughout the 3x3 neighbourhood, so N=(0,0,1) exactly and N.L=1 - also exercises
+        // lighting-color's own default (white), which no test in this section sets explicitly
+        assertColor(result, 50, 50, Color.WHITE);
+        // left edge, away from either corner: a pure horizontal gradient (uniform along y) - the "left column" kernel
+        // (factorX=1/2) gives Nx=-2*surfaceScale=-1, Ny=0
+        double edgeNz = 1.0 / Math.sqrt(1 * 1 + 1);
+        assertColor(result, 0, 50, new Color(edgeNz, edgeNz, edgeNz, 1));
+        // top/left corner: a genuine 2D gradient - the "top/left corner" kernel (factorX=factorY=2/3) gives
+        // Nx=Ny=-(2/3)*surfaceScale=-1/3, deliberately different from what the "left column" kernel above would give
+        // if it were wrongly selected here too (factorX 1/2 vs 2/3)
+        double cornerN = 1.0 / 3;
+        double cornerNz = 1.0 / Math.sqrt(cornerN * cornerN + cornerN * cornerN + 1);
+        assertColor(result, 0, 0, new Color(cornerNz, cornerNz, cornerNz, 1));
+    }
+
+    /**
+     * {@code L} genuinely depends on pixel position for {@code fePointLight} - two pixels under a flat surface (so {@code N=(0,0,1)} everywhere, isolating the light-vector maths
+     * from the surface-normal maths already covered above) get different brightness purely from their different angle to the same light.
+     */
+    @Test
+    public void testFePointLightVectorDependsOnPixelPosition() throws Exception {
+        FePointLight light = new FePointLight();
+        light.setX("50");
+        light.setY("50");
+        light.setZ("50");
+        FeDiffuseLighting diffuse = new FeDiffuseLighting();
+        diffuse.setSurfaceScale("1");
+        diffuse.setDiffuseConstant("1");
+        diffuse.getLightSources()
+            .add(light);
+        SvgFilter filter = filterOf(diffuse);
+        filter.setColorInterpolationFilters("sRGB");
+
+        Image result = filtered(fullRegionRedRect(), filter);
+
+        // directly under the light: L=(0,0,1)=N, full brightness
+        assertColor(result, 50, 50, Color.WHITE);
+        // off to the side: Z(x,y)=surfaceScale*1=1, so L=normalize((50-30,50-50,50-1))=normalize(20,0,49), and since
+        // N=(0,0,1), N.L is just L's own z component
+        double lz = 49.0 / Math.sqrt(20 * 20 + 49 * 49);
+        assertColor(result, 30, 50, new Color(lz, lz, lz, 1));
+    }
+
+    /**
+     * {@code feSpotLight} zeroes the light colour outside its {@code limitingConeAngle} - but {@code feDiffuseLighting}'s own {@code Da=1.0} is unconditional, so a pixel with no
+     * light at all is opaque black, not transparent (contrast {@code feSpecularLighting}'s own zero case below, where the whole pixel really does vanish).
+     */
+    @Test
+    public void testFeSpotLightZeroesLightOutsideTheLimitingConeAngle() throws Exception {
+        FeSpotLight light = new FeSpotLight();
+        light.setX("50");
+        light.setY("50");
+        light.setZ("50");
+        light.setPointsAtX("50");
+        light.setPointsAtY("50");
+        light.setPointsAtZ("0");
+        light.setLimitingConeAngle("10");
+        FeDiffuseLighting diffuse = new FeDiffuseLighting();
+        diffuse.setSurfaceScale("1");
+        diffuse.setDiffuseConstant("1");
+        diffuse.getLightSources()
+            .add(light);
+        SvgFilter filter = filterOf(diffuse);
+        filter.setColorInterpolationFilters("sRGB");
+
+        Image result = filtered(fullRegionRedRect(), filter);
+
+        // straight down the cone's own axis: fully lit
+        assertColor(result, 50, 50, Color.WHITE);
+        // far off-axis, well outside a 10 degree cone: no light, but still opaque per Da=1.0
+        assertColor(result, 90, 50, Color.BLACK);
+    }
+
+    /**
+     * SVG 1.1 15.22's own stated rationale: {@code Sa=max(Sr,Sg,Sb)}, not {@code 1.0} - a specular highlight adds colour <i>and</i> coverage together, so a partial highlight is
+     * partly transparent, and (the degenerate case here, a light aimed straight through the surface so {@code N.H=0}) zero specular is <i>fully</i> transparent rather than opaque
+     * black the way a zeroed {@code feDiffuseLighting} pixel is (see the {@code feSpotLight} test above).
+     */
+    @Test
+    public void testFeSpecularLightingAlphaIsTheMaxChannelNotOne() throws Exception {
+        FeDistantLight overhead = new FeDistantLight();
+        overhead.setAzimuth("0");
+        overhead.setElevation("90");
+        FeSpecularLighting specular = new FeSpecularLighting();
+        specular.setSurfaceScale("1");
+        specular.setSpecularConstant("0.5");
+        specular.setSpecularExponent("2");
+        specular.setLightingColor("red");
+        specular.getLightSources()
+            .add(overhead);
+        SvgFilter brightFilter = filterOf(specular);
+        brightFilter.setColorInterpolationFilters("sRGB");
+
+        // N=(0,0,1), L=(0,0,1), H=normalize(L+E)=(0,0,1), N.H=1, lighting-color=red (Lr=1,Lg=Lb=0):
+        // Sr=specularConstant*1*1=0.5, Sg=Sb=0, Sa=max(Sr,Sg,Sb)=0.5 - stored directly (not via FilterRaster.premultiply,
+        // which would instead store Sr*Sa=0.25), so PixelReader's own unpremultiply-on-readback (Sr/Sa=1.0) reports
+        // this as pure, fully-saturated red at 50% opacity, not a half-strength red at 50% opacity
+        Image bright = filtered(fullRegionRedRect(), brightFilter);
+        assertColor(bright, 50, 50, new Color(1.0, 0.0, 0.0, 0.5));
+
+        FeDistantLight throughSurface = new FeDistantLight();
+        throughSurface.setAzimuth("0");
+        throughSurface.setElevation("-90");
+        FeSpecularLighting zeroSpecular = new FeSpecularLighting();
+        zeroSpecular.setSurfaceScale("1");
+        zeroSpecular.setSpecularConstant("1");
+        zeroSpecular.setSpecularExponent("2");
+        zeroSpecular.getLightSources()
+            .add(throughSurface);
+        SvgFilter zeroFilter = filterOf(zeroSpecular);
+        zeroFilter.setColorInterpolationFilters("sRGB");
+
+        // L=(0,0,-1), H=normalize(L+E)=normalize(0,0,0)=(0,0,0): N.H=0, so the whole result is zero, not just colour
+        Image zero = filtered(fullRegionRedRect(), zeroFilter);
+        assertColor(zero, 50, 50, new Color(0, 0, 0, 0));
+    }
+
+    /**
+     * {@code lighting-color}'s own initial value is white (unlike {@code flood-color}'s black - see {@link #testAFloodColourSurvivesTheRoundTripThroughLinearRgb}) - every other
+     * test in this section relies on that default implicitly by never setting {@code lighting-color} at all. This one sets {@code currentColor} instead, resolved through the
+     * {@code <svg>} root's own {@code color} - the filter primitive's own document-tree ancestry, not the filtered target's, is what {@code currentColor} means here.
+     */
+    @Test
+    public void testLightingColorCurrentColorResolvesThroughTheDocumentTree() throws Exception {
+        FeDistantLight light = new FeDistantLight();
+        light.setAzimuth("0");
+        light.setElevation("90");
+        FeDiffuseLighting diffuse = new FeDiffuseLighting();
+        diffuse.setSurfaceScale("1");
+        diffuse.setDiffuseConstant("1");
+        diffuse.setLightingColor("currentColor");
+        diffuse.getLightSources()
+            .add(light);
+        SvgFilter filter = filterOf(diffuse);
+        filter.setColorInterpolationFilters("sRGB");
+
+        Image result = filteredWithRootColor(fullRegionRedRect(), filter, "lime");
+
+        assertColor(result, 50, 50, Color.LIME);
+    }
+
     // --- arbitrary graphs ----------------------------------------------------
 
     /**
@@ -812,6 +976,17 @@ public class SvgFilterRasterPipelineTest {
         return rectFilled(Color.WHITE);
     }
 
+    /**
+     * Opaque everywhere except a 1px transparent border on every edge of the 100x100 buffer {@link #filterOf} declares - unlike {@link #fullRegionRedRect()}, whose alpha is flat
+     * even at the buffer's own edges, this reaches every one of the 9 Sobel boundary kernels a lighting primitive's surface normal uses with a genuine, non-degenerate gradient.
+     */
+    private static SvgRectangle insetRedRect() {
+        SvgRectangle rect = new SvgRectangle(1, 1, 98, 98);
+        rect.setFill(Color.RED);
+        rect.setFilter("url(#f)");
+        return rect;
+    }
+
     private static SvgRectangle rectFilled(Color fill) {
         SvgRectangle rect = new SvgRectangle(0, 0, 50, 50);
         rect.setFill(fill);
@@ -840,6 +1015,24 @@ public class SvgFilterRasterPipelineTest {
         svg.getContent()
             .add(filter);
         return rect.createGraphic(RenderContext.root(svg.getElementIndex(), 0, 0));
+    }
+
+    /**
+     * As {@link #render}, but with {@code color} set on the {@code <svg>} root itself - for a {@code lighting-color="currentColor"} test, which resolves against the filter
+     * primitive's own ancestry in the document tree (the {@code <filter>}'s parent chain up to the root here), not the filtered target's.
+     */
+    private static Node renderWithRootColor(SvgRectangle rect, SvgFilter filter, String rootColor) {
+        SvgGraphic svg = new SvgGraphic();
+        svg.setColor(rootColor);
+        svg.getContent()
+            .add(filter);
+        return rect.createGraphic(RenderContext.root(svg.getElementIndex(), 0, 0));
+    }
+
+    private static Image filteredWithRootColor(SvgRectangle rect, SvgFilter filter, String rootColor) throws Exception {
+        Node node = onFxThread(() -> renderWithRootColor(rect, filter, rootColor));
+        assertThat("expected the raster pipeline to have applied an ImageInput", node.getEffect(), notNullValue());
+        return ((ImageInput) node.getEffect()).getSource();
     }
 
     /**

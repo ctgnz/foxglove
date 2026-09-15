@@ -30,6 +30,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import nz.co.ctg.foxglove.FxGraphic;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
+import nz.co.ctg.foxglove.ISvgPresentationAttributes;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.RenderContext.Axis;
 import nz.co.ctg.foxglove.RenderContext.UnitsMode;
@@ -51,9 +52,11 @@ import nz.co.ctg.foxglove.type.ViewBox;
  * Buffers are rasterised at one pixel per user unit and never supersampled - {@link ImageInput} has no scale of its own, unlike the {@code ImageView} masking wraps in a scaled
  * {@link Group}. That is spec-aligned in principle, since filters are defined on a pixel grid, though {@code filterRes} is not honoured.
  * <p>
- * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: the primitives not listed in {@link #evaluate} ({@code feTile} - needs
- * {@code feFlood}/{@code feOffset} to clip to their own subregion first, see #188 - and the lighting primitives), per-primitive subregions on any primitive other than
- * {@code feImage} (see {@link #resolveSubregion}, added for #174 - every other primitive still implicitly fills the whole filter region), and {@code in="BackgroundImage"}.
+ * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: {@code feTile} (not listed in {@link #evaluate} - needs
+ * {@code feFlood}/{@code feOffset} to clip to their own subregion first, see #188), per-primitive subregions on any primitive other than {@code feImage} (see
+ * {@link #resolveSubregion}, added for #174 - every other primitive still implicitly fills the whole filter region), and {@code in="BackgroundImage"}. The lighting primitives
+ * ({@link #diffuseLighting}/{@link #specularLighting}) parse {@code kernelUnitLength} but do not honour it - like {@code filterRes}, doing so would mean resampling the input to a
+ * different pixel grid and back, and no cited test exercises it.
  * <p>
  * Primitives evaluate in <b>linearRGB</b> by default, per the specification, honouring {@code color-interpolation-filters} per primitive - see {@link FilterColorSpace}. Working in
  * sRGB instead was #77's largest documented inaccuracy, fixed in #108: it left structure and geometry right but every interpolated value systematically too dark.
@@ -232,6 +235,12 @@ final class SvgFilterRasterPipeline {
         }
         if (primitive instanceof FeDisplacementMap displacementMap) {
             return displacementMap(displacementMap);
+        }
+        if (primitive instanceof FeDiffuseLighting diffuse) {
+            return diffuseLighting(diffuse);
+        }
+        if (primitive instanceof FeSpecularLighting specular) {
+            return specularLighting(specular);
         }
         throw new UnsupportedFilterException();
     }
@@ -1084,6 +1093,435 @@ final class SvgFilterRasterPipeline {
             case "B" -> 2;
             default -> 3;
         };
+    }
+
+    // --- feDiffuseLighting, feSpecularLighting (#173) ---------------------------
+
+    /**
+     * SVG 1.1 15.14: {@code Dr,g,b = diffuseConstant * (N.L) * Lr,g,b}, {@code Da = 1.0} always - the result is written via {@link FilterRaster#premultiply}, which for a constant
+     * alpha of {@code 1} degrades to a plain clamp-and-copy, but reusing it keeps this in step with every other primitive's own non-premultiplied-formula handling (see
+     * {@link #colorMatrix}, {@link #componentTransfer}).
+     */
+    private FilterRaster diffuseLighting(FeDiffuseLighting node) {
+        FilterRaster in = resolveInput(node.getIn());
+        double surfaceScale = number(node.getSurfaceScale(), 1);
+        double diffuseConstant = number(node.getDiffuseConstant(), 1);
+        ISvgFilterLightSource light = firstLightSource(node.getLightSources());
+        float[] baseColor = lightingColorComponents(node);
+
+        FilterRaster result = new FilterRaster(width, height);
+        float[] out = result.getData();
+        float[] rgba = new float[4];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                double[] n = surfaceNormal(in, x, y, surfaceScale);
+                double z = surfaceScale * alphaAt(in, x, y);
+                double[] l = lightVector(light, x, y, z);
+                float[] lightColor = lightColorAt(light, l, baseColor);
+                double nDotL = n[0] * l[0] + n[1] * l[1] + n[2] * l[2];
+                rgba[0] = (float) (diffuseConstant * nDotL * lightColor[0]);
+                rgba[1] = (float) (diffuseConstant * nDotL * lightColor[1]);
+                rgba[2] = (float) (diffuseConstant * nDotL * lightColor[2]);
+                rgba[3] = 1f;
+                FilterRaster.premultiply(out, result.index(x, y), rgba);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * SVG 1.1 15.22: {@code Sr,g,b = specularConstant * pow(N.H, specularExponent) * Lr,g,b}, {@code Sa = max(Sr,Sg,Sb)}, {@code H = normalize(L + E)} with the constant eye vector
+     * {@code E = (0,0,1)}. {@code N.H} is clamped to {@code >= 0} before {@code pow} - not spec text verbatim, but necessary: a negative base with a non-integer
+     * {@code specularExponent} is {@code NaN} in {@link Math#pow}, and physically a negative {@code N.H} means no specular reflection reaches the eye at all, i.e. zero.
+     * <p>
+     * Written <b>directly</b> into the buffer (clamped per channel), not via {@link FilterRaster#premultiply}: {@code (Sr,Sg,Sb,Sa)} is already a valid premultiplied tuple by
+     * construction, since colour can never exceed {@code Sa}, its own max - running it through {@code premultiply} would multiply it by its own alpha a second time.
+     */
+    private FilterRaster specularLighting(FeSpecularLighting node) {
+        FilterRaster in = resolveInput(node.getIn());
+        double surfaceScale = number(node.getSurfaceScale(), 1);
+        double specularConstant = number(node.getSpecularConstant(), 1);
+        double specularExponent = number(node.getSpecularExponent(), 1);
+        ISvgFilterLightSource light = firstLightSource(node.getLightSources());
+        float[] baseColor = lightingColorComponents(node);
+
+        FilterRaster result = new FilterRaster(width, height);
+        float[] out = result.getData();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                double[] n = surfaceNormal(in, x, y, surfaceScale);
+                double z = surfaceScale * alphaAt(in, x, y);
+                double[] l = lightVector(light, x, y, z);
+                float[] lightColor = lightColorAt(light, l, baseColor);
+                double[] h = normalize(l[0], l[1], l[2] + 1.0);
+                double nDotH = Math.max(0, n[0] * h[0] + n[1] * h[1] + n[2] * h[2]);
+                double factor = specularConstant * Math.pow(nDotH, specularExponent);
+                double sr = factor * lightColor[0];
+                double sg = factor * lightColor[1];
+                double sb = factor * lightColor[2];
+                double sa = Math.max(sr, Math.max(sg, sb));
+                int idx = result.index(x, y);
+                out[idx] = FilterRaster.clamp((float) sr);
+                out[idx + 1] = FilterRaster.clamp((float) sg);
+                out[idx + 2] = FilterRaster.clamp((float) sb);
+                out[idx + 3] = FilterRaster.clamp((float) sa);
+            }
+        }
+        return result;
+    }
+
+    private static ISvgFilterLightSource firstLightSource(List<ISvgFilterLightSource> lights) {
+        if (lights.isEmpty()) {
+            // spec: "exactly one light source element" - none present is a malformed document
+            throw new UnsupportedFilterException();
+        }
+        return lights.get(0);
+    }
+
+    /**
+     * The surface normal at pixel {@code (x,y)}, from {@code in}'s own alpha channel as the bump map - SVG 1.1 15.14's 3x3 Sobel gradient, using one of 9 distinct boundary-case
+     * kernels (see {@link #SOBEL}) rather than clamping the sample positions to the buffer edge, which would be a materially different (and wrong) result.
+     */
+    private double[] surfaceNormal(FilterRaster in, int x, int y, double surfaceScale) {
+        SobelKernel kernel = sobelKernel(x, y);
+        double sumX = 0;
+        double sumY = 0;
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                double alpha = alphaAt(in, x + col - 1, y + row - 1);
+                sumX += kernel.kx()[row][col] * alpha;
+                sumY += kernel.ky()[row][col] * alpha;
+            }
+        }
+        double nx = -surfaceScale * kernel.factorX() * sumX;
+        double ny = -surfaceScale * kernel.factorY() * sumY;
+        return normalize(nx, ny, 1.0);
+    }
+
+    /**
+     * {@code in}'s own alpha channel at {@code (x,y)}, or {@code 0} outside the buffer - safe here because every {@link #SOBEL} boundary kernel only ever weights in-bounds taps.
+     */
+    private double alphaAt(FilterRaster in, int x, int y) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            return 0;
+        }
+        return in.getData()[in.index(x, y) + 3];
+    }
+
+    private record SobelKernel(int[][] kx, int[][] ky, double factorX, double factorY) {
+    }
+
+    /**
+     * The 9 boundary-case Sobel kernels SVG 1.1 15.14 defines, transcribed exactly (not derived) - indexed {@code [xEdge][yEdge]} where each axis is {@code 0} (at the low edge),
+     * {@code 1} (interior) or {@code 2} (at the high edge). Each {@code kx}/{@code ky} is read {@code [row][col]}, row 0 = {@code y-dy}, col 0 = {@code x-dx}, matching the
+     * specification's own {@code Kx(col,row)} convention. Interior's own {@code factorX}/{@code factorY} are both {@code 1/4}; a row/column kernel is {@code 1/3} along its own
+     * free axis and {@code 1/2} across it; a corner is {@code 2/3} on both - not simplifiable to "zero out the missing tap", since the two-tap kernels these fall back to reweight
+     * the taps they do have rather than leaving a hole (verified by hand against the spec's own tables before trusting it).
+     */
+    private static final SobelKernel[][] SOBEL = {
+        {
+            // top/left corner (x low, y low)
+            new SobelKernel(new int[][] {
+                {
+                    0, 0, 0
+                }, {
+                    0, -2, 2
+                }, {
+                    0, -1, 1
+                }
+            }, new int[][] {
+                {
+                    0, 0, 0
+                }, {
+                    0, -2, -1
+                }, {
+                    0, 2, 1
+                }
+            }, 2.0 / 3, 2.0 / 3),
+            // left column (x low, y interior)
+            new SobelKernel(new int[][] {
+                {
+                    0, -1, 1
+                }, {
+                    0, -2, 2
+                }, {
+                    0, -1, 1
+                }
+            }, new int[][] {
+                {
+                    0, -2, -1
+                }, {
+                    0, 0, 0
+                }, {
+                    0, 2, 1
+                }
+            }, 1.0 / 2, 1.0 / 3),
+            // bottom/left corner (x low, y high)
+            new SobelKernel(new int[][] {
+                {
+                    0, -1, 1
+                }, {
+                    0, -2, 2
+                }, {
+                    0, 0, 0
+                }
+            }, new int[][] {
+                {
+                    0, -2, -1
+                }, {
+                    0, 2, 1
+                }, {
+                    0, 0, 0
+                }
+            }, 2.0 / 3, 2.0 / 3)
+        }, {
+            // top row (x interior, y low)
+            new SobelKernel(new int[][] {
+                {
+                    0, 0, 0
+                }, {
+                    -2, 0, 2
+                }, {
+                    -1, 0, 1
+                }
+            }, new int[][] {
+                {
+                    0, 0, 0
+                }, {
+                    -1, -2, -1
+                }, {
+                    1, 2, 1
+                }
+            }, 1.0 / 3, 1.0 / 2),
+            // interior (x interior, y interior)
+            new SobelKernel(new int[][] {
+                {
+                    -1, 0, 1
+                }, {
+                    -2, 0, 2
+                }, {
+                    -1, 0, 1
+                }
+            }, new int[][] {
+                {
+                    -1, -2, -1
+                }, {
+                    0, 0, 0
+                }, {
+                    1, 2, 1
+                }
+            }, 1.0 / 4, 1.0 / 4),
+            // bottom row (x interior, y high)
+            new SobelKernel(new int[][] {
+                {
+                    -1, 0, 1
+                }, {
+                    -2, 0, 2
+                }, {
+                    0, 0, 0
+                }
+            }, new int[][] {
+                {
+                    -1, -2, -1
+                }, {
+                    1, 2, 1
+                }, {
+                    0, 0, 0
+                }
+            }, 1.0 / 3, 1.0 / 2)
+        }, {
+            // top/right corner (x high, y low)
+            new SobelKernel(new int[][] {
+                {
+                    0, 0, 0
+                }, {
+                    -2, 2, 0
+                }, {
+                    -1, 1, 0
+                }
+            }, new int[][] {
+                {
+                    0, 0, 0
+                }, {
+                    -1, -2, 0
+                }, {
+                    1, 2, 0
+                }
+            }, 2.0 / 3, 2.0 / 3),
+            // right column (x high, y interior)
+            new SobelKernel(new int[][] {
+                {
+                    -1, 1, 0
+                }, {
+                    -2, 2, 0
+                }, {
+                    -1, 1, 0
+                }
+            }, new int[][] {
+                {
+                    -1, -2, 0
+                }, {
+                    0, 0, 0
+                }, {
+                    1, 2, 0
+                }
+            }, 1.0 / 2, 1.0 / 3),
+            // bottom/right corner (x high, y high)
+            new SobelKernel(new int[][] {
+                {
+                    -1, 1, 0
+                }, {
+                    -2, 2, 0
+                }, {
+                    0, 0, 0
+                }
+            }, new int[][] {
+                {
+                    -1, -2, 0
+                }, {
+                    1, 2, 0
+                }, {
+                    0, 0, 0
+                }
+            }, 2.0 / 3, 2.0 / 3)
+        }
+    };
+
+    private SobelKernel sobelKernel(int x, int y) {
+        int xEdge = x == 0 ? 0 : (x == width - 1 ? 2 : 1);
+        int yEdge = y == 0 ? 0 : (y == height - 1 ? 2 : 1);
+        return SOBEL[xEdge][yEdge];
+    }
+
+    /**
+     * {@code L}, the unit vector from the surface to the light, at pixel {@code (x,y)} whose own {@code Z(x,y)} is {@code z} - constant for {@link FeDistantLight}, a function of
+     * position for {@link FePointLight}/{@link FeSpotLight} per SVG 1.1 15.14.
+     */
+    private double[] lightVector(ISvgFilterLightSource light, int x, int y, double z) {
+        if (light instanceof FeDistantLight distant) {
+            double azimuth = Math.toRadians(number(distant.getAzimuth(), 0));
+            double elevation = Math.toRadians(number(distant.getElevation(), 0));
+            return new double[] {
+                Math.cos(azimuth) * Math.cos(elevation), Math.sin(azimuth) * Math.cos(elevation), Math.sin(elevation)
+            };
+        }
+        double[] position = light instanceof FePointLight point ? lightPosition(point.getX(), point.getY(), point.getZ())
+            : lightPosition(((FeSpotLight) light).getX(), ((FeSpotLight) light).getY(), ((FeSpotLight) light).getZ());
+        double lx = position[0] - (region.getMinX() + x);
+        double ly = position[1] - (region.getMinY() + y);
+        double lz = position[2] - z;
+        return normalize(lx, ly, lz);
+    }
+
+    /**
+     * The light colour {@code Lr,Lg,Lb} at a pixel whose light vector is {@code l} - {@code baseColor} unchanged for {@link FeDistantLight}/{@link FePointLight}, or
+     * {@link FeSpotLight}'s own position-dependent falloff (SVG 1.1 15.14): zero outside the light's cone (including behind it, {@code L.S > 0}) or outside an explicitly specified
+     * {@code limitingConeAngle} - unset means no cone restriction at all, which is why this checks {@code isNotBlank} rather than defaulting the angle itself.
+     */
+    private float[] lightColorAt(ISvgFilterLightSource light, double[] l, float[] baseColor) {
+        if (!(light instanceof FeSpotLight spot)) {
+            return baseColor;
+        }
+        double[] lightPos = lightPosition(spot.getX(), spot.getY(), spot.getZ());
+        double[] pointsAt = lightPosition(spot.getPointsAtX(), spot.getPointsAtY(), spot.getPointsAtZ());
+        double[] s = normalize(pointsAt[0] - lightPos[0], pointsAt[1] - lightPos[1], pointsAt[2] - lightPos[2]);
+        double dot = l[0] * s[0] + l[1] * s[1] + l[2] * s[2];
+        double negDot = -dot;
+        if (dot > 0) {
+            return new float[4];
+        }
+        String coneAttr = spot.getLimitingConeAngle();
+        if (StringUtils.isNotBlank(coneAttr) && negDot < Math.cos(Math.toRadians(number(coneAttr, 0)))) {
+            return new float[4];
+        }
+        double exponent = number(spot.getSpecularExponent(), 1);
+        double factor = Math.pow(negDot, exponent);
+        return new float[] {
+            (float) (baseColor[0] * factor), (float) (baseColor[1] * factor), (float) (baseColor[2] * factor)
+        };
+    }
+
+    /**
+     * A light-source position or aim point ({@code x}/{@code y}/{@code z} on {@link FePointLight}/{@link FeSpotLight}, or the latter's {@code pointsAtX/Y/Z}), in the coordinate
+     * system {@code primitiveUnits} establishes per spec - verified by hand against {@code filters-light-03-f}'s own worked numbers (an 80x80 {@code objectBoundingBox} case)
+     * before trusting it: {@code x}/{@code y} scale and translate like {@link #resolveSubregion}'s own fractions, {@code z} only scales, by {@link SvgFilterRenderer#bboxDiagonal}
+     * - "one unit along Z equals one unit in X and Y" per spec, exactly what that helper already computes for
+     * {@code feGaussianBlur}/{@code feMorphology}/{@code feDisplacementMap}.
+     */
+    private double[] lightPosition(String xAttr, String yAttr, String zAttr) {
+        double x = number(xAttr, 0);
+        double y = number(yAttr, 0);
+        double z = number(zAttr, 0);
+        if (primitiveUnits() == UnitsMode.OBJECT_BOUNDING_BOX) {
+            double diagonal = SvgFilterRenderer.bboxDiagonal(targetBounds);
+            x = targetBounds.getMinX() + x * targetBounds.getWidth();
+            y = targetBounds.getMinY() + y * targetBounds.getHeight();
+            z *= diagonal;
+        }
+        return new double[] {
+            x, y, z
+        };
+    }
+
+    private static double[] normalize(double x, double y, double z) {
+        double norm = Math.sqrt(x * x + y * y + z * z);
+        if (norm == 0) {
+            return new double[3];
+        }
+        return new double[] {
+            x / norm, y / norm, z / norm
+        };
+    }
+
+    /**
+     * {@code lighting-color}'s components in this primitive's own working colour space - like {@code flood-color} (see {@link #flood}), authored in sRGB and converted on the way
+     * in, but with a different initial value ({@code white}, not {@code flood-color}'s {@code black}) and {@code currentColor} support (see {@link #currentColor}), which
+     * {@code flood-color} does not need to handle for any cited test.
+     */
+    private float[] lightingColorComponents(ISvgFilterPrimitive primitive) {
+        Color color = lightingColor(primitive);
+        return new float[] {
+            colorSpace.convert((float) color.getRed()), colorSpace.convert((float) color.getGreen()), colorSpace.convert((float) color.getBlue())
+        };
+    }
+
+    private Color lightingColor(ISvgFilterPrimitive primitive) {
+        String raw = StringUtils.trimToEmpty(((ISvgPresentationAttributes) primitive).getLightingColor());
+        if ("currentColor".equals(raw)) {
+            return currentColor((ISvgElement) primitive);
+        }
+        if (raw.isEmpty()) {
+            return Color.WHITE;
+        }
+        try {
+            return Color.web(raw);
+        } catch (RuntimeException e) {
+            return Color.WHITE;
+        }
+    }
+
+    /**
+     * {@code color}'s inherited value at {@code element}, walked up the document tree via {@link nz.co.ctg.foxglove.SvgElementIndex#getParent} - unlike
+     * {@link nz.co.ctg.foxglove.SvgPaintResolver#resolve}, which takes an already-resolved style, {@code element} here is a filter primitive with no computed style of its own to
+     * hand in, so this walks its ancestors directly. Works because {@link nz.co.ctg.foxglove.SvgElementIndex} indexes the whole document tree generically, {@code <filter>} and its
+     * {@code fe*} children included, not only the render tree.
+     */
+    private Color currentColor(ISvgElement element) {
+        for (ISvgElement current = element; current != null; current = context.getElementIndex()
+            .getParent(current)
+            .orElse(null)) {
+            if (current instanceof ISvgGraphicsAttributes attrs) {
+                String color = StringUtils.trimToEmpty(attrs.getColor());
+                if (!color.isEmpty()) {
+                    try {
+                        return Color.web(color);
+                    } catch (RuntimeException e) {
+                        return Color.BLACK;
+                    }
+                }
+            }
+        }
+        return Color.BLACK;
     }
 
     // --- value parsing -------------------------------------------------------
