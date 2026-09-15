@@ -2,8 +2,10 @@ package nz.co.ctg.foxglove.element;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Rectangle2D;
@@ -182,8 +184,10 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
                 return null;
             }
             return context.getBaseUri()
-                .map(base -> base.resolve(uri))
-                .map(SvgImage::loadImage)
+                .map(base -> base.resolve(uri)
+                    .normalize())
+                .filter(resolved -> !context.isActiveImageSource(resolved))
+                .map(resolved -> loadImage(resolved, context))
                 .orElse(null);
         } catch (Exception e) {
             return null;
@@ -196,11 +200,11 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
      * first and falling back: the W3C suite and every realistic document name an SVG source with a {@code .svg} extension, and a single deterministic attempt avoids doing the
      * (much more common) raster case's decode twice.
      */
-    private static Image loadImage(URI resolved) {
+    private static Image loadImage(URI resolved, RenderContext context) {
         String path = resolved.getPath();
         if (path != null && path.toLowerCase(Locale.ROOT)
             .endsWith(".svg")) {
-            return rasterizeSvg(resolved);
+            return rasterizeSvg(resolved, context);
         }
         return new Image(resolved.toString(), false);
     }
@@ -212,12 +216,18 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
      * createGraphic}'s own existing {@code ViewBox}/{@code preserveAspectRatio} fit logic then scales it into this element's viewport exactly as it already does for a bitmap,
      * rather than this element's own fit being bypassed by forcing the referenced document to fill the box outright.
      * <p>
+     * {@code resolved} is added to {@code context}'s own {@link RenderContext#getActiveImageSources()} and transplanted onto the fresh root context the referenced document is
+     * rendered from (see {@link RenderContext#withActiveImageSources}) - {@code resolved}'s own <i>caller</i>, this element, already refused to reach this method at all when
+     * {@code resolved} was already in that set (see {@link #resolveImage}); this propagates the set one level further down so a cycle reachable through this document in turn -
+     * either back to {@code resolved} itself or to another location already in progress further up the chain - is still caught (#192) rather than recursing until the stack
+     * overflows.
+     * <p>
      * Returns {@code null} - degrading to an empty group, the same as an unresolvable or errored raster reference - when the document fails to load or parse
      * ({@link FoxgloveParser#parseFile(URI)} degrades to an empty, base-URI-less {@link SvgGraphic} rather than throwing; a {@code null} base URI here is exactly that failure,
      * since a document that genuinely parsed - even an empty one - always has its base URI set), when it resolves to a zero-area intrinsic size, or when snapshotting itself is not
      * possible (most usually because the caller is not on the JavaFX Application Thread, which {@code Node.snapshot} requires).
      */
-    private static Image rasterizeSvg(URI resolved) {
+    private static Image rasterizeSvg(URI resolved, RenderContext context) {
         SvgGraphic externalGraphic = FoxgloveParser.shared()
             .parseFile(resolved);
         if (externalGraphic.getBaseUri() == null) {
@@ -228,7 +238,12 @@ public class SvgImage extends AbstractSvgStylable implements ISvgStructuralEleme
             return null;
         }
         try {
-            Node rendered = externalGraphic.createGroup();
+            Set<URI> activeImageSources = new HashSet<>(context.getActiveImageSources());
+            activeImageSources.add(resolved);
+            RenderContext externalContext = RenderContext.root(externalGraphic.getElementIndex(), 0, 0)
+                .withBaseUri(externalGraphic.getBaseUri())
+                .withActiveImageSources(activeImageSources);
+            Node rendered = externalGraphic.createGraphic(externalContext);
             new Scene(new Group(rendered));
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
