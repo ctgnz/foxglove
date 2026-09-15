@@ -30,6 +30,7 @@ import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.type.ViewBox;
 
 /**
  * Exercises #21's acceptance criteria: {@code marker-end} renders an arrowhead on a {@code <line>} and a {@code <polyline>}, correctly oriented; {@code marker-mid} renders at
@@ -37,6 +38,10 @@ import nz.co.ctg.foxglove.shape.SvgRectangle;
  * <p>
  * Also #67's acceptance criteria: markers on a {@code <path>} render at the right vertices, including after multiple subpaths and a {@code Z} closepath, with {@code orient="auto"}
  * bisecting correctly at every vertex.
+ * <p>
+ * Also #176's acceptance criteria: {@code refX}/{@code refY} are mapped through the marker's own {@code viewBox} before being used to position content, rather than applied
+ * directly in a coordinate system they were never expressed in; a marker with no {@code viewBox} is unaffected; {@code orient="auto-start-reverse"} reverses only the
+ * {@code marker-start} instance.
  */
 public class SvgMarkerRenderingTest {
 
@@ -319,6 +324,119 @@ public class SvgMarkerRenderingTest {
             .get(1);
         // incoming along +x (0 deg), outgoing along +y (90 deg) - bisected halfway, at 45 deg
         assertThat(rotate.getAngle(), closeTo(45, 1e-6));
+    }
+
+    /**
+     * The exact shape of #176: a marker's {@code refX}/{@code refY} are given in its own {@code viewBox} coordinate system, but the translate that aligns them with the vertex is
+     * applied in the post-{@code viewBox} viewport space ({@code markerWidth}/{@code markerHeight}) - so the reference point has to be mapped through the same viewBox-to-viewport
+     * transform {@code fitted}'s own content already goes through, not used as a raw offset in the wrong coordinate system. Mirrors {@code painting-marker-01-f}'s actual values
+     * exactly (viewBox 0 0 10 10, markerWidth/Height 2, refX/refY 5, stroke-width 8): the viewBox's own center (5,5) should map to (1,1) in viewport space, not stay (5,5).
+     */
+    @Test
+    public void testRefXRefYAreMappedThroughTheMarkersOwnViewBox() throws Exception {
+        SvgMarker marker = markerWithContent("arrow");
+        marker.setViewBox(new ViewBox(px(0), px(0), px(10), px(10)));
+        marker.setMarkerWidth("2");
+        marker.setMarkerHeight("2");
+        marker.setRefX("5");
+        marker.setRefY("5");
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent()
+            .add(marker);
+
+        SvgLine line = new SvgLine();
+        line.setEndX(10);
+        line.setStrokeWidth(8.0);
+        line.setMarkerEnd("url(#arrow)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent()
+            .add(defs);
+        root.getContent()
+            .add(line);
+
+        Group wrapper = (Group) render(root).getChildren()
+            .get(0);
+        Group markerInstance = (Group) wrapper.getChildren()
+            .get(1);
+        // [Translate(vertex), Rotate, Scale(strokeWidth), Translate(-refPoint)]
+        Translate refTranslate = (Translate) markerInstance.getTransforms()
+            .get(3);
+        assertThat(refTranslate.getX(), closeTo(-1, 1e-9));
+        assertThat(refTranslate.getY(), closeTo(-1, 1e-9));
+    }
+
+    /** The regression guard for #176's fix: a marker with no {@code viewBox} has no viewport transform to map through, so {@code refX}/{@code refY} are used exactly as given. */
+    @Test
+    public void testRefXRefYWithNoViewBoxAreUsedDirectly() throws Exception {
+        SvgMarker marker = markerWithContent("arrow");
+        marker.setRefX("3");
+        marker.setRefY("4");
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent()
+            .add(marker);
+
+        SvgLine line = new SvgLine();
+        line.setEndX(10);
+        line.setMarkerEnd("url(#arrow)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent()
+            .add(defs);
+        root.getContent()
+            .add(line);
+
+        Group wrapper = (Group) render(root).getChildren()
+            .get(0);
+        Group markerInstance = (Group) wrapper.getChildren()
+            .get(1);
+        // [Translate(vertex), Rotate, Scale(strokeWidth), Translate(-refX,-refY)]
+        Translate refTranslate = (Translate) markerInstance.getTransforms()
+            .get(3);
+        assertThat(refTranslate.getX(), closeTo(-3, 1e-9));
+        assertThat(refTranslate.getY(), closeTo(-4, 1e-9));
+    }
+
+    /**
+     * #176: {@code auto-start-reverse} behaves exactly like {@code auto} except the {@code marker-start} instance is additionally rotated 180 degrees - {@code marker-end} on the
+     * same path, sharing the same {@code orient}, is unaffected.
+     */
+    @Test
+    public void testOrientAutoStartReverseRotatesOnlyTheStartMarker180Degrees() throws Exception {
+        SvgMarker dot = markerWithContent("dot");
+        dot.setOrient("auto-start-reverse");
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent()
+            .add(dot);
+
+        SvgPolyline polyline = new SvgPolyline();
+        polyline.setPoints(List.of(new Point2D(0, 0), new Point2D(10, 0), new Point2D(10, 10)));
+        polyline.setMarkerStart("url(#dot)");
+        polyline.setMarkerEnd("url(#dot)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent()
+            .add(defs);
+        root.getContent()
+            .add(polyline);
+
+        Group wrapper = (Group) render(root).getChildren()
+            .get(0);
+        assertThat(wrapper.getChildren(), hasSize(3));
+
+        Group startInstance = (Group) wrapper.getChildren()
+            .get(1);
+        Rotate startRotate = (Rotate) startInstance.getTransforms()
+            .get(1);
+        // outgoing tangent (0,0)->(10,0) is 0 deg; auto-start-reverse adds 180 for the start instance only
+        assertThat(startRotate.getAngle(), closeTo(180, 1e-6));
+
+        Group endInstance = (Group) wrapper.getChildren()
+            .get(2);
+        Rotate endRotate = (Rotate) endInstance.getTransforms()
+            .get(1);
+        // incoming tangent (10,0)->(10,10) is 90 deg - unaffected, since only marker-start reverses
+        assertThat(endRotate.getAngle(), closeTo(90, 1e-6));
     }
 
     @Test

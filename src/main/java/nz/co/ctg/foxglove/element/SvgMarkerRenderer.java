@@ -234,8 +234,17 @@ public final class SvgMarkerRenderer {
         }
         boolean scaleByStrokeWidth = !"userSpaceOnUse".equals(marker.getMarkerUnits());
         String rawOrient = marker.getOrient();
-        boolean autoOrient = "auto".equals(rawOrient) || "auto-start-reverse".equals(rawOrient);
-        double angle = autoOrient ? placement.autoAngle() : parseCoordinate(rawOrient, 0);
+        double angle;
+        if ("auto".equals(rawOrient)) {
+            angle = placement.autoAngle();
+        } else if ("auto-start-reverse".equals(rawOrient)) {
+            // Per spec, behaves exactly like `auto` except the marker-start instance is additionally reversed -
+            // mid/end instances on the same path are unaffected, so this has to consult the placement's own role
+            // rather than being a single flag computed once per marker like the plain `auto` case above.
+            angle = placement.role() == MarkerRole.START ? placement.autoAngle() + 180 : placement.autoAngle();
+        } else {
+            angle = parseCoordinate(rawOrient, 0);
+        }
 
         RenderContext markerContext = RenderContext.root(index, markerWidth, markerHeight);
         Group fitted = new Group();
@@ -251,6 +260,13 @@ public final class SvgMarkerRenderer {
             return null;
         }
 
+        // refX/refY are given in the marker's own viewBox coordinate system (SVG 1.1 11.6.2), but the translate
+        // below positions content in the post-viewBox viewport space (markerWidth x markerHeight) that
+        // viewBoxTransform already maps `fitted`'s own content into - so the reference point has to go through that
+        // same transform to land in the same space as the content it is meant to align with. Absent a viewBox, the
+        // viewport space *is* the coordinate system refX/refY are given in, so they are used as-is.
+        Point2D refPoint = viewBoxTransform != null ? viewBoxTransform.transform(refX, refY) : new Point2D(refX, refY);
+
         Group instance = new Group(fitted);
         instance.setClip(new Rectangle(markerWidth, markerHeight));
         instance.getTransforms()
@@ -264,7 +280,7 @@ public final class SvgMarkerRenderer {
                 .add(new Scale(strokeWidth, strokeWidth));
         }
         instance.getTransforms()
-            .add(new Translate(-refX, -refY));
+            .add(new Translate(-refPoint.getX(), -refPoint.getY()));
         return instance;
     }
 
