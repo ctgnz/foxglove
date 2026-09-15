@@ -1,0 +1,36 @@
+name: Generate W3C conformance reference images
+
+# Deliberately workflow_dispatch only - never on push/PR. Regenerating means picking up a new pinned Chromium
+# version (via Playwright) or a new revision of the W3C suite itself, and that should always be a deliberate,
+# reviewed choice (see #196/#200), not an automatic side effect of an unrelated commit.
+on:
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Generate reference images via headless Chromium
+        # No Xvfb here, unlike this repo's other workflows - Playwright's headless Chromium (unlike the JavaFX
+        # toolkit the rest of this codebase drives) needs no display server at all.
+        run: mvn -B -Pconformance test -Dtest=W3cSvgReferenceGenerator
+      - name: Upload reference images
+        uses: actions/upload-artifact@v4
+        with:
+          name: w3c-svg-references
+          path: target/w3c-svg-references-generated
+          if-no-files-found: error
+          # #200's own real open risk: these are renders of the W3C suite's own copyrighted test documents. A
+          # GitHub Actions artifact - unlike a Release asset - needs a real, signed-in GitHub session to download
+          # and expires automatically (repo default retention, left unset here deliberately) rather than sitting at
+          # a stable, anonymously-fetchable public URL forever. #198 will fetch it via the GitHub API using a
+          # token, not a bare download-maven-plugin URL the way the W3C suite itself is fetched. Expiry is expected
+          # and accepted - re-running this workflow on demand is the deliberate mechanism for picking it back up,
+          # not something to work around with an extended retention period.
