@@ -7,6 +7,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import java.util.List;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.text.Text;

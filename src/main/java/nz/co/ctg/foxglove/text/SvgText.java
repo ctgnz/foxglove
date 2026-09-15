@@ -2,6 +2,7 @@ package nz.co.ctg.foxglove.text;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.scene.Node;
 
 import com.google.common.base.MoreObjects.ToStringHelper;

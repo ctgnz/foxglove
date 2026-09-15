@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove;
 
 import java.util.Locale;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 

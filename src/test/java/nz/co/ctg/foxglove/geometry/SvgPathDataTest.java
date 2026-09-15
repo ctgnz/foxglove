@@ -6,6 +6,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import java.util.List;
+
 import javafx.geometry.Point2D;
 
 import org.junit.jupiter.api.Test;

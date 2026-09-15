@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import java.util.Optional;
+
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;

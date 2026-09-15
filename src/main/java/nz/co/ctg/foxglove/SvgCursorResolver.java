@@ -2,6 +2,7 @@ package nz.co.ctg.foxglove;
 
 import java.util.Locale;
 import java.util.Map;
+
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;

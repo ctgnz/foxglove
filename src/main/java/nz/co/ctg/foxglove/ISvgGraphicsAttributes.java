@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.util.List;
+
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;

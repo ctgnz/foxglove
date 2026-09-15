@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;

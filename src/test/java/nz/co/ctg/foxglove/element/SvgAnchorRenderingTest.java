@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 import java.util.concurrent.atomic.AtomicReference;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;

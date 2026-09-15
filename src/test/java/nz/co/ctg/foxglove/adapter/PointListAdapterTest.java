@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 import java.util.List;
+
 import javafx.geometry.Point2D;
 
 import org.junit.jupiter.api.Test;

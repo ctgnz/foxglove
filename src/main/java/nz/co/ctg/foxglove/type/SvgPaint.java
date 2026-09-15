@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove.type;
 
 import java.util.Objects;
+
 import javafx.scene.paint.Paint;
 
 import org.apache.commons.lang3.StringUtils;

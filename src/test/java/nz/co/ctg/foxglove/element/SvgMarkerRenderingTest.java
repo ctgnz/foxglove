@@ -10,6 +10,7 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.Point2D;

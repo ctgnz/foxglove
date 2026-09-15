@@ -5,6 +5,7 @@ import static nz.co.ctg.foxglove.ISvgTextAttributes.TEXT_FONT_WEIGHT;
 
 import java.util.Map;
 import java.util.function.Function;
+
 import javafx.scene.shape.FillRule;
 
 import com.google.common.collect.ImmutableMap;

@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Optional;
+
 import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.scene.Group;

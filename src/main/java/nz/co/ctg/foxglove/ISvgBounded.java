@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove;
 
 import java.util.Optional;
+
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 

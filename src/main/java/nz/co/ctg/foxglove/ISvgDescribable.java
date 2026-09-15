@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove;
 
 import java.util.Optional;
+
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 

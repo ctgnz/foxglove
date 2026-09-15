@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove.clip;
 
 import java.util.List;
+
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.geometry.BoundingBox;

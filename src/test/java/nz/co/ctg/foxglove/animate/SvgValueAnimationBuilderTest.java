@@ -9,6 +9,7 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;

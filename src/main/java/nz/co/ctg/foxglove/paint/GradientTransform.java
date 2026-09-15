@@ -2,6 +2,7 @@ package nz.co.ctg.foxglove.paint;
 
 import java.util.List;
 import java.util.logging.Logger;
+
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Transform;
 

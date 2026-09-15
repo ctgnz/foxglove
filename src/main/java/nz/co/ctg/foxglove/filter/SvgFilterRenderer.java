@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import javafx.application.Platform;
 import javafx.css.Size;
 import javafx.css.SizeUnits;

@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.paint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.Paint;

@@ -6,6 +6,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;

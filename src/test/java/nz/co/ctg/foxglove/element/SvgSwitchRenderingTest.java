@@ -6,6 +6,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 
 import java.util.Locale;
+
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 

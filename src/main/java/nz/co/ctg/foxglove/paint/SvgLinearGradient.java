@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.paint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+
 import javafx.geometry.Point2D;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;

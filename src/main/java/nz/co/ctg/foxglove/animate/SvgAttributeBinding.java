@@ -2,6 +2,7 @@ package nz.co.ctg.foxglove.animate;
 
 import java.util.Optional;
 import java.util.function.Function;
+
 import javafx.beans.value.WritableValue;
 
 /**

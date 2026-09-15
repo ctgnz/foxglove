@@ -8,6 +8,7 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
+
 import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.scene.Node;

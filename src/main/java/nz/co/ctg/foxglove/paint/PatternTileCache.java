@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+
 import javafx.scene.image.Image;
 
 /**

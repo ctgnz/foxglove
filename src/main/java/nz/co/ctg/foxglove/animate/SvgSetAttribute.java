@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.animate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;

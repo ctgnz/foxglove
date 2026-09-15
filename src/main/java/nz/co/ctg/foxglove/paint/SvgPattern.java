@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.paint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+
 import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;

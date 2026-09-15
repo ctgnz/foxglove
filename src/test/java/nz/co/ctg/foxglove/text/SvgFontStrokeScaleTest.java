@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Shape;

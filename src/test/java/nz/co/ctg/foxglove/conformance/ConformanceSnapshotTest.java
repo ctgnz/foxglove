@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+
 import javafx.scene.Node;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Rectangle2D;

@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.shape;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 

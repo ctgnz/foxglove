@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javafx.geometry.Point2D;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;

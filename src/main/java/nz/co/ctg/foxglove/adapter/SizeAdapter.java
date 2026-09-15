@@ -3,6 +3,7 @@ package nz.co.ctg.foxglove.adapter;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 

@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove.clip;
 
 import java.util.Set;
+
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;

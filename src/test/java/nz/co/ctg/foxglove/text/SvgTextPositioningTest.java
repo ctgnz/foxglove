@@ -9,6 +9,7 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.text.Text;

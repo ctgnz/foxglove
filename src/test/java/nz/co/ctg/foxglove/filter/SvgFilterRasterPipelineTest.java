@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import java.net.URI;
+
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.scene.Node;

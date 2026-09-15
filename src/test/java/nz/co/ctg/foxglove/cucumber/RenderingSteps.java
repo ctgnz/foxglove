@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.IdentityHashMap;
 import java.util.Map;
+
 import javafx.scene.Node;
 import javafx.scene.shape.Shape;
 

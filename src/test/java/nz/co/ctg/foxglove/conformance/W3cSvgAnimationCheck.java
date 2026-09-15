@@ -11,6 +11,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import javafx.scene.Node;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;

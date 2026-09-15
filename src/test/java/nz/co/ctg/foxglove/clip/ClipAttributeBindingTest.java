@@ -7,6 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineJoin;
 

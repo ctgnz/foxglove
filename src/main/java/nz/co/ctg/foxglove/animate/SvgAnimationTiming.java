@@ -1,6 +1,7 @@
 package nz.co.ctg.foxglove.animate;
 
 import java.util.Optional;
+
 import javafx.animation.Animation;
 import javafx.util.Duration;
 
