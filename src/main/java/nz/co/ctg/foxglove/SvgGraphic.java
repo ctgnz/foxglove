@@ -125,9 +125,15 @@ public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISv
      * The root {@code <svg>} element itself is registered directly here, rather than via {@link ISvgGraphicsAttributes#registerNode} - that only ever runs for a *child* some
      * container consumes, and the root is nobody's child - so an animation whose target is the document root itself (the default when its own parent, per SMIL, is the root) still
      * resolves, unlike {@code mask}'s equivalent root-level gap.
+     * <p>
+     * #212: reuses {@code parentContext}'s own registry if the caller already supplied one via {@link RenderContext#withNodeRegistry} (falling back to a fresh one otherwise, the
+     * only behaviour any existing caller before this had) - previously always built and used a new one internally, silently discarding whatever the caller passed in. A caller that
+     * wants to look up a rendered node afterwards (like {@code W3cSvgAnimationCheck}'s own {@code #revision} legend lookup, for the crop the static conformance check already
+     * relies on) got back an empty map every time, not the one animated rendering actually populated.
      */
     public AnimatedGraphic createAnimatedGraphic(RenderContext parentContext) {
-        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        Map<ISvgElement, Node> registry = parentContext.getNodeRegistry()
+            .orElseGet(IdentityHashMap::new);
         Node node = createGraphic(parentContext.withNodeRegistry(registry));
         registry.put(this, node);
         return new AnimatedGraphic(node, new SvgAnimationController(getElementIndex(), registry, parentContext));

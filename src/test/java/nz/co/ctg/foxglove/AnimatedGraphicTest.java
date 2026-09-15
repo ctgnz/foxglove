@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javafx.animation.Animation;
@@ -68,6 +70,28 @@ public class AnimatedGraphicTest {
         AnimatedGraphic result = onFxThread(() -> svg.createAnimatedGraphic(RenderContext.root(svg.getElementIndex(), 0, 0)));
         assertThat(result.animations()
             .size(), is(1));
+    }
+
+    /**
+     * #212: a caller-supplied registry (the same {@code withNodeRegistry} mechanism {@code createGraphic} already honours) must actually be the one animated rendering populates,
+     * not silently replaced with a fresh, inaccessible one - {@code W3cSvgAnimationCheck} relies on exactly this to look up the rendered {@code #revision} legend's bounds
+     * afterwards, and got back an empty map from every call before this fix.
+     */
+    @Test
+    public void testReusesACallerSuppliedNodeRegistry() throws Exception {
+        SvgRectangle rect = new SvgRectangle(0, 0, 10, 10);
+        rect.setId("target");
+        SvgGraphic svg = new SvgGraphic();
+        svg.getContent()
+            .add(rect);
+
+        Map<ISvgElement, Node> registry = new IdentityHashMap<>();
+        RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0)
+            .withNodeRegistry(registry);
+        onFxThread(() -> svg.createAnimatedGraphic(context));
+
+        assertThat("the caller's own registry instance should be populated, not a different one discarded internally",
+            registry.get(rect), notNullValue());
     }
 
 }
