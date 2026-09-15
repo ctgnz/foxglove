@@ -89,6 +89,38 @@ public class ConformanceReportTest {
         assertThat(read("shapes/shapes-rect-01-t.html"), not(containsString("not meaningful")));
     }
 
+    /**
+     * #201: interaction-category tests (here, {@code struct-dom-01-b} - the {@code -dom-} naming pattern, not the {@code struct} chapter's own static tests) are scattered across
+     * many raw chapters rather than one, so they get a single shared listing page (not a same-directory chapter index - {@code struct} has no static tests in this input at all, so
+     * {@code struct/index.html} is never written) and their own page links back to that shared listing, not a (nonexistent) same-directory index.
+     */
+    @Test
+    public void testInteractionResultsAreMarkedUnmeasurableAndListedOnOneSharedPage() throws Exception {
+        write(result("struct-dom-01-b", false, 0.1), result("shapes-rect-01-t", true, 0.99));
+
+        String testPage = read("struct/struct-dom-01-b.html");
+        assertThat(testPage, containsString("not meaningful"));
+        assertThat(testPage, containsString("href=\"../interaction/index.html\">interaction</a>"));
+        assertThat(read("interaction/index.html"), containsString("href=\"../struct/struct-dom-01-b.html\""));
+        // struct has no static tests here at all, so its own chapter index must not exist
+        assertThat(Files.exists(outputDir.resolve("struct")
+            .resolve("index.html")), is(false));
+        // and the caveat must not leak onto categories it doesn't apply to
+        assertThat(read("shapes/shapes-rect-01-t.html"), not(containsString("not meaningful")));
+    }
+
+    @Test
+    public void testIndexShowsSeparateAnimationAndInteractionSections() throws Exception {
+        write(result("shapes-rect-01-t", true, 0.99), result("animate-elem-01-t", false, 0.5),
+            result("interact-order-01-b", false, 0.1));
+
+        String index = read("index.html");
+        assertThat(index, containsString("href=\"animate/index.html\""));
+        assertThat(index, containsString("href=\"interaction/index.html\""));
+        // the primary headline is static-only, unaffected by the other two categories being present
+        assertThat(index, containsString("1 / 1 tests passing"));
+    }
+
     @Test
     public void testATestThatThrewSaysSoOnItsOwnPage() throws Exception {
         Map<String, ConformanceResult> results = new LinkedHashMap<>();
