@@ -11,6 +11,10 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import javafx.scene.Node;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
@@ -22,11 +26,6 @@ import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
-
-import javafx.scene.Node;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 /**
  * #112: renders every {@code animate-} document in the W3C suite <b>at chosen moments</b> and compares it against a live browser engine seeked to the same moment.
