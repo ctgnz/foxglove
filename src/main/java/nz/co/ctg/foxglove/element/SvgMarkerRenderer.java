@@ -77,8 +77,22 @@ public final class SvgMarkerRenderer {
             vertices = polyline.getPoints();
             angles = vertices == null ? List.of() : autoAnglesFor(vertices, false);
         } else if (child instanceof SvgPolygon polygon) {
-            vertices = polygon.getPoints();
-            angles = vertices == null ? List.of() : autoAnglesFor(vertices, true);
+            // Per SVG2 11.6.1 (and, before it, every real implementation of SVG 1.1's own less explicit text): for
+            // every shape except <polyline> and <path>, the last vertex is the same as the first, closing the shape
+            // - marker-start and marker-end both render there, at the same point. Bisect over the distinct points
+            // only (as the closed-<path>-subpath case just below does, and its own comment already assumed this
+            // branch did too - #183), then re-append the duplicate closing point with vertex 0's own angle.
+            List<Point2D> points = polygon.getPoints();
+            if (points == null || points.isEmpty()) {
+                vertices = points;
+                angles = List.of();
+            } else {
+                List<Double> pointAngles = autoAnglesFor(points, true);
+                vertices = new ArrayList<>(points);
+                vertices.add(points.get(0));
+                angles = new ArrayList<>(pointAngles);
+                angles.add(pointAngles.get(0));
+            }
         } else if (child instanceof SvgPath path) {
             // marker-start/marker-end apply only to the very first/last vertex of the whole path, not per subpath -
             // so angles are computed per subpath (respecting each one's own open/closed tangent rules) but roles

@@ -42,6 +42,9 @@ import nz.co.ctg.foxglove.type.ViewBox;
  * Also #176's acceptance criteria: {@code refX}/{@code refY} are mapped through the marker's own {@code viewBox} before being used to position content, rather than applied
  * directly in a coordinate system they were never expressed in; a marker with no {@code viewBox} is unaffected; {@code orient="auto-start-reverse"} reverses only the
  * {@code marker-start} instance.
+ * <p>
+ * Also #183's acceptance criteria: a {@code <polygon>}'s implicit closing edge counts as an additional vertex coinciding with the first point (SVG2 11.6.1), so {@code marker-end}
+ * renders there rather than at the last explicit point, and a 2-point {@code <polygon>} gains exactly one interior vertex for {@code marker-mid}.
  */
 public class SvgMarkerRenderingTest {
 
@@ -190,6 +193,70 @@ public class SvgMarkerRenderingTest {
             .get(1);
         // incoming via the closing edge (0,10)->(0,0): -90 deg; outgoing (0,0)->(10,0): 0 deg; bisected: -45 deg
         assertThat(rotate.getAngle(), closeTo(-45, 1e-6));
+    }
+
+    /**
+     * #183, per SVG2 11.6.1: every shape except {@code <polyline>}/{@code <path>} closes implicitly, so the last vertex coincides with the first - {@code marker-end} renders
+     * there, not at the last point actually listed in {@code points}. Root cause of {@code painting-marker-properties-01-f}'s broken/discontinuous rendering: its own comment
+     * already assumed {@code <polygon>} got this treatment (see the closed-{@code <path>}-subpath branch just above in {@code applyMarkers}), but the code didn't.
+     */
+    @Test
+    public void testMarkerEndOnAPolygonRendersAtTheClosingVertexCoincidingWithTheFirstPoint() throws Exception {
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent()
+            .add(markerWithContent("arrow"));
+
+        SvgPolygon polygon = new SvgPolygon();
+        polygon.setPoints(List.of(new Point2D(0, 0), new Point2D(10, 0), new Point2D(0, 10)));
+        polygon.setMarkerEnd("url(#arrow)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent()
+            .add(defs);
+        root.getContent()
+            .add(polygon);
+
+        Group wrapper = (Group) render(root).getChildren()
+            .get(0);
+        assertThat(wrapper.getChildren(), hasSize(2));
+        Group markerInstance = (Group) wrapper.getChildren()
+            .get(1);
+        Translate vertex = (Translate) markerInstance.getTransforms()
+            .get(0);
+        assertThat(vertex.getX(), closeTo(0, 1e-9));
+        assertThat(vertex.getY(), closeTo(0, 1e-9));
+    }
+
+    /**
+     * #183: the exact shape of {@code painting-marker-properties-01-f}'s own "mid" polygon (a 2-point {@code <polygon>}) - before this fix it had zero interior vertices (first
+     * point was start, second was end, nothing between), which is why that test's marker-mid column rendered with a gap. Counting the implicit closing edge turns the second point
+     * into the sole interior vertex.
+     */
+    @Test
+    public void testMarkerMidOnATwoPointPolygonRendersOneMarkerAtTheSecondPoint() throws Exception {
+        SvgDefinitions defs = new SvgDefinitions();
+        defs.getContent()
+            .add(markerWithContent("dot"));
+
+        SvgPolygon polygon = new SvgPolygon();
+        polygon.setPoints(List.of(new Point2D(300, 150), new Point2D(350, 150)));
+        polygon.setMarkerMid("url(#dot)");
+
+        SvgGroup root = new SvgGroup();
+        root.getContent()
+            .add(defs);
+        root.getContent()
+            .add(polygon);
+
+        Group wrapper = (Group) render(root).getChildren()
+            .get(0);
+        assertThat(wrapper.getChildren(), hasSize(2));
+        Group markerInstance = (Group) wrapper.getChildren()
+            .get(1);
+        Translate vertex = (Translate) markerInstance.getTransforms()
+            .get(0);
+        assertThat(vertex.getX(), closeTo(350, 1e-9));
+        assertThat(vertex.getY(), closeTo(150, 1e-9));
     }
 
     @Test
