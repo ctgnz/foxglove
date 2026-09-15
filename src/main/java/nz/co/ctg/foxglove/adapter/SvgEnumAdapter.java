@@ -1,10 +1,11 @@
 package nz.co.ctg.foxglove.adapter;
 
+import javafx.css.ParsedValue;
+import javafx.css.StyleConverter;
+
 import org.apache.commons.lang3.StringUtils;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import javafx.css.ParsedValue;
-import javafx.css.StyleConverter;
 
 public abstract class SvgEnumAdapter<E extends Enum<E>> extends XmlAdapter<String, E> {
 
@@ -38,7 +39,8 @@ public abstract class SvgEnumAdapter<E extends Enum<E>> extends XmlAdapter<Strin
 
     @Override
     public String marshal(E value) throws Exception {
-        return value != null ? value.name().toLowerCase() : null;
+        return value != null ? value.name()
+            .toLowerCase() : null;
     }
 
 }

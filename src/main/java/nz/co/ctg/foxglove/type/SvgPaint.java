@@ -1,26 +1,27 @@
 package nz.co.ctg.foxglove.type;
 
 import java.util.Objects;
+import javafx.scene.paint.Paint;
 
 import org.apache.commons.lang3.StringUtils;
-
-import javafx.scene.paint.Paint;
 
 /**
  * The value of a {@code fill} or {@code stroke}, which is not always a paint that can be constructed on the spot.
  * <p>
- * {@code url(#grad)} names an element that may not have been parsed yet and whose paint depends on the shape it ends
- * up on, and {@code currentColor} stands for whatever {@code color} resolves to at the point of use. Neither can be
- * turned into a {@link Paint} while parsing, and {@code javafx.scene.paint.Paint} cannot be extended to carry them -
+ * {@code url(#grad)} names an element that may not have been parsed yet and whose paint depends on the shape it ends up on, and {@code currentColor} stands for whatever
+ * {@code color} resolves to at the point of use. Neither can be turned into a {@link Paint} while parsing, and {@code javafx.scene.paint.Paint} cannot be extended to carry them -
  * its only constructor is package private. So the parsed value is held here and resolved at render time.
  * <p>
- * A null {@code SvgPaint} means the property was not specified, which is what allows it to be inherited. That is
- * distinct from {@link #none()}, which is an explicit instruction not to paint.
+ * A null {@code SvgPaint} means the property was not specified, which is what allows it to be inherited. That is distinct from {@link #none()}, which is an explicit instruction
+ * not to paint.
  */
 public final class SvgPaint {
 
     private enum Kind {
-        NONE, COLOR, REFERENCE, CURRENT_COLOR
+            NONE,
+            COLOR,
+            REFERENCE,
+            CURRENT_COLOR
     }
 
     private static final String NONE_KEYWORD = "none";
@@ -58,11 +59,10 @@ public final class SvgPaint {
     /**
      * Parses a {@code fill} or {@code stroke} value.
      * <p>
-     * Accepts a colour, {@code none}, {@code currentColor}, and a {@code url(#id)} reference which may be followed by
-     * a fallback for when the reference does not resolve - {@code fill="url(#grad) red"}.
+     * Accepts a colour, {@code none}, {@code currentColor}, and a {@code url(#id)} reference which may be followed by a fallback for when the reference does not resolve -
+     * {@code fill="url(#grad) red"}.
      *
-     * @return the parsed value, or null if the value is blank or not recognised, both of which leave the property
-     *         unspecified so that it inherits
+     * @return the parsed value, or null if the value is blank or not recognised, both of which leave the property unspecified so that it inherits
      */
     public static SvgPaint parse(String value) {
         String text = StringUtils.trimToEmpty(value);
@@ -124,24 +124,21 @@ public final class SvgPaint {
     }
 
     /**
-     * The paint this value resolves to directly, or null when it names a reference or a keyword that has to be
-     * resolved against the document or the inherited style.
+     * The paint this value resolves to directly, or null when it names a reference or a keyword that has to be resolved against the document or the inherited style.
      */
     public Paint getPaint() {
         return paint;
     }
 
     /**
-     * The reference as written, including the {@code url(...)} wrapper, ready for
-     * {@code SvgElementIndex.resolve}.
+     * The reference as written, including the {@code url(...)} wrapper, ready for {@code SvgElementIndex.resolve}.
      */
     public String getReference() {
         return reference;
     }
 
     /**
-     * What to paint with when the reference cannot be resolved, or null if none was given - in which case the
-     * specification says to treat the paint as {@code none}.
+     * What to paint with when the reference cannot be resolved, or null if none was given - in which case the specification says to treat the paint as {@code none}.
      */
     public SvgPaint getFallback() {
         return fallback;
@@ -156,9 +153,9 @@ public final class SvgPaint {
             return false;
         }
         return kind == that.kind
-            && Objects.equals(paint, that.paint)
-            && Objects.equals(reference, that.reference)
-            && Objects.equals(fallback, that.fallback);
+               && Objects.equals(paint, that.paint)
+               && Objects.equals(reference, that.reference)
+               && Objects.equals(fallback, that.fallback);
     }
 
     @Override

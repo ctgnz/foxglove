@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.adapter;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import javafx.css.Size;
+import javafx.css.SizeUnits;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -10,8 +12,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.google.common.collect.Maps;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import javafx.css.Size;
-import javafx.css.SizeUnits;
 
 public class SizeAdapter extends XmlAdapter<String, Size> {
     private static final SizeAdapter INST = new SizeAdapter();
@@ -45,7 +45,8 @@ public class SizeAdapter extends XmlAdapter<String, Size> {
             int unitStart = indexOfUnits(value);
             String numberPart = StringUtils.substring(value, 0, unitStart);
             // SIZE_UNITS is keyed on the lower case SizeUnits.toString(), but unit names are case insensitive
-            String unitPart = StringUtils.substring(value, unitStart).toLowerCase(Locale.ROOT);
+            String unitPart = StringUtils.substring(value, unitStart)
+                .toLowerCase(Locale.ROOT);
             return new Size(NumberUtils.toDouble(numberPart), SIZE_UNITS.getOrDefault(unitPart, SizeUnits.PX));
         }
     }

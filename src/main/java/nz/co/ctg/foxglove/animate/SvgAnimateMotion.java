@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.animate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javafx.animation.Animation;
+import javafx.scene.Node;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -22,9 +24,6 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import javafx.animation.Animation;
-import javafx.scene.Node;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {

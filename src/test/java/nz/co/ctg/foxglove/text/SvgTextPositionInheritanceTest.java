@@ -1,6 +1,14 @@
 package nz.co.ctg.foxglove.text;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.number.IsCloseTo.closeTo;
+
 import java.util.List;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,22 +16,12 @@ import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.shape.SvgPath;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.number.IsCloseTo.closeTo;
-
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
-
 /**
- * Exercises #143: {@code x}/{@code y}/{@code dx}/{@code dy}/{@code rotate} address the characters of a
- * text-positioning element's <b>whole subtree</b>, not just those it owns directly.
+ * Exercises #143: {@code x}/{@code y}/{@code dx}/{@code dy}/{@code rotate} address the characters of a text-positioning element's <b>whole subtree</b>, not just those it owns
+ * directly.
  * <p>
- * Built around cases that discriminate the actual fix from simpler-but-wrong readings of it - in particular, "the
- * first ancestor with a non-empty list wins" is not the same rule as "the nearest ancestor whose list still reaches
- * this character wins," and only the second one is correct (see {@link #testAnElementsOwnListFallsThroughOnceExhausted}).
+ * Built around cases that discriminate the actual fix from simpler-but-wrong readings of it - in particular, "the first ancestor with a non-empty list wins" is not the same rule
+ * as "the nearest ancestor whose list still reaches this character wins," and only the second one is correct (see {@link #testAnElementsOwnListFallsThroughOnceExhausted}).
  */
 public class SvgTextPositionInheritanceTest {
 
@@ -31,19 +29,25 @@ public class SvgTextPositionInheritanceTest {
     @Test
     public void testATrailingCharacterAfterAPositionedChildDoesNotDoubleBack() throws Exception {
         SvgTextSpan span = new SvgTextSpan();
-        span.getContent().add("A");
+        span.getContent()
+            .add("A");
         SvgText text = new SvgText();
         text.setX(List.of(30.0));
         text.setY(List.of(100.0));
-        text.getContent().add(span);
-        text.getContent().add("B");
+        text.getContent()
+            .add(span);
+        text.getContent()
+            .add("B");
 
         Group rendered = (Group) render(text);
-        Text a = (Text) rendered.getChildren().get(0);
-        Text b = (Text) rendered.getChildren().get(1);
+        Text a = (Text) rendered.getChildren()
+            .get(0);
+        Text b = (Text) rendered.getChildren()
+            .get(1);
 
         assertThat(a.getX(), closeTo(30, 1e-6));
-        assertThat(b.getX(), closeTo(a.getX() + a.getLayoutBounds().getWidth(), 1e-6));
+        assertThat(b.getX(), closeTo(a.getX() + a.getLayoutBounds()
+            .getWidth(), 1e-6));
         assertThat(b.getY(), closeTo(100, 1e-6));
     }
 
@@ -51,11 +55,14 @@ public class SvgTextPositionInheritanceTest {
     @Test
     public void testAChildWithNoListOfItsOwnInheritsThePositionsItsCharactersFallInto() throws Exception {
         SvgTextSpan span = new SvgTextSpan();
-        span.getContent().add("AB");
+        span.getContent()
+            .add("AB");
         SvgText text = new SvgText();
         text.setX(List.of(10.0, 20.0, 30.0));
-        text.getContent().add(span);
-        text.getContent().add("C");
+        text.getContent()
+            .add(span);
+        text.getContent()
+            .add("C");
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -66,22 +73,23 @@ public class SvgTextPositionInheritanceTest {
     }
 
     /**
-     * <b>The inconvenient case.</b> {@code <tspan x="1">AB</tspan>} covers only its own first character; "B" must
-     * fall through to the enclosing {@code <text>}'s list rather than being left unpositioned just because the
-     * {@code <tspan>} happens to have a list of its own. "C" then proves both A and B were counted against
-     * {@code <text>}'s own running index - an implementation that stopped at the first non-empty list (rather than
-     * only at the first one that actually reaches the character) would fail exactly this case while still passing
-     * the two simpler ones above.
+     * <b>The inconvenient case.</b> {@code <tspan x="1">AB</tspan>} covers only its own first character; "B" must fall through to the enclosing {@code <text>}'s list rather than
+     * being left unpositioned just because the {@code <tspan>} happens to have a list of its own. "C" then proves both A and B were counted against {@code <text>}'s own running
+     * index - an implementation that stopped at the first non-empty list (rather than only at the first one that actually reaches the character) would fail exactly this case while
+     * still passing the two simpler ones above.
      */
     @Test
     public void testAnElementsOwnListFallsThroughOnceExhausted() throws Exception {
         SvgTextSpan span = new SvgTextSpan();
         span.setX(List.of(1.0));
-        span.getContent().add("AB");
+        span.getContent()
+            .add("AB");
         SvgText text = new SvgText();
         text.setX(List.of(100.0, 200.0, 300.0));
-        text.getContent().add(span);
-        text.getContent().add("C");
+        text.getContent()
+            .add(span);
+        text.getContent()
+            .add("C");
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -98,13 +106,17 @@ public class SvgTextPositionInheritanceTest {
     @Test
     public void testThreeLevelsOfNestingStillIndexCorrectly() throws Exception {
         SvgTextSpan inner = new SvgTextSpan();
-        inner.getContent().add("AB");
+        inner.getContent()
+            .add("AB");
         SvgTextSpan outer = new SvgTextSpan();
-        outer.getContent().add(inner);
+        outer.getContent()
+            .add(inner);
         SvgText text = new SvgText();
         text.setX(List.of(5.0, 6.0, 7.0));
-        text.getContent().add(outer);
-        text.getContent().add("C");
+        text.getContent()
+            .add(outer);
+        text.getContent()
+            .add("C");
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -118,10 +130,12 @@ public class SvgTextPositionInheritanceTest {
     @Test
     public void testRotateInheritedFromAnAncestorAppliesPerGlyph() throws Exception {
         SvgTextSpan span = new SvgTextSpan();
-        span.getContent().add("AB");
+        span.getContent()
+            .add("AB");
         SvgText text = new SvgText();
         text.setRotate(List.of(15.0, 25.0));
-        text.getContent().add(span);
+        text.getContent()
+            .add(span);
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -131,18 +145,20 @@ public class SvgTextPositionInheritanceTest {
     }
 
     /**
-     * An element's own explicit position always wins over an ancestor's, even where the ancestor's list would
-     * otherwise reach that index too - precedence, not merely fallback.
+     * An element's own explicit position always wins over an ancestor's, even where the ancestor's list would otherwise reach that index too - precedence, not merely fallback.
      */
     @Test
     public void testAChildsOwnPositionOverridesTheAncestorsAtThatIndex() throws Exception {
         SvgTextSpan span = new SvgTextSpan();
         span.setX(List.of(999.0));
-        span.getContent().add("A");
+        span.getContent()
+            .add("A");
         SvgText text = new SvgText();
         text.setX(List.of(10.0, 20.0));
-        text.getContent().add(span);
-        text.getContent().add("B");
+        text.getContent()
+            .add(span);
+        text.getContent()
+            .add("B");
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -152,30 +168,38 @@ public class SvgTextPositionInheritanceTest {
     }
 
     /**
-     * Characters laid out along a {@code <textPath>} aren't themselves positioned by these lists (out of scope,
-     * #29), but they still occupy indices in an enclosing element's subtree - a following plain run must resume
-     * from beyond them, not re-offered the same list entries.
+     * Characters laid out along a {@code <textPath>} aren't themselves positioned by these lists (out of scope, #29), but they still occupy indices in an enclosing element's
+     * subtree - a following plain run must resume from beyond them, not re-offered the same list entries.
      */
     @Test
     public void testCharactersOnATextPathStillAdvanceAnEnclosingAncestorsIndex() throws Exception {
         SvgTextPath textPath = new SvgTextPath();
         textPath.setXlinkHref("#p");
-        textPath.getContent().add("AB");
+        textPath.getContent()
+            .add("AB");
         SvgText text = new SvgText();
         text.setX(List.of(10.0, 20.0, 30.0));
-        text.getContent().add(textPath);
-        text.getContent().add("C");
+        text.getContent()
+            .add(textPath);
+        text.getContent()
+            .add("C");
 
         SvgPath path = new SvgPath();
         path.setId("p");
         path.setD("M0,0 L1000,0");
 
         SvgGroup group = new SvgGroup();
-        group.getContent().add(path);
-        group.getContent().add(text);
+        group.getContent()
+            .add(path);
+        group.getContent()
+            .add(text);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(group);
-        Group rendered = (Group) ((Group) svg.createGroup().getChildren().get(0)).getChildren().get(1);
+        svg.getContent()
+            .add(group);
+        Group rendered = (Group) ((Group) svg.createGroup()
+            .getChildren()
+            .get(0)).getChildren()
+            .get(1);
 
         // "AB" on the path (2 glyphs) + "C" (1 run) = 3 children; C must land on text.x[2]=30, not x[0] again
         List<Node> children = rendered.getChildren();
@@ -194,10 +218,15 @@ public class SvgTextPositionInheritanceTest {
 
     private static Node render(SvgText text) {
         SvgGroup group = new SvgGroup();
-        group.getContent().add(text);
+        group.getContent()
+            .add(text);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(group);
-        return ((Group) svg.createGroup().getChildren().get(0)).getChildren().get(0);
+        svg.getContent()
+            .add(group);
+        return ((Group) svg.createGroup()
+            .getChildren()
+            .get(0)).getChildren()
+            .get(0);
     }
 
 }

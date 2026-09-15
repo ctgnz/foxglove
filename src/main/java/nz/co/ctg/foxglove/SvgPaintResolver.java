@@ -1,24 +1,22 @@
 package nz.co.ctg.foxglove;
 
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+
 import org.apache.commons.lang3.StringUtils;
 
 import nz.co.ctg.foxglove.paint.ISvgGradientElement;
 import nz.co.ctg.foxglove.paint.SvgPattern;
 import nz.co.ctg.foxglove.type.SvgPaint;
 
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-
 /**
  * Turns a parsed {@link SvgPaint} into something JavaFX can paint with.
  * <p>
- * This is deferred to render time because neither of the interesting cases can be settled while parsing: a
- * {@code url(#id)} reference needs the whole document to have been read, and {@code currentColor} needs the
- * {@code color} in force where the paint is used.
+ * This is deferred to render time because neither of the interesting cases can be settled while parsing: a {@code url(#id)} reference needs the whole document to have been read,
+ * and {@code currentColor} needs the {@code color} in force where the paint is used.
  * <p>
- * A reference to a {@code <pattern>} rasterises via {@link SvgPattern#createPaint}, which calls
- * {@code Node.snapshot(...)} and so requires the JavaFX Application Thread - the only path through here that does.
- * A colour, a gradient reference and {@code currentColor} all remain callable off-thread.
+ * A reference to a {@code <pattern>} rasterises via {@link SvgPattern#createPaint}, which calls {@code Node.snapshot(...)} and so requires the JavaFX Application Thread - the only
+ * path through here that does. A colour, a gradient reference and {@code currentColor} all remain callable off-thread.
  */
 public final class SvgPaintResolver {
 
@@ -30,12 +28,15 @@ public final class SvgPaintResolver {
     /**
      * Resolves a paint value.
      *
-     * @param value the parsed value, or null if the property was not specified
-     * @param style the style in force, which supplies {@code color}
-     * @param context the rendering context, carrying the document's element index (used to resolve a
-     *        {@code url(#id)} reference) and, for a pattern reference, the referencing shape's own bounding box
-     * @return the paint to use, or null for no paint - which covers an explicit {@code none}, an unspecified value,
-     *         and a reference that resolves to a gradient or pattern with nothing to paint
+     * @param value
+     *            the parsed value, or null if the property was not specified
+     * @param style
+     *            the style in force, which supplies {@code color}
+     * @param context
+     *            the rendering context, carrying the document's element index (used to resolve a {@code url(#id)} reference) and, for a pattern reference, the referencing shape's
+     *            own bounding box
+     * @return the paint to use, or null for no paint - which covers an explicit {@code none}, an unspecified value, and a reference that resolves to a gradient or pattern with
+     *         nothing to paint
      */
     public static Paint resolve(SvgPaint value, ISvgStylable style, RenderContext context) {
         if (value == null || value.isNone()) {
@@ -49,11 +50,13 @@ public final class SvgPaintResolver {
         }
         SvgElementIndex index = context.getElementIndex();
         if (index != null) {
-            ISvgGradientElement gradient = index.resolve(value.getReference(), ISvgGradientElement.class).orElse(null);
+            ISvgGradientElement gradient = index.resolve(value.getReference(), ISvgGradientElement.class)
+                .orElse(null);
             if (gradient != null) {
                 return gradient.createPaint(index);
             }
-            SvgPattern pattern = index.resolve(value.getReference(), SvgPattern.class).orElse(null);
+            SvgPattern pattern = index.resolve(value.getReference(), SvgPattern.class)
+                .orElse(null);
             if (pattern != null) {
                 return pattern.createPaint(context);
             }
@@ -64,8 +67,7 @@ public final class SvgPaintResolver {
     }
 
     /**
-     * {@code color} is inherited, so the value comes from the resolved style rather than from the element that wrote
-     * {@code currentColor}.
+     * {@code color} is inherited, so the value comes from the resolved style rather than from the element that wrote {@code currentColor}.
      */
     private static Paint currentColor(ISvgStylable style) {
         String color = style == null ? null : style.getColor();

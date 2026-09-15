@@ -1,18 +1,17 @@
 package nz.co.ctg.foxglove;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 /**
- * Exercises #22's evaluation rules: an absent conditional attribute is true, one present but blank is false except
- * {@code requiredExtensions} (blank is explicitly true there), {@code hasExtension} no longer throws on an absent
- * attribute, and {@code systemLanguage="en"} matches an {@code en-NZ} locale.
+ * Exercises #22's evaluation rules: an absent conditional attribute is true, one present but blank is false except {@code requiredExtensions} (blank is explicitly true there),
+ * {@code hasExtension} no longer throws on an absent attribute, and {@code systemLanguage="en"} matches an {@code en-NZ} locale.
  */
 public class ISvgConditionalFeaturesTest {
 

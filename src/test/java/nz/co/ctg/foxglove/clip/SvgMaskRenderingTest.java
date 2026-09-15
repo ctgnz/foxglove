@@ -1,5 +1,22 @@
 package nz.co.ctg.foxglove.clip;
 
+import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.number.IsCloseTo.closeTo;
+import static org.hamcrest.number.OrderingComparison.greaterThan;
+
+import javafx.css.Size;
+import javafx.css.SizeUnits;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -14,29 +31,9 @@ import nz.co.ctg.foxglove.paint.SvgStop;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.type.SvgPaint;
 
-import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.number.IsCloseTo.closeTo;
-import static org.hamcrest.number.OrderingComparison.greaterThan;
-import static org.hamcrest.number.OrderingComparison.lessThan;
-
-import javafx.css.Size;
-import javafx.css.SizeUnits;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-
 /**
- * Exercises #25's acceptance criteria for {@code mask}: an opaque-rect mask clips, a gradient mask gives a soft
- * edge, both {@code maskUnits}/{@code maskContentUnits} resolve, and a degenerate or missing mask degrades visibly
- * (fully clipped, or unchanged) rather than rendering silently wrong. Follows {@code SvgClipPathRenderingTest}'s
+ * Exercises #25's acceptance criteria for {@code mask}: an opaque-rect mask clips, a gradient mask gives a soft edge, both {@code maskUnits}/{@code maskContentUnits} resolve, and
+ * a degenerate or missing mask degrades visibly (fully clipped, or unchanged) rather than rendering silently wrong. Follows {@code SvgClipPathRenderingTest}'s
  * snapshot-and-sample-pixels style, sampling alpha rather than colour since masking's effect is on coverage.
  */
 public class SvgMaskRenderingTest {
@@ -67,16 +64,21 @@ public class SvgMaskRenderingTest {
         SvgStop black = new SvgStop();
         black.setOffset("1");
         black.setStopColor("black");
-        gradient.getContent().add(white);
-        gradient.getContent().add(black);
+        gradient.getContent()
+            .add(white);
+        gradient.getContent()
+            .add(black);
 
         SvgMask mask = maskOf(rect(0, 0, 100, 100, null));
         mask.setId("mask");
-        ((SvgRectangle) mask.getContent().get(0)).setFill(SvgPaint.parse("url(#grad)"));
+        ((SvgRectangle) mask.getContent()
+            .get(0)).setFill(SvgPaint.parse("url(#grad)"));
 
         SvgDefinitions defs = new SvgDefinitions();
-        defs.getContent().add(gradient);
-        defs.getContent().add(mask);
+        defs.getContent()
+            .add(gradient);
+        defs.getContent()
+            .add(mask);
 
         SvgRectangle target = filledRect(0, 0, 100, 100, "red");
         target.setMask("url(#mask)");
@@ -177,7 +179,8 @@ public class SvgMaskRenderingTest {
     private static SvgMask maskOf(ISvgElement... children) {
         SvgMask mask = new SvgMask();
         for (ISvgElement child : children) {
-            mask.getContent().add(child);
+            mask.getContent()
+                .add(child);
         }
         return mask;
     }
@@ -195,17 +198,19 @@ public class SvgMaskRenderingTest {
     }
 
     /**
-     * Renders {@code target} as the child of a plain {@code <g>} (so masking - applied at the
-     * {@code ISvgContainer.appendContent} consumer level, not inside {@code target}'s own {@code createGraphic} -
-     * actually takes effect), against an index built over {@code definitionsHolder}, and samples the alpha channel
-     * at the given point in a fixed, generous snapshot viewport.
+     * Renders {@code target} as the child of a plain {@code <g>} (so masking - applied at the {@code ISvgContainer.appendContent} consumer level, not inside {@code target}'s own
+     * {@code createGraphic} - actually takes effect), against an index built over {@code definitionsHolder}, and samples the alpha channel at the given point in a fixed, generous
+     * snapshot viewport.
      */
     private static double alphaAt(ISvgElement target, ISvgElement definitionsHolder, double x, double y) throws Exception {
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(definitionsHolder);
+        svg.getContent()
+            .add(definitionsHolder);
         SvgGroup group = new SvgGroup();
-        group.getContent().add(target);
-        svg.getContent().add(group);
+        group.getContent()
+            .add(target);
+        svg.getContent()
+            .add(group);
 
         return onFxThread(() -> {
             Group rendered = svg.createGroup();
@@ -215,7 +220,9 @@ public class SvgMaskRenderingTest {
             params.setFill(Color.TRANSPARENT);
             params.setViewport(new Rectangle2D(0, 0, 300, 300));
             WritableImage image = root.snapshot(params, null);
-            return image.getPixelReader().getColor((int) x, (int) y).getOpacity();
+            return image.getPixelReader()
+                .getColor((int) x, (int) y)
+                .getOpacity();
         });
     }
 

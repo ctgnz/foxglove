@@ -1,12 +1,5 @@
 package nz.co.ctg.foxglove.style;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.type.SvgPaint;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,6 +8,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.FontWeight;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.type.SvgPaint;
 
 public class SvgPropertyTableTest {
 

@@ -1,19 +1,17 @@
 package nz.co.ctg.foxglove.adapter;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
+import java.util.List;
 import javafx.geometry.Point2D;
 
+import org.junit.jupiter.api.Test;
+
 /**
- * Exercises #94's fix: {@code points} is a flat "list of numbers" (SVG's own grammar term), not a list of
- * comma-joined "x,y" pairs - every case here is a real value pulled from the W3C conformance suite (#44) that
- * crashed or silently dropped points under the previous whitespace-then-single-comma-split implementation.
+ * Exercises #94's fix: {@code points} is a flat "list of numbers" (SVG's own grammar term), not a list of comma-joined "x,y" pairs - every case here is a real value pulled from
+ * the W3C conformance suite (#44) that crashed or silently dropped points under the previous whitespace-then-single-comma-split implementation.
  */
 public class PointListAdapterTest {
 

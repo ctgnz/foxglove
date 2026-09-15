@@ -1,11 +1,11 @@
 package nz.co.ctg.foxglove;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
+
 import java.util.Map;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.Maps;
-
-import static com.google.common.base.MoreObjects.toStringHelper;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;

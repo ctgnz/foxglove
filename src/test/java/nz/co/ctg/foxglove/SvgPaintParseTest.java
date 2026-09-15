@@ -1,8 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -19,9 +16,11 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.shape.Shape;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 /**
- * Exercises paint references against a document that has been through the parser, rather than one assembled in
- * memory, so the adapter and the OXM bindings are proven too.
+ * Exercises paint references against a document that has been through the parser, rather than one assembled in memory, so the adapter and the OXM bindings are proven too.
  */
 public class SvgPaintParseTest {
 
@@ -41,8 +40,13 @@ public class SvgPaintParseTest {
         assertThat(gradient.getStops(), hasSize(3));
         assertThat(gradient.getCycleMethod(), is(CycleMethod.REFLECT));
         assertThat(gradient.isProportional(), is(true));
-        assertThat(gradient.getStops().get(0).getColor(), is(Color.RED));
-        assertThat(gradient.getStops().get(1).getColor().getOpacity(), closeTo(0.5, 1e-9));
+        assertThat(gradient.getStops()
+            .get(0)
+            .getColor(), is(Color.RED));
+        assertThat(gradient.getStops()
+            .get(1)
+            .getColor()
+            .getOpacity(), closeTo(0.5, 1e-9));
     }
 
     @Test

@@ -1,11 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.element.SvgGroup;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.type.SvgPaint;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -14,12 +8,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javafx.scene.paint.Color;
 
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.element.SvgGroup;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.type.SvgPaint;
+
 public class SvgInheritedStyleTest {
 
     @Test
     public void testRootHasNothingSpecified() throws Exception {
-        assertThat(SvgInheritedStyle.root().getProperties(), is(anEmptyMap()));
-        assertThat(SvgInheritedStyle.root().getFill(), is(nullValue()));
+        assertThat(SvgInheritedStyle.root()
+            .getProperties(), is(anEmptyMap()));
+        assertThat(SvgInheritedStyle.root()
+            .getFill(), is(nullValue()));
     }
 
     @Test
@@ -54,8 +56,7 @@ public class SvgInheritedStyleTest {
     }
 
     /**
-     * Accumulating down the chain is what lets a grandparent's value reach a grandchild, since an element is only
-     * ever handed its immediate parent.
+     * Accumulating down the chain is what lets a grandparent's value reach a grandchild, since an element is only ever handed its immediate parent.
      */
     @Test
     public void testAccumulatesAcrossSeveralLevels() throws Exception {
@@ -74,8 +75,8 @@ public class SvgInheritedStyleTest {
     }
 
     /**
-     * {@code opacity} applies to the element that declares it, so it must not travel down to descendants - otherwise
-     * a half transparent group would make each child half transparent again.
+     * {@code opacity} applies to the element that declares it, so it must not travel down to descendants - otherwise a half transparent group would make each child half
+     * transparent again.
      */
     @Test
     public void testDoesNotCarryNonInheritedProperties() throws Exception {
@@ -109,13 +110,15 @@ public class SvgInheritedStyleTest {
 
     @Test
     public void testNullParentIsTreatedAsRoot() throws Exception {
-        assertThat(SvgInheritedStyle.resolve(null, new SvgRectangle()).getProperties(), is(anEmptyMap()));
+        assertThat(SvgInheritedStyle.resolve(null, new SvgRectangle())
+            .getProperties(), is(anEmptyMap()));
     }
 
     @Test
     public void testResolvedStyleIsImmutable() throws Exception {
         assertThrows(UnsupportedOperationException.class,
-            () -> SvgInheritedStyle.root().set(ISvgGraphicsAttributes.GRAPHX_FILL, Color.RED));
+            () -> SvgInheritedStyle.root()
+                .set(ISvgGraphicsAttributes.GRAPHX_FILL, Color.RED));
     }
 
 }

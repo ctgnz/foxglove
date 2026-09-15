@@ -1,10 +1,5 @@
 package nz.co.ctg.foxglove.conformance;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.JavaFxTestSupport;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.IsCloseTo.closeTo;
@@ -12,10 +7,14 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.JavaFxTestSupport;
+
 /**
- * Covers the diff image #110's per-test pages show. The important property is not any particular colour but that
- * the diff agrees with {@link ConformanceComparator#compare} about what "differs" means - a diff that disagreed
- * with the verdict it illustrates would be worse than none at all.
+ * Covers the diff image #110's per-test pages show. The important property is not any particular colour but that the diff agrees with {@link ConformanceComparator#compare} about
+ * what "differs" means - a diff that disagreed with the verdict it illustrates would be worse than none at all.
  */
 public class ConformanceComparatorTest {
 
@@ -30,10 +29,9 @@ public class ConformanceComparatorTest {
     private static final Color EXCLUDED = Color.web("#EFF3FA");
 
     /**
-     * The reason the report measures ink rather than the whole canvas. Most of a W3C test image is empty, so a
-     * document this renderer draws nothing at all for scores ~93% on the raw differing-pixel ratio purely by
-     * agreeing about the background - `struct-frag-04-t` really does. Publishing that as a progress figure would
-     * read as far better news than it is.
+     * The reason the report measures ink rather than the whole canvas. Most of a W3C test image is empty, so a document this renderer draws nothing at all for scores ~93% on the
+     * raw differing-pixel ratio purely by agreeing about the background - `struct-frag-04-t` really does. Publishing that as a progress figure would read as far better news than
+     * it is.
      */
     @Test
     public void testRenderingNothingScoresZeroInkMatchedEvenThoughMostPixelsAgree() throws Exception {
@@ -56,7 +54,8 @@ public class ConformanceComparatorTest {
         WritableImage blank = image(2, 1, Color.TRANSPARENT, Color.TRANSPARENT);
 
         // nothing-versus-nothing has no ink to disagree about; calling that 0% similar would be nonsense
-        assertThat(ConformanceComparator.compare(blank, blank, 2, 1, 1, 1.0).contentSimilarity(), closeTo(1.0, 1e-9));
+        assertThat(ConformanceComparator.compare(blank, blank, 2, 1, 1, 1.0)
+            .contentSimilarity(), closeTo(1.0, 1e-9));
     }
 
     @Test
@@ -113,13 +112,15 @@ public class ConformanceComparatorTest {
     private static WritableImage image(int width, int height, Color... pixels) {
         WritableImage image = new WritableImage(width, height);
         for (int i = 0; i < pixels.length; i++) {
-            image.getPixelWriter().setColor(i % width, i / width, pixels[i]);
+            image.getPixelWriter()
+                .setColor(i % width, i / width, pixels[i]);
         }
         return image;
     }
 
     private static Color colorAt(WritableImage image, int x, int y) {
-        return image.getPixelReader().getColor(x, y);
+        return image.getPixelReader()
+            .getColor(x, y);
     }
 
 }

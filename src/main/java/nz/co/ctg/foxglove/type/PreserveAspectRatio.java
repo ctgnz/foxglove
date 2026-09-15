@@ -1,28 +1,27 @@
 package nz.co.ctg.foxglove.type;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
-
 /**
- * A parsed {@code preserveAspectRatio} attribute value, controlling how a {@code viewBox} is fitted into its
- * viewport.
+ * A parsed {@code preserveAspectRatio} attribute value, controlling how a {@code viewBox} is fitted into its viewport.
  */
 public final class PreserveAspectRatio {
 
     public enum Align {
-        NONE(0, 0),
-        X_MIN_Y_MIN(0, 0),
-        X_MID_Y_MIN(0.5, 0),
-        X_MAX_Y_MIN(1, 0),
-        X_MIN_Y_MID(0, 0.5),
-        X_MID_Y_MID(0.5, 0.5),
-        X_MAX_Y_MID(1, 0.5),
-        X_MIN_Y_MAX(0, 1),
-        X_MID_Y_MAX(0.5, 1),
-        X_MAX_Y_MAX(1, 1);
+            NONE(0, 0),
+            X_MIN_Y_MIN(0, 0),
+            X_MID_Y_MIN(0.5, 0),
+            X_MAX_Y_MIN(1, 0),
+            X_MIN_Y_MID(0, 0.5),
+            X_MID_Y_MID(0.5, 0.5),
+            X_MAX_Y_MID(1, 0.5),
+            X_MIN_Y_MAX(0, 1),
+            X_MID_Y_MAX(0.5, 1),
+            X_MAX_Y_MAX(1, 1);
 
         private final double alignX;
         private final double alignY;
@@ -42,22 +41,22 @@ public final class PreserveAspectRatio {
     }
 
     public enum MeetOrSlice {
-        MEET,
-        SLICE
+            MEET,
+            SLICE
     }
 
     private static final PreserveAspectRatio DEFAULT = new PreserveAspectRatio(Align.X_MID_Y_MID, MeetOrSlice.MEET);
 
     /**
-     * Parses a {@code preserveAspectRatio} attribute value, tolerating a leading {@code defer} token (meaningless
-     * outside of {@code <image>} references and otherwise ignored) and falling back to the default -
-     * {@code xMidYMid meet} - when {@code raw} is blank or unrecognised.
+     * Parses a {@code preserveAspectRatio} attribute value, tolerating a leading {@code defer} token (meaningless outside of {@code <image>} references and otherwise ignored) and
+     * falling back to the default - {@code xMidYMid meet} - when {@code raw} is blank or unrecognised.
      */
     public static PreserveAspectRatio parse(String raw) {
         if (StringUtils.isBlank(raw)) {
             return DEFAULT;
         }
-        String[] tokens = raw.trim().split("\\s+");
+        String[] tokens = raw.trim()
+            .split("\\s+");
         int index = 0;
         if (index < tokens.length && "defer".equals(tokens[index])) {
             index++;

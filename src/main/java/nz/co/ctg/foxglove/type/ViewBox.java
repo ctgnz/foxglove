@@ -1,7 +1,5 @@
 package nz.co.ctg.foxglove.type;
 
-import com.google.common.base.MoreObjects.ToStringHelper;
-
 import static com.google.common.base.MoreObjects.toStringHelper;
 
 import javafx.css.Size;
@@ -9,6 +7,8 @@ import javafx.css.SizeUnits;
 import javafx.geometry.Bounds;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
 
 public class ViewBox {
     private Size minX;
@@ -76,9 +76,8 @@ public class ViewBox {
     }
 
     /**
-     * The transform that maps this viewBox onto a viewport of the given size, per the standard SVG viewBox-to-
-     * viewport algorithm: scale to fit (uniformly, unless {@code preserveAspectRatio} is {@code none}), then
-     * translate to align the leftover space per {@code preserveAspectRatio}.
+     * The transform that maps this viewBox onto a viewport of the given size, per the standard SVG viewBox-to- viewport algorithm: scale to fit (uniformly, unless
+     * {@code preserveAspectRatio} is {@code none}), then translate to align the leftover space per {@code preserveAspectRatio}.
      * <p>
      * Returns null when the viewBox has no positive area, since no transform can sensibly map it onto anything.
      */

@@ -11,23 +11,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
- * A font's {@code <hkern>} pairs: how much closer together two particular glyphs sit than their own advances would
- * put them (#136).
+ * A font's {@code <hkern>} pairs: how much closer together two particular glyphs sit than their own advances would put them (#136).
  * <p>
- * Each side of a pair is matched by <b>the union of its {@code u} list and its {@code g} list</b> - {@code u1}/
- * {@code u2} name characters (or ranges of them), {@code g1}/{@code g2} name glyphs. The suite's own
- * {@code fonts-kern-01-t} settles this reading: its {@code fontC} declares
- * {@code <hkern u1="1" u2="2" g1="gl_3" g2="gl_4">} and expects the one rule to kern both "12" and "34", while
- * leaving "23" alone. A rule matches a pair only when the <i>left</i> glyph is in the left set <i>and</i> the right
- * glyph is in the right set; matching if either side does would kern "23" too.
+ * Each side of a pair is matched by <b>the union of its {@code u} list and its {@code g} list</b> - {@code u1}/ {@code u2} name characters (or ranges of them),
+ * {@code g1}/{@code g2} name glyphs. The suite's own {@code fonts-kern-01-t} settles this reading: its {@code fontC} declares {@code <hkern u1="1" u2="2" g1="gl_3" g2="gl_4">} and
+ * expects the one rule to kern both "12" and "34", while leaving "23" alone. A rule matches a pair only when the <i>left</i> glyph is in the left set <i>and</i> the right glyph is
+ * in the right set; matching if either side does would kern "23" too.
  * <p>
- * <b>Glyph names are the path that matters in practice</b>, not characters: all 406 pairs in {@code SVGFreeSans.svg}
- * - the font every one of the 525 W3C suite documents labels itself in - use {@code g1}/{@code g2}, and none use
- * {@code u1}/{@code u2}.
+ * <b>Glyph names are the path that matters in practice</b>, not characters: all 406 pairs in {@code SVGFreeSans.svg} - the font every one of the 525 W3C suite documents labels
+ * itself in - use {@code g1}/{@code g2}, and none use {@code u1}/{@code u2}.
  * <p>
- * Rules are indexed by their literal left-hand entries so a lookup touches one or two of them rather than all 406;
- * only rules whose left side carries a <i>range</i> have to be scanned every time, and real fonts have very few.
- * This runs once per adjacent glyph pair in every document, so the difference is not academic.
+ * Rules are indexed by their literal left-hand entries so a lookup touches one or two of them rather than all 406; only rules whose left side carries a <i>range</i> have to be
+ * scanned every time, and real fonts have very few. This runs once per adjacent glyph pair in every document, so the difference is not academic.
  */
 final class SvgFontKerning {
 
@@ -42,7 +37,8 @@ final class SvgFontKerning {
         this.rules = rules;
         for (Rule rule : rules) {
             for (String literal : rule.left.literals()) {
-                byLeftLiteral.computeIfAbsent(literal, key -> new ArrayList<>()).add(rule);
+                byLeftLiteral.computeIfAbsent(literal, key -> new ArrayList<>())
+                    .add(rule);
             }
             if (!rule.left.ranges.isEmpty()) {
                 leftRanged.add(rule);
@@ -69,11 +65,10 @@ final class SvgFontKerning {
     }
 
     /**
-     * How much closer {@code right} sits to {@code left}, in font units, or zero when no pair matches. Either glyph
-     * name may be null for a character the font has no glyph for.
+     * How much closer {@code right} sits to {@code left}, in font units, or zero when no pair matches. Either glyph name may be null for a character the font has no glyph for.
      * <p>
-     * Where more than one rule matches, the first in document order wins. The W3C suite gives no evidence either way
-     * - no font in it declares two rules matching the same pair - so this is a documented choice, not a derived one.
+     * Where more than one rule matches, the first in document order wins. The W3C suite gives no evidence either way - no font in it declares two rules matching the same pair - so
+     * this is a documented choice, not a derived one.
      */
     double kern(String leftChar, String leftName, String rightChar, String rightName) {
         if (rules.isEmpty()) {
@@ -88,12 +83,11 @@ final class SvgFontKerning {
     }
 
     /**
-     * The earliest-declared rule among {@code candidates} that matches, or {@code best} if none beats it. The index
-     * only narrows which rules are worth testing - every candidate is still checked against both sides in full, so a
-     * rule reached through one of its literal entries is never assumed to match on the strength of that alone.
+     * The earliest-declared rule among {@code candidates} that matches, or {@code best} if none beats it. The index only narrows which rules are worth testing - every candidate is
+     * still checked against both sides in full, so a rule reached through one of its literal entries is never assumed to match on the strength of that alone.
      */
     private static Rule firstMatch(Rule best, List<Rule> candidates, String leftChar, String leftName,
-        String rightChar, String rightName) {
+                                   String rightChar, String rightName) {
         if (candidates == null) {
             return best;
         }
@@ -165,8 +159,8 @@ final class SvgFontKerning {
     }
 
     /**
-     * A comma-separated list, with the single deliberate exception that an attribute which is nothing but a comma is
-     * that character itself rather than two empty entries - the specification gives commas both jobs.
+     * A comma-separated list, with the single deliberate exception that an attribute which is nothing but a comma is that character itself rather than two empty entries - the
+     * specification gives commas both jobs.
      */
     private static List<String> split(String value) {
         String text = StringUtils.trimToEmpty(value);
@@ -186,22 +180,28 @@ final class SvgFontKerning {
     }
 
     /**
-     * The inclusive code point range a {@code U+...} token covers: {@code 0031-0034} a span, {@code 003?} every value
-     * the wildcards can take ({@code 0030} to {@code 003F}), a bare {@code 0041} just itself.
+     * The inclusive code point range a {@code U+...} token covers: {@code 0031-0034} a span, {@code 003?} every value the wildcards can take ({@code 0030} to {@code 003F}), a bare
+     * {@code 0041} just itself.
      */
     private static int[] parseRange(String body) {
         if (body.contains("-")) {
             int codePoint = hex(StringUtils.substringBefore(body, "-"));
             int end = hex(StringUtils.substringAfter(body, "-"));
-            return codePoint < 0 || end < 0 ? null : new int[] { codePoint, end };
+            return codePoint < 0 || end < 0 ? null : new int[] {
+                codePoint, end
+            };
         }
         if (body.indexOf('?') >= 0) {
             int codePoint = hex(body.replace('?', '0'));
             int end = hex(body.replace('?', 'F'));
-            return codePoint < 0 || end < 0 ? null : new int[] { codePoint, end };
+            return codePoint < 0 || end < 0 ? null : new int[] {
+                codePoint, end
+            };
         }
         int codePoint = hex(body);
-        return codePoint < 0 ? null : new int[] { codePoint, codePoint };
+        return codePoint < 0 ? null : new int[] {
+            codePoint, codePoint
+        };
     }
 
     private static int hex(String value) {

@@ -1,10 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.type.ViewBox;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -17,14 +12,18 @@ import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Affine;
 
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.type.ViewBox;
+
 /**
- * Exercises the two gaps #13 closes end to end: {@code viewBox}/{@code preserveAspectRatio} (root and nested,
- * mirroring the {@code meet}/{@code slice}/alignment cases in {@code transform/preserve-aspect-ratio.svg} and the
- * {@code transform/stretch-to-fit.svg} scenario) and percentage lengths resolving against the enclosing viewport.
+ * Exercises the two gaps #13 closes end to end: {@code viewBox}/{@code preserveAspectRatio} (root and nested, mirroring the {@code meet}/{@code slice}/alignment cases in
+ * {@code transform/preserve-aspect-ratio.svg} and the {@code transform/stretch-to-fit.svg} scenario) and percentage lengths resolving against the enclosing viewport.
  * <p>
- * Built in memory, following {@link ISvgContainerTest}'s convention, rather than parsed from those fixtures: both
- * declare the full SVG 1.1 DTD, whose {@code %SVG.Presentation.attrib;} parameter entity exceeds the JDK's default
- * {@code jdk.xml.maxParameterEntitySizeLimit} - a pre-existing environmental limit unrelated to this issue.
+ * Built in memory, following {@link ISvgContainerTest}'s convention, rather than parsed from those fixtures: both declare the full SVG 1.1 DTD, whose
+ * {@code %SVG.Presentation.attrib;} parameter entity exceeds the JDK's default {@code jdk.xml.maxParameterEntitySizeLimit} - a pre-existing environmental limit unrelated to this
+ * issue.
  */
 public class ViewportRenderingTest {
 
@@ -42,7 +41,8 @@ public class ViewportRenderingTest {
 
     private static Affine transformOf(Group group) {
         assertThat(group.getTransforms(), is(not(empty())));
-        return (Affine) group.getTransforms().get(0);
+        return (Affine) group.getTransforms()
+            .get(0);
     }
 
     // --- root viewBox / preserveAspectRatio (#3) ----------------------------
@@ -85,9 +85,12 @@ public class ViewportRenderingTest {
         nested.setHeight(px(viewportHeight));
         nested.setViewBox(viewBox(0, 0, 30, 40));
         nested.setPreserveAspectRatio(preserveAspectRatio);
-        root.getContent().add(nested);
+        root.getContent()
+            .add(nested);
 
-        return (Group) root.createGroup().getChildren().get(0);
+        return (Group) root.createGroup()
+            .getChildren()
+            .get(0);
     }
 
     @Test
@@ -132,16 +135,21 @@ public class ViewportRenderingTest {
         SvgGraphic nested = new SvgGraphic();
         nested.setWidth(percent(50));
         nested.setHeight(percent(50));
-        root.getContent().add(nested);
+        root.getContent()
+            .add(nested);
         // a child rectangle sized as a percentage of *its own* viewport - correct only if nested's 50%/50% above
         // resolved to a 200x100 viewport rather than being silently dropped to zero
         SvgRectangle rect = new SvgRectangle();
         rect.setX(percent(50));
         rect.setWidth(percent(50));
-        nested.getContent().add(rect);
+        nested.getContent()
+            .add(rect);
 
-        Group renderedNested = (Group) root.createGroup().getChildren().get(0);
-        Rectangle fxRect = (Rectangle) renderedNested.getChildren().get(0);
+        Group renderedNested = (Group) root.createGroup()
+            .getChildren()
+            .get(0);
+        Rectangle fxRect = (Rectangle) renderedNested.getChildren()
+            .get(0);
         assertThat(fxRect.getX(), closeTo(100, 1e-9));
         assertThat(fxRect.getWidth(), closeTo(100, 1e-9));
     }
@@ -154,9 +162,12 @@ public class ViewportRenderingTest {
         SvgRectangle rect = new SvgRectangle();
         rect.setY(percent(25));
         rect.setHeight(percent(50));
-        svg.getContent().add(rect);
+        svg.getContent()
+            .add(rect);
 
-        Rectangle fxRect = (Rectangle) svg.createGroup().getChildren().get(0);
+        Rectangle fxRect = (Rectangle) svg.createGroup()
+            .getChildren()
+            .get(0);
         assertThat(fxRect.getY(), closeTo(50, 1e-9));
         assertThat(fxRect.getHeight(), closeTo(100, 1e-9));
     }
@@ -172,9 +183,12 @@ public class ViewportRenderingTest {
         nested.setY(percent(50));
         nested.setWidth(px(100));
         nested.setHeight(px(100));
-        root.getContent().add(nested);
+        root.getContent()
+            .add(nested);
 
-        Group renderedNested = (Group) root.createGroup().getChildren().get(0);
+        Group renderedNested = (Group) root.createGroup()
+            .getChildren()
+            .get(0);
         assertThat(renderedNested.getTranslateX(), closeTo(200, 1e-9));
         assertThat(renderedNested.getTranslateY(), closeTo(100, 1e-9));
     }
@@ -190,19 +204,21 @@ public class ViewportRenderingTest {
         SvgRectangle rect = new SvgRectangle();
         rect.setWidth(percent(50));
         rect.setHeight(percent(50));
-        svg.getContent().add(rect);
+        svg.getContent()
+            .add(rect);
 
-        Rectangle fxRect = (Rectangle) svg.createGroup().getChildren().get(0);
+        Rectangle fxRect = (Rectangle) svg.createGroup()
+            .getChildren()
+            .get(0);
         // 50% of the viewBox's own 100x100, not of the 400x200 pixel viewport (which would give 200x100)
         assertThat(fxRect.getWidth(), closeTo(50, 1e-9));
         assertThat(fxRect.getHeight(), closeTo(50, 1e-9));
     }
 
     /**
-     * Regression cover for #113. The outermost {@code <svg>} has no parent coordinate system to be positioned
-     * within, so SVG 1.1 5.1.2 gives its {@code x}/{@code y} no meaning at all. Applying them anyway translated the
-     * entire document - a real W3C test declares {@code x="1000" y="1000"} precisely to catch this, and every bit of
-     * such a document rendered off-canvas.
+     * Regression cover for #113. The outermost {@code <svg>} has no parent coordinate system to be positioned within, so SVG 1.1 5.1.2 gives its {@code x}/{@code y} no meaning at
+     * all. Applying them anyway translated the entire document - a real W3C test declares {@code x="1000" y="1000"} precisely to catch this, and every bit of such a document
+     * rendered off-canvas.
      */
     @Test
     public void testOutermostSvgIgnoresItsOwnXAndY() throws Exception {
@@ -216,20 +232,22 @@ public class ViewportRenderingTest {
         rect.setY(px(20));
         rect.setWidth(px(30));
         rect.setHeight(px(40));
-        svg.getContent().add(rect);
+        svg.getContent()
+            .add(rect);
 
         Group rendered = svg.createGroup();
         assertThat(rendered.getTranslateX(), closeTo(0, 1e-9));
         assertThat(rendered.getTranslateY(), closeTo(0, 1e-9));
         // and the content still sits where the document put it, rather than 1000 units away
-        assertThat(rendered.getBoundsInParent().getMinX(), closeTo(10, 1e-9));
-        assertThat(rendered.getBoundsInParent().getMinY(), closeTo(20, 1e-9));
+        assertThat(rendered.getBoundsInParent()
+            .getMinX(), closeTo(10, 1e-9));
+        assertThat(rendered.getBoundsInParent()
+            .getMinY(), closeTo(20, 1e-9));
     }
 
     /**
-     * The other half of #113: the rule is about being outermost, not about {@code <svg>} elements generally, so a
-     * nested one must still be positioned by its own x/y even when the identical attributes are being ignored one
-     * level up. {@link #testNestedSvgXYResolveAgainstTheParentViewportNotItsOwn} covers the resolution rule itself.
+     * The other half of #113: the rule is about being outermost, not about {@code <svg>} elements generally, so a nested one must still be positioned by its own x/y even when the
+     * identical attributes are being ignored one level up. {@link #testNestedSvgXYResolveAgainstTheParentViewportNotItsOwn} covers the resolution rule itself.
      */
     @Test
     public void testANestedSvgStillHonoursXAndYWhenTheRootIgnoresItsOwn() throws Exception {
@@ -243,12 +261,15 @@ public class ViewportRenderingTest {
         nested.setY(px(40));
         nested.setWidth(px(100));
         nested.setHeight(px(100));
-        root.getContent().add(nested);
+        root.getContent()
+            .add(nested);
 
         Group rendered = root.createGroup();
         assertThat(rendered.getTranslateX(), closeTo(0, 1e-9));
-        assertThat(((Group) rendered.getChildren().get(0)).getTranslateX(), closeTo(30, 1e-9));
-        assertThat(((Group) rendered.getChildren().get(0)).getTranslateY(), closeTo(40, 1e-9));
+        assertThat(((Group) rendered.getChildren()
+            .get(0)).getTranslateX(), closeTo(30, 1e-9));
+        assertThat(((Group) rendered.getChildren()
+            .get(0)).getTranslateY(), closeTo(40, 1e-9));
     }
 
 }

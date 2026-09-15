@@ -1,11 +1,5 @@
 package nz.co.ctg.foxglove.animate;
 
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.RenderContext;
-import nz.co.ctg.foxglove.SvgGraphic;
-import nz.co.ctg.foxglove.shape.SvgPath;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,10 +9,15 @@ import javafx.animation.Animation;
 import javafx.animation.PathTransition;
 import javafx.scene.shape.Rectangle;
 
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.shape.SvgPath;
+
 /**
- * Exercises #88's single-animation correctness for {@code <animateMotion>}: motion path resolution (inline
- * {@code path} attribute vs. a child {@code <mpath>} reference), and {@code rotate}. Built directly against a real
- * {@link Rectangle} target, inspecting the returned {@link PathTransition}.
+ * Exercises #88's single-animation correctness for {@code <animateMotion>}: motion path resolution (inline {@code path} attribute vs. a child {@code <mpath>} reference), and
+ * {@code rotate}. Built directly against a real {@link Rectangle} target, inspecting the returned {@link PathTransition}.
  */
 public class SvgAnimateMotionBuilderTest {
 
@@ -44,13 +43,16 @@ public class SvgAnimateMotionBuilderTest {
 
         SvgAnimateMotion element = new SvgAnimateMotion();
         element.setDuration("1s");
-        element.getContents().add(mpath);
+        element.getContents()
+            .add(mpath);
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(referenced);
+        svg.getContent()
+            .add(referenced);
 
         RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
-        Animation result = element.buildAnimation(new Rectangle(), context).orElseThrow();
+        Animation result = element.buildAnimation(new Rectangle(), context)
+            .orElseThrow();
         PathTransition transition = (PathTransition) result;
         assertThat(pathElements(transition).size() > 0, is(true));
     }
@@ -67,13 +69,16 @@ public class SvgAnimateMotionBuilderTest {
         SvgAnimateMotion element = new SvgAnimateMotion();
         element.setDuration("1s");
         element.setPath("M0,0 L999,999");
-        element.getContents().add(mpath);
+        element.getContents()
+            .add(mpath);
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(referenced);
+        svg.getContent()
+            .add(referenced);
 
         RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
-        PathTransition transition = (PathTransition) element.buildAnimation(new Rectangle(), context).orElseThrow();
+        PathTransition transition = (PathTransition) element.buildAnimation(new Rectangle(), context)
+            .orElseThrow();
         javafx.scene.shape.LineTo lineTo = (javafx.scene.shape.LineTo) pathElements(transition).get(1);
         assertThat(lineTo.getX(), closeTo(1.0, 1e-9));
     }
@@ -116,7 +121,8 @@ public class SvgAnimateMotionBuilderTest {
     public void testNoPathSourceIsUnsupported() {
         SvgAnimateMotion element = new SvgAnimateMotion();
         element.setDuration("1s");
-        assertThat(element.buildAnimation(new Rectangle(), null).isEmpty(), is(true));
+        assertThat(element.buildAnimation(new Rectangle(), null)
+            .isEmpty(), is(true));
     }
 
     @Test
@@ -124,7 +130,8 @@ public class SvgAnimateMotionBuilderTest {
         SvgAnimateMotion element = new SvgAnimateMotion();
         element.setPath("M0,0 L100,0");
         element.setDuration("indefinite");
-        assertThat(element.buildAnimation(new Rectangle(), null).isEmpty(), is(true));
+        assertThat(element.buildAnimation(new Rectangle(), null)
+            .isEmpty(), is(true));
     }
 
     @Test
@@ -132,12 +139,14 @@ public class SvgAnimateMotionBuilderTest {
         SvgAnimateMotion element = new SvgAnimateMotion();
         element.setDuration("1s");
         element.setPath("M0,0 L100,0");
-        Animation result = element.buildAnimation(new Rectangle(), null).orElseThrow();
+        Animation result = element.buildAnimation(new Rectangle(), null)
+            .orElseThrow();
         assertThat(result, is(instanceOf(PathTransition.class)));
     }
 
     private static PathTransition build(SvgAnimateMotion element, Rectangle target) {
-        return (PathTransition) element.buildAnimation(target, null).orElseThrow();
+        return (PathTransition) element.buildAnimation(target, null)
+            .orElseThrow();
     }
 
     private static java.util.List<javafx.scene.shape.PathElement> pathElements(PathTransition transition) {

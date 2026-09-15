@@ -1,7 +1,5 @@
 package nz.co.ctg.foxglove.type;
 
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,6 +8,8 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.scene.transform.Affine;
+
+import org.junit.jupiter.api.Test;
 
 public class ViewBoxTest {
 

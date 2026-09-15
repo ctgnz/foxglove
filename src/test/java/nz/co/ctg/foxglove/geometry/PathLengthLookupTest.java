@@ -1,14 +1,13 @@
 package nz.co.ctg.foxglove.geometry;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
+import java.util.List;
 import javafx.geometry.Point2D;
+
+import org.junit.jupiter.api.Test;
 
 public class PathLengthLookupTest {
 
@@ -57,8 +56,10 @@ public class PathLengthLookupTest {
 
     @Test
     public void testEmptyOrNullPointsIsTreatedAsTheOrigin() throws Exception {
-        assertThat(PathLengthLookup.of(List.of()).getTotalLength(), is(0.0));
-        assertThat(PathLengthLookup.of(null).pointAt(0.0), is(Point2D.ZERO));
+        assertThat(PathLengthLookup.of(List.of())
+            .getTotalLength(), is(0.0));
+        assertThat(PathLengthLookup.of(null)
+            .pointAt(0.0), is(Point2D.ZERO));
     }
 
 }

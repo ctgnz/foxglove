@@ -6,14 +6,12 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
 /**
- * One intermediate image in a filter's primitive graph (#77) - a fixed-size pixel buffer the pixel-level primitives
- * read and write directly, since they have no {@code javafx.scene.effect} equivalent to delegate to.
+ * One intermediate image in a filter's primitive graph (#77) - a fixed-size pixel buffer the pixel-level primitives read and write directly, since they have no
+ * {@code javafx.scene.effect} equivalent to delegate to.
  * <p>
- * Channels are stored <b>premultiplied</b>, in {@code R,G,B,A} order, as floats in {@code [0, 1]}. Premultiplied is
- * the form the specification's own Porter-Duff ({@code feComposite}) and {@code feBlend} formulas are written in, so
- * those primitives need no conversion at all; the two that are specified on non-premultiplied values
- * ({@code feColorMatrix}, {@code feComponentTransfer}) unpremultiply, apply, and repremultiply around their own math
- * (see {@link #unpremultiply}/{@link #premultiply}).
+ * Channels are stored <b>premultiplied</b>, in {@code R,G,B,A} order, as floats in {@code [0, 1]}. Premultiplied is the form the specification's own Porter-Duff
+ * ({@code feComposite}) and {@code feBlend} formulas are written in, so those primitives need no conversion at all; the two that are specified on non-premultiplied values
+ * ({@code feColorMatrix}, {@code feComponentTransfer}) unpremultiply, apply, and repremultiply around their own math (see {@link #unpremultiply}/{@link #premultiply}).
  */
 final class FilterRaster {
 
@@ -22,10 +20,9 @@ final class FilterRaster {
     private final float[] data;
 
     /**
-     * Which colour space {@link #data}'s colour channels are currently in - see {@link #toColorSpace} and
-     * {@code color-interpolation-filters} (#108). Carried on the buffer rather than tracked alongside it because
-     * intermediate results outlive the primitive that produced them: a named {@code result} can be consumed much
-     * later by a primitive operating in the other space, and only the buffer itself knows what it holds.
+     * Which colour space {@link #data}'s colour channels are currently in - see {@link #toColorSpace} and {@code color-interpolation-filters} (#108). Carried on the buffer rather
+     * than tracked alongside it because intermediate results outlive the primitive that produced them: a named {@code result} can be consumed much later by a primitive operating
+     * in the other space, and only the buffer itself knows what it holds.
      */
     private FilterColorSpace colorSpace = FilterColorSpace.SRGB;
 
@@ -46,10 +43,9 @@ final class FilterRaster {
     /**
      * This buffer converted into {@code target}, or itself when already there.
      * <p>
-     * Colour channels only: alpha is a coverage fraction, not a colour, and converting it would be meaningless. The
-     * buffer is premultiplied and the transfer function is non-linear, so each pixel has to be unpremultiplied,
-     * converted and repremultiplied - applying the curve to a premultiplied value would fold the alpha into the
-     * gamma and darken every partially covered pixel.
+     * Colour channels only: alpha is a coverage fraction, not a colour, and converting it would be meaningless. The buffer is premultiplied and the transfer function is
+     * non-linear, so each pixel has to be unpremultiplied, converted and repremultiplied - applying the curve to a premultiplied value would fold the alpha into the gamma and
+     * darken every partially covered pixel.
      */
     FilterRaster toColorSpace(FilterColorSpace target) {
         if (colorSpace == target) {
@@ -90,8 +86,7 @@ final class FilterRaster {
     }
 
     /**
-     * Reads {@code image} into a new buffer, premultiplying as it goes - {@link PixelReader#getArgb} returns
-     * non-premultiplied sRGB bytes.
+     * Reads {@code image} into a new buffer, premultiplying as it goes - {@link PixelReader#getArgb} returns non-premultiplied sRGB bytes.
      */
     static FilterRaster fromImage(Image image, int width, int height) {
         FilterRaster raster = new FilterRaster(width, height);

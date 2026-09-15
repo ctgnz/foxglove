@@ -3,6 +3,8 @@ package nz.co.ctg.foxglove.shape;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import javafx.geometry.Point2D;
+import javafx.scene.shape.Polygon;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -26,9 +28,6 @@ import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javafx.geometry.Point2D;
-import javafx.scene.shape.Polygon;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "polygon", propOrder = {
@@ -83,7 +82,10 @@ public class SvgPolygon extends AbstractSvgShape<Polygon> {
         if (points == null) {
             return new double[0];
         }
-        return points.stream().flatMap(pt -> Stream.of(pt.getX(), pt.getY())).mapToDouble(Double::doubleValue).toArray();
+        return points.stream()
+            .flatMap(pt -> Stream.of(pt.getX(), pt.getY()))
+            .mapToDouble(Double::doubleValue)
+            .toArray();
     }
 
 }

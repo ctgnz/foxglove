@@ -1,13 +1,11 @@
 package nz.co.ctg.foxglove.geometry;
 
 import java.util.List;
-
 import javafx.geometry.Point2D;
 
 /**
- * A lookup from arc length to position and tangent along a flattened polyline (see {@link SvgPathData}), for laying
- * text along a {@code <textPath>} (#29). Generically useful for any future path-following need (such as marker
- * {@code orient="auto"}) - not specific to text.
+ * A lookup from arc length to position and tangent along a flattened polyline (see {@link SvgPathData}), for laying text along a {@code <textPath>} (#29). Generically useful for
+ * any future path-following need (such as marker {@code orient="auto"}) - not specific to text.
  */
 public final class PathLengthLookup {
 
@@ -20,17 +18,20 @@ public final class PathLengthLookup {
     }
 
     /**
-     * Builds a lookup over the given polyline. Fewer than two points is treated as a single degenerate point at the
-     * origin (or the one point given), so callers get a zero-length path rather than an error.
+     * Builds a lookup over the given polyline. Fewer than two points is treated as a single degenerate point at the origin (or the one point given), so callers get a zero-length
+     * path rather than an error.
      */
     public static PathLengthLookup of(List<Point2D> points) {
         if (points == null || points.size() < 2) {
             Point2D point = points == null || points.isEmpty() ? Point2D.ZERO : points.get(0);
-            return new PathLengthLookup(List.of(point, point), new double[] {0, 0});
+            return new PathLengthLookup(List.of(point, point), new double[] {
+                0, 0
+            });
         }
         double[] cumulativeLength = new double[points.size()];
         for (int i = 1; i < points.size(); i++) {
-            cumulativeLength[i] = cumulativeLength[i - 1] + points.get(i - 1).distance(points.get(i));
+            cumulativeLength[i] = cumulativeLength[i - 1] + points.get(i - 1)
+                .distance(points.get(i));
         }
         return new PathLengthLookup(points, cumulativeLength);
     }
@@ -40,8 +41,7 @@ public final class PathLengthLookup {
     }
 
     /**
-     * The point at the given arc length, clamped to the path's extent. Interpolates linearly within whichever
-     * flattened segment straddles that length.
+     * The point at the given arc length, clamped to the path's extent. Interpolates linearly within whichever flattened segment straddles that length.
      */
     public Point2D pointAt(double length) {
         int index = segmentIndexAt(length);
@@ -52,8 +52,8 @@ public final class PathLengthLookup {
     }
 
     /**
-     * The tangent direction, in degrees, of the segment straddling the given arc length - constant across the whole
-     * segment, since the path has already been flattened into straight pieces.
+     * The tangent direction, in degrees, of the segment straddling the given arc length - constant across the whole segment, since the path has already been flattened into
+     * straight pieces.
      */
     public double angleAt(double length) {
         int index = segmentIndexAt(length);

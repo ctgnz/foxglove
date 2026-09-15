@@ -28,15 +28,15 @@ public abstract class AbstractSvgStylable extends AbstractSvgElement implements 
     }
 
     /**
-     * Applies this element's style cascade: any stylesheet rule that matches it, then its own inline {@code style}
-     * attribute, then {@code !important} declarations from either - each step overwriting only the properties it
-     * mentions, so an earlier step's value survives untouched where a later one is silent.
+     * Applies this element's style cascade: any stylesheet rule that matches it, then its own inline {@code style} attribute, then {@code !important} declarations from either -
+     * each step overwriting only the properties it mentions, so an earlier step's value survives untouched where a later one is silent.
      * <p>
-     * A presentation attribute such as {@code fill="red"} needs no step here - it is already in the property map,
-     * parsed by JAXB before this ever runs, and simply stands as the value beneath all of this until overwritten.
+     * A presentation attribute such as {@code fill="red"} needs no step here - it is already in the property map, parsed by JAXB before this ever runs, and simply stands as the
+     * value beneath all of this until overwritten.
      */
     public void applyStyle(RenderContext context) {
-        CssStylesheet stylesheet = context.getElementIndex() == null ? null : context.getElementIndex().getStylesheet();
+        CssStylesheet stylesheet = context.getElementIndex() == null ? null : context.getElementIndex()
+            .getStylesheet();
         List<CssDeclaration> stylesheetDeclarations = stylesheet == null ? List.of() : stylesheet.matchingDeclarations(this);
         List<CssDeclaration> inlineDeclarations = CssDeclarations.parse(getStyle());
 

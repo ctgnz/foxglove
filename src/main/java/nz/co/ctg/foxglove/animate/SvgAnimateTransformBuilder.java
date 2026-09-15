@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -23,22 +19,21 @@ import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 /**
- * Builds the {@link Animation} for {@code <animateTransform>} - a genuinely different shape of problem from {@link
- * SvgValueAnimationBuilder} (#32), not a harder version of the same one: the value is a fixed-arity vector of
- * numbers whose meaning is {@code type}-dependent (a single angle for {@code rotate}, an "angle cx cy" triple, one
- * or two numbers for {@code translate}/{@code scale}), and the target is a brand new {@link Transform} appended to
- * the node's own transform list, not an existing scalar property {@link SvgAttributeRegistry} already knows about.
+ * Builds the {@link Animation} for {@code <animateTransform>} - a genuinely different shape of problem from {@link SvgValueAnimationBuilder} (#32), not a harder version of the
+ * same one: the value is a fixed-arity vector of numbers whose meaning is {@code type}-dependent (a single angle for {@code rotate}, an "angle cx cy" triple, one or two numbers
+ * for {@code translate}/{@code scale}), and the target is a brand new {@link Transform} appended to the node's own transform list, not an existing scalar property
+ * {@link SvgAttributeRegistry} already knows about.
  * <p>
- * {@code additive="sum"} and the default {@code additive="replace"} are deliberately treated identically here: both
- * simply append the animated {@link Transform} to {@code target.getTransforms()}, composing with whatever static
- * {@code transform} attribute and any other active {@code <animateTransform>} already contributed - JavaFX's
- * transform list already composes multiple entries for free, which is exactly what {@code additive="sum"} needs.
- * True {@code additive="replace"} semantics (temporarily removing the static transform while this animation is
- * active) is a documented, deliberate simplification - not implemented, since it needs imperative list mutation via
- * {@code KeyFrame} {@code onFinished} callbacks for a case this element's own acceptance criteria doesn't test, and
- * composing is the safer default visually (an object keeps its base position/orientation and gains motion, rather
- * than snapping to an unrelated absolute transform).
+ * {@code additive="sum"} and the default {@code additive="replace"} are deliberately treated identically here: both simply append the animated {@link Transform} to
+ * {@code target.getTransforms()}, composing with whatever static {@code transform} attribute and any other active {@code <animateTransform>} already contributed - JavaFX's
+ * transform list already composes multiple entries for free, which is exactly what {@code additive="sum"} needs. True {@code additive="replace"} semantics (temporarily removing
+ * the static transform while this animation is active) is a documented, deliberate simplification - not implemented, since it needs imperative list mutation via {@code KeyFrame}
+ * {@code onFinished} callbacks for a case this element's own acceptance criteria doesn't test, and composing is the safer default visually (an object keeps its base
+ * position/orientation and gains motion, rather than snapping to an unrelated absolute transform).
  */
 public final class SvgAnimateTransformBuilder {
 
@@ -49,7 +44,8 @@ public final class SvgAnimateTransformBuilder {
         }
 
         Optional<List<double[]>> valuesOpt = resolveValues(element, kind);
-        if (valuesOpt.isEmpty() || valuesOpt.get().size() < 2) {
+        if (valuesOpt.isEmpty() || valuesOpt.get()
+            .size() < 2) {
             return Optional.empty();
         }
         List<double[]> values = valuesOpt.get();
@@ -82,7 +78,8 @@ public final class SvgAnimateTransformBuilder {
             }
         }
 
-        target.getTransforms().add(transform);
+        target.getTransforms()
+            .add(transform);
         if (!removeOnFinish) {
             return Optional.of(core);
         }
@@ -160,7 +157,8 @@ public final class SvgAnimateTransformBuilder {
     }
 
     private static Optional<double[]> parseComponents(String raw, Kind kind) {
-        String[] tokens = raw.trim().split("[,\\s]+");
+        String[] tokens = raw.trim()
+            .split("[,\\s]+");
         double[] numbers = new double[tokens.length];
         for (int i = 0; i < tokens.length; i++) {
             if (!NumberUtils.isParsable(tokens[i])) {
@@ -287,7 +285,8 @@ public final class SvgAnimateTransformBuilder {
     }
 
     private static Optional<Interpolator> parseSpline(String raw) {
-        String[] parts = raw.trim().split("[,\\s]+");
+        String[] parts = raw.trim()
+            .split("[,\\s]+");
         if (parts.length != 4) {
             return Optional.empty();
         }
@@ -305,7 +304,7 @@ public final class SvgAnimateTransformBuilder {
     // --- KeyFrame construction -----------------------------------------------
 
     private static List<KeyFrame> buildKeyFrames(Kind kind, List<WritableValue<Number>> properties, List<double[]> values,
-        List<Double> keyTimes, List<Interpolator> interpolators, Duration simpleDuration, double[] valueShift, int startIndex) {
+                                                 List<Double> keyTimes, List<Interpolator> interpolators, Duration simpleDuration, double[] valueShift, int startIndex) {
         List<KeyFrame> frames = new ArrayList<>();
         for (int i = startIndex; i < values.size(); i++) {
             double[] shifted = valueShift == null ? values.get(i) : add(values.get(i), valueShift);
@@ -324,12 +323,12 @@ public final class SvgAnimateTransformBuilder {
 
     /**
      * {@code accumulate="sum"} with a finite {@code repeatCount}: unrolls every repeat into one continuous {@code
-     * Timeline} spanning the entire repeated duration - the same technique as {@link SvgValueAnimationBuilder}, over
-     * a vector shift instead of a scalar one. {@link SvgAnimationController#withTiming} recognises this case via
-     * {@link ISvgAccumulatableAnimationElement} and skips its own generic {@code repeatCount} wrapping accordingly.
+     * Timeline} spanning the entire repeated duration - the same technique as {@link SvgValueAnimationBuilder}, over a vector shift instead of a scalar one.
+     * {@link SvgAnimationController#withTiming} recognises this case via {@link ISvgAccumulatableAnimationElement} and skips its own generic {@code repeatCount} wrapping
+     * accordingly.
      */
     private static Timeline buildAccumulatedTimeline(Kind kind, List<WritableValue<Number>> properties, List<double[]> values,
-        List<Double> keyTimes, List<Interpolator> interpolators, Duration simpleDuration, int cycles) {
+                                                     List<Double> keyTimes, List<Interpolator> interpolators, Duration simpleDuration, int cycles) {
         double[] first = values.get(0);
         double[] last = values.get(values.size() - 1);
         double[] perCycleDelta = new double[first.length];
@@ -347,7 +346,8 @@ public final class SvgAnimateTransformBuilder {
             int startIndex = cycle == 0 ? 0 : 1;
             for (KeyFrame frame : buildKeyFrames(kind, properties, values, keyTimes, interpolators, simpleDuration, valueShift,
                 startIndex)) {
-                frames.add(new KeyFrame(timeShift.add(frame.getTime()), frame.getValues().toArray(new KeyValue[0])));
+                frames.add(new KeyFrame(timeShift.add(frame.getTime()), frame.getValues()
+                    .toArray(new KeyValue[0])));
             }
         }
         return new Timeline(frames.toArray(new KeyFrame[0]));
@@ -356,108 +356,128 @@ public final class SvgAnimateTransformBuilder {
     // --- per-type shape --------------------------------------------------------
 
     private enum Kind {
-        TRANSLATE(new double[] {0, 0}) {
-            @Override
-            Optional<double[]> expand(double[] raw) {
-                if (raw.length == 1) {
-                    return Optional.of(new double[] {raw[0], 0});
+            TRANSLATE(new double[] {
+                0, 0
+            }) {
+                @Override
+                Optional<double[]> expand(double[] raw) {
+                    if (raw.length == 1) {
+                        return Optional.of(new double[] {
+                            raw[0], 0
+                        });
+                    }
+                    return raw.length == 2 ? Optional.of(raw) : Optional.empty();
                 }
-                return raw.length == 2 ? Optional.of(raw) : Optional.empty();
-            }
 
-            @Override
-            Transform create() {
-                return new Translate();
-            }
-
-            @Override
-            List<WritableValue<Number>> properties(Transform transform) {
-                Translate translate = (Translate) transform;
-                return List.of(translate.xProperty(), translate.yProperty());
-            }
-        },
-        SCALE(new double[] {1, 1}) {
-            @Override
-            Optional<double[]> expand(double[] raw) {
-                if (raw.length == 1) {
-                    return Optional.of(new double[] {raw[0], raw[0]});
+                @Override
+                Transform create() {
+                    return new Translate();
                 }
-                return raw.length == 2 ? Optional.of(raw) : Optional.empty();
-            }
 
-            @Override
-            Transform create() {
-                return new Scale();
-            }
-
-            @Override
-            List<WritableValue<Number>> properties(Transform transform) {
-                Scale scale = (Scale) transform;
-                return List.of(scale.xProperty(), scale.yProperty());
-            }
-        },
-        ROTATE(new double[] {0, 0, 0}) {
-            @Override
-            Optional<double[]> expand(double[] raw) {
-                if (raw.length == 1) {
-                    return Optional.of(new double[] {raw[0], 0, 0});
+                @Override
+                List<WritableValue<Number>> properties(Transform transform) {
+                    Translate translate = (Translate) transform;
+                    return List.of(translate.xProperty(), translate.yProperty());
                 }
-                return raw.length == 3 ? Optional.of(raw) : Optional.empty();
-            }
+            },
+            SCALE(new double[] {
+                1, 1
+            }) {
+                @Override
+                Optional<double[]> expand(double[] raw) {
+                    if (raw.length == 1) {
+                        return Optional.of(new double[] {
+                            raw[0], raw[0]
+                        });
+                    }
+                    return raw.length == 2 ? Optional.of(raw) : Optional.empty();
+                }
 
-            @Override
-            Transform create() {
-                return new Rotate();
-            }
+                @Override
+                Transform create() {
+                    return new Scale();
+                }
 
-            @Override
-            List<WritableValue<Number>> properties(Transform transform) {
-                Rotate rotate = (Rotate) transform;
-                return List.of(rotate.angleProperty(), rotate.pivotXProperty(), rotate.pivotYProperty());
-            }
-        },
-        SKEWX(new double[] {0}) {
-            @Override
-            Optional<double[]> expand(double[] raw) {
-                return raw.length == 1 ? Optional.of(raw) : Optional.empty();
-            }
+                @Override
+                List<WritableValue<Number>> properties(Transform transform) {
+                    Scale scale = (Scale) transform;
+                    return List.of(scale.xProperty(), scale.yProperty());
+                }
+            },
+            ROTATE(new double[] {
+                0, 0, 0
+            }) {
+                @Override
+                Optional<double[]> expand(double[] raw) {
+                    if (raw.length == 1) {
+                        return Optional.of(new double[] {
+                            raw[0], 0, 0
+                        });
+                    }
+                    return raw.length == 3 ? Optional.of(raw) : Optional.empty();
+                }
 
-            @Override
-            Transform create() {
-                return new Shear();
-            }
+                @Override
+                Transform create() {
+                    return new Rotate();
+                }
 
-            @Override
-            List<WritableValue<Number>> properties(Transform transform) {
-                return List.of(((Shear) transform).xProperty());
-            }
+                @Override
+                List<WritableValue<Number>> properties(Transform transform) {
+                    Rotate rotate = (Rotate) transform;
+                    return List.of(rotate.angleProperty(), rotate.pivotXProperty(), rotate.pivotYProperty());
+                }
+            },
+            SKEWX(new double[] {
+                0
+            }) {
+                @Override
+                Optional<double[]> expand(double[] raw) {
+                    return raw.length == 1 ? Optional.of(raw) : Optional.empty();
+                }
 
-            @Override
-            double[] toPropertyValues(double[] parsed) {
-                return new double[] {Math.tan(Math.toRadians(parsed[0]))};
-            }
-        },
-        SKEWY(new double[] {0}) {
-            @Override
-            Optional<double[]> expand(double[] raw) {
-                return raw.length == 1 ? Optional.of(raw) : Optional.empty();
-            }
+                @Override
+                Transform create() {
+                    return new Shear();
+                }
 
-            @Override
-            Transform create() {
-                return new Shear();
-            }
+                @Override
+                List<WritableValue<Number>> properties(Transform transform) {
+                    return List.of(((Shear) transform).xProperty());
+                }
 
-            @Override
-            List<WritableValue<Number>> properties(Transform transform) {
-                return List.of(((Shear) transform).yProperty());
-            }
+                @Override
+                double[] toPropertyValues(double[] parsed) {
+                    return new double[] {
+                        Math.tan(Math.toRadians(parsed[0]))
+                    };
+                }
+            },
+            SKEWY(new double[] {
+                0
+            }) {
+                @Override
+                Optional<double[]> expand(double[] raw) {
+                    return raw.length == 1 ? Optional.of(raw) : Optional.empty();
+                }
 
-            @Override
-            double[] toPropertyValues(double[] parsed) {
-                return new double[] {Math.tan(Math.toRadians(parsed[0]))};
-            }
-        };
+                @Override
+                Transform create() {
+                    return new Shear();
+                }
+
+                @Override
+                List<WritableValue<Number>> properties(Transform transform) {
+                    return List.of(((Shear) transform).yProperty());
+                }
+
+                @Override
+                double[] toPropertyValues(double[] parsed) {
+                    return new double[] {
+                        Math.tan(Math.toRadians(parsed[0]))
+                    };
+                }
+            };
 
         private final double[] identity;
 
@@ -470,10 +490,9 @@ public final class SvgAnimateTransformBuilder {
         }
 
         /**
-         * Validates {@code raw}'s length against this type's allowed forms and fills in any omitted trailing
-         * component with its type-specific default ({@code translate ty}/{@code rotate cx,cy} default to 0,
-         * {@code scale sy} defaults to {@code sx} - SVG's own per-type defaulting rules, not a uniform "pad with
-         * zero"). {@link Optional#empty()} for any other length - an invalid value, degrading the whole animation.
+         * Validates {@code raw}'s length against this type's allowed forms and fills in any omitted trailing component with its type-specific default
+         * ({@code translate ty}/{@code rotate cx,cy} default to 0, {@code scale sy} defaults to {@code sx} - SVG's own per-type defaulting rules, not a uniform "pad with zero").
+         * {@link Optional#empty()} for any other length - an invalid value, degrading the whole animation.
          */
         abstract Optional<double[]> expand(double[] raw);
 
@@ -483,10 +502,9 @@ public final class SvgAnimateTransformBuilder {
         abstract List<WritableValue<Number>> properties(Transform transform);
 
         /**
-         * Converts a resolved value (still in the SVG-visible unit for this type - degrees for an angle) into
-         * whatever the actual JavaFX property expects. Identity for every type except {@code skewX}/{@code skewY},
-         * where {@link Shear}'s property is a shear *factor* ({@code tan} of the angle), not the angle itself -
-         * applied only at the point of writing each {@code KeyValue}, so {@code keyTimes}/{@code paced}/{@code
+         * Converts a resolved value (still in the SVG-visible unit for this type - degrees for an angle) into whatever the actual JavaFX property expects. Identity for every type
+         * except {@code skewX}/{@code skewY}, where {@link Shear}'s property is a shear *factor* ({@code tan} of the angle), not the angle itself - applied only at the point of
+         * writing each {@code KeyValue}, so {@code keyTimes}/{@code paced}/{@code
          * accumulate} math above all stays in the more meaningful angle domain.
          */
         double[] toPropertyValues(double[] parsed) {

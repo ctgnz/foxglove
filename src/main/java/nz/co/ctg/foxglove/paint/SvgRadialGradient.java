@@ -3,6 +3,10 @@ package nz.co.ctg.foxglove.paint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -17,11 +21,6 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 
-import javafx.geometry.Point2D;
-import javafx.scene.paint.Paint;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -32,7 +31,6 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -85,17 +83,13 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
     private List<ISvgElement> content;
 
     /**
-     * The initial values centre the gradient on the target and give it a radius half its width, with the focal point
-     * at the centre.
+     * The initial values centre the gradient on the target and give it a radius half its width, with the focal point at the centre.
      * <p>
-     * SVG places the focal point in cartesian coordinates, while JavaFX takes an angle and a distance as a fraction
-     * of the radius, so the offset from the centre is converted to polar form. A radius of zero paints the last stop
-     * flat, per the specification.
-     */
-    /**
-     * Any of the five coordinates this element does not specify, and its stops if it declares none, are taken from
-     * its {@code xlink:href} chain (#18) - stopping at the first element that is not itself a {@code radialGradient},
-     * since geometry is not one of the attributes a cross-type reference inherits.
+     * SVG places the focal point in cartesian coordinates, while JavaFX takes an angle and a distance as a fraction of the radius, so the offset from the centre is converted to
+     * polar form. A radius of zero paints the last stop flat, per the specification.
+     * <p>
+     * Any of the five coordinates this element does not specify, and its stops if it declares none, are taken from its {@code xlink:href} chain (#18) - stopping at the first
+     * element that is not itself a {@code radialGradient}, since geometry is not one of the attributes a cross-type reference inherits.
      */
     @Override
     public Paint createPaint(SvgElementIndex index) {
@@ -107,7 +101,8 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
         double centreY = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getCy), 0.5);
         double radius = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getR), 0.5);
         if (radius <= 0.0) {
-            return stops.get(stops.size() - 1).getColor();
+            return stops.get(stops.size() - 1)
+                .getColor();
         }
         double focusX = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getFx), centreX);
         double focusY = ISvgGradientElement.coordinate(effective(index, SvgRadialGradient::getFy), centreY);
@@ -137,13 +132,12 @@ public class SvgRadialGradient extends AbstractSvgStylable implements ISvgGradie
         double focusDistance = Math.clamp(Math.hypot(offsetX, offsetY) / radius, 0.0, 1.0);
         double focusAngle = Math.toDegrees(Math.atan2(offsetY, offsetX));
         return new RadialGradient(focusAngle, focusDistance, centreX, centreY, radius,
-            isEffectivelyProportional(index), getEffectiveCycleMethod(index), stops);
+                                  isEffectivelyProportional(index), getEffectiveCycleMethod(index), stops);
     }
 
     /**
-     * The {@code xlink:href} chain starting at this element, bound to {@code SvgRadialGradient} rather than the
-     * shared {@link ISvgGradientElement} interface - see {@link SvgLinearGradient#hrefChain} for why geometry needs
-     * this rather than the cross-type chain.
+     * The {@code xlink:href} chain starting at this element, bound to {@code SvgRadialGradient} rather than the shared {@link ISvgGradientElement} interface - see
+     * {@link SvgLinearGradient#hrefChain} for why geometry needs this rather than the cross-type chain.
      */
     private List<SvgRadialGradient> hrefChain(SvgElementIndex index) {
         return index == null ? List.of(this) : index.resolveChain(this, SvgRadialGradient::getXlinkHref, SvgRadialGradient.class);

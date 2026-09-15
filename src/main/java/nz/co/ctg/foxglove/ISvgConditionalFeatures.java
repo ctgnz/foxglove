@@ -35,18 +35,19 @@ public interface ISvgConditionalFeatures extends ISvgAttributes {
     }
 
     /**
-     * Whether {@code extension} appears in the whitespace-separated {@code requiredExtensions} list. Null-safe -
-     * an absent attribute (the overwhelming majority of elements) previously threw {@link NullPointerException}
-     * here, which nothing calling it today would have caught.
+     * Whether {@code extension} appears in the whitespace-separated {@code requiredExtensions} list. Null-safe - an absent attribute (the overwhelming majority of elements)
+     * previously threw {@link NullPointerException} here, which nothing calling it today would have caught.
      */
     default boolean hasExtension(String extension) {
         String extensions = getRequiredExtensions();
-        return extensions != null && Arrays.asList(extensions.trim().split("\\s+")).contains(extension);
+        return extensions != null && Arrays.asList(extensions.trim()
+            .split("\\s+"))
+            .contains(extension);
     }
 
     /**
-     * Whether {@code requiredFeatures} is satisfied: absent is true, present but blank is false, otherwise every
-     * whitespace-separated feature string must be one this renderer declares in {@link SvgFeatures#SUPPORTED}.
+     * Whether {@code requiredFeatures} is satisfied: absent is true, present but blank is false, otherwise every whitespace-separated feature string must be one this renderer
+     * declares in {@link SvgFeatures#SUPPORTED}.
      */
     default boolean requiredFeaturesSatisfied() {
         String features = getRequiredFeatures();
@@ -56,7 +57,8 @@ public interface ISvgConditionalFeatures extends ISvgAttributes {
         if (features.isBlank()) {
             return false;
         }
-        for (String feature : features.trim().split("\\s+")) {
+        for (String feature : features.trim()
+            .split("\\s+")) {
             if (!SvgFeatures.SUPPORTED.contains(feature)) {
                 return false;
             }
@@ -65,9 +67,8 @@ public interface ISvgConditionalFeatures extends ISvgAttributes {
     }
 
     /**
-     * Whether {@code requiredExtensions} is satisfied - the one attribute of the three where blank (rather than
-     * absent) is explicitly true, meaning "no extension required." This renderer claims no extensions at all, so
-     * any non-blank value is false.
+     * Whether {@code requiredExtensions} is satisfied - the one attribute of the three where blank (rather than absent) is explicitly true, meaning "no extension required." This
+     * renderer claims no extensions at all, so any non-blank value is false.
      */
     default boolean requiredExtensionsSatisfied() {
         String extensions = getRequiredExtensions();
@@ -75,9 +76,8 @@ public interface ISvgConditionalFeatures extends ISvgAttributes {
     }
 
     /**
-     * Whether {@code systemLanguage} is satisfied against {@code locale}: absent is true, present but blank is
-     * false, otherwise at least one comma-separated tag must match {@code locale}'s language tag exactly, or be a
-     * prefix of it ending at a subtag boundary - {@code "en"} matches a locale of {@code en-NZ}.
+     * Whether {@code systemLanguage} is satisfied against {@code locale}: absent is true, present but blank is false, otherwise at least one comma-separated tag must match
+     * {@code locale}'s language tag exactly, or be a prefix of it ending at a subtag boundary - {@code "en"} matches a locale of {@code en-NZ}.
      */
     default boolean systemLanguageSatisfied(Locale locale) {
         String systemLanguage = getSystemLanguage();
@@ -102,9 +102,8 @@ public interface ISvgConditionalFeatures extends ISvgAttributes {
     }
 
     /**
-     * Whether this element's conditional processing attributes all pass, per {@code locale} - the single test
-     * {@code <switch>} uses to pick its first passing child, and every other element implementing this interface
-     * uses to decide whether it renders at all (see {@link ISvgContainer#isRendered}).
+     * Whether this element's conditional processing attributes all pass, per {@code locale} - the single test {@code <switch>} uses to pick its first passing child, and every
+     * other element implementing this interface uses to decide whether it renders at all (see {@link ISvgContainer#isRendered}).
      */
     default boolean isConditionSatisfied(Locale locale) {
         return requiredFeaturesSatisfied() && requiredExtensionsSatisfied() && systemLanguageSatisfied(locale);

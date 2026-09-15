@@ -1,12 +1,13 @@
 package nz.co.ctg.foxglove.adapter;
 
-import nz.co.ctg.foxglove.type.ViewBox;
-
 import static nz.co.ctg.foxglove.adapter.AdapterConstants.WHITESPACE_CHARS;
 import static org.apache.commons.lang3.StringUtils.split;
 
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import javafx.css.Size;
+
+import nz.co.ctg.foxglove.type.ViewBox;
+
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class ViewBoxAdapter extends XmlAdapter<String, ViewBox> {
     private final SizeAdapter adapter = new SizeAdapter();
@@ -26,7 +27,14 @@ public class ViewBoxAdapter extends XmlAdapter<String, ViewBox> {
 
     @Override
     public String marshal(ViewBox value) throws Exception {
-        return String.format("%5.2f %5.2f %5.2f %5.2f", value.getMinX().pixels(), value.getMinY().pixels(), value.getWidth().pixels(), value.getHeight().pixels());
+        return String.format("%5.2f %5.2f %5.2f %5.2f", value.getMinX()
+            .pixels(),
+            value.getMinY()
+                .pixels(),
+            value.getWidth()
+                .pixels(),
+            value.getHeight()
+                .pixels());
     }
 
 }

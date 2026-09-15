@@ -2,6 +2,11 @@ package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.css.Size;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -36,21 +41,13 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import javafx.css.Size;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.transform.Transform;
-import javafx.scene.transform.Translate;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
 })
 @XmlRootElement(name = "use")
-public class SvgUse extends AbstractSvgStylable
-    implements ISvgStructuralElement, ISvgBounded, ISvgEventListener, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable, ISvgExternalResources,
-    FxGraphic<Group> {
+public class SvgUse extends AbstractSvgStylable implements ISvgStructuralElement, ISvgBounded, ISvgEventListener, ISvgConditionalFeatures, ISvgTransformable, ISvgLinkable, ISvgExternalResources, FxGraphic<Group> {
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -72,24 +69,19 @@ public class SvgUse extends AbstractSvgStylable
     }
 
     /**
-     * Resolves {@code xlink:href} and renders the referenced element in this {@code <use>}'s place, translated by
-     * its own x/y and with its own {@code transform} applied. The referenced content is handed a context resolved
-     * from this element's own ancestors, so it inherits from the {@code <use>} site rather than from wherever it
-     * was declared - the same mechanism paint server {@code xlink:href} inheritance already relies on.
+     * Resolves {@code xlink:href} and renders the referenced element in this {@code <use>}'s place, translated by its own x/y and with its own {@code transform} applied. The
+     * referenced content is handed a context resolved from this element's own ancestors, so it inherits from the {@code <use>} site rather than from wherever it was declared - the
+     * same mechanism paint server {@code xlink:href} inheritance already relies on.
      * <p>
-     * Resolves to an empty {@link Group} - never {@code null} - when the reference is missing, invisible, reuses
-     * one of this element's own static-containment ancestors ({@link SvgElementIndex#isSelfOrAncestor}), or would
-     * revisit an element already being expanded somewhere up this call chain ({@link
-     * RenderContext#isActiveUseTarget}) - a cycle reachable purely through {@code xlink:href} chains between
-     * otherwise-unrelated elements (siblings referencing each other, directly or via several indirections), which
-     * {@code isSelfOrAncestor} alone does not catch since none of them are each other's actual parse-tree ancestor.
-     * Either way, rendering would otherwise expand forever.
+     * Resolves to an empty {@link Group} - never {@code null} - when the reference is missing, invisible, reuses one of this element's own static-containment ancestors
+     * ({@link SvgElementIndex#isSelfOrAncestor}), or would revisit an element already being expanded somewhere up this call chain ({@link RenderContext#isActiveUseTarget}) - a
+     * cycle reachable purely through {@code xlink:href} chains between otherwise-unrelated elements (siblings referencing each other, directly or via several indirections), which
+     * {@code isSelfOrAncestor} alone does not catch since none of them are each other's actual parse-tree ancestor. Either way, rendering would otherwise expand forever.
      * <p>
-     * Per the specification, {@code translate(x,y)} is appended to the end of this element's own {@code transform}
-     * list rather than applied separately - so both go into the JavaFX {@code transforms} list, in that order, and
-     * neither uses the {@code translateX}/{@code translateY} node properties. Those properties are always the
-     * outermost operation in JavaFX regardless of call order, which would apply this element's own {@code transform}
-     * attribute - meant to wrap the translated result - before the translation instead of after it.
+     * Per the specification, {@code translate(x,y)} is appended to the end of this element's own {@code transform} list rather than applied separately - so both go into the JavaFX
+     * {@code transforms} list, in that order, and neither uses the {@code translateX}/{@code translateY} node properties. Those properties are always the outermost operation in
+     * JavaFX regardless of call order, which would apply this element's own {@code transform} attribute - meant to wrap the translated result - before the translation instead of
+     * after it.
      */
     @Override
     public Group createGraphic(RenderContext context) {
@@ -98,7 +90,8 @@ public class SvgUse extends AbstractSvgStylable
         group.setId(getId());
         applyNodeProperties(context, group);
         applyTransforms(group);
-        group.getTransforms().add(new Translate(resolveX(context), resolveY(context)));
+        group.getTransforms()
+            .add(new Translate(resolveX(context), resolveY(context)));
 
         SvgElementIndex index = context.getElementIndex();
         RenderContext selfContext = context.withActiveUseTarget(this);
@@ -106,8 +99,10 @@ public class SvgUse extends AbstractSvgStylable
             .filter(target -> ISvgContainer.isRendered(target, context.getLocale()))
             .filter(target -> !index.isSelfOrAncestor(target, this))
             .filter(target -> !selfContext.isActiveUseTarget(target))
-            .map(target -> buildReferenced(target, selfContext.withActiveUseTarget(target).resolveChild(this)))
-            .ifPresent(node -> group.getChildren().add(node));
+            .map(target -> buildReferenced(target, selfContext.withActiveUseTarget(target)
+                .resolveChild(this)))
+            .ifPresent(node -> group.getChildren()
+                .add(node));
         applyClip(context, group);
         applyFilter(context, group);
         return group;
@@ -115,15 +110,12 @@ public class SvgUse extends AbstractSvgStylable
 
     /**
      * Also applies the *referenced target's own* {@code mask} (independent of any {@code mask} on this {@code
-     * <use>} element itself, which - like this element's own {@code clip-path} - is applied to this element's
-     * returned {@code group} by whichever container consumes it, the same as any other child; see
-     * {@link ISvgContainer#appendContent}). This dispatch is the one place the referenced target's own node is built
-     * outside that shared consumer path, so it is the one place that has to apply the target's mask - and register
-     * its node (#30) - itself.
+     * <use>} element itself, which - like this element's own {@code clip-path} - is applied to this element's returned {@code group} by whichever container consumes it, the same
+     * as any other child; see {@link ISvgContainer#appendContent}). This dispatch is the one place the referenced target's own node is built outside that shared consumer path, so
+     * it is the one place that has to apply the target's mask - and register its node (#30) - itself.
      * <p>
-     * A known limitation shared with masking above: if the same target is referenced by more than one {@code <use>},
-     * only the most recently built copy stays in the node registry - an animation on content reused as a shared
-     * {@code <symbol>}/template, expecting each copy to animate independently, is out of scope for now.
+     * A known limitation shared with masking above: if the same target is referenced by more than one {@code <use>}, only the most recently built copy stays in the node registry -
+     * an animation on content reused as a shared {@code <symbol>}/template, expecting each copy to animate independently, is out of scope for now.
      */
     private Node buildReferenced(ISvgElement target, RenderContext context) {
         Node node;
@@ -144,9 +136,8 @@ public class SvgUse extends AbstractSvgStylable
     }
 
     /**
-     * Renders a {@code <symbol>} as if it were an {@code <svg>}: this {@code <use>}'s width/height establish the
-     * viewport (defaulting to the current viewport size, per the specification's 100% default), and the symbol's
-     * own {@code viewBox} maps onto it.
+     * Renders a {@code <symbol>} as if it were an {@code <svg>}: this {@code <use>}'s width/height establish the viewport (defaulting to the current viewport size, per the
+     * specification's 100% default), and the symbol's own {@code viewBox} maps onto it.
      */
     private Node buildSymbol(SvgSymbol symbol, RenderContext context) {
         symbol.applyStyle(context);
@@ -161,13 +152,16 @@ public class SvgUse extends AbstractSvgStylable
         if (viewBox != null) {
             Transform viewBoxTransform = symbol.createViewportTransform(width, height);
             if (viewBoxTransform != null) {
-                group.getTransforms().add(viewBoxTransform);
+                group.getTransforms()
+                    .add(viewBoxTransform);
             }
             if (viewBox.getWidth() != null) {
-                childViewportWidth = viewBox.getWidth().pixels();
+                childViewportWidth = viewBox.getWidth()
+                    .pixels();
             }
             if (viewBox.getHeight() != null) {
-                childViewportHeight = viewBox.getHeight().pixels();
+                childViewportHeight = viewBox.getHeight()
+                    .pixels();
             }
         }
         symbol.appendContent(group, context.withViewport(childViewportWidth, childViewportHeight));

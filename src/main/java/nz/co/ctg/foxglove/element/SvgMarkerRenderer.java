@@ -2,6 +2,15 @@ package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.geometry.Point2D;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -16,44 +25,32 @@ import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgPolygon;
 import nz.co.ctg.foxglove.shape.SvgPolyline;
 
-import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Transform;
-import javafx.scene.transform.Translate;
-
 /**
- * Assembles {@code marker-start}/{@code marker-mid}/{@code marker-end} onto a shape that supports them
- * ({@code <line>}, {@code <polyline>}, {@code <polygon>}, {@code <path>}).
+ * Assembles {@code marker-start}/{@code marker-mid}/{@code marker-end} onto a shape that supports them ({@code <line>}, {@code <polyline>}, {@code <polygon>}, {@code <path>}).
  * <p>
- * Applied at the {@link nz.co.ctg.foxglove.ISvgContainer#appendContent} consumer level rather than by changing
- * {@link nz.co.ctg.foxglove.shape.AbstractSvgShape}'s return type: every production caller already treats a built
- * child as a plain {@code Node}, so wrapping it here - only when markers are actually present - needs no change to
- * any shape's own {@code createGraphic} signature.
+ * Applied at the {@link nz.co.ctg.foxglove.ISvgContainer#appendContent} consumer level rather than by changing {@link nz.co.ctg.foxglove.shape.AbstractSvgShape}'s return type:
+ * every production caller already treats a built child as a plain {@code Node}, so wrapping it here - only when markers are actually present - needs no change to any shape's own
+ * {@code createGraphic} signature.
  */
 public final class SvgMarkerRenderer {
 
     private enum MarkerRole {
-        START, MID, END
+            START,
+            MID,
+            END
     }
 
     private record MarkerPlacement(Point2D point, double autoAngle, MarkerRole role) {
     }
 
     /**
-     * Wraps {@code node} with its markers when {@code child} is a markable shape with at least one of
-     * {@code marker-start}/{@code marker-mid}/{@code marker-end} set, or returns {@code node} unchanged otherwise -
-     * which covers every shape that doesn't use markers, the overwhelming majority. That majority is established
-     * first and costs nothing beyond three attribute reads; see the comment at the top of the method body.
+     * Wraps {@code node} with its markers when {@code child} is a markable shape with at least one of {@code marker-start}/{@code marker-mid}/{@code marker-end} set, or returns
+     * {@code node} unchanged otherwise - which covers every shape that doesn't use markers, the overwhelming majority. That majority is established first and costs nothing beyond
+     * three attribute reads; see the comment at the top of the method body.
      * <p>
-     * {@code node}'s own {@code transforms} (from its {@code transform} attribute) are relocated onto the returned
-     * wrapper, so the shape and its markers share exactly the same outer transform - verified empirically that this
-     * relocation is a visual no-op for the shape itself, since a JavaFX {@link Group}'s transform and the same
-     * transform placed directly on its only child produce an identical result.
+     * {@code node}'s own {@code transforms} (from its {@code transform} attribute) are relocated onto the returned wrapper, so the shape and its markers share exactly the same
+     * outer transform - verified empirically that this relocation is a visual no-op for the shape itself, since a JavaFX {@link Group}'s transform and the same transform placed
+     * directly on its only child produce an identical result.
      */
     public static Node applyMarkers(Node node, ISvgElement child, RenderContext context) {
         // Established before computing anything, deliberately (#121). Every child of every container comes through
@@ -119,8 +116,10 @@ public final class SvgMarkerRenderer {
         double strokeWidth = node instanceof Shape shape ? shape.getStrokeWidth() : 1.0;
 
         Group wrapper = new Group(node);
-        wrapper.getTransforms().addAll(node.getTransforms());
-        node.getTransforms().clear();
+        wrapper.getTransforms()
+            .addAll(node.getTransforms());
+        node.getTransforms()
+            .clear();
 
         for (MarkerPlacement placement : assignRoles(vertices, angles)) {
             String href = switch (placement.role()) {
@@ -132,7 +131,8 @@ public final class SvgMarkerRenderer {
                 .map(marker -> buildMarkerInstance(marker, placement, strokeWidth, index))
                 .ifPresent(markerNode -> {
                     if (markerNode != null) {
-                        wrapper.getChildren().add(markerNode);
+                        wrapper.getChildren()
+                            .add(markerNode);
                     }
                 });
         }
@@ -140,13 +140,11 @@ public final class SvgMarkerRenderer {
     }
 
     /**
-     * The bisected auto-orientation angle at every vertex of one subpath, computed unconditionally - a marker only
-     * consults it when its own {@code orient} is {@code auto}.
+     * The bisected auto-orientation angle at every vertex of one subpath, computed unconditionally - a marker only consults it when its own {@code orient} is {@code auto}.
      * <p>
-     * When {@code closed} (a {@code <polygon>}'s implicit closing edge back to the first point, or a {@code <path>}
-     * subpath ending in {@code Z}), the first vertex's incoming direction and the last vertex's outgoing direction
-     * wrap around through that closing edge, per the specification's closed-path bisection rule - not merely
-     * approximated as open-path start/end.
+     * When {@code closed} (a {@code <polygon>}'s implicit closing edge back to the first point, or a {@code <path>} subpath ending in {@code Z}), the first vertex's incoming
+     * direction and the last vertex's outgoing direction wrap around through that closing edge, per the specification's closed-path bisection rule - not merely approximated as
+     * open-path start/end.
      */
     private static List<Double> autoAnglesFor(List<Point2D> vertices, boolean closed) {
         int n = vertices.size();
@@ -173,12 +171,10 @@ public final class SvgMarkerRenderer {
     }
 
     /**
-     * One placement per vertex, in order: the first is {@link MarkerRole#START}, the last {@link MarkerRole#END},
-     * everything between {@link MarkerRole#MID} - so a 2-point line never gets a {@code MID} placement, and a
-     * multi-subpath {@code <path>} gets exactly one start and one end overall, with every subpath-boundary vertex
-     * in between (including a fresh {@code M} in the middle of the data) getting {@code MID} - per the
-     * specification, {@code marker-start}/{@code marker-end} apply to the first/last vertex of the whole path, not
-     * per subpath.
+     * One placement per vertex, in order: the first is {@link MarkerRole#START}, the last {@link MarkerRole#END}, everything between {@link MarkerRole#MID} - so a 2-point line
+     * never gets a {@code MID} placement, and a multi-subpath {@code <path>} gets exactly one start and one end overall, with every subpath-boundary vertex in between (including a
+     * fresh {@code M} in the middle of the data) getting {@code MID} - per the specification, {@code marker-start}/{@code marker-end} apply to the first/last vertex of the whole
+     * path, not per subpath.
      */
     private static List<MarkerPlacement> assignRoles(List<Point2D> vertices, List<Double> angles) {
         int n = vertices.size();
@@ -195,9 +191,8 @@ public final class SvgMarkerRenderer {
     }
 
     /**
-     * Bisects two tangent directions (in degrees) by summing their unit vectors and taking the angle of the
-     * result - the standard technique, correct except for the degenerate case of an exact 180-degree reversal
-     * (the sum is then near zero), where this falls back to the outgoing angle alone.
+     * Bisects two tangent directions (in degrees) by summing their unit vectors and taking the angle of the result - the standard technique, correct except for the degenerate case
+     * of an exact 180-degree reversal (the sum is then near zero), where this falls back to the outgoing angle alone.
      */
     private static double bisect(Double inAngle, Double outAngle) {
         if (inAngle == null && outAngle == null) {
@@ -221,17 +216,13 @@ public final class SvgMarkerRenderer {
     }
 
     /**
-     * Builds one instance of {@code marker}, or {@code null} when its viewport has no positive area or its content
-     * renders to nothing.
+     * Builds one instance of {@code marker}, or {@code null} when its viewport has no positive area or its content renders to nothing.
      * <p>
-     * Renders in a fresh, non-inheriting context ({@link RenderContext#root}) rather than one resolved from the
-     * referencing shape - per the specification, markers do not inherit style from the element that references
-     * them. Reuses {@link nz.co.ctg.foxglove.ISvgFitToViewBox#createViewportTransform}, already proven for
-     * {@code <symbol>}/{@code <image>}, for the marker's own {@code viewBox}. The clip and the positioning
-     * transforms (vertex translate, orientation, {@code markerUnits} scale, {@code refX}/{@code refY} shift) live
-     * on the outer {@code instance} group, while the viewBox-fit transform lives on its child {@code fitted} -
-     * {@code Node.setClip()} applies in a node's own pre-transform local space, so the two must be kept apart the
-     * same way {@code <image>}'s {@code slice} clipping does.
+     * Renders in a fresh, non-inheriting context ({@link RenderContext#root}) rather than one resolved from the referencing shape - per the specification, markers do not inherit
+     * style from the element that references them. Reuses {@link nz.co.ctg.foxglove.ISvgFitToViewBox#createViewportTransform}, already proven for {@code <symbol>}/{@code <image>},
+     * for the marker's own {@code viewBox}. The clip and the positioning transforms (vertex translate, orientation, {@code markerUnits} scale, {@code refX}/{@code refY} shift)
+     * live on the outer {@code instance} group, while the viewBox-fit transform lives on its child {@code fitted} - {@code Node.setClip()} applies in a node's own pre-transform
+     * local space, so the two must be kept apart the same way {@code <image>}'s {@code slice} clipping does.
      */
     private static Node buildMarkerInstance(SvgMarker marker, MarkerPlacement placement, double strokeWidth, SvgElementIndex index) {
         double refX = parseCoordinate(marker.getRefX(), 0);
@@ -250,22 +241,30 @@ public final class SvgMarkerRenderer {
         Group fitted = new Group();
         Transform viewBoxTransform = marker.createViewportTransform(markerWidth, markerHeight);
         if (viewBoxTransform != null) {
-            fitted.getTransforms().add(viewBoxTransform);
+            fitted.getTransforms()
+                .add(viewBoxTransform);
         }
         marker.applyStyle(markerContext);
         marker.appendContent(fitted, markerContext);
-        if (fitted.getChildren().isEmpty()) {
+        if (fitted.getChildren()
+            .isEmpty()) {
             return null;
         }
 
         Group instance = new Group(fitted);
         instance.setClip(new Rectangle(markerWidth, markerHeight));
-        instance.getTransforms().add(new Translate(placement.point().getX(), placement.point().getY()));
-        instance.getTransforms().add(new Rotate(angle));
+        instance.getTransforms()
+            .add(new Translate(placement.point()
+                .getX(), placement.point()
+                    .getY()));
+        instance.getTransforms()
+            .add(new Rotate(angle));
         if (scaleByStrokeWidth) {
-            instance.getTransforms().add(new Scale(strokeWidth, strokeWidth));
+            instance.getTransforms()
+                .add(new Scale(strokeWidth, strokeWidth));
         }
-        instance.getTransforms().add(new Translate(-refX, -refY));
+        instance.getTransforms()
+            .add(new Translate(-refX, -refY));
         return instance;
     }
 

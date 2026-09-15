@@ -1,11 +1,20 @@
 package nz.co.ctg.foxglove;
 
+import static java.util.stream.Collectors.toList;
+import static nz.co.ctg.foxglove.RenderContext.Axis;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import javafx.css.Size;
+import javafx.css.SizeUnits;
+import javafx.geometry.Bounds;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.transform.Transform;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,27 +25,15 @@ import nz.co.ctg.foxglove.description.SvgTitle;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.type.ViewBox;
 
-import static java.util.stream.Collectors.toList;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
-import javafx.css.Size;
-import javafx.css.SizeUnits;
-import javafx.geometry.Bounds;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.transform.Transform;
-
-import static nz.co.ctg.foxglove.RenderContext.Axis;
 
 @XmlRootElement(name = "svg", namespace = "http://www.w3.org/2000/svg")
-public class SvgGraphic extends AbstractSvgStylable
-    implements ISvgStylable, ISvgBounded, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgDescribable, ISvgContainer,
-    FxGraphic<Group> {
+public class SvgGraphic extends AbstractSvgStylable implements ISvgStylable, ISvgBounded, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgDescribable, ISvgContainer, FxGraphic<Group> {
 
     /**
-     * The CSS/SVG UA fallback intrinsic size when neither {@code width}/{@code height} nor {@code viewBox} give one -
-     * relevant only at the document root, since a nested {@code <svg>} always resolves against its parent viewport.
+     * The CSS/SVG UA fallback intrinsic size when neither {@code width}/{@code height} nor {@code viewBox} give one - relevant only at the document root, since a nested
+     * {@code <svg>} always resolves against its parent viewport.
      */
     private static final double DEFAULT_WIDTH = 300;
     private static final double DEFAULT_HEIGHT = 150;
@@ -67,9 +64,8 @@ public class SvgGraphic extends AbstractSvgStylable
     }
 
     /**
-     * The index used to resolve {@code url(#id)} and {@code xlink:href="#id"} references within this document, built
-     * on first use and cached thereafter. Call {@link #rebuildElementIndex()} after modifying the document, as the
-     * index is a snapshot rather than a live view.
+     * The index used to resolve {@code url(#id)} and {@code xlink:href="#id"} references within this document, built on first use and cached thereafter. Call
+     * {@link #rebuildElementIndex()} after modifying the document, as the index is a snapshot rather than a live view.
      */
     @XmlTransient
     public SvgElementIndex getElementIndex() {
@@ -88,9 +84,8 @@ public class SvgGraphic extends AbstractSvgStylable
     }
 
     /**
-     * The location this document was parsed from, if known - what a relative {@code xlink:href} (such as on
-     * {@code <image>}) resolves against. Set by {@link FoxgloveParser#parseFile}; absent when parsed from a bare
-     * stream, since there is then nowhere to resolve a relative reference against.
+     * The location this document was parsed from, if known - what a relative {@code xlink:href} (such as on {@code <image>}) resolves against. Set by
+     * {@link FoxgloveParser#parseFile}; absent when parsed from a bare stream, since there is then nowhere to resolve a relative reference against.
      */
     @XmlTransient
     public URI getBaseUri() {
@@ -102,33 +97,32 @@ public class SvgGraphic extends AbstractSvgStylable
     }
 
     /**
-     * Renders this element as the root of the document, establishing the initial viewport from its own
-     * {@code width}/{@code height} (falling back to its {@code viewBox}, then to the standard 300x150 default).
+     * Renders this element as the root of the document, establishing the initial viewport from its own {@code width}/{@code height} (falling back to its {@code viewBox}, then to
+     * the standard 300x150 default).
      */
     public Group createGroup() {
-        return createGraphic(RenderContext.root(getElementIndex(), 0, 0).withBaseUri(baseUri));
+        return createGraphic(RenderContext.root(getElementIndex(), 0, 0)
+            .withBaseUri(baseUri));
     }
 
     /**
-     * As {@link #createGroup()}, but evaluating {@code systemLanguage} (see {@link ISvgConditionalFeatures}) against
-     * {@code locale} rather than the JVM default - for a caller that wants to render the same document for a
-     * specific language.
+     * As {@link #createGroup()}, but evaluating {@code systemLanguage} (see {@link ISvgConditionalFeatures}) against {@code locale} rather than the JVM default - for a caller that
+     * wants to render the same document for a specific language.
      */
     public Group createGroup(Locale locale) {
-        return createGraphic(RenderContext.root(getElementIndex(), 0, 0).withBaseUri(baseUri).withLocale(locale));
+        return createGraphic(RenderContext.root(getElementIndex(), 0, 0)
+            .withBaseUri(baseUri)
+            .withLocale(locale));
     }
 
     /**
-     * As {@link #createGraphic(RenderContext)}, but also builds an {@link SvgAnimationController} for every
-     * animation element in the document (#30) - a new, additive entry point. {@link #createGroup()}/{@link
-     * #createGraphic(RenderContext)} are unchanged and remain the right choice for a caller that doesn't need
-     * animation control; the whole point of adding this alongside them, rather than changing what they return, is
-     * that every existing caller keeps compiling without it.
+     * As {@link #createGraphic(RenderContext)}, but also builds an {@link SvgAnimationController} for every animation element in the document (#30) - a new, additive entry point.
+     * {@link #createGroup()}/{@link #createGraphic(RenderContext)} are unchanged and remain the right choice for a caller that doesn't need animation control; the whole point of
+     * adding this alongside them, rather than changing what they return, is that every existing caller keeps compiling without it.
      * <p>
-     * The root {@code <svg>} element itself is registered directly here, rather than via {@link
-     * ISvgGraphicsAttributes#registerNode} - that only ever runs for a *child* some container consumes, and the
-     * root is nobody's child - so an animation whose target is the document root itself (the default when its own
-     * parent, per SMIL, is the root) still resolves, unlike {@code mask}'s equivalent root-level gap.
+     * The root {@code <svg>} element itself is registered directly here, rather than via {@link ISvgGraphicsAttributes#registerNode} - that only ever runs for a *child* some
+     * container consumes, and the root is nobody's child - so an animation whose target is the document root itself (the default when its own parent, per SMIL, is the root) still
+     * resolves, unlike {@code mask}'s equivalent root-level gap.
      */
     public AnimatedGraphic createAnimatedGraphic(RenderContext parentContext) {
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
@@ -138,8 +132,7 @@ public class SvgGraphic extends AbstractSvgStylable
     }
 
     /**
-     * Renders this element - root or nested - establishing the viewport its content and descendants resolve
-     * percentages and {@code viewBox} against.
+     * Renders this element - root or nested - establishing the viewport its content and descendants resolve percentages and {@code viewBox} against.
      */
     @Override
     public Group createGraphic(RenderContext parentContext) {
@@ -147,9 +140,8 @@ public class SvgGraphic extends AbstractSvgStylable
     }
 
     /**
-     * Renders this element with its {@code width}/{@code height} overridden by the given sizes where non-null,
-     * falling back to this element's own attributes otherwise - what a {@code <use>} referencing an {@code <svg>}
-     * needs, since per the specification {@code <use>}'s own width/height take precedence over the target's.
+     * Renders this element with its {@code width}/{@code height} overridden by the given sizes where non-null, falling back to this element's own attributes otherwise - what a
+     * {@code <use>} referencing an {@code <svg>} needs, since per the specification {@code <use>}'s own width/height take precedence over the target's.
      */
     public Group createGraphic(RenderContext parentContext, Size overrideWidth, Size overrideHeight) {
         applyStyle(parentContext);
@@ -179,13 +171,16 @@ public class SvgGraphic extends AbstractSvgStylable
         if (viewBox != null) {
             Transform viewBoxTransform = createViewportTransform(width, height);
             if (viewBoxTransform != null) {
-                group.getTransforms().add(viewBoxTransform);
+                group.getTransforms()
+                    .add(viewBoxTransform);
             }
             if (viewBox.getWidth() != null) {
-                childViewportWidth = viewBox.getWidth().pixels();
+                childViewportWidth = viewBox.getWidth()
+                    .pixels();
             }
             if (viewBox.getHeight() != null) {
-                childViewportHeight = viewBox.getHeight().pixels();
+                childViewportHeight = viewBox.getHeight()
+                    .pixels();
             }
         }
 
@@ -196,9 +191,8 @@ public class SvgGraphic extends AbstractSvgStylable
     }
 
     /**
-     * Resolves {@code width}/{@code height} against the parent viewport when set to a usable length, falling back
-     * to the {@code viewBox} dimension along the same axis, then to {@code fallbackDefault} - the standard UA
-     * behaviour when a viewport-establishing element gives no intrinsic size of its own.
+     * Resolves {@code width}/{@code height} against the parent viewport when set to a usable length, falling back to the {@code viewBox} dimension along the same axis, then to
+     * {@code fallbackDefault} - the standard UA behaviour when a viewport-establishing element gives no intrinsic size of its own.
      */
     private double resolveIntrinsicLength(Size size, RenderContext parentContext, Axis axis, double fallbackDefault) {
         if (size != null) {
@@ -221,7 +215,12 @@ public class SvgGraphic extends AbstractSvgStylable
         if (content == null || content.isEmpty()) {
             return null;
         }
-        return content.stream().filter(SvgGroup.class::isInstance).map(SvgGroup.class::cast).filter(SvgGroup::isVisible).findFirst().orElse(null);
+        return content.stream()
+            .filter(SvgGroup.class::isInstance)
+            .map(SvgGroup.class::cast)
+            .filter(SvgGroup::isVisible)
+            .findFirst()
+            .orElse(null);
     }
 
     public String getBaseProfile() {

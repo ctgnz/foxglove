@@ -3,6 +3,17 @@ package nz.co.ctg.foxglove.paint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import javafx.geometry.Bounds;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Transform;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -20,8 +31,6 @@ import nz.co.ctg.foxglove.RenderContext.UnitsMode;
 import nz.co.ctg.foxglove.SvgElementIndex;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.SvgStyle;
-import nz.co.ctg.foxglove.type.PreserveAspectRatio;
-import nz.co.ctg.foxglove.type.ViewBox;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
 import nz.co.ctg.foxglove.animate.SvgAnimateColor;
 import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
@@ -56,6 +65,8 @@ import nz.co.ctg.foxglove.text.SvgAltGlyphDef;
 import nz.co.ctg.foxglove.text.SvgFont;
 import nz.co.ctg.foxglove.text.SvgFontFace;
 import nz.co.ctg.foxglove.text.SvgText;
+import nz.co.ctg.foxglove.type.PreserveAspectRatio;
+import nz.co.ctg.foxglove.type.ViewBox;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -67,31 +78,17 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javafx.geometry.Bounds;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Transform;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
 })
 @XmlRootElement(name = "pattern")
-public class SvgPattern extends AbstractSvgStylable
-    implements ISvgBounded, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgFitToViewBox, ISvgContainer {
+public class SvgPattern extends AbstractSvgStylable implements ISvgBounded, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgFitToViewBox, ISvgContainer {
 
     /**
-     * Supersampling factor applied when rasterising a tile, so a pattern fill still looks crisp when the shape it
-     * fills is scaled up - at a proportional memory cost. Adjustable at runtime; there is no configuration system in
-     * this codebase to hang it off instead.
+     * Supersampling factor applied when rasterising a tile, so a pattern fill still looks crisp when the shape it fills is scaled up - at a proportional memory cost. Adjustable at
+     * runtime; there is no configuration system in this codebase to hang it off instead.
      */
     public static double rasterScale = 2.0;
 
@@ -168,9 +165,8 @@ public class SvgPattern extends AbstractSvgStylable
     }
 
     /**
-     * Parsed, but not applied - like {@code gradientTransform} ({@link ISvgGradientElement#getGradientTransform()}),
-     * a JavaFX {@link ImagePattern} has nowhere to put a transform, only an anchor rectangle. Baking a rotation or a
-     * skew into the rasterised tile itself is possible but is its own piece of follow-on work.
+     * Parsed, but not applied - like {@code gradientTransform} ({@link ISvgGradientElement#getGradientTransform()}), a JavaFX {@link ImagePattern} has nowhere to put a transform,
+     * only an anchor rectangle. Baking a rotation or a skew into the rasterised tile itself is possible but is its own piece of follow-on work.
      */
     public String getPatternTransform() {
         return patternTransform;
@@ -190,21 +186,19 @@ public class SvgPattern extends AbstractSvgStylable
     /**
      * Builds the tiling paint for this pattern, or null when it resolves to no usable tile.
      * <p>
-     * Rasterises the pattern's content via {@code Node.snapshot(...)}, which requires the JavaFX Application
-     * Thread and throws {@link IllegalStateException} otherwise - the one place in this renderer with that
-     * requirement. A repeated call at the same resolved tile size reuses the cached image rather than rendering
-     * again.
+     * Rasterises the pattern's content via {@code Node.snapshot(...)}, which requires the JavaFX Application Thread and throws {@link IllegalStateException} otherwise - the one
+     * place in this renderer with that requirement. A repeated call at the same resolved tile size reuses the cached image rather than rendering again.
      * <p>
-     * Any attribute this element does not specify, and its content if it declares none, are taken from its
-     * {@code xlink:href} chain (#18).
+     * Any attribute this element does not specify, and its content if it declares none, are taken from its {@code xlink:href} chain (#18).
      *
-     * @param context the rendering context, carrying the current viewport for {@code userSpaceOnUse} lengths, the
-     *        document's element index (used to resolve the {@code xlink:href} chain) and, for the default
-     *        {@code objectBoundingBox} mode, the referencing shape's own bounding box
+     * @param context
+     *            the rendering context, carrying the current viewport for {@code userSpaceOnUse} lengths, the document's element index (used to resolve the {@code xlink:href}
+     *            chain) and, for the default {@code objectBoundingBox} mode, the referencing shape's own bounding box
      */
     public Paint createPaint(RenderContext context) {
         SvgElementIndex index = context.getElementIndex();
-        Bounds bbox = context.getObjectBoundingBox().orElse(null);
+        Bounds bbox = context.getObjectBoundingBox()
+            .orElse(null);
         UnitsMode unitsMode = RenderContext.parseUnits(effective(index, SvgPattern::getPatternUnits), UnitsMode.OBJECT_BOUNDING_BOX);
 
         double tileX;
@@ -246,19 +240,22 @@ public class SvgPattern extends AbstractSvgStylable
             ? null
             : viewBox.createTransform(tileWidth, tileHeight, PreserveAspectRatio.parse(effective(index, SvgPattern::getPreserveAspectRatio)));
         if (viewBoxTransform != null) {
-            tileContent.getTransforms().add(viewBoxTransform);
+            tileContent.getTransforms()
+                .add(viewBoxTransform);
         } else if (bbox != null
-            && RenderContext.parseUnits(effective(index, SvgPattern::getPatternContentUnits), UnitsMode.USER_SPACE_ON_USE) == UnitsMode.OBJECT_BOUNDING_BOX) {
+                   && RenderContext.parseUnits(effective(index, SvgPattern::getPatternContentUnits), UnitsMode.USER_SPACE_ON_USE) == UnitsMode.OBJECT_BOUNDING_BOX) {
             // Content coordinates are fractions of the bounding box: scaling the whole subtree by its dimensions is
             // equivalent to, and far simpler than, teaching every shape class a bounding-box-relative coordinate mode.
-            tileContent.getTransforms().add(new Scale(bbox.getWidth(), bbox.getHeight()));
+            tileContent.getTransforms()
+                .add(new Scale(bbox.getWidth(), bbox.getHeight()));
         }
 
         // Supersampling scales the content itself, via a transform on the node being rendered, rather than via
         // SnapshotParameters.setTransform: that transform explicitly does not affect the viewport below, so it only
         // ever recaptures a shrunken corner of the tile at 1:1 instead of the whole tile at higher resolution.
         Group root = new Group(tileContent);
-        root.getTransforms().add(new Scale(rasterScale, rasterScale));
+        root.getTransforms()
+            .add(new Scale(rasterScale, rasterScale));
         new Scene(root);
         SnapshotParameters params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
@@ -272,8 +269,8 @@ public class SvgPattern extends AbstractSvgStylable
     }
 
     /**
-     * The {@code xlink:href} chain starting at this element, in reference order. A null index resolves to a chain
-     * of just this element, so a caller that does not have one still gets its own declared values.
+     * The {@code xlink:href} chain starting at this element, in reference order. A null index resolves to a chain of just this element, so a caller that does not have one still
+     * gets its own declared values.
      */
     private List<SvgPattern> hrefChain(SvgElementIndex index) {
         return index == null ? List.of(this) : index.resolveChain(this, SvgPattern::getXlinkHref, SvgPattern.class);
@@ -293,13 +290,13 @@ public class SvgPattern extends AbstractSvgStylable
     }
 
     /**
-     * The first pattern in the {@code xlink:href} chain that declares any content of its own, per the specification
-     * - this element's own content if it has any, otherwise the first ancestor's. Always resolves to at least this
-     * element, even if nothing in the chain has content, so there is always something to render (nothing).
+     * The first pattern in the {@code xlink:href} chain that declares any content of its own, per the specification - this element's own content if it has any, otherwise the first
+     * ancestor's. Always resolves to at least this element, even if nothing in the chain has content, so there is always something to render (nothing).
      */
     private SvgPattern effectiveContentSource(SvgElementIndex index) {
         for (SvgPattern current : hrefChain(index)) {
-            if (!current.getContent().isEmpty()) {
+            if (!current.getContent()
+                .isEmpty()) {
                 return current;
             }
         }

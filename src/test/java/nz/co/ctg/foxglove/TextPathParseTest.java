@@ -1,7 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -13,9 +11,10 @@ import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 
+import org.junit.jupiter.api.Test;
+
 /**
- * Exercises #29 against a document that has been through the parser, following
- * {@link MixedTextRenderingParseTest}'s convention.
+ * Exercises #29 against a document that has been through the parser, following {@link MixedTextRenderingParseTest}'s convention.
  */
 public class TextPathParseTest {
 
@@ -32,7 +31,9 @@ public class TextPathParseTest {
         assertThat(glyphs.getChildren(), hasSize(5));
         for (Node glyph : glyphs.getChildren()) {
             assertThat(glyph, instanceOf(Text.class));
-            boolean hasRotation = glyph.getTransforms().stream().anyMatch(Rotate.class::isInstance);
+            boolean hasRotation = glyph.getTransforms()
+                .stream()
+                .anyMatch(Rotate.class::isInstance);
             assertThat(hasRotation, is(true));
         }
     }

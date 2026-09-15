@@ -1,11 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.element.SvgCursor;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -14,21 +8,21 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.element.SvgCursor;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+
 /**
- * {@code javafx.scene.image.Image} construction requires the JavaFX Application Thread - see
- * {@link JavaFxTestSupport} and {@code SvgImageRenderingTest}, which has the same requirement for the same reason.
+ * {@code javafx.scene.image.Image} construction requires the JavaFX Application Thread - see {@link JavaFxTestSupport} and {@code SvgImageRenderingTest}, which has the same
+ * requirement for the same reason.
  */
 public class SvgCursorResolverTest {
 
     @BeforeAll
     public static void initJFX() throws Exception {
         JavaFxTestSupport.ensureStarted();
-    }
-
-    private static SvgElementIndex indexOf(SvgRectangle rect) {
-        SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(rect);
-        return svg.getElementIndex();
     }
 
     @Test
@@ -69,8 +63,10 @@ public class SvgCursorResolverTest {
         SvgRectangle placeholder = new SvgRectangle();
         placeholder.setId("holder");
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(cursor);
-        svg.getContent().add(placeholder);
+        svg.getContent()
+            .add(cursor);
+        svg.getContent()
+            .add(placeholder);
 
         Cursor resolved = SvgCursorResolver.resolve("url(#custom), pointer", svg.getElementIndex());
         assertThat(resolved, is(instanceOf(ImageCursor.class)));
@@ -83,7 +79,8 @@ public class SvgCursorResolverTest {
     public void testUnresolvableUrlFallsThroughToTheNextToken() throws Exception {
         SvgRectangle placeholder = new SvgRectangle();
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(placeholder);
+        svg.getContent()
+            .add(placeholder);
 
         Cursor resolved = SvgCursorResolver.resolve("url(#missing), pointer", svg.getElementIndex());
         assertThat(resolved, is(Cursor.HAND));

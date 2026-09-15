@@ -1,9 +1,10 @@
 package nz.co.ctg.foxglove.adapter;
 
+import javafx.scene.text.FontWeight;
+
 import org.apache.commons.lang3.StringUtils;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import javafx.scene.text.FontWeight;
 
 public class FontWeightAdapter extends XmlAdapter<String, FontWeight> {
 

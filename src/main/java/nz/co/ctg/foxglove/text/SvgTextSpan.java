@@ -22,14 +22,12 @@ import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
 })
 @XmlRootElement(name = "tspan")
-public class SvgTextSpan extends AbstractSvgTextContentElement
-    implements ISvgTextPositioningElement, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgGlyphPositioned {
+public class SvgTextSpan extends AbstractSvgTextContentElement implements ISvgTextPositioningElement, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgGlyphPositioned {
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(DoubleListAdapter.class)

@@ -1,8 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -13,9 +10,11 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 /**
- * Exercises #27 against a document that has been through the parser, rather than one assembled in memory, following
- * {@link StyleElementParseTest}'s convention.
+ * Exercises #27 against a document that has been through the parser, rather than one assembled in memory, following {@link StyleElementParseTest}'s convention.
  */
 public class MixedTextRenderingParseTest {
 
@@ -41,10 +40,14 @@ public class MixedTextRenderingParseTest {
         assertThat(mixed, instanceOf(Group.class));
         Group group = (Group) mixed;
 
-        Text hello = (Text) group.getChildren().get(0);
-        Text world = (Text) group.getChildren().get(1);
-        Text and = (Text) group.getChildren().get(2);
-        Text ref = (Text) group.getChildren().get(3);
+        Text hello = (Text) group.getChildren()
+            .get(0);
+        Text world = (Text) group.getChildren()
+            .get(1);
+        Text and = (Text) group.getChildren()
+            .get(2);
+        Text ref = (Text) group.getChildren()
+            .get(3);
 
         assertThat(hello.getText(), is("Hello "));
         assertThat(hello.getFill(), is(Color.BLUE));

@@ -50,16 +50,14 @@ import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
+/**
+ * Never rendered directly - only through the {@code marker-start}/{@code marker-mid}/{@code marker-end} presentation attributes on a shape that references it (see
+ * {@link SvgMarkerRenderer}), the same way {@code <symbol>} is only ever rendered through {@code <use>}. Deliberately does not implement {@link nz.co.ctg.foxglove.FxGraphic}.
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
 })
-/**
- * Never rendered directly - only through the {@code marker-start}/{@code marker-mid}/{@code marker-end} presentation
- * attributes on a shape that references it (see {@link SvgMarkerRenderer}), the same way {@code <symbol>} is only
- * ever rendered through {@code <use>}. Deliberately does not implement {@link nz.co.ctg.foxglove.FxGraphic}.
- */
 @XmlRootElement(name = "marker")
 public class SvgMarker extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgFitToViewBox, ISvgContainer {
 

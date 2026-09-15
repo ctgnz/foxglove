@@ -1,16 +1,6 @@
 package nz.co.ctg.foxglove.filter;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.JavaFxTestSupport;
-import nz.co.ctg.foxglove.RenderContext;
-import nz.co.ctg.foxglove.SvgGraphic;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-
 import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -24,18 +14,25 @@ import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.JavaFxTestSupport;
+import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+
 /**
- * Exercises #77's acceptance criteria: the pixel-level primitives that have no {@code javafx.scene.effect}
- * equivalent render end to end, and an arbitrary (non-chain) graph resolves {@code result}/{@code in}/{@code in2}
- * correctly.
+ * Exercises #77's acceptance criteria: the pixel-level primitives that have no {@code javafx.scene.effect} equivalent render end to end, and an arbitrary (non-chain) graph
+ * resolves {@code result}/{@code in}/{@code in2} correctly.
  * <p>
- * Every test renders on the JavaFX Application Thread, since the raster pipeline snapshots the node - the same
- * constraint {@code SvgMaskRenderingTest} already works under. Assertions read the pipeline's own output buffer
- * straight off the {@link ImageInput} it sets as the node's effect, rather than snapshotting the filtered node a
- * second time: that is what the pipeline actually computed, with no second rasterisation to blur the comparison.
+ * Every test renders on the JavaFX Application Thread, since the raster pipeline snapshots the node - the same constraint {@code SvgMaskRenderingTest} already works under.
+ * Assertions read the pipeline's own output buffer straight off the {@link ImageInput} it sets as the node's effect, rather than snapshotting the filtered node a second time: that
+ * is what the pipeline actually computed, with no second rasterisation to blur the comparison.
  * <p>
- * Each filter declares an explicit {@code userSpaceOnUse} region matching the target exactly, so an image pixel and
- * a user-space coordinate are the same thing and the assertions can name real positions.
+ * Each filter declares an explicit {@code userSpaceOnUse} region matching the target exactly, so an image pixel and a user-space coordinate are the same thing and the assertions
+ * can name real positions.
  */
 public class SvgFilterRasterPipelineTest {
 
@@ -47,9 +44,8 @@ public class SvgFilterRasterPipelineTest {
     // --- the headline idiom --------------------------------------------------
 
     /**
-     * A drop shadow - {@code feGaussianBlur} of {@code SourceAlpha}, offset, with the source merged back over the
-     * top. Every one of those three steps is outside what the effect chain can express ({@code feOffset} has no
-     * {@code Effect} equivalent at all), so before #77 this rendered completely unfiltered.
+     * A drop shadow - {@code feGaussianBlur} of {@code SourceAlpha}, offset, with the source merged back over the top. Every one of those three steps is outside what the effect
+     * chain can express ({@code feOffset} has no {@code Effect} equivalent at all), so before #77 this rendered completely unfiltered.
      */
     @Test
     public void testDropShadowRendersBlurredOffsetAlphaBehindTheSource() throws Exception {
@@ -65,8 +61,10 @@ public class SvgFilterRasterPipelineTest {
         offset.setResult("shadow");
 
         FeMerge merge = new FeMerge();
-        merge.getFeMergeNode().add(mergeNode("shadow"));
-        merge.getFeMergeNode().add(mergeNode("SourceGraphic"));
+        merge.getFeMergeNode()
+            .add(mergeNode("shadow"));
+        merge.getFeMergeNode()
+            .add(mergeNode("SourceGraphic"));
 
         Image result = filtered(redRect(), filterOf(blur, offset, merge));
 
@@ -212,9 +210,8 @@ public class SvgFilterRasterPipelineTest {
     }
 
     /**
-     * A lone {@code feGaussianBlur} is exactly what the effect chain handles best, so this blurs
-     * {@code SourceAlpha} - colour discarded, coverage kept - which the chain cannot resolve, to get the raster
-     * implementation of the spec's own three-box-pass approximation under test.
+     * A lone {@code feGaussianBlur} is exactly what the effect chain handles best, so this blurs {@code SourceAlpha} - colour discarded, coverage kept - which the chain cannot
+     * resolve, to get the raster implementation of the spec's own three-box-pass approximation under test.
      */
     @Test
     public void testFeGaussianBlurSpreadsAlphaBeyondTheSourceEdge() throws Exception {
@@ -234,9 +231,8 @@ public class SvgFilterRasterPipelineTest {
     // --- arbitrary graphs ----------------------------------------------------
 
     /**
-     * The other half of #77's acceptance criteria: two branches off {@code SourceGraphic} converging in a later
-     * primitive, with the first branch's {@code result} referenced well after the primitive that follows it. The
-     * effect chain can only ever thread one previous result through, so this shape aborts there.
+     * The other half of #77's acceptance criteria: two branches off {@code SourceGraphic} converging in a later primitive, with the first branch's {@code result} referenced well
+     * after the primitive that follows it. The effect chain can only ever thread one previous result through, so this shape aborts there.
      */
     @Test
     public void testBranchingGraphResolvesResultsReferencedOutOfOrder() throws Exception {
@@ -293,8 +289,8 @@ public class SvgFilterRasterPipelineTest {
     }
 
     /**
-     * The raster path needs {@code Node.snapshot}, which requires the JavaFX Application Thread - the same
-     * constraint masking (#25) carries. Off it, the filter degrades to unfiltered rather than throwing.
+     * The raster path needs {@code Node.snapshot}, which requires the JavaFX Application Thread - the same constraint masking (#25) carries. Off it, the filter degrades to
+     * unfiltered rather than throwing.
      */
     @Test
     public void testOffTheFxThreadDegradesToNoEffectRatherThanThrowing() throws Exception {
@@ -309,14 +305,11 @@ public class SvgFilterRasterPipelineTest {
     // --- the element's own opacity (#129) ------------------------------------
 
     /**
-     * SVG applies {@code opacity} to the filter's <i>result</i>, not its input, so {@code SourceGraphic} is the
-     * element before it. Leaving the node's opacity on while snapshotting applied it twice - once baked into the
-     * source raster, and again when JavaFX painted the {@code ImageInput} built from it.
+     * SVG applies {@code opacity} to the filter's <i>result</i>, not its input, so {@code SourceGraphic} is the element before it. Leaving the node's opacity on while snapshotting
+     * applied it twice - once baked into the source raster, and again when JavaFX painted the {@code ImageInput} built from it.
      * <p>
-     * Asserted on the pipeline's own output buffer, which is the filter result <i>before</i> JavaFX applies node
-     * opacity on top: a correct {@code SourceGraphic} is fully opaque there. Note an opaque element could not catch
-     * this at all, and neither could sampling the final rendering without accounting for the one legitimate
-     * application.
+     * Asserted on the pipeline's own output buffer, which is the filter result <i>before</i> JavaFX applies node opacity on top: a correct {@code SourceGraphic} is fully opaque
+     * there. Note an opaque element could not catch this at all, and neither could sampling the final rendering without accounting for the one legitimate application.
      */
     @Test
     public void testTheElementsOwnOpacityIsNotBakedIntoSourceGraphic() throws Exception {
@@ -343,15 +336,12 @@ public class SvgFilterRasterPipelineTest {
     // --- colour-interpolation space (#108) -----------------------------------
 
     /**
-     * SVG's default filter working space is linearRGB, not sRGB, and getting that wrong makes every interpolated
-     * value systematically too dark.
+     * SVG's default filter working space is linearRGB, not sRGB, and getting that wrong makes every interpolated value systematically too dark.
      * <p>
-     * Note what it takes to see the difference at all: {@code 0} and {@code 1} are fixed points of the sRGB transfer
-     * function, so a test built from saturated primaries - as every other test in this class is, quite reasonably,
-     * since they make the geometry legible - passes identically in either space. The difference only shows in the
-     * midtones, so this halves white and looks at where it lands: {@code 0.5} in linear light is {@code 0.735} once
-     * encoded back to sRGB, against {@code 0.5} if the maths had been done in sRGB throughout. Nothing subtle about
-     * a 60-level gap; it is invisible only if you never test a midtone.
+     * Note what it takes to see the difference at all: {@code 0} and {@code 1} are fixed points of the sRGB transfer function, so a test built from saturated primaries - as every
+     * other test in this class is, quite reasonably, since they make the geometry legible - passes identically in either space. The difference only shows in the midtones, so this
+     * halves white and looks at where it lands: {@code 0.5} in linear light is {@code 0.735} once encoded back to sRGB, against {@code 0.5} if the maths had been done in sRGB
+     * throughout. Nothing subtle about a 60-level gap; it is invisible only if you never test a midtone.
      */
     @Test
     public void testPrimitivesEvaluateInLinearRgbByDefault() throws Exception {
@@ -381,9 +371,8 @@ public class SvgFilterRasterPipelineTest {
     }
 
     /**
-     * {@code flood-color} is authored in sRGB whatever space the primitive works in, so a flood that passes through
-     * untouched has to come back out exactly as authored - the conversion in and the conversion out must cancel.
-     * A midtone grey, since a primary would survive either way.
+     * {@code flood-color} is authored in sRGB whatever space the primitive works in, so a flood that passes through untouched has to come back out exactly as authored - the
+     * conversion in and the conversion out must cancel. A midtone grey, since a primary would survive either way.
      */
     @Test
     public void testAFloodColourSurvivesTheRoundTripThroughLinearRgb() throws Exception {
@@ -427,9 +416,8 @@ public class SvgFilterRasterPipelineTest {
     // --- helpers -------------------------------------------------------------
 
     /**
-     * A deliberate no-op {@code feOffset} ({@code dx}/{@code dy} of zero), for a filter whose other primitives the
-     * effect chain <i>can</i> express: {@code feOffset} has no {@code Effect} equivalent at all (#76), so including
-     * one aborts the chain and hands the filter to the raster pipeline without changing any pixel.
+     * A deliberate no-op {@code feOffset} ({@code dx}/{@code dy} of zero), for a filter whose other primitives the effect chain <i>can</i> express: {@code feOffset} has no
+     * {@code Effect} equivalent at all (#76), so including one aborts the chain and hands the filter to the raster pipeline without changing any pixel.
      */
     private static FeOffset forceRaster() {
         FeOffset offset = new FeOffset();
@@ -472,14 +460,16 @@ public class SvgFilterRasterPipelineTest {
         filter.setWidth(new Size(100, SizeUnits.PX));
         filter.setHeight(new Size(100, SizeUnits.PX));
         for (ISvgElement primitive : primitives) {
-            filter.getContent().add(primitive);
+            filter.getContent()
+                .add(primitive);
         }
         return filter;
     }
 
     private static Node render(SvgRectangle rect, SvgFilter filter) throws Exception {
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(filter);
+        svg.getContent()
+            .add(filter);
         return rect.createGraphic(RenderContext.root(svg.getElementIndex(), 0, 0));
     }
 
@@ -490,7 +480,8 @@ public class SvgFilterRasterPipelineTest {
     }
 
     private static Color colorAt(Image image, int x, int y) {
-        return image.getPixelReader().getColor(x, y);
+        return image.getPixelReader()
+            .getColor(x, y);
     }
 
     private static void assertColor(Image image, int x, int y, Color expected) {

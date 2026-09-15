@@ -1,15 +1,6 @@
 package nz.co.ctg.foxglove.element;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.FoxgloveParser;
-import nz.co.ctg.foxglove.JavaFxTestSupport;
-import nz.co.ctg.foxglove.SvgGraphic;
-
 import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,23 +17,27 @@ import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.transform.Affine;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.FoxgloveParser;
+import nz.co.ctg.foxglove.JavaFxTestSupport;
+import nz.co.ctg.foxglove.SvgGraphic;
+
 /**
- * Exercises #20's acceptance criteria: a {@code data:} URI image renders, a file-relative reference renders when
- * the base URI is known and fails cleanly when it is not, {@code preserveAspectRatio} including {@code slice}
- * positions and clips correctly, and a missing or malformed reference never throws out of {@code createGraphic}.
+ * Exercises #20's acceptance criteria: a {@code data:} URI image renders, a file-relative reference renders when the base URI is known and fails cleanly when it is not,
+ * {@code preserveAspectRatio} including {@code slice} positions and clips correctly, and a missing or malformed reference never throws out of {@code createGraphic}.
  * <p>
- * {@code javafx.scene.image.Image} construction requires the JavaFX Application Thread - see
- * {@link JavaFxTestSupport} and {@code PatternParseTest}, which has the same requirement for a different reason.
+ * {@code javafx.scene.image.Image} construction requires the JavaFX Application Thread - see {@link JavaFxTestSupport} and {@code PatternParseTest}, which has the same requirement
+ * for a different reason.
  */
 public class SvgImageRenderingTest {
 
     // a real 1x1 transparent PNG
-    private static final String DOT_PNG =
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQAB0NcObQAAAABJRU5ErkJggg==";
+    private static final String DOT_PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQAB0NcObQAAAABJRU5ErkJggg==";
 
     // a real 4x2 solid-red PNG, for exercising non-square meet/slice fitting
-    private static final String WIDE_PNG =
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg==";
+    private static final String WIDE_PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAIAAADwyuo0AAAAEElEQVR42mP4z8AARwzIHABvqgf5aN2vpwAAAABJRU5ErkJggg==";
 
     @BeforeAll
     public static void initJFX() throws Exception {
@@ -63,7 +58,8 @@ public class SvgImageRenderingTest {
         Group rendered = render(image);
         ImageView imageView = findImageView(rendered);
         assertThat(imageView.getImage(), notNullValue());
-        assertThat(imageView.getImage().isError(), is(false));
+        assertThat(imageView.getImage()
+            .isError(), is(false));
     }
 
     @Test
@@ -176,11 +172,14 @@ public class SvgImageRenderingTest {
         assertThat(svg.getBaseUri(), notNullValue());
 
         Group rendered = onFxThread(svg::createGroup);
-        Group imageGroup = (Group) rendered.getChildren().get(0);
+        Group imageGroup = (Group) rendered.getChildren()
+            .get(0);
         ImageView imageView = findImageView(imageGroup);
         assertThat(imageView.getImage(), notNullValue());
-        assertThat(imageView.getImage().isError(), is(false));
-        assertThat(imageView.getImage().getWidth(), closeTo(4, 1e-9));
+        assertThat(imageView.getImage()
+            .isError(), is(false));
+        assertThat(imageView.getImage()
+            .getWidth(), closeTo(4, 1e-9));
     }
 
     @Test
@@ -206,23 +205,28 @@ public class SvgImageRenderingTest {
     }
 
     private static Affine fitTransformOf(Group rendered) {
-        Group fitted = (Group) rendered.getChildren().get(0);
+        Group fitted = (Group) rendered.getChildren()
+            .get(0);
         assertThat(fitted.getTransforms(), is(not(empty())));
-        return (Affine) fitted.getTransforms().get(0);
+        return (Affine) fitted.getTransforms()
+            .get(0);
     }
 
     private static ImageView findImageView(Group rendered) {
         Node node = rendered;
         while (node instanceof Group group) {
-            node = group.getChildren().get(0);
+            node = group.getChildren()
+                .get(0);
         }
         return (ImageView) node;
     }
 
     private static Group render(SvgImage image) throws Exception {
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(image);
-        return (Group) onFxThread(svg::createGroup).getChildren().get(0);
+        svg.getContent()
+            .add(image);
+        return (Group) onFxThread(svg::createGroup).getChildren()
+            .get(0);
     }
 
 }

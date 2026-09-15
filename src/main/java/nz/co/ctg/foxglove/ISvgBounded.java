@@ -1,11 +1,10 @@
 package nz.co.ctg.foxglove;
 
 import java.util.Optional;
-
-import com.google.common.base.MoreObjects.ToStringHelper;
-
 import javafx.css.Size;
 import javafx.css.SizeUnits;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
 
 public interface ISvgBounded extends ISvgAttributes {
     String BOUNDS_X = "x";
@@ -14,8 +13,8 @@ public interface ISvgBounded extends ISvgAttributes {
     String BOUNDS_HEIGHT = "height";
 
     /**
-     * {@code x}, resolved against {@code context}'s viewport - unlike {@link #getPixelsX()}, a percentage resolves
-     * correctly rather than however {@link Size#pixels()} happens to treat it.
+     * {@code x}, resolved against {@code context}'s viewport - unlike {@link #getPixelsX()}, a percentage resolves correctly rather than however {@link Size#pixels()} happens to
+     * treat it.
      */
     default double resolveX(RenderContext context) {
         return context.resolveLength(getX(), RenderContext.Axis.HORIZONTAL);
@@ -34,19 +33,27 @@ public interface ISvgBounded extends ISvgAttributes {
     }
 
     default double getPixelsX() {
-        return Optional.ofNullable(getX()).map(Size::pixels).orElse(0.0);
+        return Optional.ofNullable(getX())
+            .map(Size::pixels)
+            .orElse(0.0);
     }
 
     default double getPixelsY() {
-        return Optional.ofNullable(getY()).map(Size::pixels).orElse(0.0);
+        return Optional.ofNullable(getY())
+            .map(Size::pixels)
+            .orElse(0.0);
     }
 
     default double getPixelsWidth() {
-        return Optional.ofNullable(getWidth()).map(Size::pixels).orElse(0.0);
+        return Optional.ofNullable(getWidth())
+            .map(Size::pixels)
+            .orElse(0.0);
     }
 
     default double getPixelsHeight() {
-        return Optional.ofNullable(getHeight()).map(Size::pixels).orElse(0.0);
+        return Optional.ofNullable(getHeight())
+            .map(Size::pixels)
+            .orElse(0.0);
     }
 
     default void setPixelsX(double xPixels) {

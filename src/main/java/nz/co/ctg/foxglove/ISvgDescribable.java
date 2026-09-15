@@ -1,14 +1,14 @@
 package nz.co.ctg.foxglove;
 
 import java.util.Optional;
+import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
 
 import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 
 import jakarta.xml.bind.annotation.XmlTransient;
-import javafx.scene.Node;
-import javafx.scene.control.Tooltip;
 
 public interface ISvgDescribable extends ISvgContent {
 

@@ -2,6 +2,7 @@ package nz.co.ctg.foxglove.shape;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.shape.SVGPath;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -25,8 +26,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javafx.scene.shape.SVGPath;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "path", propOrder = {

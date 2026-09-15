@@ -1,15 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.element.SvgDefinitions;
-import nz.co.ctg.foxglove.element.SvgGroup;
-import nz.co.ctg.foxglove.paint.SvgLinearGradient;
-import nz.co.ctg.foxglove.paint.SvgRadialGradient;
-import nz.co.ctg.foxglove.paint.SvgStop;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.type.SvgPaint;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -25,9 +15,18 @@ import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.shape.Shape;
 
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.element.SvgDefinitions;
+import nz.co.ctg.foxglove.element.SvgGroup;
+import nz.co.ctg.foxglove.paint.SvgLinearGradient;
+import nz.co.ctg.foxglove.paint.SvgRadialGradient;
+import nz.co.ctg.foxglove.paint.SvgStop;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.type.SvgPaint;
+
 /**
- * A {@code url(#grad)} reference could not survive parsing before: the paint adapter threw on it and the value was
- * dropped, so the fill silently became nothing at all.
+ * A {@code url(#grad)} reference could not survive parsing before: the paint adapter threw on it and the value was dropped, so the fill silently became nothing at all.
  */
 public class SvgPaintResolverTest {
 
@@ -67,7 +66,8 @@ public class SvgPaintResolverTest {
         SvgRectangle rect = new SvgRectangle();
         SvgGroup group = new SvgGroup();
         group.setFill(SvgPaint.parse("url(#grad)"));
-        group.getContent().add(rect);
+        group.getContent()
+            .add(rect);
 
         assertThat(renderInGroup(group, linearGradient("grad")).getFill(), is(instanceOf(LinearGradient.class)));
     }
@@ -75,8 +75,8 @@ public class SvgPaintResolverTest {
     // --- fallbacks ---------------------------------------------------------
 
     /**
-     * The specification says an unresolvable reference uses the colour written after it, and paints nothing when
-     * there is not one - notably not black, which is what dropping the value used to produce.
+     * The specification says an unresolvable reference uses the colour written after it, and paints nothing when there is not one - notably not black, which is what dropping the
+     * value used to produce.
      */
     @Test
     public void testUnresolvableReferenceUsesItsFallback() throws Exception {
@@ -112,7 +112,8 @@ public class SvgPaintResolverTest {
         rect.setFill(SvgPaint.currentColor());
         SvgGroup group = new SvgGroup();
         group.setColor("blue");
-        group.getContent().add(rect);
+        group.getContent()
+            .add(rect);
 
         assertThat(renderInGroup(group).getFill(), is(Color.BLUE));
     }
@@ -169,13 +170,23 @@ public class SvgPaintResolverTest {
     public void testStopColourAndOpacityBecomeTheStopColour() throws Exception {
         SvgLinearGradient svg = new SvgLinearGradient();
         svg.setId("g");
-        svg.getContent().add(stop("0", "red", "0.5"));
-        svg.getContent().add(stop("1", "blue", null));
+        svg.getContent()
+            .add(stop("0", "red", "0.5"));
+        svg.getContent()
+            .add(stop("1", "blue", null));
 
         LinearGradient gradient = (LinearGradient) svg.createPaint(null);
-        assertThat(gradient.getStops().get(0).getColor().getRed(), is(1.0));
-        assertThat(gradient.getStops().get(0).getColor().getOpacity(), closeTo(0.5, 1e-9));
-        assertThat(gradient.getStops().get(1).getColor(), is(Color.BLUE));
+        assertThat(gradient.getStops()
+            .get(0)
+            .getColor()
+            .getRed(), is(1.0));
+        assertThat(gradient.getStops()
+            .get(0)
+            .getColor()
+            .getOpacity(), closeTo(0.5, 1e-9));
+        assertThat(gradient.getStops()
+            .get(1)
+            .getColor(), is(Color.BLUE));
     }
 
     /**
@@ -185,16 +196,28 @@ public class SvgPaintResolverTest {
     public void testStopOffsetsAreClampedAndNonDecreasing() throws Exception {
         SvgLinearGradient svg = new SvgLinearGradient();
         svg.setId("g");
-        svg.getContent().add(stop("-1", "red", null));
-        svg.getContent().add(stop("60%", "green", null));
-        svg.getContent().add(stop("0.2", "blue", null));
-        svg.getContent().add(stop("5", "white", null));
+        svg.getContent()
+            .add(stop("-1", "red", null));
+        svg.getContent()
+            .add(stop("60%", "green", null));
+        svg.getContent()
+            .add(stop("0.2", "blue", null));
+        svg.getContent()
+            .add(stop("5", "white", null));
 
         LinearGradient gradient = (LinearGradient) svg.createPaint(null);
-        assertThat(gradient.getStops().get(0).getOffset(), is(0.0));
-        assertThat(gradient.getStops().get(1).getOffset(), closeTo(0.6, 1e-9));
-        assertThat(gradient.getStops().get(2).getOffset(), closeTo(0.6, 1e-9));
-        assertThat(gradient.getStops().get(3).getOffset(), is(1.0));
+        assertThat(gradient.getStops()
+            .get(0)
+            .getOffset(), is(0.0));
+        assertThat(gradient.getStops()
+            .get(1)
+            .getOffset(), closeTo(0.6, 1e-9));
+        assertThat(gradient.getStops()
+            .get(2)
+            .getOffset(), closeTo(0.6, 1e-9));
+        assertThat(gradient.getStops()
+            .get(3)
+            .getOffset(), is(1.0));
     }
 
     @Test
@@ -208,7 +231,8 @@ public class SvgPaintResolverTest {
     public void testGradientWithOneStopPaintsThatColourFlat() throws Exception {
         SvgLinearGradient svg = new SvgLinearGradient();
         svg.setId("g");
-        svg.getContent().add(stop("0", "red", null));
+        svg.getContent()
+            .add(stop("0", "red", null));
         assertThat(svg.createPaint(null), is(Color.RED));
     }
 
@@ -224,8 +248,8 @@ public class SvgPaintResolverTest {
     }
 
     /**
-     * SVG places the focal point in cartesian coordinates while JavaFX takes an angle and a distance as a fraction of
-     * the radius, so a focus directly right of the centre at half the radius is angle 0, distance 0.5.
+     * SVG places the focal point in cartesian coordinates while JavaFX takes an angle and a distance as a fraction of the radius, so a focus directly right of the centre at half
+     * the radius is angle 0, distance 0.5.
      */
     @Test
     public void testRadialFocalPointIsConvertedToPolar() throws Exception {
@@ -277,9 +301,12 @@ public class SvgPaintResolverTest {
         top.setXlinkHref("#middle");
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(base);
-        svg.getContent().add(middle);
-        svg.getContent().add(top);
+        svg.getContent()
+            .add(base);
+        svg.getContent()
+            .add(middle);
+        svg.getContent()
+            .add(top);
 
         LinearGradient gradient = (LinearGradient) top.createPaint(svg.getElementIndex());
         assertThat(gradient.getStops(), hasSize(2)); // base's stops, through middle
@@ -293,21 +320,26 @@ public class SvgPaintResolverTest {
         SvgLinearGradient own = new SvgLinearGradient();
         own.setId("own");
         own.setXlinkHref("#base");
-        own.getContent().add(stop("0", "green", null));
-        own.getContent().add(stop("1", "yellow", null));
+        own.getContent()
+            .add(stop("0", "green", null));
+        own.getContent()
+            .add(stop("1", "yellow", null));
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(base);
-        svg.getContent().add(own);
+        svg.getContent()
+            .add(base);
+        svg.getContent()
+            .add(own);
 
         LinearGradient gradient = (LinearGradient) own.createPaint(svg.getElementIndex());
-        assertThat(gradient.getStops().get(0).getColor(), is(Color.GREEN));
+        assertThat(gradient.getStops()
+            .get(0)
+            .getColor(), is(Color.GREEN));
     }
 
     /**
-     * A linear gradient may legally reference a radial one, and vice versa - only the attributes common to both
-     * (here, {@code spreadMethod} and {@code gradientUnits}) and the stops transfer; geometry specific to one type
-     * has nothing type-compatible to come from, so it falls back to its own initial value.
+     * A linear gradient may legally reference a radial one, and vice versa - only the attributes common to both (here, {@code spreadMethod} and {@code gradientUnits}) and the
+     * stops transfer; geometry specific to one type has nothing type-compatible to come from, so it falls back to its own initial value.
      */
     @Test
     public void testCrossTypeReferenceInheritsStopsAndCommonAttributesButNotGeometry() throws Exception {
@@ -319,8 +351,10 @@ public class SvgPaintResolverTest {
         linear.setXlinkHref("#base");
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(base);
-        svg.getContent().add(linear);
+        svg.getContent()
+            .add(base);
+        svg.getContent()
+            .add(linear);
 
         LinearGradient gradient = (LinearGradient) linear.createPaint(svg.getElementIndex());
         assertThat(gradient.getStops(), hasSize(2));
@@ -332,9 +366,8 @@ public class SvgPaintResolverTest {
     }
 
     /**
-     * Neither gradient in the cycle ever declares stops, so this must terminate with "nothing to paint" rather than
-     * hang or overflow the stack - exercised through {@code createPaint} itself, the path a real document takes,
-     * rather than {@code SvgElementIndex.resolveChain} directly (already covered in {@code SvgElementIndexTest}).
+     * Neither gradient in the cycle ever declares stops, so this must terminate with "nothing to paint" rather than hang or overflow the stack - exercised through
+     * {@code createPaint} itself, the path a real document takes, rather than {@code SvgElementIndex.resolveChain} directly (already covered in {@code SvgElementIndexTest}).
      */
     @Test
     public void testACycleResolvesWithoutHangingOrOverflowing() throws Exception {
@@ -346,8 +379,10 @@ public class SvgPaintResolverTest {
         b.setXlinkHref("#a");
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(a);
-        svg.getContent().add(b);
+        svg.getContent()
+            .add(a);
+        svg.getContent()
+            .add(b);
 
         assertThat(a.createPaint(svg.getElementIndex()), is(nullValue()));
     }
@@ -388,9 +423,8 @@ public class SvgPaintResolverTest {
     }
 
     /**
-     * The case the sharper criterion buys, and the one a "must be a similarity" test would wrongly reject: scaling
-     * only along the gradient's own axis stretches the axis but leaves the iso-lines exactly where they were, so
-     * JavaFX can represent the result precisely.
+     * The case the sharper criterion buys, and the one a "must be a similarity" test would wrongly reject: scaling only along the gradient's own axis stretches the axis but leaves
+     * the iso-lines exactly where they were, so JavaFX can represent the result precisely.
      */
     @Test
     public void testANonUniformScaleAlignedWithTheAxisIsStillApplied() throws Exception {
@@ -440,9 +474,8 @@ public class SvgPaintResolverTest {
     }
 
     /**
-     * A similarity scales the focus's distance from the centre by exactly the factor it scales the radius by, so the
-     * ratio JavaFX stores is unchanged; only the angle moves. Worth pinning, because transforming the focus point
-     * separately and re-deriving the ratio would be the obvious thing to write and would double-count the scale.
+     * A similarity scales the focus's distance from the centre by exactly the factor it scales the radius by, so the ratio JavaFX stores is unchanged; only the angle moves. Worth
+     * pinning, because transforming the focus point separately and re-deriving the ratio would be the obvious thing to write and would double-count the scale.
      */
     @Test
     public void testARotationMovesARadialGradientsFocusAngleButNotItsDistance() throws Exception {
@@ -456,10 +489,9 @@ public class SvgPaintResolverTest {
     }
 
     /**
-     * A reflection is a perfectly good similarity - a circle stays a circle - so it is applied, and the focus has to
-     * follow it. The first version of this transformed the focus by adding the transform's own rotation angle, which
-     * gets a reflection 180 degrees wrong; the focus offset is transformed as a direction instead. Deliberately puts
-     * the focus along +y, since a focus along +x survives {@code scale(1 -1)} either way and proves nothing.
+     * A reflection is a perfectly good similarity - a circle stays a circle - so it is applied, and the focus has to follow it. The first version of this transformed the focus by
+     * adding the transform's own rotation angle, which gets a reflection 180 degrees wrong; the focus offset is transformed as a direction instead. Deliberately puts the focus
+     * along +y, since a focus along +x survives {@code scale(1 -1)} either way and proves nothing.
      */
     @Test
     public void testAReflectionMovesARadialGradientsFocusToTheOtherSide() throws Exception {
@@ -494,17 +526,18 @@ public class SvgPaintResolverTest {
     }
 
     /**
-     * {@code gradientTransform} is inherited through {@code xlink:href} like {@code gradientUnits} and
-     * {@code spreadMethod}. It deliberately was not before #52, on the grounds that an unused value had nothing to
-     * inherit for.
+     * {@code gradientTransform} is inherited through {@code xlink:href} like {@code gradientUnits} and {@code spreadMethod}. It deliberately was not before #52, on the grounds
+     * that an unused value had nothing to inherit for.
      */
     @Test
     public void testGradientTransformIsInheritedThroughXlinkHref() throws Exception {
         SvgLinearGradient base = new SvgLinearGradient();
         base.setId("base");
         base.setGradientTransform("translate(10 20)");
-        base.getContent().add(stop("0", "red", null));
-        base.getContent().add(stop("1", "blue", null));
+        base.getContent()
+            .add(stop("0", "red", null));
+        base.getContent()
+            .add(stop("1", "blue", null));
 
         SvgLinearGradient derived = new SvgLinearGradient();
         derived.setId("derived");
@@ -539,22 +572,27 @@ public class SvgPaintResolverTest {
     private static SvgLinearGradient linearGradient(String id) {
         SvgLinearGradient gradient = new SvgLinearGradient();
         gradient.setId(id);
-        gradient.getContent().add(stop("0", "red", null));
-        gradient.getContent().add(stop("1", "blue", null));
+        gradient.getContent()
+            .add(stop("0", "red", null));
+        gradient.getContent()
+            .add(stop("1", "blue", null));
         return gradient;
     }
 
     private static SvgRadialGradient radialGradient(String id) {
         SvgRadialGradient gradient = new SvgRadialGradient();
         gradient.setId(id);
-        gradient.getContent().add(stop("0", "red", null));
-        gradient.getContent().add(stop("1", "blue", null));
+        gradient.getContent()
+            .add(stop("0", "red", null));
+        gradient.getContent()
+            .add(stop("1", "blue", null));
         return gradient;
     }
 
     private static Shape render(SvgRectangle rect, ISvgElement... definitions) {
         SvgGroup group = new SvgGroup();
-        group.getContent().add(rect);
+        group.getContent()
+            .add(rect);
         return renderInGroup(group, definitions);
     }
 
@@ -563,12 +601,18 @@ public class SvgPaintResolverTest {
         if (definitions.length > 0) {
             SvgDefinitions defs = new SvgDefinitions();
             for (ISvgElement definition : definitions) {
-                defs.getContent().add(definition);
+                defs.getContent()
+                    .add(definition);
             }
-            svg.getContent().add(defs);
+            svg.getContent()
+                .add(defs);
         }
-        svg.getContent().add(group);
-        return (Shape) ((Group) svg.createGroup().getChildren().get(0)).getChildren().get(0);
+        svg.getContent()
+            .add(group);
+        return (Shape) ((Group) svg.createGroup()
+            .getChildren()
+            .get(0)).getChildren()
+            .get(0);
     }
 
 }

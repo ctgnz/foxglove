@@ -5,20 +5,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import javafx.application.Platform;
 
 /**
- * Starts the JavaFX toolkit for tests that need it - resolving a pattern-backed paint, via {@code Node.snapshot(...)},
- * requires the JavaFX Application Thread and throws {@link IllegalStateException} otherwise.
+ * Starts the JavaFX toolkit for tests that need it - resolving a pattern-backed paint, via {@code Node.snapshot(...)}, requires the JavaFX Application Thread and throws
+ * {@link IllegalStateException} otherwise.
  * <p>
- * {@code Platform.startup(Runnable)} can only be called once per JVM (a second call throws
- * {@code IllegalStateException: Toolkit already initialized}), so every test class that needs the toolkit calls
- * {@link #ensureStarted()} from its own {@code @BeforeAll} rather than calling {@code Platform.startup} directly.
- * It also returns before the toolkit has necessarily finished initialising - the runnable only marks when it is
- * ready - so this waits on a latch rather than returning immediately, which avoided a real, observed flake: a
- * different test class's unrelated classpath resource reads intermittently failed when it started running while
- * the toolkit was still settling in the background.
+ * {@code Platform.startup(Runnable)} can only be called once per JVM (a second call throws {@code IllegalStateException: Toolkit already initialized}), so every test class that
+ * needs the toolkit calls {@link #ensureStarted()} from its own {@code @BeforeAll} rather than calling {@code Platform.startup} directly. It also returns before the toolkit has
+ * necessarily finished initialising - the runnable only marks when it is ready - so this waits on a latch rather than returning immediately, which avoided a real, observed flake:
+ * a different test class's unrelated classpath resource reads intermittently failed when it started running while the toolkit was still settling in the background.
  */
 public final class JavaFxTestSupport {
 
@@ -39,18 +35,16 @@ public final class JavaFxTestSupport {
     }
 
     /**
-     * Runs {@code action} on the JavaFX Application Thread and waits for its result - {@code Platform.startup}'s own
-     * callback runs there once at startup, not every subsequent call, so anything needing the thread has to be
-     * handed to it explicitly via {@code Platform.runLater}.
+     * Runs {@code action} on the JavaFX Application Thread and waits for its result - {@code Platform.startup}'s own callback runs there once at startup, not every subsequent
+     * call, so anything needing the thread has to be handed to it explicitly via {@code Platform.runLater}.
      */
     public static <T> T onFxThread(Callable<T> action) throws Exception {
         return onFxThread(action, 5, TimeUnit.SECONDS);
     }
 
     /**
-     * As {@link #onFxThread(Callable)}, but with an explicit timeout - for an action that's doing meaningfully more
-     * work than a single test's own render/snapshot (#44's conformance check runs its entire ~525-document loop in
-     * one call, to avoid 525 separate {@code Platform.runLater} round-trips).
+     * As {@link #onFxThread(Callable)}, but with an explicit timeout - for an action that's doing meaningfully more work than a single test's own render/snapshot (#44's
+     * conformance check runs its entire ~525-document loop in one call, to avoid 525 separate {@code Platform.runLater} round-trips).
      */
     public static <T> T onFxThread(Callable<T> action, long timeout, TimeUnit unit) throws Exception {
         CompletableFuture<T> result = new CompletableFuture<>();

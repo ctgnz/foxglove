@@ -1,12 +1,12 @@
 package nz.co.ctg.foxglove.type;
 
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import javafx.scene.paint.Color;
+
+import org.junit.jupiter.api.Test;
 
 public class SvgPaintTest {
 
@@ -19,7 +19,8 @@ public class SvgPaintTest {
 
     @Test
     public void testParsesAHexColour() throws Exception {
-        assertThat(SvgPaint.parse("#ff0000").getPaint(), is(Color.web("#ff0000")));
+        assertThat(SvgPaint.parse("#ff0000")
+            .getPaint(), is(Color.web("#ff0000")));
     }
 
     /**
@@ -27,15 +28,19 @@ public class SvgPaintTest {
      */
     @Test
     public void testParsesNone() throws Exception {
-        assertThat(SvgPaint.parse("none").isNone(), is(true));
-        assertThat(SvgPaint.parse("NONE").isNone(), is(true));
+        assertThat(SvgPaint.parse("none")
+            .isNone(), is(true));
+        assertThat(SvgPaint.parse("NONE")
+            .isNone(), is(true));
         assertThat(SvgPaint.parse("none"), is(SvgPaint.none()));
     }
 
     @Test
     public void testParsesCurrentColor() throws Exception {
-        assertThat(SvgPaint.parse("currentColor").isCurrentColor(), is(true));
-        assertThat(SvgPaint.parse("currentcolor").isCurrentColor(), is(true));
+        assertThat(SvgPaint.parse("currentColor")
+            .isCurrentColor(), is(true));
+        assertThat(SvgPaint.parse("currentcolor")
+            .isCurrentColor(), is(true));
     }
 
     @Test
@@ -56,17 +61,18 @@ public class SvgPaintTest {
 
     @Test
     public void testParsesAReferenceWithANoneFallback() throws Exception {
-        assertThat(SvgPaint.parse("url(#grad) none").getFallback(), is(SvgPaint.none()));
+        assertThat(SvgPaint.parse("url(#grad) none")
+            .getFallback(), is(SvgPaint.none()));
     }
 
     @Test
     public void testReferencePreservesIdCase() throws Exception {
-        assertThat(SvgPaint.parse("url(#Grad1)").getReference(), is("url(#Grad1)"));
+        assertThat(SvgPaint.parse("url(#Grad1)")
+            .getReference(), is("url(#Grad1)"));
     }
 
     /**
-     * A blank or unrecognised value leaves the property unspecified, so it inherits rather than painting something
-     * arbitrary.
+     * A blank or unrecognised value leaves the property unspecified, so it inherits rather than painting something arbitrary.
      */
     @Test
     public void testUnusableValuesAreUnspecified() throws Exception {
@@ -80,9 +86,12 @@ public class SvgPaintTest {
     @Test
     public void testEqualityAndToString() throws Exception {
         assertThat(SvgPaint.parse("red"), is(SvgPaint.of(Color.RED)));
-        assertThat(SvgPaint.none().toString(), is("none"));
-        assertThat(SvgPaint.currentColor().toString(), is("currentColor"));
-        assertThat(SvgPaint.parse("url(#g) red").toString(), is("url(#g) 0xff0000ff"));
+        assertThat(SvgPaint.none()
+            .toString(), is("none"));
+        assertThat(SvgPaint.currentColor()
+            .toString(), is("currentColor"));
+        assertThat(SvgPaint.parse("url(#g) red")
+            .toString(), is("url(#g) 0xff0000ff"));
     }
 
 }

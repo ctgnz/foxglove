@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javafx.geometry.Point2D;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
@@ -12,23 +11,19 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
 /**
- * Parses an SVG {@code <path d="...">} attribute into a flattened polyline, for arc-length purposes (#29) rather
- * than rendering - {@code <path>} itself still hands its {@code d} straight to {@code javafx.scene.shape.SVGPath},
- * which draws it perfectly well without any of this.
+ * Parses an SVG {@code <path d="...">} attribute into a flattened polyline, for arc-length purposes (#29) rather than rendering - {@code <path>} itself still hands its {@code d}
+ * straight to {@code javafx.scene.shape.SVGPath}, which draws it perfectly well without any of this.
  * <p>
- * Curves are flattened by evaluating their parametric form at a fixed number of steps rather than computing an
- * analytic arc length - Bezier arc length has no closed form anyway, so this is the standard approach. Only the
- * first subpath is used: parsing stops at a second {@code M}/{@code m} or once a {@code Z}/{@code z} closes the
- * first, since text-on-path against multi-subpath data is not a case this needs to handle.
+ * Curves are flattened by evaluating their parametric form at a fixed number of steps rather than computing an analytic arc length - Bezier arc length has no closed form anyway,
+ * so this is the standard approach. Only the first subpath is used: parsing stops at a second {@code M}/{@code m} or once a {@code Z}/{@code z} closes the first, since
+ * text-on-path against multi-subpath data is not a case this needs to handle.
  * <p>
- * Compact arc-flag concatenation ({@code "A1 1 0 0111 2"}) <b>is</b> handled, as of #115 - it was previously
- * documented here as an unhandled quirk, but it is not rare enough to leave alone and it did not merely mishandle
- * the path: reading a flag as a number shifts every later argument along, which walked a trailing {@code z} into a
- * coordinate slot and threw {@code NumberFormatException} out of the renderer. See {@link #tokenize}.
+ * Compact arc-flag concatenation ({@code "A1 1 0 0111 2"}) <b>is</b> handled, as of #115 - it was previously documented here as an unhandled quirk, but it is not rare enough to
+ * leave alone and it did not merely mishandle the path: reading a flag as a number shifts every later argument along, which walked a trailing {@code z} into a coordinate slot and
+ * threw {@code NumberFormatException} out of the renderer. See {@link #tokenize}.
  * <p>
- * Malformed path data never throws from here. SVG 1.1 says a path containing an error renders up to but not
- * including the point of that error, so each of the three entry points below returns whatever it had accumulated
- * when parsing stopped - the same degrade their {@code default:} case already applied to an unrecognised command.
+ * Malformed path data never throws from here. SVG 1.1 says a path containing an error renders up to but not including the point of that error, so each of the three entry points
+ * below returns whatever it had accumulated when parsing stopped - the same degrade their {@code default:} case already applied to an unrecognised command.
  */
 public final class SvgPathData {
 
@@ -38,10 +33,8 @@ public final class SvgPathData {
     private static final int ARC_STEPS = 32;
 
     /**
-     * One subpath's real vertices - each command's endpoint, not the interior samples a curve gets flattened into -
-     * plus whether it was closed with {@code Z}/{@code z}. Built for marker placement (#67), which needs actual
-     * vertex positions across every subpath, unlike {@link #flatten} which serves arc-length purposes over just the
-     * first.
+     * One subpath's real vertices - each command's endpoint, not the interior samples a curve gets flattened into - plus whether it was closed with {@code Z}/{@code z}. Built for
+     * marker placement (#67), which needs actual vertex positions across every subpath, unlike {@link #flatten} which serves arc-length purposes over just the first.
      */
     public record Subpath(List<Point2D> vertices, boolean closed) {
     }
@@ -76,7 +69,8 @@ public final class SvgPathData {
 
         while (i < tokens.size()) {
             if (isCommand(tokens.get(i))) {
-                command = tokens.get(i).charAt(0);
+                command = tokens.get(i)
+                    .charAt(0);
                 i++;
             }
             switch (Character.toUpperCase(command)) {
@@ -236,18 +230,15 @@ public final class SvgPathData {
     }
 
     /**
-     * Walks every subpath (unlike {@link #flatten}, which stops at the first), returning each one's real vertices -
-     * a command's endpoint, not the dense interior samples a curve gets flattened into - and whether it was closed.
+     * Walks every subpath (unlike {@link #flatten}, which stops at the first), returning each one's real vertices - a command's endpoint, not the dense interior samples a curve
+     * gets flattened into - and whether it was closed.
      * <p>
-     * Structurally a second copy of {@link #flatten}'s command-dispatch loop, sharing all of its per-command math
-     * ({@link #flattenCubic}, {@link #flattenQuadratic}, {@link #flattenArc}) verbatim - only the top-level loop
-     * differs, in three ways: a further {@code M}/{@code m} finalizes the subpath in progress and starts a new one
-     * instead of returning; {@code Z}/{@code z} finalizes the current subpath as closed and continues rather than
-     * returning, guarded so the loop can only continue when the very next token is itself a command letter (in
-     * practice always a fresh {@code M}) - {@code flatten}'s unconditional return on {@code Z} is exactly what
-     * prevents an infinite loop today, since that case consumes no tokens of its own; without an equivalent guard
-     * here, a stray non-command token after {@code Z} would spin forever re-entering it; running out of tokens, or
-     * an unrecognised command, finalizes whatever subpath is in progress before returning.
+     * Structurally a second copy of {@link #flatten}'s command-dispatch loop, sharing all of its per-command math ({@link #flattenCubic}, {@link #flattenQuadratic},
+     * {@link #flattenArc}) verbatim - only the top-level loop differs, in three ways: a further {@code M}/{@code m} finalizes the subpath in progress and starts a new one instead
+     * of returning; {@code Z}/{@code z} finalizes the current subpath as closed and continues rather than returning, guarded so the loop can only continue when the very next token
+     * is itself a command letter (in practice always a fresh {@code M}) - {@code flatten}'s unconditional return on {@code Z} is exactly what prevents an infinite loop today,
+     * since that case consumes no tokens of its own; without an equivalent guard here, a stray non-command token after {@code Z} would spin forever re-entering it; running out of
+     * tokens, or an unrecognised command, finalizes whatever subpath is in progress before returning.
      */
     public static List<Subpath> subpaths(String d) {
         List<Subpath> subpaths = new ArrayList<>();
@@ -279,7 +270,8 @@ public final class SvgPathData {
 
         while (i < tokens.size()) {
             if (isCommand(tokens.get(i))) {
-                command = tokens.get(i).charAt(0);
+                command = tokens.get(i)
+                    .charAt(0);
                 i++;
             }
             switch (Character.toUpperCase(command)) {
@@ -333,15 +325,13 @@ public final class SvgPathData {
                     break;
                 }
                 case 'C': {
-                    double x1 = parseDouble(tokens.get(i++));
-                    double y1 = parseDouble(tokens.get(i++));
+                    parseDouble(tokens.get(i++));
+                    parseDouble(tokens.get(i++));
                     double x2 = parseDouble(tokens.get(i++));
                     double y2 = parseDouble(tokens.get(i++));
                     double x = parseDouble(tokens.get(i++));
                     double y = parseDouble(tokens.get(i++));
                     if (Character.isLowerCase(command)) {
-                        x1 += curX;
-                        y1 += curY;
                         x2 += curX;
                         y2 += curY;
                         x += curX;
@@ -407,11 +397,11 @@ public final class SvgPathData {
                     break;
                 }
                 case 'A': {
-                    double rx = parseDouble(tokens.get(i++));
-                    double ry = parseDouble(tokens.get(i++));
-                    double rotation = parseDouble(tokens.get(i++));
-                    boolean largeArc = parseFlag(tokens.get(i++));
-                    boolean sweep = parseFlag(tokens.get(i++));
+                    parseDouble(tokens.get(i++));
+                    parseDouble(tokens.get(i++));
+                    parseDouble(tokens.get(i++));
+                    parseFlag(tokens.get(i++));
+                    parseFlag(tokens.get(i++));
                     double x = parseDouble(tokens.get(i++));
                     double y = parseDouble(tokens.get(i++));
                     if (Character.isLowerCase(command)) {
@@ -429,7 +419,8 @@ public final class SvgPathData {
                     current = null;
                     curX = subpathStartX;
                     curY = subpathStartY;
-                    if (i >= tokens.size() || !isCommand(tokens.get(i)) || Character.toUpperCase(tokens.get(i).charAt(0)) != 'M') {
+                    if (i >= tokens.size() || !isCommand(tokens.get(i)) || Character.toUpperCase(tokens.get(i)
+                        .charAt(0)) != 'M') {
                         return;
                     }
                     break;
@@ -450,18 +441,15 @@ public final class SvgPathData {
 
     /**
      * Converts path data into a real JavaFX {@link Path} for {@code <animateMotion>} (#88) - {@code
-     * javafx.animation.PathTransition} needs actual {@code PathElement}s, not the {@code SVGPath} content-string
-     * {@link nz.co.ctg.foxglove.shape.SvgPath} itself renders via, which exposes no geometry at all.
+     * javafx.animation.PathTransition} needs actual {@code PathElement}s, not the {@code SVGPath} content-string {@link nz.co.ctg.foxglove.shape.SvgPath} itself renders via, which
+     * exposes no geometry at all.
      * <p>
-     * Structurally a third copy of {@link #flatten}/{@link #subpaths}'s per-command dispatch loop - walks every
-     * subpath like {@link #subpaths} (unlike {@link #flatten}, which stops at the first), but densely samples curves
-     * like {@link #flatten} does (unlike {@link #subpaths}, which keeps only each command's real endpoint - a chord
-     * between real vertices would flatten an actual curve into a single straight segment, which is fine for marker
-     * placement but would be an obviously wrong, visibly jagged path for motion to follow). Reuses {@link
-     * #flattenCubic}/{@link #flattenQuadratic}/{@link #flattenArc} verbatim by handing them a scratch list per curve
-     * segment, converting each sampled point straight into a {@link LineTo} - {@code PathTransition} only needs
-     * accurate arc-length parameterisation and tangent directions along the path, both of which a sufficiently fine
-     * polyline already gives it, so this does not attempt to re-derive true {@code CubicCurveTo}/{@code
+     * Structurally a third copy of {@link #flatten}/{@link #subpaths}'s per-command dispatch loop - walks every subpath like {@link #subpaths} (unlike {@link #flatten}, which
+     * stops at the first), but densely samples curves like {@link #flatten} does (unlike {@link #subpaths}, which keeps only each command's real endpoint - a chord between real
+     * vertices would flatten an actual curve into a single straight segment, which is fine for marker placement but would be an obviously wrong, visibly jagged path for motion to
+     * follow). Reuses {@link #flattenCubic}/{@link #flattenQuadratic}/{@link #flattenArc} verbatim by handing them a scratch list per curve segment, converting each sampled point
+     * straight into a {@link LineTo} - {@code PathTransition} only needs accurate arc-length parameterisation and tangent directions along the path, both of which a sufficiently
+     * fine polyline already gives it, so this does not attempt to re-derive true {@code CubicCurveTo}/{@code
      * QuadCurveTo}/{@code ArcTo} {@code PathElement}s from the original command stream.
      */
     public static Path toJavaFxPath(String d) {
@@ -490,7 +478,8 @@ public final class SvgPathData {
 
         while (i < tokens.size()) {
             if (isCommand(tokens.get(i))) {
-                command = tokens.get(i).charAt(0);
+                command = tokens.get(i)
+                    .charAt(0);
                 i++;
             }
             switch (Character.toUpperCase(command)) {
@@ -505,7 +494,8 @@ public final class SvgPathData {
                     curY = y;
                     subpathStartX = x;
                     subpathStartY = y;
-                    path.getElements().add(new MoveTo(x, y));
+                    path.getElements()
+                        .add(new MoveTo(x, y));
                     command = Character.isLowerCase(command) ? 'l' : 'L';
                     break;
                 }
@@ -516,7 +506,8 @@ public final class SvgPathData {
                         x += curX;
                         y += curY;
                     }
-                    path.getElements().add(new LineTo(x, y));
+                    path.getElements()
+                        .add(new LineTo(x, y));
                     curX = x;
                     curY = y;
                     break;
@@ -526,7 +517,8 @@ public final class SvgPathData {
                     if (Character.isLowerCase(command)) {
                         x += curX;
                     }
-                    path.getElements().add(new LineTo(x, curY));
+                    path.getElements()
+                        .add(new LineTo(x, curY));
                     curX = x;
                     break;
                 }
@@ -535,7 +527,8 @@ public final class SvgPathData {
                     if (Character.isLowerCase(command)) {
                         y += curY;
                     }
-                    path.getElements().add(new LineTo(curX, y));
+                    path.getElements()
+                        .add(new LineTo(curX, y));
                     curY = y;
                     break;
                 }
@@ -633,7 +626,8 @@ public final class SvgPathData {
                     break;
                 }
                 case 'Z': {
-                    path.getElements().add(new ClosePath());
+                    path.getElements()
+                        .add(new ClosePath());
                     curX = subpathStartX;
                     curY = subpathStartY;
                     break;
@@ -647,11 +641,12 @@ public final class SvgPathData {
     }
 
     private static void appendFlattenedCubic(Path path, double x0, double y0, double x1, double y1, double x2, double y2, double x3,
-        double y3) {
+                                             double y3) {
         List<Point2D> points = new ArrayList<>();
         flattenCubic(points, x0, y0, x1, y1, x2, y2, x3, y3);
         for (Point2D point : points) {
-            path.getElements().add(new LineTo(point.getX(), point.getY()));
+            path.getElements()
+                .add(new LineTo(point.getX(), point.getY()));
         }
     }
 
@@ -659,16 +654,18 @@ public final class SvgPathData {
         List<Point2D> points = new ArrayList<>();
         flattenQuadratic(points, x0, y0, x1, y1, x2, y2);
         for (Point2D point : points) {
-            path.getElements().add(new LineTo(point.getX(), point.getY()));
+            path.getElements()
+                .add(new LineTo(point.getX(), point.getY()));
         }
     }
 
     private static void appendFlattenedArc(Path path, double x0, double y0, double rx, double ry, double rotationDegrees,
-        boolean largeArc, boolean sweep, double x, double y) {
+                                           boolean largeArc, boolean sweep, double x, double y) {
         List<Point2D> points = new ArrayList<>();
         flattenArc(points, x0, y0, rx, ry, rotationDegrees, largeArc, sweep, x, y);
         for (Point2D point : points) {
-            path.getElements().add(new LineTo(point.getX(), point.getY()));
+            path.getElements()
+                .add(new LineTo(point.getX(), point.getY()));
         }
     }
 
@@ -693,11 +690,10 @@ public final class SvgPathData {
     }
 
     /**
-     * The standard SVG endpoint-to-center arc parameterization (specification appendix F.6.5), sampled by angle
-     * rather than converted to a Bezier approximation first.
+     * The standard SVG endpoint-to-center arc parameterization (specification appendix F.6.5), sampled by angle rather than converted to a Bezier approximation first.
      */
     private static void flattenArc(List<Point2D> points, double x0, double y0, double rx, double ry, double rotationDegrees,
-        boolean largeArc, boolean sweep, double x, double y) {
+                                   boolean largeArc, boolean sweep, double x, double y) {
         if (rx == 0 || ry == 0) {
             points.add(new Point2D(x, y));
             return;
@@ -771,9 +767,8 @@ public final class SvgPathData {
     }
 
     /**
-     * An elliptical arc's {@code large-arc-flag} or {@code sweep-flag}, which the grammar defines as
-     * {@code flag ::= "0" | "1"} - a single character, not a number, which is why {@link #tokenize} has to hand one
-     * over already isolated. Anything else puts the path in error.
+     * An elliptical arc's {@code large-arc-flag} or {@code sweep-flag}, which the grammar defines as {@code flag ::= "0" | "1"} - a single character, not a number, which is why
+     * {@link #tokenize} has to hand one over already isolated. Anything else puts the path in error.
      */
     private static boolean parseFlag(String token) {
         if ("0".equals(token)) {
@@ -786,20 +781,16 @@ public final class SvgPathData {
     }
 
     /**
-     * Splits path data into command letters and numbers - with one piece of context-sensitivity that cannot be
-     * avoided (#115).
+     * Splits path data into command letters and numbers - with one piece of context-sensitivity that cannot be avoided (#115).
      * <p>
-     * An elliptical arc's two flags are each a <b>single character</b> in SVG's grammar
-     * ({@code flag ::= "0" | "1"}), not numbers, so a separator between them is optional and {@code a25,25 0 10 -25,25}
-     * means {@code large-arc-flag=1 sweep-flag=0}, not a flag of ten. Matching numbers greedily reads {@code 10} as
-     * one token, which shifts every remaining argument along by one - in a path ending {@code 25,25z} that walks the
-     * final coordinate onto the {@code z}, and {@code Double.parseDouble("z")} throws. Three real forms in the W3C
-     * suite's own arc-syntax test depend on getting this right.
+     * An elliptical arc's two flags are each a <b>single character</b> in SVG's grammar ({@code flag ::= "0" | "1"}), not numbers, so a separator between them is optional and
+     * {@code a25,25 0 10 -25,25} means {@code large-arc-flag=1 sweep-flag=0}, not a flag of ten. Matching numbers greedily reads {@code 10} as one token, which shifts every
+     * remaining argument along by one - in a path ending {@code 25,25z} that walks the final coordinate onto the {@code z}, and {@code Double.parseDouble("z")} throws. Three real
+     * forms in the W3C suite's own arc-syntax test depend on getting this right.
      * <p>
-     * So the scan tracks which argument of an {@code A}/{@code a} it is at (modulo seven, since arc arguments
-     * repeat without the letter being restated) and, at either flag position, emits just the first character and
-     * resumes from immediately after it. Everything else - and every other command - tokenizes exactly as before.
-     * Whether the character is actually {@code 0} or {@code 1} is {@link #parseFlag}'s business, not this method's.
+     * So the scan tracks which argument of an {@code A}/{@code a} it is at (modulo seven, since arc arguments repeat without the letter being restated) and, at either flag
+     * position, emits just the first character and resumes from immediately after it. Everything else - and every other command - tokenizes exactly as before. Whether the
+     * character is actually {@code 0} or {@code 1} is {@link #parseFlag}'s business, not this method's.
      */
     private static List<String> tokenize(String d) {
         List<String> tokens = new ArrayList<>();

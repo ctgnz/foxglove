@@ -1,5 +1,7 @@
 package nz.co.ctg.foxglove.shape;
 
+import javafx.scene.shape.Shape;
+
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.AbstractSvgStylable;
@@ -9,10 +11,7 @@ import nz.co.ctg.foxglove.ISvgExternalResources;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.RenderContext;
 
-import javafx.scene.shape.Shape;
-
-public abstract class AbstractSvgShape<S extends Shape> extends AbstractSvgStylable
-    implements ISvgShape<S>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
+public abstract class AbstractSvgShape<S extends Shape> extends AbstractSvgStylable implements ISvgShape<S>, ISvgConditionalFeatures, ISvgExternalResources, ISvgEventListener, ISvgTransformable {
 
     @Override
     public S createGraphic(RenderContext context) {

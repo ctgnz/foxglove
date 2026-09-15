@@ -6,10 +6,8 @@ import java.io.UncheckedIOException;
 import java.util.Properties;
 
 /**
- * Per-test overrides of {@link ConformanceComparator}'s default differing-pixel-ratio tolerance, for the handful of
- * tests that are legitimately borderline under the default - read from a small, checked-in classpath resource
- * (unlike the fetched suite itself), populated only with entries a real baseline run actually needed, not guessed
- * up front.
+ * Per-test overrides of {@link ConformanceComparator}'s default differing-pixel-ratio tolerance, for the handful of tests that are legitimately borderline under the default - read
+ * from a small, checked-in classpath resource (unlike the fetched suite itself), populated only with entries a real baseline run actually needed, not guessed up front.
  */
 public final class ConformanceTolerances {
 

@@ -4,12 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
-import nz.co.ctg.foxglove.RenderContext;
-
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -21,18 +15,20 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import nz.co.ctg.foxglove.RenderContext;
+
 /**
- * Builds the {@link Animation} for {@code <animate>}/{@code <animateColor>} - identical logic for both, since
- * {@link ISvgValueAnimationElement} exposes the same attributes either way and the only real difference (a numeric
- * vs colour-typed value) is already handled per-property by {@link SvgAttributeRegistry}'s own parser. Colour values
- * flow through the exact same {@code KeyFrame}/{@code Interpolator} machinery as numbers - JavaFX's own
- * {@link Interpolator#LINEAR} interpolates {@link Color} directly (verified empirically, not merely assumed).
+ * Builds the {@link Animation} for {@code <animate>}/{@code <animateColor>} - identical logic for both, since {@link ISvgValueAnimationElement} exposes the same attributes either
+ * way and the only real difference (a numeric vs colour-typed value) is already handled per-property by {@link SvgAttributeRegistry}'s own parser. Colour values flow through the
+ * exact same {@code KeyFrame}/{@code Interpolator} machinery as numbers - JavaFX's own {@link Interpolator#LINEAR} interpolates {@link Color} directly (verified empirically, not
+ * merely assumed).
  * <p>
- * {@code by}/{@code additive}/{@code accumulate} only make sense arithmetically on a numeric binding (SVG doesn't
- * define arithmetic on colours either) - on a colour-typed binding they are silently ignored (this renderer's usual
- * "unsupported, skip the feature rather than the whole animation" treatment), except {@code by} used alone with no
- * {@code from}/{@code to}/{@code values}, which cannot produce any value list at all for a colour and so the whole
- * animation resolves to {@link Optional#empty()}.
+ * {@code by}/{@code additive}/{@code accumulate} only make sense arithmetically on a numeric binding (SVG doesn't define arithmetic on colours either) - on a colour-typed binding
+ * they are silently ignored (this renderer's usual "unsupported, skip the feature rather than the whole animation" treatment), except {@code by} used alone with no
+ * {@code from}/{@code to}/{@code values}, which cannot produce any value list at all for a colour and so the whole animation resolves to {@link Optional#empty()}.
  */
 public final class SvgValueAnimationBuilder {
 
@@ -42,11 +38,13 @@ public final class SvgValueAnimationBuilder {
             return Optional.empty();
         }
         SvgAttributeBinding<Object> binding = castBinding(resolved.get());
-        Object currentValue = binding.property().getValue();
+        Object currentValue = binding.property()
+            .getValue();
         boolean numeric = currentValue instanceof Number;
 
         Optional<List<Object>> valuesOpt = resolveValues(element, binding, currentValue, numeric);
-        if (valuesOpt.isEmpty() || valuesOpt.get().size() < 2) {
+        if (valuesOpt.isEmpty() || valuesOpt.get()
+            .size() < 2) {
             return Optional.empty();
         }
         List<Object> values = valuesOpt.get();
@@ -97,7 +95,7 @@ public final class SvgValueAnimationBuilder {
         // the end never applies it, even though real uninterrupted playback does apply it correctly on entry. The
         // 1ms offset gives it a real span, so both playback and seeking revert consistently.
         Timeline revert = new Timeline(
-            new KeyFrame(Duration.millis(1), new KeyValue(binding.property(), currentValue, Interpolator.DISCRETE)));
+                                       new KeyFrame(Duration.millis(1), new KeyValue(binding.property(), currentValue, Interpolator.DISCRETE)));
         return Optional.of(new SequentialTransition(core, revert));
     }
 
@@ -109,7 +107,7 @@ public final class SvgValueAnimationBuilder {
     // --- value list resolution -------------------------------------------------
 
     private static Optional<List<Object>> resolveValues(ISvgValueAnimationElement element, SvgAttributeBinding<Object> binding,
-        Object currentValue, boolean numeric) {
+                                                        Object currentValue, boolean numeric) {
         String valuesAttr = StringUtils.trimToNull(element.getValues());
         if (valuesAttr != null) {
             return parseAll(binding, splitSemicolon(valuesAttr));
@@ -121,7 +119,8 @@ public final class SvgValueAnimationBuilder {
             return parseAll(binding, List.of(from, to));
         }
         if (from != null && by != null && numeric) {
-            Optional<Object> fromVal = binding.parser().apply(from);
+            Optional<Object> fromVal = binding.parser()
+                .apply(from);
             Optional<Double> byVal = parseNumeric(binding, by);
             if (fromVal.isEmpty() || byVal.isEmpty()) {
                 return Optional.empty();
@@ -130,7 +129,8 @@ public final class SvgValueAnimationBuilder {
             return Optional.of(List.of(fromVal.get(), (Object) (start + byVal.get())));
         }
         if (to != null) {
-            Optional<Object> toVal = binding.parser().apply(to);
+            Optional<Object> toVal = binding.parser()
+                .apply(to);
             if (toVal.isEmpty()) {
                 return Optional.empty();
             }
@@ -158,7 +158,8 @@ public final class SvgValueAnimationBuilder {
     private static Optional<List<Object>> parseAll(SvgAttributeBinding<Object> binding, List<String> raw) {
         List<Object> result = new ArrayList<>();
         for (String value : raw) {
-            Optional<Object> parsed = binding.parser().apply(value);
+            Optional<Object> parsed = binding.parser()
+                .apply(value);
             if (parsed.isEmpty()) {
                 return Optional.empty();
             }
@@ -168,7 +169,9 @@ public final class SvgValueAnimationBuilder {
     }
 
     private static Optional<Double> parseNumeric(SvgAttributeBinding<Object> binding, String raw) {
-        return binding.parser().apply(raw).map(v -> ((Number) v).doubleValue());
+        return binding.parser()
+            .apply(raw)
+            .map(v -> ((Number) v).doubleValue());
     }
 
     // --- keyTimes ----------------------------------------------------------
@@ -243,8 +246,8 @@ public final class SvgValueAnimationBuilder {
     }
 
     /**
-     * Numeric distance is a plain difference; colour distance is Euclidean over RGB - SVG doesn't mandate a specific
-     * colour metric for {@code calcMode="paced"}, so this is a documented, reasonable choice.
+     * Numeric distance is a plain difference; colour distance is Euclidean over RGB - SVG doesn't mandate a specific colour metric for {@code calcMode="paced"}, so this is a
+     * documented, reasonable choice.
      */
     private static double distance(Object a, Object b) {
         if (a instanceof Number numberA && b instanceof Number numberB) {
@@ -287,7 +290,8 @@ public final class SvgValueAnimationBuilder {
     }
 
     private static Optional<Interpolator> parseSpline(String raw) {
-        String[] parts = raw.trim().split("[,\\s]+");
+        String[] parts = raw.trim()
+            .split("[,\\s]+");
         if (parts.length != 4) {
             return Optional.empty();
         }
@@ -305,7 +309,7 @@ public final class SvgValueAnimationBuilder {
     // --- KeyFrame construction -----------------------------------------------
 
     private static List<KeyFrame> buildKeyFrames(WritableValue<Object> property, List<Object> values, List<Double> keyTimes,
-        List<Interpolator> interpolators, double valueShift, Duration simpleDuration, int startIndex) {
+                                                 List<Interpolator> interpolators, double valueShift, Duration simpleDuration, int startIndex) {
         List<KeyFrame> frames = new ArrayList<>();
         for (int i = startIndex; i < values.size(); i++) {
             Object written = write(values.get(i), valueShift);
@@ -324,24 +328,19 @@ public final class SvgValueAnimationBuilder {
     }
 
     /**
-     * {@code accumulate="sum"} with a finite {@code repeatCount}: unrolls every repeat into one continuous sequence
-     * of {@code KeyFrame}s spanning the entire repeated duration, each cycle shifted by the previous cycle's own
-     * delta - something JavaFX's own {@code cycleCount} replay cannot express, since it always restarts a
-     * {@code Timeline} from its own start unchanged. The {@code Timeline} built from the result is played with
-     * {@code cycleCount} left at {@code 1} - {@link SvgAnimationController#withTiming} recognises this case (by
-     * element type/attributes, not by inspecting {@code cycleCount}) and skips its own generic {@code repeatCount}
-     * wrapping accordingly. Consecutive cycles deliberately share a single {@code KeyFrame} at the boundary (cycle
-     * {@code n}'s last value equals cycle {@code n+1}'s first value by construction) rather than emitting a
+     * {@code accumulate="sum"} with a finite {@code repeatCount}: unrolls every repeat into one continuous sequence of {@code KeyFrame}s spanning the entire repeated duration,
+     * each cycle shifted by the previous cycle's own delta - something JavaFX's own {@code cycleCount} replay cannot express, since it always restarts a {@code Timeline} from its
+     * own start unchanged. The {@code Timeline} built from the result is played with {@code cycleCount} left at {@code 1} - {@link SvgAnimationController#withTiming} recognises
+     * this case (by element type/attributes, not by inspecting {@code cycleCount}) and skips its own generic {@code repeatCount} wrapping accordingly. Consecutive cycles
+     * deliberately share a single {@code KeyFrame} at the boundary (cycle {@code n}'s last value equals cycle {@code n+1}'s first value by construction) rather than emitting a
      * duplicate at the same time.
      * <p>
-     * Deliberately not reused for plain {@code repeatCount} replay with no {@code accumulate} (#149): that case has
-     * no shift between cycles at all, each one independently replaying the same value list from its own start, which
-     * is exactly what JavaFX's native cycling already does - unrolling it here would instead skip every cycle's own
-     * first value (the boundary-sharing behaviour above, only valid when cycles truly are continuous), collapsing a
-     * repeated ramp into a single ramp followed by a flat hold.
+     * Deliberately not reused for plain {@code repeatCount} replay with no {@code accumulate} (#149): that case has no shift between cycles at all, each one independently
+     * replaying the same value list from its own start, which is exactly what JavaFX's native cycling already does - unrolling it here would instead skip every cycle's own first
+     * value (the boundary-sharing behaviour above, only valid when cycles truly are continuous), collapsing a repeated ramp into a single ramp followed by a flat hold.
      */
     private static List<KeyFrame> buildRepeatedFrames(WritableValue<Object> property, List<Object> values, List<Double> keyTimes,
-        List<Interpolator> interpolators, double baseValue, Duration simpleDuration, int cycles) {
+                                                      List<Interpolator> interpolators, double baseValue, Duration simpleDuration, int cycles) {
         double firstValue = ((Number) values.get(0)).doubleValue();
         double lastValue = ((Number) values.get(values.size() - 1)).doubleValue();
         double perCycleDelta = lastValue - firstValue;
@@ -352,7 +351,8 @@ public final class SvgValueAnimationBuilder {
             Duration timeShift = simpleDuration.multiply(cycle);
             int startIndex = cycle == 0 ? 0 : 1;
             for (KeyFrame frame : buildKeyFrames(property, values, keyTimes, interpolators, valueShift, simpleDuration, startIndex)) {
-                frames.add(new KeyFrame(timeShift.add(frame.getTime()), frame.getValues().toArray(new KeyValue[0])));
+                frames.add(new KeyFrame(timeShift.add(frame.getTime()), frame.getValues()
+                    .toArray(new KeyValue[0])));
             }
         }
         return frames;

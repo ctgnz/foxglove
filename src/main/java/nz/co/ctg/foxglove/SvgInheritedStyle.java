@@ -10,14 +10,12 @@ import com.google.common.collect.ImmutableSet;
 /**
  * The presentation attribute values in force at a point in the document, resolved down the ancestor chain.
  * <p>
- * SVG property inheritance walks the whole chain of ancestors, but rendering only ever passes an element its
- * immediate parent. Rather than give every element a back reference to its parent, each container resolves its own
- * values against what it inherited and hands the result to its children, so the accumulated style descends with the
- * traversal and a child only ever needs to consult one object.
+ * SVG property inheritance walks the whole chain of ancestors, but rendering only ever passes an element its immediate parent. Rather than give every element a back reference to
+ * its parent, each container resolves its own values against what it inherited and hands the result to its children, so the accumulated style descends with the traversal and a
+ * child only ever needs to consult one object.
  * <p>
- * This implements {@link ISvgStylable} so it can stand in for the parent element wherever one is expected. Only the
- * properties SVG defines as inheritable are carried; {@code opacity}, {@code display}, {@code clip-path},
- * {@code mask} and {@code filter} apply to the element that declares them and are deliberately absent.
+ * This implements {@link ISvgStylable} so it can stand in for the parent element wherever one is expected. Only the properties SVG defines as inheritable are carried;
+ * {@code opacity}, {@code display}, {@code clip-path}, {@code mask} and {@code filter} apply to the element that declares them and are deliberately absent.
  */
 public final class SvgInheritedStyle implements ISvgStylable {
 
@@ -44,19 +42,18 @@ public final class SvgInheritedStyle implements ISvgStylable {
     private static final SvgInheritedStyle ROOT = new SvgInheritedStyle(Collections.emptyMap());
 
     /**
-     * The style in force outside any element, where nothing has been specified and every property falls back to its
-     * initial value.
+     * The style in force outside any element, where nothing has been specified and every property falls back to its initial value.
      */
     public static SvgInheritedStyle root() {
         return ROOT;
     }
 
     /**
-     * The style that the children of {@code element} inherit: what {@code element} itself inherited, overlaid with
-     * the inheritable properties it specifies. A null parent is treated as the root.
+     * The style that the children of {@code element} inherit: what {@code element} itself inherited, overlaid with the inheritable properties it specifies. A null parent is
+     * treated as the root.
      * <p>
-     * Both arguments are {@link ISvgAttributes} rather than {@link ISvgStylable} because resolution only reads
-     * properties, and the callers include the attribute interfaces themselves, which sit above {@code ISvgStylable}.
+     * Both arguments are {@link ISvgAttributes} rather than {@link ISvgStylable} because resolution only reads properties, and the callers include the attribute interfaces
+     * themselves, which sit above {@code ISvgStylable}.
      */
     public static SvgInheritedStyle resolve(ISvgAttributes parent, ISvgAttributes element) {
         Map<String, Object> resolved = new LinkedHashMap<>();

@@ -4,14 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
-import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
-import nz.co.ctg.foxglove.RenderContext;
-import nz.co.ctg.foxglove.RenderContext.UnitsMode;
-
 import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -23,45 +15,43 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Transform;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import nz.co.ctg.foxglove.ISvgGraphicsAttributes;
+import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.RenderContext.UnitsMode;
+
 /**
- * Stage 3 of the filter work (#77): evaluates a {@code <filter>}'s primitive graph as real pixels, for everything
- * {@link SvgFilterRenderer}'s JavaFX-effect chain cannot express - the pixel-level primitives that have no
- * {@code javafx.scene.effect} equivalent, and arbitrary (non-chain) graphs where a named {@code result} is branched,
- * converged, or referenced out of order.
+ * Stage 3 of the filter work (#77): evaluates a {@code <filter>}'s primitive graph as real pixels, for everything {@link SvgFilterRenderer}'s JavaFX-effect chain cannot express -
+ * the pixel-level primitives that have no {@code javafx.scene.effect} equivalent, and arbitrary (non-chain) graphs where a named {@code result} is branched, converged, or
+ * referenced out of order.
  * <p>
- * The result is applied <b>in place</b>, via {@link ImageInput} as the node's own effect. Masking (#25) had to move
- * to the consumer side because it replaces its node and {@code AbstractSvgShape}'s narrower {@code S extends Shape}
- * return type cannot carry an {@code ImageView}; this needs none of that - verified empirically before the design
- * was settled on: a node with an {@code ImageInput} effect renders that image rather than its own geometry, the
- * image's {@code x}/{@code y} are in the node's own local space, the image is <i>not</i> clipped to the node's own
- * geometry (so a blur may spread beyond the shape), and an existing {@code setClip} still applies on top (so the
- * filter-region clip composes correctly).
+ * The result is applied <b>in place</b>, via {@link ImageInput} as the node's own effect. Masking (#25) had to move to the consumer side because it replaces its node and
+ * {@code AbstractSvgShape}'s narrower {@code S extends Shape} return type cannot carry an {@code ImageView}; this needs none of that - verified empirically before the design was
+ * settled on: a node with an {@code ImageInput} effect renders that image rather than its own geometry, the image's {@code x}/{@code y} are in the node's own local space, the
+ * image is <i>not</i> clipped to the node's own geometry (so a blur may spread beyond the shape), and an existing {@code setClip} still applies on top (so the filter-region clip
+ * composes correctly).
  * <p>
- * Buffers are rasterised at one pixel per user unit and never supersampled - {@link ImageInput} has no scale of its
- * own, unlike the {@code ImageView} masking wraps in a scaled {@link Group}. That is spec-aligned in principle,
- * since filters are defined on a pixel grid, though {@code filterRes} is not honoured.
+ * Buffers are rasterised at one pixel per user unit and never supersampled - {@link ImageInput} has no scale of its own, unlike the {@code ImageView} masking wraps in a scaled
+ * {@link Group}. That is spec-aligned in principle, since filters are defined on a pixel grid, though {@code filterRes} is not honoured.
  * <p>
- * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: the primitives
- * not listed in {@link #evaluate} ({@code feTurbulence}, {@code feConvolveMatrix}, {@code feMorphology},
- * {@code feDisplacementMap}, {@code feTile}, {@code feImage}, the lighting primitives), per-primitive subregions
+ * Known gaps, each degrading the whole filter to unfiltered rather than rendering something wrong: the primitives not listed in {@link #evaluate} ({@code feTurbulence},
+ * {@code feConvolveMatrix}, {@code feMorphology}, {@code feDisplacementMap}, {@code feTile}, {@code feImage}, the lighting primitives), per-primitive subregions
  * ({@code x}/{@code y}/{@code width}/{@code height} on an individual {@code fe*}), and {@code in="BackgroundImage"}.
  * <p>
- * Primitives evaluate in <b>linearRGB</b> by default, per the specification, honouring
- * {@code color-interpolation-filters} per primitive - see {@link FilterColorSpace}. Working in sRGB instead was
- * #77's largest documented inaccuracy, fixed in #108: it left structure and geometry right but every interpolated
- * value systematically too dark.
+ * Primitives evaluate in <b>linearRGB</b> by default, per the specification, honouring {@code color-interpolation-filters} per primitive - see {@link FilterColorSpace}. Working in
+ * sRGB instead was #77's largest documented inaccuracy, fixed in #108: it left structure and geometry right but every interpolated value systematically too dark.
  */
 final class SvgFilterRasterPipeline {
 
     /**
-     * An upper bound on either dimension of the rasterised filter region, so a pathological region (a huge shape, or
-     * a {@code filterUnits="userSpaceOnUse"} region declared far larger than anything visible) degrades rather than
-     * trying to allocate an unbounded buffer.
+     * An upper bound on either dimension of the rasterised filter region, so a pathological region (a huge shape, or a {@code filterUnits="userSpaceOnUse"} region declared far
+     * larger than anything visible) degrades rather than trying to allocate an unbounded buffer.
      */
     private static final int MAX_DIMENSION = 4096;
 
     private final SvgFilter filter;
-    private final RenderContext context;
     private final Bounds targetBounds;
     private final Bounds region;
     private final int width;
@@ -78,7 +68,6 @@ final class SvgFilterRasterPipeline {
 
     private SvgFilterRasterPipeline(SvgFilter filter, RenderContext context, Bounds targetBounds, Bounds region, int width, int height) {
         this.filter = filter;
-        this.context = context;
         this.targetBounds = targetBounds;
         this.region = region;
         this.width = width;
@@ -86,12 +75,11 @@ final class SvgFilterRasterPipeline {
     }
 
     /**
-     * Renders {@code filter}'s primitives against {@code node} and sets the result as its effect, returning whether
-     * it could. {@code false} means the caller should leave {@code node} unfiltered - either the filter uses
-     * something still unsupported, or rasterising was not possible at all (see {@link #rasterizeSource}).
+     * Renders {@code filter}'s primitives against {@code node} and sets the result as its effect, returning whether it could. {@code false} means the caller should leave
+     * {@code node} unfiltered - either the filter uses something still unsupported, or rasterising was not possible at all (see {@link #rasterizeSource}).
      */
     static boolean apply(RenderContext context, Node node, SvgFilter filter, List<ISvgFilterPrimitive> primitives, Bounds targetBounds,
-        Bounds region) {
+                         Bounds region) {
         int width = (int) Math.round(region.getWidth());
         int height = (int) Math.round(region.getHeight());
         if (width <= 0 || height <= 0 || width > MAX_DIMENSION || height > MAX_DIMENSION) {
@@ -136,24 +124,19 @@ final class SvgFilterRasterPipeline {
     }
 
     /**
-     * Snapshots {@code node} over the filter region, the same technique {@code SvgMaskRenderer.rasterize} and
-     * {@code SvgPattern} already use. Two of the node's own properties are taken off first, for different reasons,
-     * and both are put back afterwards - unlike masking, which discards its node, this one goes on to be rendered
-     * for real:
+     * Snapshots {@code node} over the filter region, the same technique {@code SvgMaskRenderer.rasterize} and {@code SvgPattern} already use. Two of the node's own properties are
+     * taken off first, for different reasons, and both are put back afterwards - unlike masking, which discards its node, this one goes on to be rendered for real:
      * <ul>
-     * <li>its <b>transforms</b> (and {@code translateX}/{@code translateY}), because an explicit snapshot viewport is
-     * read in post-transform space while the region is in the pre-transform local space {@code getBoundsInLocal}
-     * gave it;
-     * <li>its <b>opacity</b>, because {@code SourceGraphic} is the element before its own opacity - SVG applies that
-     * to the filter's result, not its input. Leaving it on applied it twice (#129): once baked into this snapshot,
-     * and again when JavaFX paints the {@link ImageInput} built from it.
+     * <li>its <b>transforms</b> (and {@code translateX}/{@code translateY}), because an explicit snapshot viewport is read in post-transform space while the region is in the
+     * pre-transform local space {@code getBoundsInLocal} gave it;
+     * <li>its <b>opacity</b>, because {@code SourceGraphic} is the element before its own opacity - SVG applies that to the filter's result, not its input. Leaving it on applied
+     * it twice (#129): once baked into this snapshot, and again when JavaFX paints the {@link ImageInput} built from it.
      * </ul>
-     * A {@code clip} from {@code clip-path} is likewise still on the node and likewise re-applied afterwards, but
-     * clipping twice with the same clip is idempotent, so it needs no equivalent treatment.
+     * A {@code clip} from {@code clip-path} is likewise still on the node and likewise re-applied afterwards, but clipping twice with the same clip is idempotent, so it needs no
+     * equivalent treatment.
      * <p>
-     * Returns {@code null} when snapshotting is not possible at all - most usually because the caller is not on the
-     * JavaFX Application Thread, which {@code Node.snapshot} requires. That is the same constraint masking already
-     * carries, and callers degrade to an unfiltered node rather than propagating it.
+     * Returns {@code null} when snapshotting is not possible at all - most usually because the caller is not on the JavaFX Application Thread, which {@code Node.snapshot}
+     * requires. That is the same constraint masking already carries, and callers degrade to an unfiltered node rather than propagating it.
      */
     private FilterRaster rasterizeSource(Node node) {
         List<Transform> ownTransforms = List.copyOf(node.getTransforms());
@@ -162,7 +145,8 @@ final class SvgFilterRasterPipeline {
         double opacity = node.getOpacity();
         Group holder = new Group();
         try {
-            node.getTransforms().clear();
+            node.getTransforms()
+                .clear();
             node.setTranslateX(0);
             node.setTranslateY(0);
             // SourceGraphic is the element before its own opacity, which SVG applies to the filter's result rather
@@ -170,7 +154,8 @@ final class SvgFilterRasterPipeline {
             // JavaFX paints the ImageInput built from it, since node opacity still applies to the effect's output
             node.setOpacity(1.0);
 
-            holder.getChildren().add(node);
+            holder.getChildren()
+                .add(node);
             new Scene(holder);
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
@@ -181,8 +166,10 @@ final class SvgFilterRasterPipeline {
             return null;
         } finally {
             // detach from the throwaway scene, so the node is parentless again for whoever actually renders it
-            holder.getChildren().remove(node);
-            node.getTransforms().setAll(ownTransforms);
+            holder.getChildren()
+                .remove(node);
+            node.getTransforms()
+                .setAll(ownTransforms);
             node.setTranslateX(translateX);
             node.setTranslateY(translateY);
             node.setOpacity(opacity);
@@ -218,15 +205,12 @@ final class SvgFilterRasterPipeline {
     }
 
     /**
-     * Resolves a primitive's {@code in}, <b>in the space that primitive works in</b>: blank means
-     * {@code SourceGraphic} for the very first primitive and the previous primitive's result thereafter, per spec.
-     * Unlike the effect-chain path, {@code SourceAlpha} and any earlier named {@code result} both resolve here -
-     * retaining every result, rather than only the previous one, is exactly what lets a branching or out-of-order
-     * graph work. {@code BackgroundImage} and friends still abort.
+     * Resolves a primitive's {@code in}, <b>in the space that primitive works in</b>: blank means {@code SourceGraphic} for the very first primitive and the previous primitive's
+     * result thereafter, per spec. Unlike the effect-chain path, {@code SourceAlpha} and any earlier named {@code result} both resolve here - retaining every result, rather than
+     * only the previous one, is exactly what lets a branching or out-of-order graph work. {@code BackgroundImage} and friends still abort.
      * <p>
-     * Converting here, rather than once for the whole filter, is what makes a per-primitive
-     * {@code color-interpolation-filters} work at all (#108): {@code SourceGraphic} arrives in sRGB, a named result
-     * arrives in whatever space the primitive that produced it declared, and each consumer gets it in its own.
+     * Converting here, rather than once for the whole filter, is what makes a per-primitive {@code color-interpolation-filters} work at all (#108): {@code SourceGraphic} arrives
+     * in sRGB, a named result arrives in whatever space the primitive that produced it declared, and each consumer gets it in its own.
      */
     private FilterRaster resolveInput(String in) {
         return resolve(in).toColorSpace(colorSpace);
@@ -340,8 +324,7 @@ final class SvgFilterRasterPipeline {
     }
 
     /**
-     * Per SVG 1.1, {@code in} is image A (the top layer) and {@code in2} is image B; the result alpha is
-     * {@code qr = 1 - (1-qa)*(1-qb)} for every mode.
+     * Per SVG 1.1, {@code in} is image A (the top layer) and {@code in2} is image B; the result alpha is {@code qr = 1 - (1-qa)*(1-qb)} for every mode.
      */
     private FilterRaster blend(FeBlend blend) {
         FilterRaster top = resolveInput(blend.getIn());
@@ -421,9 +404,8 @@ final class SvgFilterRasterPipeline {
     }
 
     /**
-     * All four types, on non-premultiplied values as the specification defines them - including the full 5x4
-     * {@code matrix} and {@code luminanceToAlpha} forms the effect-chain path has no way to express (it can only
-     * approximate {@code saturate}/{@code hueRotate} through {@code ColorAdjust}).
+     * All four types, on non-premultiplied values as the specification defines them - including the full 5x4 {@code matrix} and {@code luminanceToAlpha} forms the effect-chain
+     * path has no way to express (it can only approximate {@code saturate}/{@code hueRotate} through {@code ColorAdjust}).
      */
     private FilterRaster colorMatrix(FeColorMatrix matrix) {
         FilterRaster in = resolveInput(matrix.getIn());
@@ -439,7 +421,7 @@ final class SvgFilterRasterPipeline {
             for (int row = 0; row < 4; row++) {
                 int base = row * 5;
                 mapped[row] = (float) (m[base] * rgba[0] + m[base + 1] * rgba[1] + m[base + 2] * rgba[2] + m[base + 3] * rgba[3]
-                    + m[base + 4]);
+                                       + m[base + 4]);
             }
             FilterRaster.premultiply(out, i, mapped);
         }
@@ -455,7 +437,8 @@ final class SvgFilterRasterPipeline {
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0.2125, 0.7154, 0.0721, 0, 0 };
+                0.2125, 0.7154, 0.0721, 0, 0
+                };
             case "matrix", "" -> explicitMatrix(matrix.getValues());
             default -> throw new UnsupportedFilterException();
         };
@@ -470,7 +453,8 @@ final class SvgFilterRasterPipeline {
                     1, 0, 0, 0, 0,
                     0, 1, 0, 0, 0,
                     0, 0, 1, 0, 0,
-                    0, 0, 0, 1, 0 };
+                    0, 0, 0, 1, 0
+                };
             }
             throw new UnsupportedFilterException();
         }
@@ -482,7 +466,8 @@ final class SvgFilterRasterPipeline {
             0.213 + 0.787 * s, 0.715 - 0.715 * s, 0.072 - 0.072 * s, 0, 0,
             0.213 - 0.213 * s, 0.715 + 0.285 * s, 0.072 - 0.072 * s, 0, 0,
             0.213 - 0.213 * s, 0.715 - 0.715 * s, 0.072 + 0.928 * s, 0, 0,
-            0, 0, 0, 1, 0 };
+            0, 0, 0, 1, 0
+        };
     }
 
     private static double[] hueRotateMatrix(double degrees) {
@@ -493,14 +478,16 @@ final class SvgFilterRasterPipeline {
             0.213 + cos * 0.787 - sin * 0.213, 0.715 - cos * 0.715 - sin * 0.715, 0.072 - cos * 0.072 + sin * 0.928, 0, 0,
             0.213 - cos * 0.213 + sin * 0.143, 0.715 + cos * 0.285 + sin * 0.140, 0.072 - cos * 0.072 - sin * 0.283, 0, 0,
             0.213 - cos * 0.213 - sin * 0.787, 0.715 - cos * 0.715 + sin * 0.715, 0.072 + cos * 0.928 + sin * 0.072, 0, 0,
-            0, 0, 0, 1, 0 };
+            0, 0, 0, 1, 0
+        };
     }
 
     /** Each channel independently remapped by its own {@code feFunc*}, on non-premultiplied values. */
     private FilterRaster componentTransfer(FeComponentTransfer transfer) {
         FilterRaster in = resolveInput(transfer.getIn());
         ISvgFilterFunction[] functions = {
-            transfer.getFeFuncR(), transfer.getFeFuncG(), transfer.getFeFuncB(), transfer.getFeFuncA() };
+            transfer.getFeFuncR(), transfer.getFeFuncG(), transfer.getFeFuncB(), transfer.getFeFuncA()
+        };
 
         FilterRaster result = in.newLike();
         float[] source = in.getData();
@@ -541,17 +528,15 @@ final class SvgFilterRasterPipeline {
                 return number(function.getSlope(), 1) * value + number(function.getIntercept(), 0);
             case "gamma":
                 return number(function.getAmplitude(), 1) * Math.pow(value, number(function.getExponent(), 1))
-                    + number(function.getOffset(), 0);
+                       + number(function.getOffset(), 0);
             default:
                 return value;
         }
     }
 
     /**
-     * The specification's own prescribed approximation: three successive box blurs with
-     * {@code d = floor(s * 3 * sqrt(2*PI) / 4 + 0.5)}, separable into a horizontal and a vertical pass. An even
-     * {@code d} cannot be centred on a pixel, so - again per spec - the first two passes are offset half a pixel in
-     * opposite directions and the third widened by one.
+     * The specification's own prescribed approximation: three successive box blurs with {@code d = floor(s * 3 * sqrt(2*PI) / 4 + 0.5)}, separable into a horizontal and a vertical
+     * pass. An even {@code d} cannot be centred on a pixel, so - again per spec - the first two passes are offset half a pixel in opposite directions and the third widened by one.
      */
     private FilterRaster gaussianBlur(FeGaussianBlur blur) {
         FilterRaster in = resolveInput(blur.getIn());
@@ -596,8 +581,8 @@ final class SvgFilterRasterPipeline {
     }
 
     /**
-     * One box-blur pass along a single axis, averaging over {@code [-left, +right]} with a sliding window, so cost is
-     * independent of the blur radius. Samples outside the buffer count as fully transparent, per spec.
+     * One box-blur pass along a single axis, averaging over {@code [-left, +right]} with a sliding window, so cost is independent of the blur radius. Samples outside the buffer
+     * count as fully transparent, per spec.
      */
     private FilterRaster boxBlur(FilterRaster in, int left, int right, boolean horizontal) {
         FilterRaster result = in.newLike();
@@ -626,7 +611,7 @@ final class SvgFilterRasterPipeline {
     }
 
     private void accumulate(float[] sums, float[] source, FilterRaster in, int line, int position, int lineLength, boolean horizontal,
-        int sign) {
+                            int sign) {
         if (position < 0 || position >= lineLength) {
             return;
         }

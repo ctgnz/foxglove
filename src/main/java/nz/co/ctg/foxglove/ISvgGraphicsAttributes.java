@@ -1,6 +1,18 @@
 package nz.co.ctg.foxglove;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.List;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.FillRule;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Shape;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,19 +25,6 @@ import nz.co.ctg.foxglove.clip.SvgMaskRenderer;
 import nz.co.ctg.foxglove.filter.SvgFilter;
 import nz.co.ctg.foxglove.filter.SvgFilterRenderer;
 import nz.co.ctg.foxglove.type.SvgPaint;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
-import javafx.scene.Cursor;
-import javafx.scene.Node;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.FillRule;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.Shape;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 public interface ISvgGraphicsAttributes extends ISvgAttributes {
     String GRAPHX_FILL = "fill";
@@ -54,9 +53,8 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     String GRAPHX_STOP_OPACITY = "stop-opacity";
 
     /*
-     * The SVG initial values, which apply when neither the element nor any ancestor specifies the property. Several
-     * differ from the JavaFX defaults - JavaFX starts a stroke SQUARE with a miter limit of 10, where SVG starts it
-     * butt with a limit of 4 - so they are applied explicitly rather than left to the node.
+     * The SVG initial values, which apply when neither the element nor any ancestor specifies the property. Several differ from the JavaFX defaults - JavaFX starts a stroke SQUARE
+     * with a miter limit of 10, where SVG starts it butt with a limit of 4 - so they are applied explicitly rather than left to the node.
      */
     Paint INITIAL_FILL = Color.BLACK;
     double INITIAL_STROKE_WIDTH = 1.0;
@@ -72,9 +70,8 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
-     * The fill this element specifies, or null if it specifies none. Absence matters: it is what lets the value be
-     * inherited from an ancestor, so this deliberately does not substitute the initial value. Initial values are
-     * applied once, at the end of resolution, in {@link #applyGraphicsProperties}.
+     * The fill this element specifies, or null if it specifies none. Absence matters: it is what lets the value be inherited from an ancestor, so this deliberately does not
+     * substitute the initial value. Initial values are applied once, at the end of resolution, in {@link #applyGraphicsProperties}.
      */
     default SvgPaint getFill() {
         return get(GRAPHX_FILL);
@@ -312,7 +309,8 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     /**
      * Applies the resolved paint and stroke properties to a shape, along with the properties that apply to any node.
      *
-     * @param parent the rendering context inherited from the ancestors
+     * @param parent
+     *            the rendering context inherited from the ancestors
      */
     default void applyGraphicsProperties(RenderContext parent, Shape shape) {
         ISvgStylable style = SvgInheritedStyle.resolve(parent, this);
@@ -340,13 +338,11 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
-     * Applies the properties that apply to any node rather than to a shape's geometry, for elements such as
-     * {@code <g>} that render to a container rather than to a {@link Shape}.
+     * Applies the properties that apply to any node rather than to a shape's geometry, for elements such as {@code <g>} that render to a container rather than to a {@link Shape}.
      * <p>
-     * Deliberately does not apply {@code visibility}. A hidden element still takes part in rendering, and a
-     * descendant may set itself visible again - but an invisible JavaFX parent hides its children unconditionally,
-     * so hiding the group node would make that override impossible. Instead {@code visibility} travels down as an
-     * inherited property and each leaf decides for itself.
+     * Deliberately does not apply {@code visibility}. A hidden element still takes part in rendering, and a descendant may set itself visible again - but an invisible JavaFX
+     * parent hides its children unconditionally, so hiding the group node would make that override impossible. Instead {@code visibility} travels down as an inherited property and
+     * each leaf decides for itself.
      */
     default void applyNodeProperties(RenderContext context, Node node) {
         applyOpacity(node);
@@ -354,15 +350,13 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
-     * {@code cursor} is inheritable, so it comes from the resolved style rather than this element's own value alone
-     * - the same reasoning already applied to {@code fill}/{@code stroke}. Left untouched (not even reset to a
-     * default) when nothing resolves, so JavaFX's own cursor inheritance from an ancestor `Node` still applies.
+     * {@code cursor} is inheritable, so it comes from the resolved style rather than this element's own value alone - the same reasoning already applied to
+     * {@code fill}/{@code stroke}. Left untouched (not even reset to a default) when nothing resolves, so JavaFX's own cursor inheritance from an ancestor `Node` still applies.
      * <p>
-     * A resolved cursor also forces {@code mouseTransparent(false)}: a titleless shape (the common case) gets
-     * {@code mouseTransparent(true)} from {@link nz.co.ctg.foxglove.ISvgDescribable#installTooltip}, which excludes
-     * it from all mouse hit-testing, hover included - not just clicks - so without this a shape with its own
-     * {@code cursor} would never actually show it. The same class of fix already applied narrowly to {@code <a>}'s
-     * content, generalised here to any element that resolves a cursor at all.
+     * A resolved cursor also forces {@code mouseTransparent(false)}: a titleless shape (the common case) gets {@code mouseTransparent(true)} from
+     * {@link nz.co.ctg.foxglove.ISvgDescribable#installTooltip}, which excludes it from all mouse hit-testing, hover included - not just clicks - so without this a shape with its
+     * own {@code cursor} would never actually show it. The same class of fix already applied narrowly to {@code <a>}'s content, generalised here to any element that resolves a
+     * cursor at all.
      */
     private static void applyCursor(ISvgStylable style, SvgElementIndex elementIndex, Node node) {
         Cursor cursor = SvgCursorResolver.resolve(style.getCursor(), elementIndex);
@@ -373,17 +367,13 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
-     * Applies this element's own {@code clip-path}, if it resolves to a real {@code <clipPath>}, to {@code node}.
-     * Unlike every other property applied here, {@code clip-path} is not inherited (confirmed absent from
-     * {@link SvgInheritedStyle}'s inherited set), so it is read directly from this element rather than through the
-     * resolved style - consulting the resolved style for it would incorrectly cascade a clip down onto every
-     * descendant instead of applying once, to the element that declares it.
+     * Applies this element's own {@code clip-path}, if it resolves to a real {@code <clipPath>}, to {@code node}. Unlike every other property applied here, {@code clip-path} is
+     * not inherited (confirmed absent from {@link SvgInheritedStyle}'s inherited set), so it is read directly from this element rather than through the resolved style - consulting
+     * the resolved style for it would incorrectly cascade a clip down onto every descendant instead of applying once, to the element that declares it.
      * <p>
-     * Resolving {@code clipPathUnits="objectBoundingBox"} needs {@code node}'s own bounding box, which is only final
-     * once its content and geometry are fully built - callers must invoke this last: after a shape's geometry and
-     * paint are set (the same point paint's own {@code objectBoundingBox} context is built from
-     * {@code shape.getBoundsInLocal()}), or after a container has appended its children, never from
-     * {@link #applyNodeProperties} alone, which some containers call before their content exists.
+     * Resolving {@code clipPathUnits="objectBoundingBox"} needs {@code node}'s own bounding box, which is only final once its content and geometry are fully built - callers must
+     * invoke this last: after a shape's geometry and paint are set (the same point paint's own {@code objectBoundingBox} context is built from {@code shape.getBoundsInLocal()}),
+     * or after a container has appended its children, never from {@link #applyNodeProperties} alone, which some containers call before their content exists.
      */
     default void applyClip(RenderContext context, Node node) {
         SvgElementIndex index = context.getElementIndex();
@@ -396,14 +386,13 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
-     * Applies this element's own {@code filter}, if it resolves to a real {@code <filter>}, to {@code node} - in
-     * place, like {@link #applyClip} (a filter effect and a filter-region clip are both plain node properties, so
-     * unlike {@link #applyMask} there is no need to replace the node). Callers must call this after
-     * {@link #applyClip}: the filter region composes with any existing clip-path clip by further-clipping it (see
-     * {@link SvgFilterRenderer}), which only produces the right intersection once that clip already exists.
+     * Applies this element's own {@code filter}, if it resolves to a real {@code <filter>}, to {@code node} - in place, like {@link #applyClip} (a filter effect and a
+     * filter-region clip are both plain node properties, so unlike {@link #applyMask} there is no need to replace the node). Callers must call this after {@link #applyClip}: the
+     * filter region composes with any existing clip-path clip by further-clipping it (see {@link SvgFilterRenderer}), which only produces the right intersection once that clip
+     * already exists.
      * <p>
-     * Stage 1 of #26: resolves a lone {@code feGaussianBlur} to a {@link javafx.scene.effect.GaussianBlur}; any
-     * other filter shape degrades to no effect rather than throwing or rendering nothing.
+     * Stage 1 of #26: resolves a lone {@code feGaussianBlur} to a {@link javafx.scene.effect.GaussianBlur}; any other filter shape degrades to no effect rather than throwing or
+     * rendering nothing.
      */
     default void applyFilter(RenderContext context, Node node) {
         SvgElementIndex index = context.getElementIndex();
@@ -411,33 +400,32 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
             return;
         }
         String filterRef = get(ISvgPresentationAttributes.PRES_FILTER);
-        index.resolve(filterRef, SvgFilter.class).ifPresent(filter -> SvgFilterRenderer.apply(context, node, filter));
+        index.resolve(filterRef, SvgFilter.class)
+            .ifPresent(filter -> SvgFilterRenderer.apply(context, node, filter));
     }
 
     /**
-     * Records this element's own built {@code node} in {@code context}'s node registry, if one is present - what
-     * {@link SvgGraphic#createAnimatedGraphic} uses to resolve an animation's target element back to the concrete
-     * {@link Node} it needs to animate (#30). A no-op (and effectively free) for the overwhelmingly common case of
-     * a plain {@code createGroup()}/{@code createGraphic()} caller who never asked for a registry.
+     * Records this element's own built {@code node} in {@code context}'s node registry, if one is present - what {@link SvgGraphic#createAnimatedGraphic} uses to resolve an
+     * animation's target element back to the concrete {@link Node} it needs to animate (#30). A no-op (and effectively free) for the overwhelmingly common case of a plain
+     * {@code createGroup()}/{@code createGraphic()} caller who never asked for a registry.
      * <p>
-     * Callers should call this last, once {@code node} is the actual node being returned - after
-     * {@link #applyFilter}, mirroring where that itself is called relative to {@link #applyClip}.
+     * Callers should call this last, once {@code node} is the actual node being returned - after {@link #applyFilter}, mirroring where that itself is called relative to
+     * {@link #applyClip}.
      */
     default void registerNode(RenderContext context, Node node) {
-        context.getNodeRegistry().ifPresent(registry -> {
-            if (this instanceof ISvgElement element) {
-                registry.put(element, node);
-            }
-        });
+        context.getNodeRegistry()
+            .ifPresent(registry -> {
+                if (this instanceof ISvgElement element) {
+                    registry.put(element, node);
+                }
+            });
     }
 
     /**
-     * Applies this element's own {@code mask}, if it resolves to a real {@code <mask>}, substituting a masked
-     * {@link Node} for {@code node} - unlike {@link #applyClip}, which mutates {@code node} in place via
-     * {@code setClip()}, JavaFX has no per-pixel mask analogue, so masking rasterises and replaces the node entirely
-     * (see {@link SvgMaskRenderer}). Callers must call this last, after {@link #applyClip} - masking composites
-     * against the already-clipped rendering - and use the returned {@link Node} rather than assuming {@code node}
-     * itself is still what gets added to the scene graph.
+     * Applies this element's own {@code mask}, if it resolves to a real {@code <mask>}, substituting a masked {@link Node} for {@code node} - unlike {@link #applyClip}, which
+     * mutates {@code node} in place via {@code setClip()}, JavaFX has no per-pixel mask analogue, so masking rasterises and replaces the node entirely (see
+     * {@link SvgMaskRenderer}). Callers must call this last, after {@link #applyClip} - masking composites against the already-clipped rendering - and use the returned
+     * {@link Node} rather than assuming {@code node} itself is still what gets added to the scene graph.
      */
     default Node applyMask(RenderContext context, Node node) {
         SvgElementIndex index = context.getElementIndex();
@@ -451,8 +439,8 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
-     * {@code opacity} is not inherited - it applies to the element that declares it, and on a group it composites
-     * the whole subtree, which is what SVG group opacity means and what JavaFX already does for a {@code Group}.
+     * {@code opacity} is not inherited - it applies to the element that declares it, and on a group it composites the whole subtree, which is what SVG group opacity means and what
+     * JavaFX already does for a {@code Group}.
      */
     private void applyOpacity(Node node) {
         Double opacity = parseOpacity(getOpacity());
@@ -462,8 +450,8 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
-     * {@code visibility} is inherited, so it comes from the resolved style rather than from this element alone.
-     * Unlike {@code display}, a hidden element keeps its place in the scene graph.
+     * {@code visibility} is inherited, so it comes from the resolved style rather than from this element alone. Unlike {@code display}, a hidden element keeps its place in the
+     * scene graph.
      */
     private static void applyVisibility(ISvgStylable style, Node node) {
         String visibility = style.getVisibility();
@@ -473,20 +461,17 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
-     * Applies {@code stroke-dasharray}, leaving the stroke solid for every case the specification says yields no
-     * dashing - all of which JavaFX would otherwise reject outright (#114).
+     * Applies {@code stroke-dasharray}, leaving the stroke solid for every case the specification says yields no dashing - all of which JavaFX would otherwise reject outright
+     * (#114).
      * <p>
-     * JavaFX throws {@code IllegalArgumentException} from deep inside rendering, not from the setter, for a dash
-     * array whose entries are all zero ({@code "dash lengths all zero"}) or that contains a negative
-     * ({@code "negative dash length"}) - verified empirically, since neither is documented. SVG 1.1 treats both as
-     * producing a solid stroke rather than as a rendering failure: a sum of zero is explicitly "rendered as if a
-     * value of none were specified", and a negative value puts the declaration in error, which this library degrades
-     * the same way it degrades every other unsupported or malformed value.
+     * JavaFX throws {@code IllegalArgumentException} from deep inside rendering, not from the setter, for a dash array whose entries are all zero ({@code "dash lengths all zero"})
+     * or that contains a negative ({@code "negative dash length"}) - verified empirically, since neither is documented. SVG 1.1 treats both as producing a solid stroke rather than
+     * as a rendering failure: a sum of zero is explicitly "rendered as if a value of none were specified", and a negative value puts the declaration in error, which this library
+     * degrades the same way it degrades every other unsupported or malformed value.
      * <p>
-     * SVG's other rule here - "if an odd number of values is provided, then the list of values is repeated to yield
-     * an even number" - needs no code: JavaFX already cycles an odd-length array so that dash and gap roles swap on
-     * each pass, which is pixel-for-pixel identical to passing the doubled list (verified by rendering both and
-     * comparing). Doubling it here would be redundant rather than clearer.
+     * SVG's other rule here - "if an odd number of values is provided, then the list of values is repeated to yield an even number" - needs no code: JavaFX already cycles an
+     * odd-length array so that dash and gap roles swap on each pass, which is pixel-for-pixel identical to passing the doubled list (verified by rendering both and comparing).
+     * Doubling it here would be redundant rather than clearer.
      */
     private static void applyStrokeDashArray(List<Double> values, Shape shape) {
         if (values == null || values.isEmpty()) {
@@ -502,12 +487,12 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
         if (total <= 0) {
             return;
         }
-        shape.getStrokeDashArray().addAll(values);
+        shape.getStrokeDashArray()
+            .addAll(values);
     }
 
     /**
-     * JavaFX exposes a fill rule on {@code Path} and {@code SVGPath} only, so {@code fill-rule} cannot be honoured
-     * on a {@code <polygon>} even though SVG defines it there.
+     * JavaFX exposes a fill rule on {@code Path} and {@code SVGPath} only, so {@code fill-rule} cannot be honoured on a {@code <polygon>} even though SVG defines it there.
      */
     private static void applyFillRule(FillRule fillRule, Shape shape) {
         if (fillRule == null) {
@@ -521,9 +506,8 @@ public interface ISvgGraphicsAttributes extends ISvgAttributes {
     }
 
     /**
-     * Folds {@code fill-opacity} or {@code stroke-opacity} into the paint, which is where JavaFX carries alpha. The
-     * value multiplies any alpha the colour already has, per the specification. A gradient or pattern is returned
-     * unchanged, as only a {@code Color} exposes a derivable opacity.
+     * Folds {@code fill-opacity} or {@code stroke-opacity} into the paint, which is where JavaFX carries alpha. The value multiplies any alpha the colour already has, per the
+     * specification. A gradient or pattern is returned unchanged, as only a {@code Color} exposes a derivable opacity.
      */
     private static Paint withOpacity(Paint paint, String opacity) {
         Double alpha = parseOpacity(opacity);

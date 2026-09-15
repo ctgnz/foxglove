@@ -1,5 +1,12 @@
 package nz.co.ctg.foxglove;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,13 +22,6 @@ import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.text.SvgText;
 import nz.co.ctg.foxglove.text.SvgTextSpan;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-
 public class SvgElementIndexTest {
 
     private SvgGraphic svg;
@@ -35,25 +35,32 @@ public class SvgElementIndexTest {
 
     @Test
     public void testParseFragmentReference() throws Exception {
-        assertThat(SvgElementIndex.parseReference("#grad").get(), is("grad"));
+        assertThat(SvgElementIndex.parseReference("#grad")
+            .get(), is("grad"));
     }
 
     @Test
     public void testParseUrlReference() throws Exception {
-        assertThat(SvgElementIndex.parseReference("url(#grad)").get(), is("grad"));
-        assertThat(SvgElementIndex.parseReference("url( #grad )").get(), is("grad"));
-        assertThat(SvgElementIndex.parseReference("  url(#grad)  ").get(), is("grad"));
+        assertThat(SvgElementIndex.parseReference("url(#grad)")
+            .get(), is("grad"));
+        assertThat(SvgElementIndex.parseReference("url( #grad )")
+            .get(), is("grad"));
+        assertThat(SvgElementIndex.parseReference("  url(#grad)  ")
+            .get(), is("grad"));
     }
 
     @Test
     public void testParseQuotedUrlReference() throws Exception {
-        assertThat(SvgElementIndex.parseReference("url('#grad')").get(), is("grad"));
-        assertThat(SvgElementIndex.parseReference("url(\"#grad\")").get(), is("grad"));
+        assertThat(SvgElementIndex.parseReference("url('#grad')")
+            .get(), is("grad"));
+        assertThat(SvgElementIndex.parseReference("url(\"#grad\")")
+            .get(), is("grad"));
     }
 
     @Test
     public void testParseUrlKeywordIsCaseInsensitive() throws Exception {
-        assertThat(SvgElementIndex.parseReference("URL(#grad)").get(), is("grad"));
+        assertThat(SvgElementIndex.parseReference("URL(#grad)")
+            .get(), is("grad"));
     }
 
     /**
@@ -61,7 +68,8 @@ public class SvgElementIndexTest {
      */
     @Test
     public void testParseReferencePreservesIdCase() throws Exception {
-        assertThat(SvgElementIndex.parseReference("url(#Grad1)").get(), is("Grad1"));
+        assertThat(SvgElementIndex.parseReference("url(#Grad1)")
+            .get(), is("Grad1"));
     }
 
     /**
@@ -69,7 +77,8 @@ public class SvgElementIndexTest {
      */
     @Test
     public void testParseReferenceIgnoresPaintFallback() throws Exception {
-        assertThat(SvgElementIndex.parseReference("url(#grad) red").get(), is("grad"));
+        assertThat(SvgElementIndex.parseReference("url(#grad) red")
+            .get(), is("grad"));
     }
 
     @Test
@@ -96,11 +105,17 @@ public class SvgElementIndexTest {
     public void testResolvesElementInDefs() throws Exception {
         SvgLinearGradient gradient = gradient("grad");
         SvgDefinitions defs = new SvgDefinitions();
-        defs.getContent().add(gradient);
-        svg.getContent().add(defs);
+        defs.getContent()
+            .add(gradient);
+        svg.getContent()
+            .add(defs);
 
-        assertThat(svg.getElementIndex().resolve("url(#grad)").get(), is(sameInstance((ISvgElement) gradient)));
-        assertThat(svg.getElementIndex().resolve("#grad").get(), is(sameInstance((ISvgElement) gradient)));
+        assertThat(svg.getElementIndex()
+            .resolve("url(#grad)")
+            .get(), is(sameInstance((ISvgElement) gradient)));
+        assertThat(svg.getElementIndex()
+            .resolve("#grad")
+            .get(), is(sameInstance((ISvgElement) gradient)));
     }
 
     @Test
@@ -108,12 +123,17 @@ public class SvgElementIndexTest {
         SvgRectangle rect = new SvgRectangle();
         rect.setId("inner");
         SvgGroup inner = new SvgGroup();
-        inner.getContent().add(rect);
+        inner.getContent()
+            .add(rect);
         SvgGroup outer = new SvgGroup();
-        outer.getContent().add(inner);
-        svg.getContent().add(outer);
+        outer.getContent()
+            .add(inner);
+        svg.getContent()
+            .add(outer);
 
-        assertThat(svg.getElementIndex().resolve("#inner").get(), is(sameInstance((ISvgElement) rect)));
+        assertThat(svg.getElementIndex()
+            .resolve("#inner")
+            .get(), is(sameInstance((ISvgElement) rect)));
     }
 
     @Test
@@ -121,64 +141,82 @@ public class SvgElementIndexTest {
         SvgCircle circle = new SvgCircle();
         circle.setId("dot");
         SvgGraphic nested = new SvgGraphic();
-        nested.getContent().add(circle);
-        svg.getContent().add(nested);
+        nested.getContent()
+            .add(circle);
+        svg.getContent()
+            .add(nested);
 
-        assertThat(svg.getElementIndex().resolve("#dot").get(), is(sameInstance((ISvgElement) circle)));
+        assertThat(svg.getElementIndex()
+            .resolve("#dot")
+            .get(), is(sameInstance((ISvgElement) circle)));
     }
 
     /**
-     * {@code SvgText} holds mixed character data and elements in a {@code List<Object>}, which the walk has to handle
-     * alongside the uniformly typed content lists everywhere else.
+     * {@code SvgText} holds mixed character data and elements in a {@code List<Object>}, which the walk has to handle alongside the uniformly typed content lists everywhere else.
      */
     @Test
     public void testResolvesElementInMixedTextContent() throws Exception {
         SvgTextSpan span = new SvgTextSpan();
         span.setId("span1");
         SvgText text = new SvgText();
-        text.getContent().add("Hello ");
-        text.getContent().add(span);
-        svg.getContent().add(text);
+        text.getContent()
+            .add("Hello ");
+        text.getContent()
+            .add(span);
+        svg.getContent()
+            .add(text);
 
-        assertThat(svg.getElementIndex().resolve("#span1").get(), is(sameInstance((ISvgElement) span)));
+        assertThat(svg.getElementIndex()
+            .resolve("#span1")
+            .get(), is(sameInstance((ISvgElement) span)));
     }
 
     @Test
     public void testIndexesTheRootElement() throws Exception {
         svg.setId("root");
-        assertThat(svg.getElementIndex().resolve("#root").get(), is(sameInstance((ISvgElement) svg)));
+        assertThat(svg.getElementIndex()
+            .resolve("#root")
+            .get(), is(sameInstance((ISvgElement) svg)));
     }
 
     @Test
     public void testElementsWithoutAnIdAreNotIndexed() throws Exception {
-        svg.getContent().add(new SvgRectangle());
-        assertThat(svg.getElementIndex().size(), is(0));
+        svg.getContent()
+            .add(new SvgRectangle());
+        assertThat(svg.getElementIndex()
+            .size(), is(0));
     }
 
     @Test
     public void testUnknownReferenceResolvesToEmpty() throws Exception {
-        svg.getContent().add(gradient("grad"));
-        assertThat(svg.getElementIndex().resolve("#nosuch"), is(Optional.empty()));
+        svg.getContent()
+            .add(gradient("grad"));
+        assertThat(svg.getElementIndex()
+            .resolve("#nosuch"), is(Optional.empty()));
     }
 
     /**
-     * A reference may name an element declared later in the document, so the whole tree is walked before any lookup
-     * is served.
+     * A reference may name an element declared later in the document, so the whole tree is walked before any lookup is served.
      */
     @Test
     public void testForwardReferenceResolves() throws Exception {
         SvgUse use = new SvgUse();
         use.setId("user");
         use.setXlinkHref("#later");
-        svg.getContent().add(use);
+        svg.getContent()
+            .add(use);
 
         SvgRectangle target = new SvgRectangle();
         target.setId("later");
         SvgDefinitions defs = new SvgDefinitions();
-        defs.getContent().add(target);
-        svg.getContent().add(defs);
+        defs.getContent()
+            .add(target);
+        svg.getContent()
+            .add(defs);
 
-        assertThat(svg.getElementIndex().resolve(use.getXlinkHref()).get(), is(sameInstance((ISvgElement) target)));
+        assertThat(svg.getElementIndex()
+            .resolve(use.getXlinkHref())
+            .get(), is(sameInstance((ISvgElement) target)));
     }
 
     // --- typed lookup ------------------------------------------------------
@@ -186,23 +224,27 @@ public class SvgElementIndexTest {
     @Test
     public void testTypedResolveReturnsMatchingElement() throws Exception {
         SvgLinearGradient gradient = gradient("grad");
-        svg.getContent().add(gradient);
+        svg.getContent()
+            .add(gradient);
 
-        assertThat(svg.getElementIndex().resolve("url(#grad)", SvgLinearGradient.class).get(), is(sameInstance(gradient)));
+        assertThat(svg.getElementIndex()
+            .resolve("url(#grad)", SvgLinearGradient.class)
+            .get(), is(sameInstance(gradient)));
     }
 
     @Test
     public void testTypedResolveRejectsWrongType() throws Exception {
-        svg.getContent().add(gradient("grad"));
+        svg.getContent()
+            .add(gradient("grad"));
 
-        assertThat(svg.getElementIndex().resolve("url(#grad)", SvgRectangle.class), is(Optional.empty()));
+        assertThat(svg.getElementIndex()
+            .resolve("url(#grad)", SvgRectangle.class), is(Optional.empty()));
     }
 
     // --- duplicate ids -----------------------------------------------------
 
     /**
-     * A duplicate id makes the document invalid and the specification leaves the outcome undefined; the first element
-     * in document order wins, and the id is reported.
+     * A duplicate id makes the document invalid and the specification leaves the outcome undefined; the first element in document order wins, and the id is reported.
      */
     @Test
     public void testDuplicateIdKeepsTheFirstElement() throws Exception {
@@ -210,20 +252,26 @@ public class SvgElementIndexTest {
         first.setId("dup");
         SvgRectangle second = new SvgRectangle();
         second.setId("dup");
-        svg.getContent().add(first);
-        svg.getContent().add(second);
+        svg.getContent()
+            .add(first);
+        svg.getContent()
+            .add(second);
 
         SvgElementIndex index = svg.getElementIndex();
-        assertThat(index.resolve("#dup").get(), is(sameInstance((ISvgElement) first)));
+        assertThat(index.resolve("#dup")
+            .get(), is(sameInstance((ISvgElement) first)));
         assertThat(index.getDuplicateIds(), contains("dup"));
     }
 
     @Test
     public void testWellFormedDocumentReportsNoDuplicates() throws Exception {
-        svg.getContent().add(gradient("a"));
-        svg.getContent().add(gradient("b"));
+        svg.getContent()
+            .add(gradient("a"));
+        svg.getContent()
+            .add(gradient("b"));
 
-        assertThat(svg.getElementIndex().getDuplicateIds(), is(empty()));
+        assertThat(svg.getElementIndex()
+            .getDuplicateIds(), is(empty()));
     }
 
     // --- reference chains and cycles ---------------------------------------
@@ -235,9 +283,12 @@ public class SvgElementIndexTest {
         middle.setXlinkHref("#base");
         SvgLinearGradient top = gradient("top");
         top.setXlinkHref("#middle");
-        svg.getContent().add(base);
-        svg.getContent().add(middle);
-        svg.getContent().add(top);
+        svg.getContent()
+            .add(base);
+        svg.getContent()
+            .add(middle);
+        svg.getContent()
+            .add(top);
 
         List<SvgLinearGradient> chain = svg.getElementIndex()
             .resolveChain(top, SvgLinearGradient::getXlinkHref, SvgLinearGradient.class);
@@ -247,9 +298,11 @@ public class SvgElementIndexTest {
     @Test
     public void testResolveChainStopsAtAnUnreferencedElement() throws Exception {
         SvgLinearGradient only = gradient("only");
-        svg.getContent().add(only);
+        svg.getContent()
+            .add(only);
 
-        assertThat(svg.getElementIndex().resolveChain(only, SvgLinearGradient::getXlinkHref, SvgLinearGradient.class),
+        assertThat(svg.getElementIndex()
+            .resolveChain(only, SvgLinearGradient::getXlinkHref, SvgLinearGradient.class),
             contains(only));
     }
 
@@ -262,8 +315,10 @@ public class SvgElementIndexTest {
         SvgLinearGradient b = gradient("b");
         a.setXlinkHref("#b");
         b.setXlinkHref("#a");
-        svg.getContent().add(a);
-        svg.getContent().add(b);
+        svg.getContent()
+            .add(a);
+        svg.getContent()
+            .add(b);
 
         List<SvgLinearGradient> chain = svg.getElementIndex()
             .resolveChain(a, SvgLinearGradient::getXlinkHref, SvgLinearGradient.class);
@@ -274,9 +329,11 @@ public class SvgElementIndexTest {
     public void testResolveChainTerminatesOnSelfReference() throws Exception {
         SvgLinearGradient self = gradient("self");
         self.setXlinkHref("#self");
-        svg.getContent().add(self);
+        svg.getContent()
+            .add(self);
 
-        assertThat(svg.getElementIndex().resolveChain(self, SvgLinearGradient::getXlinkHref, SvgLinearGradient.class),
+        assertThat(svg.getElementIndex()
+            .resolveChain(self, SvgLinearGradient::getXlinkHref, SvgLinearGradient.class),
             hasSize(1));
     }
 
@@ -288,18 +345,21 @@ public class SvgElementIndexTest {
         rect.setId("r");
         SvgGroup group = new SvgGroup();
         group.setId("g");
-        group.getContent().add(rect);
-        svg.getContent().add(group);
+        group.getContent()
+            .add(rect);
+        svg.getContent()
+            .add(group);
 
         SvgElementIndex index = svg.getElementIndex();
-        assertThat(index.getParent(rect).get(), is(sameInstance((ISvgElement) group)));
-        assertThat(index.getParent(group).get(), is(sameInstance((ISvgElement) svg)));
+        assertThat(index.getParent(rect)
+            .get(), is(sameInstance((ISvgElement) group)));
+        assertThat(index.getParent(group)
+            .get(), is(sameInstance((ISvgElement) svg)));
         assertThat(index.getParent(svg), is(Optional.empty()));
     }
 
     /**
-     * A {@code <use>} referencing one of its own ancestors would expand forever, so the referrer needs to be able to
-     * detect it before following the reference.
+     * A {@code <use>} referencing one of its own ancestors would expand forever, so the referrer needs to be able to detect it before following the reference.
      */
     @Test
     public void testDetectsUseReferencingAnAncestor() throws Exception {
@@ -307,11 +367,14 @@ public class SvgElementIndexTest {
         use.setXlinkHref("#outer");
         SvgGroup outer = new SvgGroup();
         outer.setId("outer");
-        outer.getContent().add(use);
-        svg.getContent().add(outer);
+        outer.getContent()
+            .add(use);
+        svg.getContent()
+            .add(outer);
 
         SvgElementIndex index = svg.getElementIndex();
-        ISvgElement target = index.resolve(use.getXlinkHref()).get();
+        ISvgElement target = index.resolve(use.getXlinkHref())
+            .get();
         assertThat(index.isSelfOrAncestor(target, use), is(true));
     }
 
@@ -321,18 +384,21 @@ public class SvgElementIndexTest {
         use.setXlinkHref("#sibling");
         SvgRectangle sibling = new SvgRectangle();
         sibling.setId("sibling");
-        svg.getContent().add(use);
-        svg.getContent().add(sibling);
+        svg.getContent()
+            .add(use);
+        svg.getContent()
+            .add(sibling);
 
         SvgElementIndex index = svg.getElementIndex();
-        assertThat(index.isSelfOrAncestor(index.resolve(use.getXlinkHref()).get(), use), is(false));
+        assertThat(index.isSelfOrAncestor(index.resolve(use.getXlinkHref())
+            .get(), use), is(false));
     }
 
     // --- elements by type (#30) ---------------------------------------------
 
     /**
-     * Needed to find every animation element in a document (#30) - most have no reason to declare an {@code id} at
-     * all, so {@link SvgElementIndex#resolve} alone could never find them.
+     * Needed to find every animation element in a document (#30) - most have no reason to declare an {@code id} at all, so {@link SvgElementIndex#resolve} alone could never find
+     * them.
      */
     @Test
     public void testGetElementsOfTypeFindsEveryMatchingElementRegardlessOfId() throws Exception {
@@ -340,34 +406,42 @@ public class SvgElementIndexTest {
         nz.co.ctg.foxglove.animate.SvgAnimateAttribute withId = new nz.co.ctg.foxglove.animate.SvgAnimateAttribute();
         withId.setId("anim");
         SvgRectangle rect = new SvgRectangle();
-        rect.getContent().add(idLess);
-        rect.getContent().add(withId);
-        svg.getContent().add(rect);
+        rect.getContent()
+            .add(idLess);
+        rect.getContent()
+            .add(withId);
+        svg.getContent()
+            .add(rect);
 
-        List<nz.co.ctg.foxglove.animate.SvgAnimateAttribute> found =
-            svg.getElementIndex().getElementsOfType(nz.co.ctg.foxglove.animate.SvgAnimateAttribute.class);
+        List<nz.co.ctg.foxglove.animate.SvgAnimateAttribute> found = svg.getElementIndex()
+            .getElementsOfType(nz.co.ctg.foxglove.animate.SvgAnimateAttribute.class);
         assertThat(found, contains(idLess, withId));
     }
 
     @Test
     public void testGetElementsOfTypeFindsNothingWhenNoneMatch() throws Exception {
-        svg.getContent().add(new SvgRectangle());
-        assertThat(svg.getElementIndex().getElementsOfType(nz.co.ctg.foxglove.animate.SvgAnimateAttribute.class), is(empty()));
+        svg.getContent()
+            .add(new SvgRectangle());
+        assertThat(svg.getElementIndex()
+            .getElementsOfType(nz.co.ctg.foxglove.animate.SvgAnimateAttribute.class), is(empty()));
     }
 
     // --- caching -----------------------------------------------------------
 
     @Test
     public void testIndexIsCachedUntilRebuilt() throws Exception {
-        svg.getContent().add(gradient("first"));
+        svg.getContent()
+            .add(gradient("first"));
         SvgElementIndex original = svg.getElementIndex();
         assertThat(svg.getElementIndex(), is(sameInstance(original)));
 
-        svg.getContent().add(gradient("second"));
+        svg.getContent()
+            .add(gradient("second"));
         assertThat(original.resolve("#second"), is(Optional.empty()));
 
         SvgElementIndex rebuilt = svg.rebuildElementIndex();
-        assertThat(rebuilt.resolve("#second").isPresent(), is(true));
+        assertThat(rebuilt.resolve("#second")
+            .isPresent(), is(true));
         assertThat(svg.getElementIndex(), is(sameInstance(rebuilt)));
     }
 

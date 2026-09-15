@@ -2,6 +2,7 @@ package nz.co.ctg.foxglove.shape;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.shape.Rectangle;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -24,20 +25,17 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import javafx.scene.shape.Rectangle;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "rect", propOrder = {
     "content"
 })
 @XmlRootElement(name = "rect")
-public class SvgRectangle extends AbstractSvgShape<Rectangle> implements ISvgBounded {
+public final class SvgRectangle extends AbstractSvgShape<Rectangle> implements ISvgBounded {
 
     /**
-     * Boxed, not a primitive {@code double} - {@code null} (attribute absent) must be distinguishable from an
-     * explicit {@code 0}, since SVG's own defaulting rule ("if only one of {@code rx}/{@code ry} is specified, the
-     * other defaults to the same value") depends on knowing which case this is, not just what the numeric value is.
+     * Boxed, not a primitive {@code double} - {@code null} (attribute absent) must be distinguishable from an explicit {@code 0}, since SVG's own defaulting rule ("if only one of
+     * {@code rx}/{@code ry} is specified, the other defaults to the same value") depends on knowing which case this is, not just what the numeric value is.
      */
     @XmlAttribute(name = "rx")
     private Double radiusX;

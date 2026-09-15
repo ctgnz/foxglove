@@ -1,18 +1,6 @@
 package nz.co.ctg.foxglove.filter;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.ISvgElement;
-import nz.co.ctg.foxglove.JavaFxTestSupport;
-import nz.co.ctg.foxglove.RenderContext;
-import nz.co.ctg.foxglove.SvgGraphic;
-import nz.co.ctg.foxglove.clip.SvgClipPath;
-import nz.co.ctg.foxglove.shape.SvgCircle;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-
 import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -36,20 +24,27 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.ImageInput;
 import javafx.scene.paint.Color;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.ISvgElement;
+import nz.co.ctg.foxglove.JavaFxTestSupport;
+import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.clip.SvgClipPath;
+import nz.co.ctg.foxglove.shape.SvgCircle;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+
 /**
- * Exercises #26/#76's acceptance criteria: {@code filter="url(#id)"} resolves and applies, a lone
- * {@code feGaussianBlur} renders with the correct blur radius, {@code filterUnits}/{@code primitiveUnits} resolve, and
- * a chain of directly-mappable primitives builds the equivalent JavaFX effect chain.
+ * Exercises #26/#76's acceptance criteria: {@code filter="url(#id)"} resolves and applies, a lone {@code feGaussianBlur} renders with the correct blur radius,
+ * {@code filterUnits}/{@code primitiveUnits} resolve, and a chain of directly-mappable primitives builds the equivalent JavaFX effect chain.
  * <p>
- * Since #77 there is a second path behind this one, so the interesting assertion for anything the chain cannot express
- * is no longer "no effect at all" but "not <i>this</i> path" - the filter is handed to
- * {@link SvgFilterRasterPipeline}, which {@link SvgFilterRasterPipelineTest} covers on its own terms. What stays an
- * outright degrade is narrower: a filter with no primitives, and a genuine authoring error such as an {@code in} that
- * names a {@code result} no primitive ever declared.
+ * Since #77 there is a second path behind this one, so the interesting assertion for anything the chain cannot express is no longer "no effect at all" but "not <i>this</i> path" -
+ * the filter is handed to {@link SvgFilterRasterPipeline}, which {@link SvgFilterRasterPipelineTest} covers on its own terms. What stays an outright degrade is narrower: a filter
+ * with no primitives, and a genuine authoring error such as an {@code in} that names a {@code result} no primitive ever declared.
  * <p>
- * Every test renders on the JavaFX Application Thread. That matters for the degrade assertions specifically: off it,
- * the raster path cannot snapshot and so cannot engage at all, which would leave those tests passing while proving
- * nothing about which path ran.
+ * Every test renders on the JavaFX Application Thread. That matters for the degrade assertions specifically: off it, the raster path cannot snapshot and so cannot engage at all,
+ * which would leave those tests passing while proving nothing about which path ran.
  */
 public class SvgFilterRenderingTest {
 
@@ -110,7 +105,8 @@ public class SvgFilterRenderingTest {
 
         Node node = render(rect, filter);
         assertThat(node.getClip(), notNullValue());
-        Bounds clipBounds = node.getClip().getBoundsInLocal();
+        Bounds clipBounds = node.getClip()
+            .getBoundsInLocal();
         assertThat(clipBounds.getWidth(), closeTo(50, 1e-9));
         assertThat(clipBounds.getHeight(), closeTo(100, 1e-9));
     }
@@ -119,10 +115,14 @@ public class SvgFilterRenderingTest {
     public void testFilterRegionNestsWithAnExistingClipPathClip() throws Exception {
         SvgClipPath clipPath = new SvgClipPath();
         clipPath.setId("clip");
-        clipPath.getContent().add(new SvgCircle());
-        ((SvgCircle) clipPath.getContent().get(0)).setRadius(40);
-        ((SvgCircle) clipPath.getContent().get(0)).setCentreX(50);
-        ((SvgCircle) clipPath.getContent().get(0)).setCentreY(50);
+        clipPath.getContent()
+            .add(new SvgCircle());
+        ((SvgCircle) clipPath.getContent()
+            .get(0)).setRadius(40);
+        ((SvgCircle) clipPath.getContent()
+            .get(0)).setCentreX(50);
+        ((SvgCircle) clipPath.getContent()
+            .get(0)).setCentreY(50);
 
         SvgFilter filter = filterOf(blur("1"));
         filter.setId("f");
@@ -137,14 +137,17 @@ public class SvgFilterRenderingTest {
 
         Node node = onFxThread(() -> {
             SvgGraphic svg = new SvgGraphic();
-            svg.getContent().add(clipPath);
-            svg.getContent().add(filter);
+            svg.getContent()
+                .add(clipPath);
+            svg.getContent()
+                .add(filter);
             return rect.createGraphic(RenderContext.root(svg.getElementIndex(), 0, 0));
         });
 
         assertThat(node.getClip(), notNullValue());
         // the clip-path clip itself now has a further clip (the filter region) - both narrow the visible area
-        assertThat(node.getClip().getClip(), notNullValue());
+        assertThat(node.getClip()
+            .getClip(), notNullValue());
     }
 
     @Test
@@ -314,8 +317,10 @@ public class SvgFilterRenderingTest {
         sourceNode.setIn("SourceGraphic");
         FeMergeNode blurredNode = new FeMergeNode();
         blurredNode.setIn("blurred");
-        merge.getFeMergeNode().add(sourceNode);
-        merge.getFeMergeNode().add(blurredNode);
+        merge.getFeMergeNode()
+            .add(sourceNode);
+        merge.getFeMergeNode()
+            .add(blurredNode);
         SvgFilter filter = filterOf(blur, merge);
         filter.setId("f");
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
@@ -333,7 +338,8 @@ public class SvgFilterRenderingTest {
         FeMerge merge = new FeMerge();
         FeMergeNode onlyNode = new FeMergeNode();
         onlyNode.setIn("SourceGraphic");
-        merge.getFeMergeNode().add(onlyNode);
+        merge.getFeMergeNode()
+            .add(onlyNode);
         SvgFilter filter = filterOf(merge);
         filter.setId("f");
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
@@ -344,19 +350,19 @@ public class SvgFilterRenderingTest {
     // --- which path a filter takes (#126) --------------------------------
 
     /**
-     * The change itself. This filter is perfectly effect-expressible, but declares no colour space - so it defaults
-     * to linearRGB, which JavaFX effects cannot work in, and it goes to the raster pipeline instead.
+     * The change itself. This filter is perfectly effect-expressible, but declares no colour space - so it defaults to linearRGB, which JavaFX effects cannot work in, and it goes
+     * to the raster pipeline instead.
      * <p>
-     * Note this is the <i>common</i> case, not the exotic one: exactly one document in the whole W3C suite mentions
-     * {@code color-interpolation-filters} at all, so in practice the chain now runs only where a document asks for
-     * it. That was a deliberate trade, measured on #126 - the chain is more crisp under magnification, the raster
-     * pipeline measurably more accurate.
+     * Note this is the <i>common</i> case, not the exotic one: exactly one document in the whole W3C suite mentions {@code color-interpolation-filters} at all, so in practice the
+     * chain now runs only where a document asks for it. That was a deliberate trade, measured on #126 - the chain is more crisp under magnification, the raster pipeline measurably
+     * more accurate.
      */
     @Test
     public void testAnEffectExpressibleFilterWithNoColourSpaceGoesToRaster() throws Exception {
         SvgFilter filter = new SvgFilter(); // deliberately not the srgbFilter() helper
         filter.setId("f");
-        filter.getContent().add(blur("5"));
+        filter.getContent()
+            .add(blur("5"));
         SvgRectangle rect = rect(0, 0, 100, 100, "url(#f)");
 
         assertThat(render(rect, filter).getEffect(), instanceOf(ImageInput.class));
@@ -384,12 +390,10 @@ public class SvgFilterRenderingTest {
     }
 
     /**
-     * The actual acceptance criterion: the two paths agree about the same document. Counterpart to #107's
-     * cross-path test, and the thing that was untrue before #126 - the identical filter rendered differently
-     * depending on which path happened to take it.
+     * The actual acceptance criterion: the two paths agree about the same document. Counterpart to #107's cross-path test, and the thing that was untrue before #126 - the
+     * identical filter rendered differently depending on which path happened to take it.
      * <p>
-     * Uses a flood, whose colour is fixed rather than interpolated, so the comparison is about the paths agreeing
-     * rather than about either one's blending arithmetic.
+     * Uses a flood, whose colour is fixed rather than interpolated, so the comparison is about the paths agreeing rather than about either one's blending arithmetic.
      */
     @Test
     public void testBothPathsAgreeOnTheSameDocument() throws Exception {
@@ -404,18 +408,18 @@ public class SvgFilterRenderingTest {
         if (effectChain) {
             filter.setColorInterpolationFilters("sRGB");
         }
-        filter.getContent().add(flood);
+        filter.getContent()
+            .add(flood);
         return renderedColourAt(filter, 25, 25);
     }
 
     // --- feBlend operand order (#107) ------------------------------------
 
     /**
-     * The assertions above say which slot each input landed in; this says what it actually looks like, which is the
-     * only way to catch the two being swapped.
+     * The assertions above say which slot each input landed in; this says what it actually looks like, which is the only way to catch the two being swapped.
      * <p>
-     * Both inputs are fully opaque and cover the sampled point, so under {@code normal} the top layer wins outright:
-     * red if {@code in} is the top (correct), blue if the operands are reversed. There is no tolerance to hide in.
+     * Both inputs are fully opaque and cover the sampled point, so under {@code normal} the top layer wins outright: red if {@code in} is the top (correct), blue if the operands
+     * are reversed. There is no tolerance to hide in.
      */
     @Test
     public void testFeBlendNormalPutsInOnTopOfIn2() throws Exception {
@@ -432,9 +436,8 @@ public class SvgFilterRenderingTest {
     }
 
     /**
-     * The same document down the raster pipeline instead, forced by a no-op {@code feOffset} the effect chain cannot
-     * express (#77). The two paths disagreeing on identical input was the real damage here: which one a document got
-     * depended on whether something unrelated elsewhere in the filter happened to be effect-expressible.
+     * The same document down the raster pipeline instead, forced by a no-op {@code feOffset} the effect chain cannot express (#77). The two paths disagreeing on identical input
+     * was the real damage here: which one a document got depended on whether something unrelated elsewhere in the filter happened to be effect-expressible.
      */
     @Test
     public void testTheRasterPipelineAgreesAboutWhichInputIsOnTop() throws Exception {
@@ -457,8 +460,8 @@ public class SvgFilterRenderingTest {
     }
 
     /**
-     * Renders an opaque blue 50x50 rectangle through {@code filter} and samples the result, so the assertion is
-     * about pixels rather than about which JavaFX object ended up in which property.
+     * Renders an opaque blue 50x50 rectangle through {@code filter} and samples the result, so the assertion is about pixels rather than about which JavaFX object ended up in
+     * which property.
      */
     private static Color renderedColourAt(SvgFilter filter, int x, int y) throws Exception {
         filter.setId("f");
@@ -473,14 +476,17 @@ public class SvgFilterRenderingTest {
 
         return onFxThread(() -> {
             SvgGraphic svg = new SvgGraphic();
-            svg.getContent().add(filter);
+            svg.getContent()
+                .add(filter);
             Node node = rect.createGraphic(RenderContext.root(svg.getElementIndex(), 0, 0));
             Group root = new Group(node);
             new Scene(root);
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
             params.setViewport(new Rectangle2D(0, 0, 100, 100));
-            return root.snapshot(params, null).getPixelReader().getColor(x, y);
+            return root.snapshot(params, null)
+                .getPixelReader()
+                .getColor(x, y);
         });
     }
 
@@ -497,15 +503,15 @@ public class SvgFilterRenderingTest {
     }
 
     /**
-     * Every filter here declares {@code color-interpolation-filters="sRGB"}, because since #126 that is what the
-     * effect chain requires: SVG's default is linearRGB, which JavaFX effects cannot work in, so an undeclared
-     * filter goes to the raster pipeline. The tests in this class are about the chain builder, so they opt in.
+     * Every filter here declares {@code color-interpolation-filters="sRGB"}, because since #126 that is what the effect chain requires: SVG's default is linearRGB, which JavaFX
+     * effects cannot work in, so an undeclared filter goes to the raster pipeline. The tests in this class are about the chain builder, so they opt in.
      * {@link #testAnEffectExpressibleFilterWithNoColourSpaceGoesToRaster} covers the other side deliberately.
      */
     private static SvgFilter filterOf(ISvgElement... primitives) {
         SvgFilter filter = srgbFilter();
         for (ISvgElement primitive : primitives) {
-            filter.getContent().add(primitive);
+            filter.getContent()
+                .add(primitive);
         }
         return filter;
     }
@@ -525,7 +531,8 @@ public class SvgFilterRenderingTest {
     private static Node render(SvgRectangle rect, SvgFilter filter) throws Exception {
         return onFxThread(() -> {
             SvgGraphic svg = new SvgGraphic();
-            svg.getContent().add(filter);
+            svg.getContent()
+                .add(filter);
             RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
             return rect.createGraphic(context);
         });

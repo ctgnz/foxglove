@@ -47,17 +47,15 @@ import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
-
+/**
+ * Never rendered directly - its content exists only to be referenced by id, most commonly from a {@code <use>}. Deliberately does not implement
+ * {@link nz.co.ctg.foxglove.FxGraphic}, so it is excluded from a container's {@link nz.co.ctg.foxglove.ISvgContainer#appendContent} the same way {@code <symbol>} is, while its
+ * content is still walked and indexed by {@link nz.co.ctg.foxglove.SvgElementIndex}.
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
 })
-/**
- * Never rendered directly - its content exists only to be referenced by id, most commonly from a {@code <use>}.
- * Deliberately does not implement {@link nz.co.ctg.foxglove.FxGraphic}, so it is excluded from a container's
- * {@link nz.co.ctg.foxglove.ISvgContainer#appendContent} the same way {@code <symbol>} is, while its content is
- * still walked and indexed by {@link nz.co.ctg.foxglove.SvgElementIndex}.
- */
 @XmlRootElement(name = "defs")
 public class SvgDefinitions extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgConditionalFeatures, ISvgExternalResources, ISvgTransformable {
 

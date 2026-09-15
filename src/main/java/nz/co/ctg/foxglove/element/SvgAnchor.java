@@ -2,6 +2,10 @@ package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -53,20 +57,13 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javafx.scene.Cursor;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
 })
 @XmlRootElement(name = "a")
-public class SvgAnchor extends AbstractSvgStylable
-    implements ISvgStructuralElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgEventListener, ISvgTransformable,
-    ISvgContainer, FxGraphic<Group> {
+public class SvgAnchor extends AbstractSvgStylable implements ISvgStructuralElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgEventListener, ISvgTransformable, ISvgContainer, FxGraphic<Group> {
 
     @XmlAttribute(name = "target")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -133,12 +130,10 @@ public class SvgAnchor extends AbstractSvgStylable
     }
 
     /**
-     * Renders this element's content exactly as {@code <g>} would, then makes it activatable: content is always
-     * made clickable (see {@link #clearMouseTransparency}), and if an activation handler is registered
-     * ({@link RenderContext#getAnchorActivationHandler}), a hand cursor is shown and clicking anywhere in the
-     * content invokes it with this element - giving the handler full access to {@code xlink:href}/{@code target}/
-     * {@code xlink:show}/{@code xlink:actuate} to decide what "following the link" means, since this library does
-     * not own a browser. With no handler registered, content still renders, it just isn't clickable.
+     * Renders this element's content exactly as {@code <g>} would, then makes it activatable: content is always made clickable (see {@link #clearMouseTransparency}), and if an
+     * activation handler is registered ({@link RenderContext#getAnchorActivationHandler}), a hand cursor is shown and clicking anywhere in the content invokes it with this element
+     * - giving the handler full access to {@code xlink:href}/{@code target}/ {@code xlink:show}/{@code xlink:actuate} to decide what "following the link" means, since this library
+     * does not own a browser. With no handler registered, content still renders, it just isn't clickable.
      */
     @Override
     public Group createGraphic(RenderContext context) {
@@ -150,22 +145,21 @@ public class SvgAnchor extends AbstractSvgStylable
         appendContent(group, context);
 
         clearMouseTransparency(group);
-        context.getAnchorActivationHandler().ifPresent(handler -> {
-            group.setCursor(Cursor.HAND);
-            group.setOnMouseClicked(event -> handler.accept(this));
-        });
+        context.getAnchorActivationHandler()
+            .ifPresent(handler -> {
+                group.setCursor(Cursor.HAND);
+                group.setOnMouseClicked(event -> handler.accept(this));
+            });
         applyClip(context, group);
         applyFilter(context, group);
         return group;
     }
 
     /**
-     * A titleless shape sets its own {@code mouseTransparent} to {@code true} (see
-     * {@link nz.co.ctg.foxglove.ISvgDescribable#installTooltip}), which - since {@code mouseTransparent} excludes a
-     * node's whole subtree from being picked, and no ancestor can override a descendant's own {@code true} - would
-     * otherwise make the overwhelmingly common case (a plain shape with no {@code <title>}) inside {@code <a>}
-     * unclickable, since a click that hits nothing pickable never reaches this element's handler via bubbling.
-     * Scoped to this element's own subtree only; {@code installTooltip}'s default elsewhere is untouched.
+     * A titleless shape sets its own {@code mouseTransparent} to {@code true} (see {@link nz.co.ctg.foxglove.ISvgDescribable#installTooltip}), which - since
+     * {@code mouseTransparent} excludes a node's whole subtree from being picked, and no ancestor can override a descendant's own {@code true} - would otherwise make the
+     * overwhelmingly common case (a plain shape with no {@code <title>}) inside {@code <a>} unclickable, since a click that hits nothing pickable never reaches this element's
+     * handler via bubbling. Scoped to this element's own subtree only; {@code installTooltip}'s default elsewhere is untouched.
      */
     private static void clearMouseTransparency(Node node) {
         node.setMouseTransparent(false);

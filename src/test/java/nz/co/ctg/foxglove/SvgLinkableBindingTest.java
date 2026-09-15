@@ -1,5 +1,10 @@
 package nz.co.ctg.foxglove;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,15 +17,9 @@ import nz.co.ctg.foxglove.paint.SvgLinearGradient;
 import nz.co.ctg.foxglove.text.SvgText;
 import nz.co.ctg.foxglove.text.SvgTextPath;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 /**
- * The xlink attributes are bound through the OXM virtual accessors, so the {@code java-attribute} in the binding has
- * to match the property key the {@link ISvgLinkable} getters read, and the {@code name} has to be the local name
- * rather than the prefixed one. Both were wrong, which left every xlink attribute silently unbound.
+ * The xlink attributes are bound through the OXM virtual accessors, so the {@code java-attribute} in the binding has to match the property key the {@link ISvgLinkable} getters
+ * read, and the {@code name} has to be the local name rather than the prefixed one. Both were wrong, which left every xlink attribute silently unbound.
  */
 public class SvgLinkableBindingTest {
 
@@ -52,8 +51,7 @@ public class SvgLinkableBindingTest {
     }
 
     /**
-     * The bindings are split across one file per package, so a gradient, a text element and a structural element
-     * between them prove the paint, text and element binding files.
+     * The bindings are split across one file per package, so a gradient, a text element and a structural element between them prove the paint, text and element binding files.
      */
     @Test
     public void testHrefBindsOnAGradient() throws Exception {
@@ -65,7 +63,8 @@ public class SvgLinkableBindingTest {
     @Test
     public void testHrefBindsOnATextElement() throws Exception {
         SvgText text = find(svg.getContent(), SvgText.class, "label");
-        SvgTextPath textPath = text.getContent().stream()
+        SvgTextPath textPath = text.getContent()
+            .stream()
             .filter(SvgTextPath.class::isInstance)
             .map(SvgTextPath.class::cast)
             .findFirst()
@@ -94,7 +93,8 @@ public class SvgLinkableBindingTest {
         SvgUse use = new SvgUse();
         use.setId("u1");
         use.setXlinkHref("#target");
-        graphic.getContent().add(use);
+        graphic.getContent()
+            .add(use);
 
         assertThat(parser.write(graphic, Boolean.TRUE), containsString("href=\"#target\""));
     }

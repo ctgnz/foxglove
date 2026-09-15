@@ -1,12 +1,12 @@
 package nz.co.ctg.foxglove.type;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.type.PreserveAspectRatio.Align;
 import nz.co.ctg.foxglove.type.PreserveAspectRatio.MeetOrSlice;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PreserveAspectRatioTest {
 
@@ -52,15 +52,24 @@ public class PreserveAspectRatioTest {
 
     @Test
     public void testEveryAlignKeywordParses() throws Exception {
-        assertThat(PreserveAspectRatio.parse("xMinYMin").getAlign(), is(Align.X_MIN_Y_MIN));
-        assertThat(PreserveAspectRatio.parse("xMidYMin").getAlign(), is(Align.X_MID_Y_MIN));
-        assertThat(PreserveAspectRatio.parse("xMaxYMin").getAlign(), is(Align.X_MAX_Y_MIN));
-        assertThat(PreserveAspectRatio.parse("xMinYMid").getAlign(), is(Align.X_MIN_Y_MID));
-        assertThat(PreserveAspectRatio.parse("xMidYMid").getAlign(), is(Align.X_MID_Y_MID));
-        assertThat(PreserveAspectRatio.parse("xMaxYMid").getAlign(), is(Align.X_MAX_Y_MID));
-        assertThat(PreserveAspectRatio.parse("xMinYMax").getAlign(), is(Align.X_MIN_Y_MAX));
-        assertThat(PreserveAspectRatio.parse("xMidYMax").getAlign(), is(Align.X_MID_Y_MAX));
-        assertThat(PreserveAspectRatio.parse("xMaxYMax").getAlign(), is(Align.X_MAX_Y_MAX));
+        assertThat(PreserveAspectRatio.parse("xMinYMin")
+            .getAlign(), is(Align.X_MIN_Y_MIN));
+        assertThat(PreserveAspectRatio.parse("xMidYMin")
+            .getAlign(), is(Align.X_MID_Y_MIN));
+        assertThat(PreserveAspectRatio.parse("xMaxYMin")
+            .getAlign(), is(Align.X_MAX_Y_MIN));
+        assertThat(PreserveAspectRatio.parse("xMinYMid")
+            .getAlign(), is(Align.X_MIN_Y_MID));
+        assertThat(PreserveAspectRatio.parse("xMidYMid")
+            .getAlign(), is(Align.X_MID_Y_MID));
+        assertThat(PreserveAspectRatio.parse("xMaxYMid")
+            .getAlign(), is(Align.X_MAX_Y_MID));
+        assertThat(PreserveAspectRatio.parse("xMinYMax")
+            .getAlign(), is(Align.X_MIN_Y_MAX));
+        assertThat(PreserveAspectRatio.parse("xMidYMax")
+            .getAlign(), is(Align.X_MID_Y_MAX));
+        assertThat(PreserveAspectRatio.parse("xMaxYMax")
+            .getAlign(), is(Align.X_MAX_Y_MAX));
     }
 
     private void assertDefault(PreserveAspectRatio value) {

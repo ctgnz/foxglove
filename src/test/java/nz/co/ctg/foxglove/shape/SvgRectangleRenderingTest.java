@@ -1,25 +1,25 @@
 package nz.co.ctg.foxglove.shape;
 
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.RenderContext;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import javafx.scene.shape.Rectangle;
 
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.RenderContext;
+
 /**
- * Exercises #93's fix to {@code rx}/{@code ry} resolution: JavaFX's {@code arcWidth}/{@code arcHeight} are a
- * diameter (matching AWT's {@code RoundRectangle2D} convention), not the radius SVG's own {@code rx}/{@code ry}
- * attributes are - and SVG defaults whichever of the two is omitted to the other's value, clamping either to half
- * its own dimension, rather than treating an omitted attribute as {@code 0}.
+ * Exercises #93's fix to {@code rx}/{@code ry} resolution: JavaFX's {@code arcWidth}/{@code arcHeight} are a diameter (matching AWT's {@code RoundRectangle2D} convention), not the
+ * radius SVG's own {@code rx}/{@code ry} attributes are - and SVG defaults whichever of the two is omitted to the other's value, clamping either to half its own dimension, rather
+ * than treating an omitted attribute as {@code 0}.
  */
 public class SvgRectangleRenderingTest {
 
     @Test
     public void testNeitherRxNorRyGivenHasNoRounding() {
-        Rectangle rect = render(r -> { });
+        Rectangle rect = render(r -> {
+        });
         assertThat(rect.getArcWidth(), closeTo(0.0, 1e-9));
         assertThat(rect.getArcHeight(), closeTo(0.0, 1e-9));
     }

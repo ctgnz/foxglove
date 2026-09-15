@@ -23,11 +23,14 @@ public final class CssRule {
     }
 
     /**
-     * The highest specificity among this rule's selectors that match {@code element}, or empty if none do - a rule
-     * matches, and its declarations apply, as soon as any one selector in its comma-separated group matches.
+     * The highest specificity among this rule's selectors that match {@code element}, or empty if none do - a rule matches, and its declarations apply, as soon as any one selector
+     * in its comma-separated group matches.
      */
     public Optional<Integer> matchingSpecificity(AbstractSvgStylable element) {
-        return selectors.stream().filter(selector -> selector.matches(element)).map(CssSelector::specificity).max(Integer::compareTo);
+        return selectors.stream()
+            .filter(selector -> selector.matches(element))
+            .map(CssSelector::specificity)
+            .max(Integer::compareTo);
     }
 
 }

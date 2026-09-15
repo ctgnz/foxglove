@@ -5,7 +5,6 @@
 // Generated on: 2021.03.25 at 03:40:09 PM NZDT
 //
 
-
 package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
@@ -32,13 +31,10 @@ import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
- * Parsed but unsupported (#23): {@code <view>} only means something if the library exposes a way to navigate to a
- * named view (resolving a {@code file.svg#viewName} fragment to this element's {@code viewBox}/
- * {@code preserveAspectRatio}) - that is a navigation API decision independent of rendering, deliberately deferred
- * rather than bolted on here. Never rendered directly, the same "referenced, not rendered" shape as {@code <marker>}
- * and {@code <cursor>} - except nothing resolves a reference to it yet either.
+ * Parsed but unsupported (#23): {@code <view>} only means something if the library exposes a way to navigate to a named view (resolving a {@code file.svg#viewName} fragment to
+ * this element's {@code viewBox}/ {@code preserveAspectRatio}) - that is a navigation API decision independent of rendering, deliberately deferred rather than bolted on here.
+ * Never rendered directly, the same "referenced, not rendered" shape as {@code <marker>} and {@code <cursor>} - except nothing resolves a reference to it yet either.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {

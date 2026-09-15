@@ -21,7 +21,6 @@ import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "mpath", propOrder = {
     "contents"

@@ -3,6 +3,10 @@ package nz.co.ctg.foxglove.paint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.Stop;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -17,11 +21,6 @@ import nz.co.ctg.foxglove.description.SvgDescription;
 import nz.co.ctg.foxglove.description.SvgMetadata;
 import nz.co.ctg.foxglove.description.SvgTitle;
 
-import javafx.geometry.Point2D;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Paint;
-import javafx.scene.paint.Stop;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -32,7 +31,6 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -81,12 +79,10 @@ public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradie
     private List<ISvgElement> content;
 
     /**
-     * The initial values run the gradient left to right across the target: x1 and y1 at the origin, x2 at the far
-     * edge and y2 level with the start.
+     * The initial values run the gradient left to right across the target: x1 and y1 at the origin, x2 at the far edge and y2 level with the start.
      * <p>
-     * Any of the four coordinates this element does not specify, and its stops if it declares none, are taken from
-     * its {@code xlink:href} chain (#18) - stopping at the first element that is not itself a {@code linearGradient},
-     * since geometry is not one of the attributes a cross-type reference inherits.
+     * Any of the four coordinates this element does not specify, and its stops if it declares none, are taken from its {@code xlink:href} chain (#18) - stopping at the first
+     * element that is not itself a {@code linearGradient}, since geometry is not one of the attributes a cross-type reference inherits.
      */
     @Override
     public Paint createPaint(SvgElementIndex index) {
@@ -118,10 +114,9 @@ public class SvgLinearGradient extends AbstractSvgStylable implements ISvgGradie
     }
 
     /**
-     * The {@code xlink:href} chain starting at this element, bound to {@code SvgLinearGradient} rather than the
-     * shared {@link ISvgGradientElement} interface - unlike stops and the common attributes, geometry is not
-     * inherited across a change of gradient type, and {@link SvgElementIndex#resolveChain} already stops a chain the
-     * moment the referenced element is not an instance of the bound type.
+     * The {@code xlink:href} chain starting at this element, bound to {@code SvgLinearGradient} rather than the shared {@link ISvgGradientElement} interface - unlike stops and the
+     * common attributes, geometry is not inherited across a change of gradient type, and {@link SvgElementIndex#resolveChain} already stops a chain the moment the referenced
+     * element is not an instance of the bound type.
      */
     private List<SvgLinearGradient> hrefChain(SvgElementIndex index) {
         return index == null ? List.of(this) : index.resolveChain(this, SvgLinearGradient::getXlinkHref, SvgLinearGradient.class);

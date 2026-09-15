@@ -3,6 +3,14 @@ package nz.co.ctg.foxglove.element;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.geometry.BoundingBox;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,24 +47,13 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javafx.geometry.BoundingBox;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Transform;
-import javafx.scene.transform.Translate;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
 })
 @XmlRootElement(name = "image")
-public class SvgImage extends AbstractSvgStylable
-    implements ISvgStructuralElement, ISvgBounded, ISvgEventListener, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgTransformable,
-    FxGraphic<Node> {
+public class SvgImage extends AbstractSvgStylable implements ISvgStructuralElement, ISvgBounded, ISvgEventListener, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgTransformable, FxGraphic<Node> {
 
     @XmlAttribute(name = "preserveAspectRatio")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -94,20 +91,16 @@ public class SvgImage extends AbstractSvgStylable
     }
 
     /**
-     * Renders the referenced raster image, fitted into this element's {@code x}/{@code y}/{@code width}/
-     * {@code height} viewport per {@code preserveAspectRatio}, or an empty {@link Group} - never {@code null} -
-     * when the reference is missing, malformed, unresolvable, or the viewport has no positive area.
+     * Renders the referenced raster image, fitted into this element's {@code x}/{@code y}/{@code width}/ {@code height} viewport per {@code preserveAspectRatio}, or an empty
+     * {@link Group} - never {@code null} - when the reference is missing, malformed, unresolvable, or the viewport has no positive area.
      * <p>
-     * Only {@code data:} URIs and references relative to a known document base URI (see
-     * {@link nz.co.ctg.foxglove.FoxgloveParser#parseFile}) are supported. Any other absolute reference - a network
-     * URL or a bare {@code file:} URI given directly in the document - is out of scope for now and also fails
-     * cleanly, keeping the trust boundary to only the document's own embedded data and whatever the caller chose
-     * to parse from disk.
+     * Only {@code data:} URIs and references relative to a known document base URI (see {@link nz.co.ctg.foxglove.FoxgloveParser#parseFile}) are supported. Any other absolute
+     * reference - a network URL or a bare {@code file:} URI given directly in the document - is out of scope for now and also fails cleanly, keeping the trust boundary to only the
+     * document's own embedded data and whatever the caller chose to parse from disk.
      * <p>
-     * Per the specification, {@code translate(x,y)} is appended to the end of this element's own {@code transform}
-     * list rather than applied separately - both go into the JavaFX {@code transforms} list, in that order, rather
-     * than using the {@code translateX}/{@code translateY} node properties, which are always outermost in JavaFX
-     * regardless of call order. See the identical fix for {@code <use>} (#19).
+     * Per the specification, {@code translate(x,y)} is appended to the end of this element's own {@code transform} list rather than applied separately - both go into the JavaFX
+     * {@code transforms} list, in that order, rather than using the {@code translateX}/{@code translateY} node properties, which are always outermost in JavaFX regardless of call
+     * order. See the identical fix for {@code <use>} (#19).
      */
     @Override
     public Node createGraphic(RenderContext context) {
@@ -129,21 +122,26 @@ public class SvgImage extends AbstractSvgStylable
         ViewBox intrinsic = new ViewBox(new BoundingBox(0, 0, image.getWidth(), image.getHeight()));
         Transform fitTransform = intrinsic.createTransform(width, height, PreserveAspectRatio.parse(getPreserveAspectRatio()));
         if (fitTransform != null) {
-            fitted.getTransforms().add(fitTransform);
+            fitted.getTransforms()
+                .add(fitTransform);
         }
-        group.getChildren().add(fitted);
+        group.getChildren()
+            .add(fitted);
         // the clip must live here rather than on `fitted`: Node.setClip() applies in this node's own pre-transform
         // local space, which - since `fitted`'s own scale transform already ran to produce group's child - is
         // exactly the fitted image's post-scale coordinates, not the image's raw pixels
         group.setClip(new Rectangle(width, height));
 
         applyNodeProperties(context, group);
-        String visibility = SvgInheritedStyle.resolve(context, this).getVisibility();
+        String visibility = SvgInheritedStyle.resolve(context, this)
+            .getVisibility();
         if ("hidden".equalsIgnoreCase(visibility) || "collapse".equalsIgnoreCase(visibility)) {
             group.setVisible(false);
         }
-        group.getTransforms().addAll(getTransformList());
-        group.getTransforms().add(new Translate(resolveX(context), resolveY(context)));
+        group.getTransforms()
+            .addAll(getTransformList());
+        group.getTransforms()
+            .add(new Translate(resolveX(context), resolveY(context)));
         // clip-path is not applied here: group already has a clip of its own (the slice-fit rectangle above), and
         // a second setClip() call would overwrite it - see #24's PR description for why this is out of scope for now.
         return group;

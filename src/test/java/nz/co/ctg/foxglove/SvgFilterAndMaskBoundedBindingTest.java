@@ -1,5 +1,9 @@
 package nz.co.ctg.foxglove;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.number.IsCloseTo.closeTo;
+
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -9,16 +13,11 @@ import nz.co.ctg.foxglove.clip.SvgMask;
 import nz.co.ctg.foxglove.element.SvgDefinitions;
 import nz.co.ctg.foxglove.filter.SvgFilter;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.number.IsCloseTo.closeTo;
-
 /**
- * {@code x}/{@code y}/{@code width}/{@code height} on {@code <filter>} and {@code <mask>} are bound through the OXM
- * virtual accessors, the same mechanism {@link SvgBoundedBindingTest} covers for {@code <use>} - and were missing
- * from the binding entirely (no {@code <java-type>} entry for either class at all), which left both silently
- * defaulting regardless of what a document declared, even though {@link ISvgBounded} parsed them fine from a
- * document built in memory. Found while researching #26; a real, already-shipped bug for {@code <mask>} (#25).
+ * {@code x}/{@code y}/{@code width}/{@code height} on {@code <filter>} and {@code <mask>} are bound through the OXM virtual accessors, the same mechanism
+ * {@link SvgBoundedBindingTest} covers for {@code <use>} - and were missing from the binding entirely (no {@code <java-type>} entry for either class at all), which left both
+ * silently defaulting regardless of what a document declared, even though {@link ISvgBounded} parsed them fine from a document built in memory. Found while researching #26; a
+ * real, already-shipped bug for {@code <mask>} (#25).
  */
 public class SvgFilterAndMaskBoundedBindingTest {
 
@@ -42,7 +41,8 @@ public class SvgFilterAndMaskBoundedBindingTest {
 
     private static SvgFilter parseFilter(String filterXml) throws Exception {
         SvgDefinitions defs = parseDefs(filterXml);
-        return defs.getContent().stream()
+        return defs.getContent()
+            .stream()
             .filter(SvgFilter.class::isInstance)
             .map(SvgFilter.class::cast)
             .findFirst()
@@ -51,7 +51,8 @@ public class SvgFilterAndMaskBoundedBindingTest {
 
     private static SvgMask parseMask(String maskXml) throws Exception {
         SvgDefinitions defs = parseDefs(maskXml);
-        return defs.getContent().stream()
+        return defs.getContent()
+            .stream()
             .filter(SvgMask.class::isInstance)
             .map(SvgMask.class::cast)
             .findFirst()
@@ -63,7 +64,8 @@ public class SvgFilterAndMaskBoundedBindingTest {
         FoxgloveParser parser = new FoxgloveParser();
         SvgGraphic svg = parser.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
         assertThat(svg, notNullValue());
-        return (SvgDefinitions) svg.getContent().get(0);
+        return (SvgDefinitions) svg.getContent()
+            .get(0);
     }
 
 }

@@ -1,17 +1,6 @@
 package nz.co.ctg.foxglove.paint;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.JavaFxTestSupport;
-import nz.co.ctg.foxglove.RenderContext;
-import nz.co.ctg.foxglove.SvgGraphic;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.type.SvgPaint;
-import nz.co.ctg.foxglove.type.ViewBox;
-
 import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -27,11 +16,19 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.JavaFxTestSupport;
+import nz.co.ctg.foxglove.RenderContext;
+import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.type.SvgPaint;
+import nz.co.ctg.foxglove.type.ViewBox;
+
 /**
- * Resolving a pattern rasterises via {@code Node.snapshot(...)}, which - per the JavaFX javadoc - throws
- * {@link IllegalStateException} off the JavaFX Application Thread. {@link JavaFxTestSupport} starts the toolkit
- * (shared with other test classes, since it can only be started once per JVM) and hands each {@code createPaint}
- * call to that thread.
+ * Resolving a pattern rasterises via {@code Node.snapshot(...)}, which - per the JavaFX javadoc - throws {@link IllegalStateException} off the JavaFX Application Thread.
+ * {@link JavaFxTestSupport} starts the toolkit (shared with other test classes, since it can only be started once per JVM) and hands each {@code createPaint} call to that thread.
  */
 public class SvgPatternTest {
 
@@ -66,7 +63,8 @@ public class SvgPatternTest {
         pattern.setWidth(percent(50));
         pattern.setHeight(percent(50));
 
-        RenderContext context = RenderContext.root(null, 0, 0).withObjectBoundingBox(new BoundingBox(0, 0, 100, 50));
+        RenderContext context = RenderContext.root(null, 0, 0)
+            .withObjectBoundingBox(new BoundingBox(0, 0, 100, 50));
         ImagePattern paint = onFxThread(() -> (ImagePattern) pattern.createPaint(context));
 
         assertThat(paint.getX(), is(0.0));
@@ -84,7 +82,8 @@ public class SvgPatternTest {
         pattern.setWidth(percent(50));
         pattern.setHeight(percent(50));
 
-        RenderContext context = RenderContext.root(null, 0, 0).withObjectBoundingBox(new BoundingBox(10, 20, 100, 50));
+        RenderContext context = RenderContext.root(null, 0, 0)
+            .withObjectBoundingBox(new BoundingBox(10, 20, 100, 50));
         ImagePattern paint = onFxThread(() -> (ImagePattern) pattern.createPaint(context));
 
         assertThat(paint.getX(), closeTo(20.0, DELTA)); // 10 + 0.1*100
@@ -136,7 +135,8 @@ public class SvgPatternTest {
         pattern.setPatternUnits("userSpaceOnUse");
         pattern.setWidth(px(20));
         pattern.setHeight(px(20));
-        pattern.getContent().add(rect(0, 0, 20, 20, "red"));
+        pattern.getContent()
+            .add(rect(0, 0, 20, 20, "red"));
 
         RenderContext context = RenderContext.root(null, 200, 100);
         Image first = onFxThread(() -> ((ImagePattern) pattern.createPaint(context)).getImage());
@@ -152,7 +152,8 @@ public class SvgPatternTest {
         pattern.setWidth(px(50));
         pattern.setHeight(px(50));
         pattern.setViewBox(new ViewBox(px(0), px(0), px(10), px(10)));
-        pattern.getContent().add(rect(0, 0, 10, 10, "red"));
+        pattern.getContent()
+            .add(rect(0, 0, 10, 10, "red"));
 
         RenderContext context = RenderContext.root(null, 0, 0);
         // a corner well outside the un-scaled 10x10 content, but still inside the 50x50 tile, is red only if the
@@ -171,10 +172,12 @@ public class SvgPatternTest {
         pattern.setWidth(px(50));
         pattern.setHeight(px(50));
         // a one-unit-square rect becomes bbox-sized (50x50) once the content-units scale is applied
-        pattern.getContent().add(rect(0, 0, 1, 1, "red"));
+        pattern.getContent()
+            .add(rect(0, 0, 1, 1, "red"));
 
         Bounds bbox = new BoundingBox(0, 0, 50, 50);
-        RenderContext context = RenderContext.root(null, 0, 0).withObjectBoundingBox(bbox);
+        RenderContext context = RenderContext.root(null, 0, 0)
+            .withObjectBoundingBox(bbox);
         Color color = onFxThread(() -> colorAt((ImagePattern) pattern.createPaint(context), 25, 25));
         assertThat(color, is(Color.RED));
     }
@@ -186,20 +189,20 @@ public class SvgPatternTest {
         pattern.setWidth(px(50));
         pattern.setHeight(px(50));
         // no patternContentUnits set: a one-unit-square rect stays a one-unit-square, not bbox-sized
-        pattern.getContent().add(rect(0, 0, 1, 1, "red"));
+        pattern.getContent()
+            .add(rect(0, 0, 1, 1, "red"));
 
         Bounds bbox = new BoundingBox(0, 0, 50, 50);
-        RenderContext context = RenderContext.root(null, 0, 0).withObjectBoundingBox(bbox);
+        RenderContext context = RenderContext.root(null, 0, 0)
+            .withObjectBoundingBox(bbox);
         Color color = onFxThread(() -> colorAt((ImagePattern) pattern.createPaint(context), 25, 25));
         assertThat(color, is(Color.TRANSPARENT));
     }
 
     /**
-     * A single shape somewhere in the tile survived the bug this guards against: the rasterised image came out the
-     * declared tile size, but {@code Node.snapshot} had actually captured a smaller, shifted region of the content
-     * and stretched it to fill that image - invisible with one shape covering most of the frame, but a tile with
-     * several distinctly coloured regions across its full extent comes out uniformly wrong instead of showing all
-     * of them in their right places.
+     * A single shape somewhere in the tile survived the bug this guards against: the rasterised image came out the declared tile size, but {@code Node.snapshot} had actually
+     * captured a smaller, shifted region of the content and stretched it to fill that image - invisible with one shape covering most of the frame, but a tile with several
+     * distinctly coloured regions across its full extent comes out uniformly wrong instead of showing all of them in their right places.
      */
     @Test
     public void testMultipleContentElementsAcrossTheFullTileRasteriseInTheRightPlaces() throws Exception {
@@ -207,17 +210,22 @@ public class SvgPatternTest {
         pattern.setPatternUnits("userSpaceOnUse");
         pattern.setWidth(px(10));
         pattern.setHeight(px(10));
-        pattern.getContent().add(rect(0, 0, 10, 10, "white"));
-        pattern.getContent().add(rect(0, 0, 5, 5, "black"));
-        pattern.getContent().add(rect(5, 5, 5, 5, "black"));
+        pattern.getContent()
+            .add(rect(0, 0, 10, 10, "white"));
+        pattern.getContent()
+            .add(rect(0, 0, 5, 5, "black"));
+        pattern.getContent()
+            .add(rect(5, 5, 5, 5, "black"));
 
         RenderContext context = RenderContext.root(null, 0, 0);
         ImagePattern paint = onFxThread(() -> (ImagePattern) pattern.createPaint(context));
 
         // the output image is the declared tile at exactly SvgPattern.rasterScale resolution - not a smaller,
         // shifted capture stretched to fill an image of that size
-        assertThat(paint.getImage().getWidth(), is(10.0 * SvgPattern.rasterScale));
-        assertThat(paint.getImage().getHeight(), is(10.0 * SvgPattern.rasterScale));
+        assertThat(paint.getImage()
+            .getWidth(), is(10.0 * SvgPattern.rasterScale));
+        assertThat(paint.getImage()
+            .getHeight(), is(10.0 * SvgPattern.rasterScale));
 
         assertThat(colorAt(paint, 2, 2), is(Color.BLACK)); // top-left quadrant
         assertThat(colorAt(paint, 7, 2), is(Color.WHITE)); // top-right quadrant
@@ -231,7 +239,8 @@ public class SvgPatternTest {
     public void testContentInheritsFromTheReferencedPatternWhenThisOneHasNone() throws Exception {
         SvgPattern base = new SvgPattern();
         base.setId("base");
-        base.getContent().add(rect(0, 0, 10, 10, "red"));
+        base.getContent()
+            .add(rect(0, 0, 10, 10, "red"));
 
         SvgPattern own = new SvgPattern();
         own.setId("own");
@@ -242,8 +251,10 @@ public class SvgPatternTest {
         // no content of its own - it comes from "base" instead
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(base);
-        svg.getContent().add(own);
+        svg.getContent()
+            .add(base);
+        svg.getContent()
+            .add(own);
 
         RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
         Color color = onFxThread(() -> colorAt((ImagePattern) own.createPaint(context), 5, 5));
@@ -261,11 +272,14 @@ public class SvgPatternTest {
         SvgPattern own = new SvgPattern();
         own.setId("own");
         own.setXlinkHref("#base");
-        own.getContent().add(rect(0, 0, 20, 20, "red")); // its own content, sized to the inherited tile
+        own.getContent()
+            .add(rect(0, 0, 20, 20, "red")); // its own content, sized to the inherited tile
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(base);
-        svg.getContent().add(own);
+        svg.getContent()
+            .add(base);
+        svg.getContent()
+            .add(own);
 
         RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
         ImagePattern paint = onFxThread(() -> (ImagePattern) own.createPaint(context));
@@ -275,8 +289,7 @@ public class SvgPatternTest {
     }
 
     /**
-     * Neither pattern in the cycle declares a width or height, so this must terminate as a degenerate (zero-size)
-     * tile rather than hang or overflow the stack.
+     * Neither pattern in the cycle declares a width or height, so this must terminate as a degenerate (zero-size) tile rather than hang or overflow the stack.
      */
     @Test
     public void testACycleResolvesWithoutHangingOrOverflowing() throws Exception {
@@ -289,20 +302,22 @@ public class SvgPatternTest {
         b.setXlinkHref("#a");
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(a);
-        svg.getContent().add(b);
+        svg.getContent()
+            .add(a);
+        svg.getContent()
+            .add(b);
 
         RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
         assertThat(onFxThread(() -> a.createPaint(context)), is(nullValue()));
     }
 
     /**
-     * Independent of whatever the image's actual dimensions turn out to be - unlike the tests above, which measure
-     * the image and scale into it, exactly the blind spot that let the bug this test method's sibling guards
-     * against slip past every other test in this class.
+     * Independent of whatever the image's actual dimensions turn out to be - unlike the tests above, which measure the image and scale into it, exactly the blind spot that let the
+     * bug this test method's sibling guards against slip past every other test in this class.
      */
     private static Color colorAt(ImagePattern paint, double tileX, double tileY) {
-        PixelReader reader = paint.getImage().getPixelReader();
+        PixelReader reader = paint.getImage()
+            .getPixelReader();
         return reader.getColor((int) Math.round(tileX * SvgPattern.rasterScale), (int) Math.round(tileY * SvgPattern.rasterScale));
     }
 

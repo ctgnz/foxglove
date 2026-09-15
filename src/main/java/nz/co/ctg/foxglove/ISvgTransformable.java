@@ -14,15 +14,14 @@ package nz.co.ctg.foxglove;
 
 import java.util.Collections;
 import java.util.List;
+import javafx.scene.Node;
+import javafx.scene.transform.Transform;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 import nz.co.ctg.foxglove.adapter.SvgTransformListAdapter;
-
-import javafx.scene.Node;
-import javafx.scene.transform.Transform;
 
 public interface ISvgTransformable extends ISvgAttributes {
     String ATTR_TRANSFORM = "transform";
@@ -48,7 +47,8 @@ public interface ISvgTransformable extends ISvgAttributes {
     }
 
     default void applyTransforms(Node node) {
-        node.getTransforms().addAll(getTransformList());
+        node.getTransforms()
+            .addAll(getTransformList());
     }
 
 }

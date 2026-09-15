@@ -2,6 +2,8 @@ package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.Group;
+import javafx.scene.Node;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -39,17 +41,13 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import javafx.scene.Group;
-import javafx.scene.Node;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
 })
 @XmlRootElement(name = "switch")
-public class SvgSwitch extends AbstractSvgStylable
-    implements ISvgStructuralElement, ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable, FxGraphic<Group> {
+public class SvgSwitch extends AbstractSvgStylable implements ISvgStructuralElement, ISvgEventListener, ISvgExternalResources, ISvgConditionalFeatures, ISvgTransformable, FxGraphic<Group> {
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),
@@ -86,11 +84,9 @@ public class SvgSwitch extends AbstractSvgStylable
     }
 
     /**
-     * Renders only the first direct child whose conditional processing attributes all pass (see
-     * {@link ISvgConditionalFeatures#isConditionSatisfied}) and which is itself hidden neither by {@code display}
-     * nor {@code visibility} - reusing {@link ISvgContainer#isRendered}, the exact same test any other element
-     * uses to decide whether it renders at all, which is what makes {@code <switch>} work. An empty {@link Group}
-     * - never {@code null} - when no child passes.
+     * Renders only the first direct child whose conditional processing attributes all pass (see {@link ISvgConditionalFeatures#isConditionSatisfied}) and which is itself hidden
+     * neither by {@code display} nor {@code visibility} - reusing {@link ISvgContainer#isRendered}, the exact same test any other element uses to decide whether it renders at all,
+     * which is what makes {@code <switch>} work. An empty {@link Group} - never {@code null} - when no child passes.
      */
     @Override
     public Group createGraphic(RenderContext context) {
@@ -110,7 +106,8 @@ public class SvgSwitch extends AbstractSvgStylable
                         node = attrs.applyMask(childContext, node);
                         attrs.registerNode(childContext, node);
                     }
-                    group.getChildren().add(node);
+                    group.getChildren()
+                        .add(node);
                 }
                 break;
             }

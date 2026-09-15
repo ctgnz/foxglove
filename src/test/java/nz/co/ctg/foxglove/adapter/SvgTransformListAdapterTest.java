@@ -1,21 +1,20 @@
 package nz.co.ctg.foxglove.adapter;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
+import java.util.List;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Shear;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
+
+import org.junit.jupiter.api.Test;
 
 public class SvgTransformListAdapterTest {
     private SvgTransformListAdapter candidate = new SvgTransformListAdapter();

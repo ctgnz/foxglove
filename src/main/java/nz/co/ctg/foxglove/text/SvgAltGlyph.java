@@ -23,14 +23,12 @@ import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "value"
 })
 @XmlRootElement(name = "altGlyph")
-public class SvgAltGlyph extends AbstractSvgStylable
-    implements ISvgTextPositioningElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgEventListener, ISvgValueElement, ISvgGlyphPositioned {
+public class SvgAltGlyph extends AbstractSvgStylable implements ISvgTextPositioningElement, ISvgConditionalFeatures, ISvgLinkable, ISvgExternalResources, ISvgEventListener, ISvgValueElement, ISvgGlyphPositioned {
 
     @XmlAttribute(name = "x")
     @XmlJavaTypeAdapter(DoubleListAdapter.class)

@@ -1,11 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-import nz.co.ctg.foxglove.type.SvgPaint;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,6 +11,12 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+import nz.co.ctg.foxglove.type.SvgPaint;
 
 public class AbstractSvgStylableTest {
 
@@ -69,9 +69,8 @@ public class AbstractSvgStylableTest {
     }
 
     /**
-     * Values must reach the parsers as authored. Font family is the one property held as a raw string, so it is
-     * the only place the preserved case is directly observable - but every value travels the same code path, which
-     * is what matters for case sensitive values such as {@code url(#Grad1)}.
+     * Values must reach the parsers as authored. Font family is the one property held as a raw string, so it is the only place the preserved case is directly observable - but
+     * every value travels the same code path, which is what matters for case sensitive values such as {@code url(#Grad1)}.
      */
     @Test
     public void testValueCaseIsPreserved() throws Exception {
@@ -88,8 +87,7 @@ public class AbstractSvgStylableTest {
     }
 
     /**
-     * Keyword values are case insensitive, which each parser is responsible for now that the caller no longer
-     * lowercases everything on its behalf.
+     * Keyword values are case insensitive, which each parser is responsible for now that the caller no longer lowercases everything on its behalf.
      */
     @Test
     public void testKeywordValuesAreCaseInsensitive() throws Exception {
@@ -135,8 +133,7 @@ public class AbstractSvgStylableTest {
     }
 
     /**
-     * A malformed declaration must not prevent the valid ones around it from being applied, and above all must not
-     * throw out of {@code createGraphic}.
+     * A malformed declaration must not prevent the valid ones around it from being applied, and above all must not throw out of {@code createGraphic}.
      */
     @Test
     public void testMalformedDeclarationsDoNotPreventOthersApplying() throws Exception {
@@ -188,8 +185,10 @@ public class AbstractSvgStylableTest {
         SvgGraphic svg = new SvgGraphic();
         SvgStyle style = new SvgStyle();
         style.setValue("#target { fill: red; }");
-        svg.getContent().add(style);
-        svg.getContent().add(candidate);
+        svg.getContent()
+            .add(style);
+        svg.getContent()
+            .add(candidate);
 
         candidate.applyStyle(RenderContext.root(svg.rebuildElementIndex(), 0, 0));
         assertThat(candidate.getFill(), is(SvgPaint.of(Color.BLUE)));
@@ -202,8 +201,10 @@ public class AbstractSvgStylableTest {
         SvgGraphic svg = new SvgGraphic();
         SvgStyle style = new SvgStyle();
         style.setValue("#target { fill: red !important; }");
-        svg.getContent().add(style);
-        svg.getContent().add(candidate);
+        svg.getContent()
+            .add(style);
+        svg.getContent()
+            .add(candidate);
 
         candidate.applyStyle(RenderContext.root(svg.rebuildElementIndex(), 0, 0));
         assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));
@@ -217,8 +218,10 @@ public class AbstractSvgStylableTest {
         SvgStyle style = new SvgStyle();
         // the id rule is declared first but must still win over the later, lower-specificity class rule
         style.setValue("#target { fill: red; } .warning { fill: blue; }");
-        svg.getContent().add(style);
-        svg.getContent().add(candidate);
+        svg.getContent()
+            .add(style);
+        svg.getContent()
+            .add(candidate);
 
         candidate.applyStyle(RenderContext.root(svg.rebuildElementIndex(), 0, 0));
         assertThat(candidate.getFill(), is(SvgPaint.of(Color.RED)));

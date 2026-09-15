@@ -2,6 +2,9 @@ package nz.co.ctg.foxglove;
 
 import java.util.Locale;
 import java.util.Map;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
+import javafx.scene.image.Image;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -10,18 +13,13 @@ import com.google.common.collect.ImmutableMap;
 
 import nz.co.ctg.foxglove.element.SvgCursor;
 
-import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
-import javafx.scene.image.Image;
-
 /**
- * Resolves the {@code cursor} presentation attribute to a JavaFX {@link Cursor}. Never rendered/applied by
- * {@code SvgCursor} itself - referenced only via {@code cursor}, the same "referenced, not rendered" shape as
- * {@code <marker>}.
+ * Resolves the {@code cursor} presentation attribute to a JavaFX {@link Cursor}. Never rendered/applied by {@code SvgCursor} itself - referenced only via {@code cursor}, the same
+ * "referenced, not rendered" shape as {@code <marker>}.
  */
 public final class SvgCursorResolver {
 
-    private static final Map<String, Cursor> KEYWORDS = ImmutableMap.<String, Cursor>builder()
+    private static final Map<String, Cursor> KEYWORDS = ImmutableMap.<String, Cursor> builder()
         .put("pointer", Cursor.HAND)
         .put("crosshair", Cursor.CROSSHAIR)
         .put("move", Cursor.MOVE)
@@ -38,16 +36,13 @@ public final class SvgCursorResolver {
         .build();
 
     /**
-     * Resolves a {@code cursor} value - a comma-separated list of zero or more {@code url(#id)} references followed
-     * by a standard CSS2 keyword fallback, per the specification - to the {@link Cursor} it names, or {@code null}
-     * when {@code rawValue} is blank or nothing in it resolves (the caller then leaves the node's cursor untouched,
-     * rather than forcing a default, so JavaFX's own inheritance from an ancestor node still applies).
+     * Resolves a {@code cursor} value - a comma-separated list of zero or more {@code url(#id)} references followed by a standard CSS2 keyword fallback, per the specification - to
+     * the {@link Cursor} it names, or {@code null} when {@code rawValue} is blank or nothing in it resolves (the caller then leaves the node's cursor untouched, rather than
+     * forcing a default, so JavaFX's own inheritance from an ancestor node still applies).
      * <p>
-     * A {@code url(#id)} resolves through {@code index} to an {@code SvgCursor} and loads its {@code xlink:href} as
-     * an {@link Image} - only a {@code data:} URI is supported, the same scope already established for
-     * {@code <image>} (#20) - falling through to the next comma-separated token were it not resolvable, matching
-     * the CSS fallback semantics {@code cursor} itself defines. A recognised keyword maps to its {@link Cursor}
-     * constant; {@code auto}/{@code default}/anything unrecognised maps to {@link Cursor#DEFAULT}.
+     * A {@code url(#id)} resolves through {@code index} to an {@code SvgCursor} and loads its {@code xlink:href} as an {@link Image} - only a {@code data:} URI is supported, the
+     * same scope already established for {@code <image>} (#20) - falling through to the next comma-separated token were it not resolvable, matching the CSS fallback semantics
+     * {@code cursor} itself defines. A recognised keyword maps to its {@link Cursor} constant; {@code auto}/{@code default}/anything unrecognised maps to {@link Cursor#DEFAULT}.
      */
     public static Cursor resolve(String rawValue, SvgElementIndex index) {
         if (StringUtils.isBlank(rawValue)) {
@@ -57,7 +52,8 @@ public final class SvgCursorResolver {
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i].trim();
             boolean lastToken = i == tokens.length - 1;
-            if (token.toLowerCase(Locale.ROOT).startsWith("url(")) {
+            if (token.toLowerCase(Locale.ROOT)
+                .startsWith("url(")) {
                 Cursor imageCursor = resolveImageCursor(token, index);
                 if (imageCursor != null) {
                     return imageCursor;

@@ -1,5 +1,10 @@
 package nz.co.ctg.foxglove.conformance;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
@@ -8,14 +13,9 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 /**
- * Covers #110's drill-down site. Needs neither the JavaFX toolkit nor the fetched W3C suite - the generator works
- * from a results map alone - so it runs in the default build, unlike {@link W3cSvgConformanceCheck} itself.
+ * Covers #110's drill-down site. Needs neither the JavaFX toolkit nor the fetched W3C suite - the generator works from a results map alone - so it runs in the default build,
+ * unlike {@link W3cSvgConformanceCheck} itself.
  */
 public class ConformanceReportTest {
 
@@ -72,7 +72,7 @@ public class ConformanceReportTest {
     public void testTestPageShowsTheTestsOwnPassCriteria() throws Exception {
         Map<String, ConformanceResult> results = new LinkedHashMap<>();
         results.put("shapes-rect-01-t", new ConformanceResult("shapes-rect-01-t", false, 0.9, 1000, 0.02,
-            "The rendered picture should match the reference image.", null));
+                                                              "The rendered picture should match the reference image.", null));
         ConformanceReport.write(results, outputDir);
 
         assertThat(read("shapes/shapes-rect-01-t.html"),
@@ -93,7 +93,7 @@ public class ConformanceReportTest {
     public void testATestThatThrewSaysSoOnItsOwnPage() throws Exception {
         Map<String, ConformanceResult> results = new LinkedHashMap<>();
         results.put("painting-stroke-06-t", new ConformanceResult("painting-stroke-06-t", false, 0, 0, 0.02, "",
-            "java.lang.IllegalArgumentException: dash lengths all zero"));
+                                                                  "java.lang.IllegalArgumentException: dash lengths all zero"));
         ConformanceReport.write(results, outputDir);
 
         String page = read("painting/painting-stroke-06-t.html");
@@ -109,7 +109,7 @@ public class ConformanceReportTest {
     public void testPassCriteriaAreEscapedRatherThanInjectedAsMarkup() throws Exception {
         Map<String, ConformanceResult> results = new LinkedHashMap<>();
         results.put("struct-frag-01-t", new ConformanceResult("struct-frag-01-t", false, 0.5, 100, 0.02,
-            "Compare <svg> against \"the reference\" & check.", null));
+                                                              "Compare <svg> against \"the reference\" & check.", null));
         ConformanceReport.write(results, outputDir);
 
         String page = read("struct/struct-frag-01-t.html");

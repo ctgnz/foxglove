@@ -1,8 +1,18 @@
 package nz.co.ctg.foxglove.animate;
 
+import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.number.IsCloseTo.closeTo;
+
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
+import javafx.animation.Animation;
+import javafx.animation.PauseTransition;
+import javafx.scene.Node;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,22 +23,9 @@ import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 
-import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.number.IsCloseTo.closeTo;
-
-import javafx.animation.Animation;
-import javafx.animation.PauseTransition;
-import javafx.scene.Node;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
-
 /**
- * Exercises #30's orchestration - {@link SvgAnimationController} resolving each animation element's target/node,
- * calling {@link ISvgAnimationElement#buildAnimation} polymorphically, and wrapping the result in that element's own
- * {@link SvgAnimationTiming} - using test-local stub animation elements, since no concrete element type overrides
+ * Exercises #30's orchestration - {@link SvgAnimationController} resolving each animation element's target/node, calling {@link ISvgAnimationElement#buildAnimation}
+ * polymorphically, and wrapping the result in that element's own {@link SvgAnimationTiming} - using test-local stub animation elements, since no concrete element type overrides
  * {@code buildAnimation} yet (#31-#34 will). This is a faithful test of exactly what #30 itself delivers.
  */
 public class SvgAnimationControllerTest {
@@ -39,11 +36,10 @@ public class SvgAnimationControllerTest {
     }
 
     /**
-     * A stub whose {@code buildAnimation} always succeeds, with a short, inspectable {@link PauseTransition} kept
-     * accessible via {@link #built} - when this element's own {@code begin} is unset (the common case in most of
-     * these tests), {@link SvgAnimationController} adds no wrapping transition around it at all, so the exact same
-     * instance ends up being the one the controller actually calls {@code play()}/{@code pause()}/{@code stop()} on,
-     * letting a test check its status directly rather than needing the controller to expose its internal list.
+     * A stub whose {@code buildAnimation} always succeeds, with a short, inspectable {@link PauseTransition} kept accessible via {@link #built} - when this element's own
+     * {@code begin} is unset (the common case in most of these tests), {@link SvgAnimationController} adds no wrapping transition around it at all, so the exact same instance ends
+     * up being the one the controller actually calls {@code play()}/{@code pause()}/{@code stop()} on, letting a test check its status directly rather than needing the controller
+     * to expose its internal list.
      */
     private static class StubAnimation extends AbstractSvgAnimationElement {
         private PauseTransition built;
@@ -59,14 +55,16 @@ public class SvgAnimationControllerTest {
     public void testResolvableTargetAndNodeBuildsAnAnimation() throws Exception {
         StubAnimation stub = new StubAnimation();
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(stub);
+        target.getContent()
+            .add(stub);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         registry.put(target, new Rectangle());
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         assertThat(controller.size(), is(1));
     }
@@ -74,11 +72,12 @@ public class SvgAnimationControllerTest {
     @Test
     public void testNoAnimationElementsInTheDocumentIsAHarmlessNoOp() throws Exception {
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(new SvgRectangle());
+        svg.getContent()
+            .add(new SvgRectangle());
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
 
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
         assertThat(controller.size(), is(0));
     }
 
@@ -86,14 +85,16 @@ public class SvgAnimationControllerTest {
     public void testTargetWithNoRegisteredNodeIsSkipped() throws Exception {
         StubAnimation stub = new StubAnimation();
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(stub);
+        target.getContent()
+            .add(stub);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         // registry deliberately left empty - the target resolves, but was never actually rendered
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
         assertThat(controller.size(), is(0));
     }
 
@@ -102,14 +103,16 @@ public class SvgAnimationControllerTest {
         // a plain SvgAnimateAttribute, whose buildAnimation is the unmodified default (Optional.empty())
         SvgAnimateAttribute plain = new SvgAnimateAttribute();
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(plain);
+        target.getContent()
+            .add(plain);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         registry.put(target, new Rectangle());
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
         assertThat(controller.size(), is(0));
     }
 
@@ -118,14 +121,16 @@ public class SvgAnimationControllerTest {
         StubAnimation stub = new StubAnimation();
         stub.setRepeatCount("3");
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(stub);
+        target.getContent()
+            .add(stub);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         registry.put(target, new Rectangle());
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         // 3 cycles of a 50ms PauseTransition, no begin delay
         assertThat(controller.getTotalDuration(), is(Duration.millis(150)));
@@ -137,14 +142,16 @@ public class SvgAnimationControllerTest {
         stub.setBegin("1s");
         stub.setRepeatCount("2");
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(stub);
+        target.getContent()
+            .add(stub);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         registry.put(target, new Rectangle());
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         // one 1s delay + 2 cycles of 50ms each = 1.1s - if the delay were (wrongly) repeated too, this would be 2.1s
         assertThat(controller.getTotalDuration(), is(Duration.millis(1100)));
@@ -163,27 +170,27 @@ public class SvgAnimationControllerTest {
         animate.setFill("freeze"); // isolate accumulate+repeatCount interaction from #149's own fill=remove revert
 
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(animate);
+        target.getContent()
+            .add(animate);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         registry.put(target, new Rectangle());
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         // 3 accumulated 1s cycles = 3s total - if repeatCount were (wrongly) re-applied, this would be 9s
         assertThat(controller.getTotalDuration(), is(Duration.seconds(3)));
     }
 
     /**
-     * The controller-level half of #149's {@code fill="remove"} support: {@link SvgValueAnimationBuilder} returns a
-     * {@code SequentialTransition} whose first child (a {@code Timeline} playing with {@code cycleCount=3} itself)
-     * already spans every repeat, and this must be played with the controller's own {@code cycleCount} left at 1,
-     * not re-wrapped in the controller's generic {@code repeatCount} on top of that. A one-cycle {@code Timeline}
-     * wrongly wrapped in {@code repeatCount=3} <i>again</i> at the controller level would report roughly double -
-     * the class of bug a purely {@link SvgValueAnimationBuilder}-level test cannot see at all, since building the
-     * raw {@code Animation} never touches the controller's own {@code cycleCount} to begin with.
+     * The controller-level half of #149's {@code fill="remove"} support: {@link SvgValueAnimationBuilder} returns a {@code SequentialTransition} whose first child (a
+     * {@code Timeline} playing with {@code cycleCount=3} itself) already spans every repeat, and this must be played with the controller's own {@code cycleCount} left at 1, not
+     * re-wrapped in the controller's generic {@code repeatCount} on top of that. A one-cycle {@code Timeline} wrongly wrapped in {@code repeatCount=3} <i>again</i> at the
+     * controller level would report roughly double - the class of bug a purely {@link SvgValueAnimationBuilder}-level test cannot see at all, since building the raw
+     * {@code Animation} never touches the controller's own {@code cycleCount} to begin with.
      */
     @Test
     public void testFillRemoveWithFiniteRepeatCountIsNotDoubleWrapped() throws Exception {
@@ -195,14 +202,16 @@ public class SvgAnimationControllerTest {
         animate.setFill("remove");
 
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(animate);
+        target.getContent()
+            .add(animate);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         registry.put(target, new Rectangle());
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         // 3 cycles of 1s (core, cycled internally) + a 1ms revert (Duration.millis(1), not .ZERO - #152) = 3001ms
         // total - if the controller (wrongly) re-applied repeatCount=3 on top of that, this would come out around
@@ -211,13 +220,11 @@ public class SvgAnimationControllerTest {
     }
 
     /**
-     * <b>The inconvenient case, and #151's own regression coverage.</b> A JavaFX {@code Animation} that has never
-     * been {@code play()}ed does not apply anything to its target property when {@code jumpTo()} is called -
-     * confirmed empirically, not merely assumed. {@link SvgAnimationController#seek} was a complete no-op for a
-     * caller who seeks before ever calling {@code play()} - exactly how the #112 conformance harness uses it, and
-     * how a scrub-bar UI would too. The constructor now warms up every built animation with a discreet
-     * {@code play()}/{@code pause()} so seeking works regardless of call order; this asserts that specifically,
-     * never touching {@link SvgAnimationController#play()} at all.
+     * <b>The inconvenient case, and #151's own regression coverage.</b> A JavaFX {@code Animation} that has never been {@code play()}ed does not apply anything to its target
+     * property when {@code jumpTo()} is called - confirmed empirically, not merely assumed. {@link SvgAnimationController#seek} was a complete no-op for a caller who seeks before
+     * ever calling {@code play()} - exactly how the #112 conformance harness uses it, and how a scrub-bar UI would too. The constructor now warms up every built animation with a
+     * discreet {@code play()}/{@code pause()} so seeking works regardless of call order; this asserts that specifically, never touching {@link SvgAnimationController#play()} at
+     * all.
      */
     @Test
     public void testSeekAppliesTheCorrectValueEvenWhenPlayWasNeverCalled() throws Exception {
@@ -228,15 +235,17 @@ public class SvgAnimationControllerTest {
         animate.setTo("100");
 
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(animate);
+        target.getContent()
+            .add(animate);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         Rectangle node = new Rectangle();
         registry.put(target, node);
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         onFxThread(() -> {
             controller.seek(Duration.seconds(5));
@@ -247,14 +256,11 @@ public class SvgAnimationControllerTest {
     }
 
     /**
-     * <b>#152's own regression coverage.</b> {@code fill="remove"}'s revert lives in its own {@code Timeline},
-     * played after {@code core} via {@code SequentialTransition} - but a {@code Timeline} whose only {@code KeyFrame}
-     * sits at {@code Duration.ZERO} has zero temporal footprint inside a {@code SequentialTransition}: it never
-     * counts toward {@code getTotalDuration()}, and seeking past the end never applies it, even though real
-     * uninterrupted playback does apply it correctly on entry. This seeks (never calling {@code play()} to actual
-     * completion) well past the animation's 1s active duration - exactly how #112's conformance harness and any
-     * scrub-bar UI consume this controller - and fails against a reverted {@code Duration.ZERO} KeyFrame, passing
-     * only once the revert is given a real (if tiny) span.
+     * <b>#152's own regression coverage.</b> {@code fill="remove"}'s revert lives in its own {@code Timeline}, played after {@code core} via {@code SequentialTransition} - but a
+     * {@code Timeline} whose only {@code KeyFrame} sits at {@code Duration.ZERO} has zero temporal footprint inside a {@code SequentialTransition}: it never counts toward
+     * {@code getTotalDuration()}, and seeking past the end never applies it, even though real uninterrupted playback does apply it correctly on entry. This seeks (never calling
+     * {@code play()} to actual completion) well past the animation's 1s active duration - exactly how #112's conformance harness and any scrub-bar UI consume this controller - and
+     * fails against a reverted {@code Duration.ZERO} KeyFrame, passing only once the revert is given a real (if tiny) span.
      */
     @Test
     public void testFillRemoveRevertsWhenSeekedPastTheEnd() throws Exception {
@@ -266,16 +272,18 @@ public class SvgAnimationControllerTest {
         animate.setFill("remove");
 
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(animate);
+        target.getContent()
+            .add(animate);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         Rectangle node = new Rectangle();
         node.setX(7);
         registry.put(target, node);
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         onFxThread(() -> {
             controller.seek(Duration.seconds(5)); // well past the 1s active duration
@@ -296,33 +304,34 @@ public class SvgAnimationControllerTest {
         animate.setFill("remove");
 
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(animate);
+        target.getContent()
+            .add(animate);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         Rectangle node = new Rectangle();
         registry.put(target, node);
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         onFxThread(() -> {
             controller.seek(Duration.seconds(5)); // well past the 1s active duration
             return null;
         });
-        double angle = onFxThread(() -> ((javafx.scene.transform.Rotate) node.getTransforms().get(0)).getAngle());
+        double angle = onFxThread(() -> ((javafx.scene.transform.Rotate) node.getTransforms()
+            .get(0)).getAngle());
         assertThat("seeked past the end, fill=remove must have reverted the rotation to its identity (angle 0)",
             angle, closeTo(0.0, 1e-6));
     }
 
     /**
-     * <b>#86, the composition case that already works.</b> Two {@code <animate>} elements on the same attribute with
-     * disjoint active windows - {@code [0s, 3s)} then {@code [3s, 6s)}, exactly the shape every real same-attribute
-     * case in the W3C suite takes (see {@code animate-elem-32-t}) - correctly hand off from one to the other rather
-     * than clobbering, which is an emergent property of this class's own document-ordered {@link
-     * SvgAnimationController#build}/{@link SvgAnimationController#seek}, not a deliberate composition feature; see
-     * this class's own javadoc for why. Sampled across both windows and past the end, where {@code fill="freeze"}
-     * on the second (and therefore document-order-last, therefore seek-order-last) element must win.
+     * <b>#86, the composition case that already works.</b> Two {@code <animate>} elements on the same attribute with disjoint active windows - {@code [0s, 3s)} then
+     * {@code [3s, 6s)}, exactly the shape every real same-attribute case in the W3C suite takes (see {@code animate-elem-32-t}) - correctly hand off from one to the other rather
+     * than clobbering, which is an emergent property of this class's own document-ordered {@link SvgAnimationController#build}/{@link SvgAnimationController#seek}, not a
+     * deliberate composition feature; see this class's own javadoc for why. Sampled across both windows and past the end, where {@code fill="freeze"} on the second (and therefore
+     * document-order-last, therefore seek-order-last) element must win.
      */
     @Test
     public void testSequentialAnimationsOnTheSameAttributeHandOffCorrectly() throws Exception {
@@ -343,19 +352,26 @@ public class SvgAnimationControllerTest {
         second.setFill("freeze");
 
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(first);
-        target.getContent().add(second);
+        target.getContent()
+            .add(first);
+        target.getContent()
+            .add(second);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         Rectangle node = new Rectangle();
         registry.put(target, node);
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
-        double[] times = {0, 1.5, 3, 4.5, 6, 7};
-        double[] expected = {0, 12.5, 25, 12.5, 0, 0};
+        double[] times = {
+            0, 1.5, 3, 4.5, 6, 7
+        };
+        double[] expected = {
+            0, 12.5, 25, 12.5, 0, 0
+        };
         for (int i = 0; i < times.length; i++) {
             double time = times[i];
             double width = onFxThread(() -> {
@@ -367,12 +383,10 @@ public class SvgAnimationControllerTest {
     }
 
     /**
-     * <b>#86, the composition case that is deliberately not implemented.</b> Two {@code <animate>} elements with
-     * {@code additive="sum"} and genuinely <i>overlapping</i> active windows (both {@code [0s, 4s)}) should, under
-     * SMIL's real model, sum their two contributions at every instant - here the later one in document order simply
-     * overwrites the property, discarding the earlier one's contribution entirely. This test pins that known,
-     * documented gap (see this class's own javadoc) rather than the SMIL-correct sum, so a future change to this
-     * behaviour is a deliberate decision, not an accidental regression this suite fails to notice either way.
+     * <b>#86, the composition case that is deliberately not implemented.</b> Two {@code <animate>} elements with {@code additive="sum"} and genuinely <i>overlapping</i> active
+     * windows (both {@code [0s, 4s)}) should, under SMIL's real model, sum their two contributions at every instant - here the later one in document order simply overwrites the
+     * property, discarding the earlier one's contribution entirely. This test pins that known, documented gap (see this class's own javadoc) rather than the SMIL-correct sum, so a
+     * future change to this behaviour is a deliberate decision, not an accidental regression this suite fails to notice either way.
      */
     @Test
     public void testOverlappingAdditiveSumOnTheSameAttributeIsNotComposed() throws Exception {
@@ -395,37 +409,43 @@ public class SvgAnimationControllerTest {
         second.setAdditive("sum");
 
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(first);
-        target.getContent().add(second);
+        target.getContent()
+            .add(first);
+        target.getContent()
+            .add(second);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         Rectangle node = new Rectangle();
         registry.put(target, node);
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         onFxThread(() -> {
             controller.seek(Duration.seconds(2));
             return null;
         });
         assertThat("the SMIL-correct composed value would be 55 (2.5*2 + 25*2) - only the document-order-last "
-            + "element's own value survives", onFxThread(node::getWidth), closeTo(50.0, 1e-6));
+                   + "element's own value survives",
+            onFxThread(node::getWidth), closeTo(50.0, 1e-6));
     }
 
     @Test
     public void testPlayPauseStopAndSeekFanOutToEveryBuiltAnimation() throws Exception {
         StubAnimation stub = new StubAnimation();
         SvgRectangle target = new SvgRectangle();
-        target.getContent().add(stub);
+        target.getContent()
+            .add(stub);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(target);
+        svg.getContent()
+            .add(target);
 
         Map<ISvgElement, Node> registry = new IdentityHashMap<>();
         registry.put(target, new Rectangle());
         SvgAnimationController controller = new SvgAnimationController(svg.getElementIndex(), registry,
-            RenderContext.root(svg.getElementIndex(), 0, 0));
+                                                                       RenderContext.root(svg.getElementIndex(), 0, 0));
 
         Animation.Status statusAfterPlay = onFxThread(() -> {
             controller.play();

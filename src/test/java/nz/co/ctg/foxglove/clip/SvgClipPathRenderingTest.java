@@ -1,5 +1,17 @@
 package nz.co.ctg.foxglove.clip;
 
+import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -13,23 +25,9 @@ import nz.co.ctg.foxglove.shape.SvgPath;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
 import nz.co.ctg.foxglove.type.SvgPaint;
 
-import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-
 /**
- * Exercises #24's acceptance criteria for {@code clip-path}: renders the real node tree and snapshots it, checking
- * specific pixel colours for geometric coverage - not a pixel-perfect comparison against a reference renderer, which
- * clipping's hard, renderer-specific edge anti-aliasing makes unreasonable (per the issue itself), just a
+ * Exercises #24's acceptance criteria for {@code clip-path}: renders the real node tree and snapshots it, checking specific pixel colours for geometric coverage - not a
+ * pixel-perfect comparison against a reference renderer, which clipping's hard, renderer-specific edge anti-aliasing makes unreasonable (per the issue itself), just a
  * self-consistent check of which regions are and are not visible. Follows {@code SvgPatternTest}'s established style.
  */
 public class SvgClipPathRenderingTest {
@@ -58,7 +56,8 @@ public class SvgClipPathRenderingTest {
         clipPath.setId("clip");
 
         SvgGroup group = new SvgGroup();
-        group.getContent().add(filledRect(0, 0, 100, 100, "red"));
+        group.getContent()
+            .add(filledRect(0, 0, 100, 100, "red"));
         group.setClipPath("url(#clip)");
 
         Color corner = colorAt(group, clipPath, 5, 5);
@@ -112,8 +111,10 @@ public class SvgClipPathRenderingTest {
         outer.setClipPath("url(#inner)");
 
         SvgDefinitions defs = new SvgDefinitions();
-        defs.getContent().add(inner);
-        defs.getContent().add(outer);
+        defs.getContent()
+            .add(inner);
+        defs.getContent()
+            .add(outer);
         SvgRectangle rect = filledRect(0, 0, 100, 100, "red");
         rect.setClipPath("url(#outer)");
 
@@ -130,11 +131,14 @@ public class SvgClipPathRenderingTest {
         nonzero.setId("nonzero");
         SvgClipPath evenodd = clipPathOf(path(d));
         evenodd.setId("evenodd");
-        ((SvgPath) evenodd.getContent().get(0)).setClipRule("evenodd");
+        ((SvgPath) evenodd.getContent()
+            .get(0)).setClipRule("evenodd");
 
         SvgDefinitions defs = new SvgDefinitions();
-        defs.getContent().add(nonzero);
-        defs.getContent().add(evenodd);
+        defs.getContent()
+            .add(nonzero);
+        defs.getContent()
+            .add(evenodd);
 
         SvgRectangle nonzeroTarget = filledRect(0, 0, 100, 100, "red");
         nonzeroTarget.setClipPath("url(#nonzero)");
@@ -159,8 +163,10 @@ public class SvgClipPathRenderingTest {
         b.setClipPath("url(#a)");
 
         SvgDefinitions defs = new SvgDefinitions();
-        defs.getContent().add(a);
-        defs.getContent().add(b);
+        defs.getContent()
+            .add(a);
+        defs.getContent()
+            .add(b);
         SvgRectangle rect = filledRect(0, 0, 100, 100, "red");
         rect.setClipPath("url(#a)");
 
@@ -183,7 +189,8 @@ public class SvgClipPathRenderingTest {
     private static SvgClipPath clipPathOf(nz.co.ctg.foxglove.ISvgElement... children) {
         SvgClipPath clipPath = new SvgClipPath();
         for (nz.co.ctg.foxglove.ISvgElement child : children) {
-            clipPath.getContent().add(child);
+            clipPath.getContent()
+                .add(child);
         }
         return clipPath;
     }
@@ -209,18 +216,17 @@ public class SvgClipPathRenderingTest {
     }
 
     /**
-     * Builds an index over {@code definitionsHolder} (a {@code <clipPath>} or {@code <defs>} the target's reference
-     * needs to resolve), renders {@code target} against it, and returns the colour at the given point in the
-     * rendered snapshot.
+     * Builds an index over {@code definitionsHolder} (a {@code <clipPath>} or {@code <defs>} the target's reference needs to resolve), renders {@code target} against it, and
+     * returns the colour at the given point in the rendered snapshot.
      * <p>
-     * The snapshot viewport is fixed at a generous 300x300 - a clip shrinks a node's own
-     * {@code getBoundsInLocal()}, and {@code snapshot()} would otherwise auto-size the output image to those
-     * (possibly tiny, or even empty) bounds instead of the full area a test point might fall in.
+     * The snapshot viewport is fixed at a generous 300x300 - a clip shrinks a node's own {@code getBoundsInLocal()}, and {@code snapshot()} would otherwise auto-size the output
+     * image to those (possibly tiny, or even empty) bounds instead of the full area a test point might fall in.
      */
     private static Color colorAt(nz.co.ctg.foxglove.FxGraphic<? extends Node> target, nz.co.ctg.foxglove.ISvgElement definitionsHolder, double x,
-        double y) throws Exception {
+                                 double y) throws Exception {
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(definitionsHolder);
+        svg.getContent()
+            .add(definitionsHolder);
 
         return onFxThread(() -> {
             RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
@@ -231,7 +237,8 @@ public class SvgClipPathRenderingTest {
             params.setFill(Color.BLUE);
             params.setViewport(new javafx.geometry.Rectangle2D(0, 0, 300, 300));
             WritableImage image = root.snapshot(params, null);
-            return image.getPixelReader().getColor((int) x, (int) y);
+            return image.getPixelReader()
+                .getColor((int) x, (int) y);
         });
     }
 

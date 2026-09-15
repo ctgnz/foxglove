@@ -1,13 +1,13 @@
 package nz.co.ctg.foxglove.style;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 public class CssDeclarationsTest {
 

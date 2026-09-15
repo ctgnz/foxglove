@@ -9,12 +9,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Pulls a W3C test's own {@code <d:passCriteria>} prose out of its source document, for #110's per-test pages - a
- * similarity percentage says how far apart two images are, never what the test was trying to establish.
+ * Pulls a W3C test's own {@code <d:passCriteria>} prose out of its source document, for #110's per-test pages - a similarity percentage says how far apart two images are, never
+ * what the test was trying to establish.
  * <p>
- * Read straight from the file text rather than through {@link nz.co.ctg.foxglove.FoxgloveParser}: the element lives
- * in the suite's own {@code .../svg/testsuite/description/} namespace, which the parser has no binding for and no
- * reason to acquire one for. All 525 documents carry it, and its content is plain XHTML paragraphs.
+ * Read straight from the file text rather than through {@link nz.co.ctg.foxglove.FoxgloveParser}: the element lives in the suite's own {@code .../svg/testsuite/description/}
+ * namespace, which the parser has no binding for and no reason to acquire one for. All 525 documents carry it, and its content is plain XHTML paragraphs.
  */
 public final class ConformanceTestDescription {
 
@@ -39,7 +38,10 @@ public final class ConformanceTestDescription {
             return "";
         }
         // the criteria are wrapped in XHTML <p> elements; flatten to text, since the report escapes what it renders
-        return TAG.matcher(matcher.group(1)).replaceAll(" ").replaceAll("\\s+", " ").trim();
+        return TAG.matcher(matcher.group(1))
+            .replaceAll(" ")
+            .replaceAll("\\s+", " ")
+            .trim();
     }
 
     private ConformanceTestDescription() {

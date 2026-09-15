@@ -1,36 +1,37 @@
 package nz.co.ctg.foxglove.text;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+
 import java.util.List;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.element.SvgGroup;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-
 /**
- * Exercises #27's acceptance criteria: mixed text content renders every run in order, a run's own styling differs
- * from its parent's, nested {@code <tspan>} recurses, {@code xml:space} handling behaves both ways, and
- * {@code <tref>} inlines the referenced text styled at the {@code tref} site.
+ * Exercises #27's acceptance criteria: mixed text content renders every run in order, a run's own styling differs from its parent's, nested {@code <tspan>} recurses,
+ * {@code xml:space} handling behaves both ways, and {@code <tref>} inlines the referenced text styled at the {@code tref} site.
  */
 public class SvgTextRenderingTest {
 
     @Test
     public void testMixedContentRendersBothRunsInOrder() throws Exception {
         SvgText text = new SvgText();
-        text.getContent().add("Hello ");
+        text.getContent()
+            .add("Hello ");
         SvgTextSpan span = new SvgTextSpan();
-        span.getContent().add("world");
-        text.getContent().add(span);
+        span.getContent()
+            .add("world");
+        text.getContent()
+            .add(span);
 
         Node rendered = render(text);
         assertThat(rendered, instanceOf(Group.class));
@@ -44,28 +45,39 @@ public class SvgTextRenderingTest {
     public void testTspanFillOverridesTheParent() throws Exception {
         SvgText text = new SvgText();
         text.setFill(Color.BLUE);
-        text.getContent().add("Hello ");
+        text.getContent()
+            .add("Hello ");
         SvgTextSpan span = new SvgTextSpan();
         span.setFill(Color.RED);
-        span.getContent().add("world");
-        text.getContent().add(span);
+        span.getContent()
+            .add("world");
+        text.getContent()
+            .add(span);
 
         Group rendered = (Group) render(text);
-        assertThat(((Text) rendered.getChildren().get(0)).getFill(), is(Color.BLUE));
-        assertThat(((Text) rendered.getChildren().get(1)).getFill(), is(Color.RED));
+        assertThat(((Text) rendered.getChildren()
+            .get(0)).getFill(), is(Color.BLUE));
+        assertThat(((Text) rendered.getChildren()
+            .get(1)).getFill(), is(Color.RED));
     }
 
     @Test
     public void testNestedTspanRecurses() throws Exception {
         SvgText text = new SvgText();
-        text.getContent().add("a");
+        text.getContent()
+            .add("a");
         SvgTextSpan outer = new SvgTextSpan();
-        outer.getContent().add("b");
+        outer.getContent()
+            .add("b");
         SvgTextSpan inner = new SvgTextSpan();
-        inner.getContent().add("c");
-        outer.getContent().add(inner);
-        outer.getContent().add("d");
-        text.getContent().add(outer);
+        inner.getContent()
+            .add("c");
+        outer.getContent()
+            .add(inner);
+        outer.getContent()
+            .add("d");
+        text.getContent()
+            .add(outer);
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -79,10 +91,13 @@ public class SvgTextRenderingTest {
     @Test
     public void testDefaultWhitespaceCollapsesAndTrims() throws Exception {
         SvgText text = new SvgText();
-        text.getContent().add("  Hello   ");
+        text.getContent()
+            .add("  Hello   ");
         SvgTextSpan span = new SvgTextSpan();
-        span.getContent().add(" world  ");
-        text.getContent().add(span);
+        span.getContent()
+            .add(" world  ");
+        text.getContent()
+            .add(span);
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -95,10 +110,13 @@ public class SvgTextRenderingTest {
     public void testPreserveKeepsWhitespaceVerbatim() throws Exception {
         SvgText text = new SvgText();
         text.setXmlSpace("preserve");
-        text.getContent().add("  Hello   ");
+        text.getContent()
+            .add("  Hello   ");
         SvgTextSpan span = new SvgTextSpan();
-        span.getContent().add(" world  ");
-        text.getContent().add(span);
+        span.getContent()
+            .add(" world  ");
+        text.getContent()
+            .add(span);
 
         Node rendered = render(text);
         assertThat(rendered, instanceOf(Group.class));
@@ -112,22 +130,29 @@ public class SvgTextRenderingTest {
         SvgText source = new SvgText();
         source.setId("label");
         source.setFill(Color.BLUE);
-        source.getContent().add("source text");
+        source.getContent()
+            .add("source text");
 
         SvgText text = new SvgText();
         text.setFill(Color.GREEN);
         SvgTextReference reference = new SvgTextReference();
         reference.setXlinkHref("#label");
-        text.getContent().add(reference);
+        text.getContent()
+            .add(reference);
 
         SvgGroup group = new SvgGroup();
-        group.getContent().add(source);
-        group.getContent().add(text);
+        group.getContent()
+            .add(source);
+        group.getContent()
+            .add(text);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(group);
+        svg.getContent()
+            .add(group);
 
         Group rendered = svg.createGroup();
-        Node textNode = ((Group) rendered.getChildren().get(0)).getChildren().get(1);
+        Node textNode = ((Group) rendered.getChildren()
+            .get(0)).getChildren()
+            .get(1);
 
         assertThat(textNode, instanceOf(Text.class));
         Text run = (Text) textNode;
@@ -137,10 +162,15 @@ public class SvgTextRenderingTest {
 
     private static Node render(SvgText text) {
         SvgGroup group = new SvgGroup();
-        group.getContent().add(text);
+        group.getContent()
+            .add(text);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(group);
-        return ((Group) svg.createGroup().getChildren().get(0)).getChildren().get(0);
+        svg.getContent()
+            .add(group);
+        return ((Group) svg.createGroup()
+            .getChildren()
+            .get(0)).getChildren()
+            .get(0);
     }
 
 }

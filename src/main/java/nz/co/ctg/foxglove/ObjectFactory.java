@@ -32,6 +32,10 @@ import nz.co.ctg.foxglove.filter.FeDiffuseLighting;
 import nz.co.ctg.foxglove.filter.FeDisplacementMap;
 import nz.co.ctg.foxglove.filter.FeDistantLight;
 import nz.co.ctg.foxglove.filter.FeFlood;
+import nz.co.ctg.foxglove.filter.FeFunctionAlpha;
+import nz.co.ctg.foxglove.filter.FeFunctionBlue;
+import nz.co.ctg.foxglove.filter.FeFunctionGreen;
+import nz.co.ctg.foxglove.filter.FeFunctionRed;
 import nz.co.ctg.foxglove.filter.FeGaussianBlur;
 import nz.co.ctg.foxglove.filter.FeImage;
 import nz.co.ctg.foxglove.filter.FeMerge;
@@ -43,10 +47,6 @@ import nz.co.ctg.foxglove.filter.FeSpecularLighting;
 import nz.co.ctg.foxglove.filter.FeSpotLight;
 import nz.co.ctg.foxglove.filter.FeTile;
 import nz.co.ctg.foxglove.filter.FeTurbulence;
-import nz.co.ctg.foxglove.filter.FeFunctionAlpha;
-import nz.co.ctg.foxglove.filter.FeFunctionBlue;
-import nz.co.ctg.foxglove.filter.FeFunctionGreen;
-import nz.co.ctg.foxglove.filter.FeFunctionRed;
 import nz.co.ctg.foxglove.filter.SvgFilter;
 import nz.co.ctg.foxglove.paint.SvgColorProfile;
 import nz.co.ctg.foxglove.paint.SvgLinearGradient;
@@ -81,35 +81,24 @@ import nz.co.ctg.foxglove.text.SvgVerticalKerning;
 
 import jakarta.xml.bind.annotation.XmlRegistry;
 
-
 /**
- * This object contains factory methods for each
- * Java content interface and Java element interface
- * generated in the nz.co.ctg.jmsfx.svg package.
- * <p>An ObjectFactory allows you to programatically
- * construct new instances of the Java representation
- * for XML content. The Java representation of XML
- * content can consist of schema derived interfaces
- * and classes representing the binding of schema
- * type definitions, element declarations and model
- * groups.  Factory methods for each of these are
- * provided in this class.
- *
+ * This object contains factory methods for each Java content interface and Java element interface generated in the nz.co.ctg.jmsfx.svg package.
+ * <p>
+ * An ObjectFactory allows you to programatically construct new instances of the Java representation for XML content. The Java representation of XML content can consist of schema
+ * derived interfaces and classes representing the binding of schema type definitions, element declarations and model groups. Factory methods for each of these are provided in this
+ * class.
  */
 @XmlRegistry
 public class ObjectFactory {
 
-
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: nz.co.ctg.jmsfx.svg
-     *
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link SvgAltGlyph }
-     *
      */
     public SvgAltGlyph createAltGlyph() {
         return new SvgAltGlyph();
@@ -117,7 +106,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgAltGlyphDef }
-     *
      */
     public SvgAltGlyphDef createAltGlyphDef() {
         return new SvgAltGlyphDef();
@@ -125,7 +113,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgAltGlyphItem }
-     *
      */
     public SvgAltGlyphItem createAltGlyphItem() {
         return new SvgAltGlyphItem();
@@ -133,7 +120,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgAnchor }
-     *
      */
     public SvgAnchor createAnchor() {
         return new SvgAnchor();
@@ -141,7 +127,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgAnimateAttribute }
-     *
      */
     public SvgAnimateAttribute createAnimate() {
         return new SvgAnimateAttribute();
@@ -149,7 +134,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgAnimateColor }
-     *
      */
     public SvgAnimateColor createAnimateColor() {
         return new SvgAnimateColor();
@@ -157,7 +141,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgAnimateMotion }
-     *
      */
     public SvgAnimateMotion createAnimateMotion() {
         return new SvgAnimateMotion();
@@ -165,7 +148,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgAnimateTransform }
-     *
      */
     public SvgAnimateTransform createAnimateTransform() {
         return new SvgAnimateTransform();
@@ -173,7 +155,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgClipPath }
-     *
      */
     public SvgClipPath createClipPath() {
         return new SvgClipPath();
@@ -181,7 +162,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgColorProfile }
-     *
      */
     public SvgColorProfile createColorProfile() {
         return new SvgColorProfile();
@@ -189,7 +169,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgCursor }
-     *
      */
     public SvgCursor createCursor() {
         return new SvgCursor();
@@ -197,7 +176,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgDefinitions }
-     *
      */
     public SvgDefinitions createDefs() {
         return new SvgDefinitions();
@@ -205,7 +183,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgDescription }
-     *
      */
     public SvgDescription createDesc() {
         return new SvgDescription();
@@ -213,7 +190,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeBlend }
-     *
      */
     public FeBlend createFeBlend() {
         return new FeBlend();
@@ -221,7 +197,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeColorMatrix }
-     *
      */
     public FeColorMatrix createFeColorMatrix() {
         return new FeColorMatrix();
@@ -229,7 +204,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeComponentTransfer }
-     *
      */
     public FeComponentTransfer createFeComponentTransfer() {
         return new FeComponentTransfer();
@@ -237,7 +211,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeComposite }
-     *
      */
     public FeComposite createFeComposite() {
         return new FeComposite();
@@ -245,7 +218,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeConvolveMatrix }
-     *
      */
     public FeConvolveMatrix createFeConvolveMatrix() {
         return new FeConvolveMatrix();
@@ -253,7 +225,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeDiffuseLighting }
-     *
      */
     public FeDiffuseLighting createFeDiffuseLighting() {
         return new FeDiffuseLighting();
@@ -261,7 +232,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeDisplacementMap }
-     *
      */
     public FeDisplacementMap createFeDisplacementMap() {
         return new FeDisplacementMap();
@@ -269,7 +239,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeDistantLight }
-     *
      */
     public FeDistantLight createFeDistantLight() {
         return new FeDistantLight();
@@ -277,7 +246,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeFlood }
-     *
      */
     public FeFlood createFeFlood() {
         return new FeFlood();
@@ -285,7 +253,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeFunctionAlpha }
-     *
      */
     public FeFunctionAlpha createFeFuncA() {
         return new FeFunctionAlpha();
@@ -293,7 +260,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeFunctionBlue }
-     *
      */
     public FeFunctionBlue createFeFuncB() {
         return new FeFunctionBlue();
@@ -301,7 +267,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeFunctionGreen }
-     *
      */
     public FeFunctionGreen createFeFuncG() {
         return new FeFunctionGreen();
@@ -309,7 +274,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeFunctionRed }
-     *
      */
     public FeFunctionRed createFeFuncR() {
         return new FeFunctionRed();
@@ -317,7 +281,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeGaussianBlur }
-     *
      */
     public FeGaussianBlur createFeGaussianBlur() {
         return new FeGaussianBlur();
@@ -325,7 +288,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeImage }
-     *
      */
     public FeImage createFeImage() {
         return new FeImage();
@@ -333,7 +295,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeMerge }
-     *
      */
     public FeMerge createFeMerge() {
         return new FeMerge();
@@ -341,7 +302,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeMergeNode }
-     *
      */
     public FeMergeNode createFeMergeNode() {
         return new FeMergeNode();
@@ -349,7 +309,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeMorphology }
-     *
      */
     public FeMorphology createFeMorphology() {
         return new FeMorphology();
@@ -357,7 +316,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeOffset }
-     *
      */
     public FeOffset createFeOffset() {
         return new FeOffset();
@@ -365,7 +323,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FePointLight }
-     *
      */
     public FePointLight createFePointLight() {
         return new FePointLight();
@@ -373,7 +330,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeSpecularLighting }
-     *
      */
     public FeSpecularLighting createFeSpecularLighting() {
         return new FeSpecularLighting();
@@ -381,7 +337,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeSpotLight }
-     *
      */
     public FeSpotLight createFeSpotLight() {
         return new FeSpotLight();
@@ -389,7 +344,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeTile }
-     *
      */
     public FeTile createFeTile() {
         return new FeTile();
@@ -397,7 +351,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FeTurbulence }
-     *
      */
     public FeTurbulence createFeTurbulence() {
         return new FeTurbulence();
@@ -405,7 +358,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgFilter }
-     *
      */
     public SvgFilter createFilter() {
         return new SvgFilter();
@@ -413,7 +365,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgFont }
-     *
      */
     public SvgFont createFont() {
         return new SvgFont();
@@ -421,7 +372,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgFontFace }
-     *
      */
     public SvgFontFace createFontFace() {
         return new SvgFontFace();
@@ -429,7 +379,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgFontFaceFormat }
-     *
      */
     public SvgFontFaceFormat createFontFaceFormat() {
         return new SvgFontFaceFormat();
@@ -437,7 +386,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgFontFaceName }
-     *
      */
     public SvgFontFaceName createFontFaceName() {
         return new SvgFontFaceName();
@@ -445,7 +393,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgFontFaceSrc }
-     *
      */
     public SvgFontFaceSrc createFontFaceSrc() {
         return new SvgFontFaceSrc();
@@ -453,7 +400,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgFontFaceUri }
-     *
      */
     public SvgFontFaceUri createFontFaceUri() {
         return new SvgFontFaceUri();
@@ -461,7 +407,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgForeignObject }
-     *
      */
     public SvgForeignObject createForeignObject() {
         return new SvgForeignObject();
@@ -469,7 +414,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgGlyph }
-     *
      */
     public SvgGlyph createGlyph() {
         return new SvgGlyph();
@@ -477,7 +421,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgGlyphRef }
-     *
      */
     public SvgGlyphRef createGlyphRef() {
         return new SvgGlyphRef();
@@ -485,7 +428,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgHorizontalKerning }
-     *
      */
     public SvgHorizontalKerning createHkern() {
         return new SvgHorizontalKerning();
@@ -493,7 +435,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgImage }
-     *
      */
     public SvgImage createImage() {
         return new SvgImage();
@@ -501,7 +442,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgLinearGradient }
-     *
      */
     public SvgLinearGradient createLinearGradient() {
         return new SvgLinearGradient();
@@ -509,7 +449,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgMarker }
-     *
      */
     public SvgMarker createMarker() {
         return new SvgMarker();
@@ -517,7 +456,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgMask }
-     *
      */
     public SvgMask createMask() {
         return new SvgMask();
@@ -525,7 +463,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgMetadata }
-     *
      */
     public SvgMetadata createMetadata() {
         return new SvgMetadata();
@@ -533,7 +470,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgMissingGlyph }
-     *
      */
     public SvgMissingGlyph createMissingGlyph() {
         return new SvgMissingGlyph();
@@ -541,7 +477,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgMotionPath }
-     *
      */
     public SvgMotionPath createMpath() {
         return new SvgMotionPath();
@@ -549,7 +484,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgPattern }
-     *
      */
     public SvgPattern createPattern() {
         return new SvgPattern();
@@ -557,7 +491,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgRadialGradient }
-     *
      */
     public SvgRadialGradient createRadialGradient() {
         return new SvgRadialGradient();
@@ -565,7 +498,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgScript }
-     *
      */
     public SvgScript createScript() {
         return new SvgScript();
@@ -573,7 +505,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgSetAttribute }
-     *
      */
     public SvgSetAttribute createSet() {
         return new SvgSetAttribute();
@@ -581,7 +512,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgStop }
-     *
      */
     public SvgStop createStop() {
         return new SvgStop();
@@ -589,7 +519,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgStyle }
-     *
      */
     public SvgStyle createStyle() {
         return new SvgStyle();
@@ -597,7 +526,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgCircle }
-     *
      */
     public SvgCircle createSvgCircle() {
         return new SvgCircle();
@@ -605,7 +533,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgEllipse }
-     *
      */
     public SvgEllipse createSvgEllipse() {
         return new SvgEllipse();
@@ -613,7 +540,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgGroup }
-     *
      */
     public SvgGroup createSvgGroup() {
         return new SvgGroup();
@@ -621,7 +547,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgLine }
-     *
      */
     public SvgLine createSvgLine() {
         return new SvgLine();
@@ -629,7 +554,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgPath }
-     *
      */
     public SvgPath createSvgPath() {
         return new SvgPath();
@@ -637,7 +561,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgPolygon }
-     *
      */
     public SvgPolygon createSvgPolygon() {
         return new SvgPolygon();
@@ -645,7 +568,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgPolyline }
-     *
      */
     public SvgPolyline createSvgPolyline() {
         return new SvgPolyline();
@@ -653,7 +575,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgRectangle }
-     *
      */
     public SvgRectangle createSvgRectangle() {
         return new SvgRectangle();
@@ -661,7 +582,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgGraphic }
-     *
      */
     public SvgGraphic createSvgRootElement() {
         return new SvgGraphic();
@@ -669,7 +589,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgText }
-     *
      */
     public SvgText createSvgText() {
         return new SvgText();
@@ -677,7 +596,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgSwitch }
-     *
      */
     public SvgSwitch createSwitch() {
         return new SvgSwitch();
@@ -685,7 +603,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgSymbol }
-     *
      */
     public SvgSymbol createSymbol() {
         return new SvgSymbol();
@@ -693,7 +610,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgTextPath }
-     *
      */
     public SvgTextPath createTextPath() {
         return new SvgTextPath();
@@ -701,7 +617,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgTitle }
-     *
      */
     public SvgTitle createTitle() {
         return new SvgTitle();
@@ -709,7 +624,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgTextReference }
-     *
      */
     public SvgTextReference createTref() {
         return new SvgTextReference();
@@ -717,7 +631,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgTextSpan }
-     *
      */
     public SvgTextSpan createTspan() {
         return new SvgTextSpan();
@@ -725,7 +638,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgUse }
-     *
      */
     public SvgUse createUse() {
         return new SvgUse();
@@ -733,7 +645,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgView }
-     *
      */
     public SvgView createView() {
         return new SvgView();
@@ -741,7 +652,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SvgVerticalKerning }
-     *
      */
     public SvgVerticalKerning createVkern() {
         return new SvgVerticalKerning();

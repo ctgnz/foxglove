@@ -1,10 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.RenderContext.Axis;
-import nz.co.ctg.foxglove.RenderContext.UnitsMode;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -12,6 +7,11 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 
 import javafx.css.Size;
 import javafx.css.SizeUnits;
+
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.RenderContext.Axis;
+import nz.co.ctg.foxglove.RenderContext.UnitsMode;
 
 public class RenderContextTest {
 
@@ -58,14 +58,16 @@ public class RenderContextTest {
 
     @Test
     public void testObjectBoundingBoxIsAbsentUntilEstablished() throws Exception {
-        assertThat(viewport(200, 100).getObjectBoundingBox().isPresent(), is(false));
+        assertThat(viewport(200, 100).getObjectBoundingBox()
+            .isPresent(), is(false));
     }
 
     @Test
     public void testWithObjectBoundingBoxCarriesItForward() throws Exception {
         javafx.geometry.Bounds bbox = new javafx.geometry.BoundingBox(1, 2, 3, 4);
         RenderContext withBbox = viewport(200, 100).withObjectBoundingBox(bbox);
-        assertThat(withBbox.getObjectBoundingBox().get(), is(bbox));
+        assertThat(withBbox.getObjectBoundingBox()
+            .get(), is(bbox));
     }
 
     @Test

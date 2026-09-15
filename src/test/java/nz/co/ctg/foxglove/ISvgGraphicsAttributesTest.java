@@ -1,15 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.clip.SvgClipPath;
-import nz.co.ctg.foxglove.element.SvgGroup;
-import nz.co.ctg.foxglove.shape.SvgCircle;
-import nz.co.ctg.foxglove.shape.SvgPath;
-import nz.co.ctg.foxglove.shape.SvgRectangle;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -18,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
+import java.util.List;
 import javafx.css.Size;
 import javafx.css.SizeUnits;
 import javafx.scene.Group;
@@ -32,9 +23,17 @@ import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.clip.SvgClipPath;
+import nz.co.ctg.foxglove.element.SvgGroup;
+import nz.co.ctg.foxglove.shape.SvgCircle;
+import nz.co.ctg.foxglove.shape.SvgPath;
+import nz.co.ctg.foxglove.shape.SvgRectangle;
+
 /**
- * Inheritance never worked: {@code getFill()} substituted black for an absent value, so the parent was never
- * consulted, and only the immediate parent was passed anyway. Several parsed properties were also never applied.
+ * Inheritance never worked: {@code getFill()} substituted black for an absent value, so the parent was never consulted, and only the immediate parent was passed anyway. Several
+ * parsed properties were also never applied.
  */
 public class ISvgGraphicsAttributesTest {
 
@@ -44,7 +43,8 @@ public class ISvgGraphicsAttributesTest {
     public void testShapeInheritsFillFromItsGroup() throws Exception {
         SvgGroup group = new SvgGroup();
         group.setFill(Color.RED);
-        group.getContent().add(new SvgRectangle());
+        group.getContent()
+            .add(new SvgRectangle());
 
         assertThat(firstShape(render(group)).getFill(), is(Color.RED));
     }
@@ -52,12 +52,15 @@ public class ISvgGraphicsAttributesTest {
     @Test
     public void testInheritanceReachesThroughSeveralLevels() throws Exception {
         SvgGroup inner = new SvgGroup();
-        inner.getContent().add(new SvgRectangle());
+        inner.getContent()
+            .add(new SvgRectangle());
         SvgGroup middle = new SvgGroup();
-        middle.getContent().add(inner);
+        middle.getContent()
+            .add(inner);
         SvgGroup outer = new SvgGroup();
         outer.setFill(Color.RED);
-        outer.getContent().add(middle);
+        outer.getContent()
+            .add(middle);
 
         assertThat(firstShape(render(outer)).getFill(), is(Color.RED));
     }
@@ -66,10 +69,12 @@ public class ISvgGraphicsAttributesTest {
     public void testNearestAncestorWins() throws Exception {
         SvgGroup inner = new SvgGroup();
         inner.setFill(Color.BLUE);
-        inner.getContent().add(new SvgRectangle());
+        inner.getContent()
+            .add(new SvgRectangle());
         SvgGroup outer = new SvgGroup();
         outer.setFill(Color.RED);
-        outer.getContent().add(inner);
+        outer.getContent()
+            .add(inner);
 
         assertThat(firstShape(render(outer)).getFill(), is(Color.BLUE));
     }
@@ -80,7 +85,8 @@ public class ISvgGraphicsAttributesTest {
         rect.setFill(Color.GREEN);
         SvgGroup group = new SvgGroup();
         group.setFill(Color.RED);
-        group.getContent().add(rect);
+        group.getContent()
+            .add(rect);
 
         assertThat(firstShape(render(group)).getFill(), is(Color.GREEN));
     }
@@ -89,7 +95,8 @@ public class ISvgGraphicsAttributesTest {
     public void testShapeInheritsCursorFromItsGroup() throws Exception {
         SvgGroup group = new SvgGroup();
         group.setCursor("pointer");
-        group.getContent().add(new SvgRectangle());
+        group.getContent()
+            .add(new SvgRectangle());
 
         Shape shape = firstShape(render(group));
         assertThat(shape.getCursor(), is(javafx.scene.Cursor.HAND));
@@ -99,8 +106,8 @@ public class ISvgGraphicsAttributesTest {
     }
 
     /**
-     * The exact scenario a bug report caught: a bare titleless shape with its own {@code cursor}, no wrapping
-     * {@code <a>} to reset {@code mouseTransparent} the way {@code SvgAnchor} does for its own content.
+     * The exact scenario a bug report caught: a bare titleless shape with its own {@code cursor}, no wrapping {@code <a>} to reset {@code mouseTransparent} the way
+     * {@code SvgAnchor} does for its own content.
      */
     @Test
     public void testStandaloneShapeWithItsOwnCursorIsStillHoverable() throws Exception {
@@ -118,7 +125,8 @@ public class ISvgGraphicsAttributesTest {
         group.setStroke(Color.BLUE);
         group.setStrokeWidth(4.0);
         group.setStrokeLineCap(StrokeLineCap.ROUND);
-        group.getContent().add(new SvgRectangle());
+        group.getContent()
+            .add(new SvgRectangle());
 
         Shape shape = firstShape(render(group));
         assertThat(shape.getStroke(), is(Color.BLUE));
@@ -139,8 +147,8 @@ public class ISvgGraphicsAttributesTest {
     }
 
     /**
-     * SVG starts a stroke one unit wide, butt capped, mitred with a limit of four. JavaFX would otherwise default to
-     * a square cap and a limit of ten, and the previous code set the width and the limit to zero.
+     * SVG starts a stroke one unit wide, butt capped, mitred with a limit of four. JavaFX would otherwise default to a square cap and a limit of ten, and the previous code set the
+     * width and the limit to zero.
      */
     @Test
     public void testStrokeInitialValuesFollowTheSpecification() throws Exception {
@@ -155,10 +163,9 @@ public class ISvgGraphicsAttributesTest {
     // --- stroke-dasharray (#114) -------------------------------------------
 
     /**
-     * JavaFX rejects a dash array whose entries are all zero, throwing {@code IllegalArgumentException} from inside
-     * rendering rather than from the setter - so this used to escape {@code createGraphic} into whatever application
-     * was rendering the document. SVG 1.1 says the opposite: a sum of zero is "rendered as if a value of none were
-     * specified", i.e. an ordinary solid stroke.
+     * JavaFX rejects a dash array whose entries are all zero, throwing {@code IllegalArgumentException} from inside rendering rather than from the setter - so this used to escape
+     * {@code createGraphic} into whatever application was rendering the document. SVG 1.1 says the opposite: a sum of zero is "rendered as if a value of none were specified", i.e.
+     * an ordinary solid stroke.
      */
     @Test
     public void testAnAllZeroDashArrayRendersSolidRatherThanThrowing() throws Exception {
@@ -195,8 +202,7 @@ public class ISvgGraphicsAttributesTest {
     }
 
     /**
-     * A zero entry is only fatal when every entry is zero - {@code "5 0"} sums above zero, is a legal (if degenerate)
-     * pattern, and JavaFX accepts it.
+     * A zero entry is only fatal when every entry is zero - {@code "5 0"} sums above zero, is a legal (if degenerate) pattern, and JavaFX accepts it.
      */
     @Test
     public void testAZeroEntryAlongsideANonZeroOneIsStillApplied() throws Exception {
@@ -207,9 +213,8 @@ public class ISvgGraphicsAttributesTest {
     }
 
     /**
-     * SVG's "repeat an odd list to yield an even number of values" rule is left to JavaFX, which cycles an
-     * odd-length array so dash and gap roles swap on each pass - pixel-for-pixel identical to the doubled list.
-     * This pins that the list is passed through as-authored rather than silently rewritten.
+     * SVG's "repeat an odd list to yield an even number of values" rule is left to JavaFX, which cycles an odd-length array so dash and gap roles swap on each pass -
+     * pixel-for-pixel identical to the doubled list. This pins that the list is passed through as-authored rather than silently rewritten.
      */
     @Test
     public void testAnOddLengthDashArrayIsPassedThroughUnchanged() throws Exception {
@@ -229,10 +234,9 @@ public class ISvgGraphicsAttributesTest {
     }
 
     /**
-     * The end-to-end proof, and the reason the assertions above are not sufficient on their own: JavaFX accepts a
-     * bad dash array quite happily at the setter and only throws once something paints it. So a document like this
-     * would not fail in {@code createGraphic} at all - it would blow up later, on the JavaFX Application Thread,
-     * mid-render, a long way from the value that caused it. This rasterises to prove that no longer happens.
+     * The end-to-end proof, and the reason the assertions above are not sufficient on their own: JavaFX accepts a bad dash array quite happily at the setter and only throws once
+     * something paints it. So a document like this would not fail in {@code createGraphic} at all - it would blow up later, on the JavaFX Application Thread, mid-render, a long
+     * way from the value that caused it. This rasterises to prove that no longer happens.
      */
     @Test
     public void testAnAllZeroDashArrayActuallyRasterises() throws Exception {
@@ -256,7 +260,9 @@ public class ISvgGraphicsAttributesTest {
         int painted = 0;
         for (int y = 0; y < 30; y++) {
             for (int x = 0; x < 50; x++) {
-                if (!image.getPixelReader().getColor(x, y).equals(Color.WHITE)) {
+                if (!image.getPixelReader()
+                    .getColor(x, y)
+                    .equals(Color.WHITE)) {
                     painted++;
                 }
             }
@@ -283,18 +289,21 @@ public class ISvgGraphicsAttributesTest {
     }
 
     /**
-     * Group opacity composites the subtree once; it must not be handed to each child as well, which would apply it
-     * twice.
+     * Group opacity composites the subtree once; it must not be handed to each child as well, which would apply it twice.
      */
     @Test
     public void testOpacityIsNotInherited() throws Exception {
         SvgGroup group = new SvgGroup();
         group.setOpacity("0.5");
-        group.getContent().add(new SvgRectangle());
+        group.getContent()
+            .add(new SvgRectangle());
 
-        Group rendered = (Group) render(group).getChildren().get(0);
+        Group rendered = (Group) render(group).getChildren()
+            .get(0);
         assertThat(rendered.getOpacity(), is(0.5));
-        assertThat(rendered.getChildren().get(0).getOpacity(), is(1.0));
+        assertThat(rendered.getChildren()
+            .get(0)
+            .getOpacity(), is(1.0));
     }
 
     @Test
@@ -325,7 +334,8 @@ public class ISvgGraphicsAttributesTest {
         rect.setFill(Color.RED);
         SvgGroup group = new SvgGroup();
         group.setFillOpacity("0.5");
-        group.getContent().add(rect);
+        group.getContent()
+            .add(rect);
 
         assertThat(((Color) firstShape(render(group)).getFill()).getOpacity(), closeTo(0.5, 1e-9));
     }
@@ -341,7 +351,9 @@ public class ISvgGraphicsAttributesTest {
         rect.setVisibility("hidden");
 
         Group rendered = render(groupOf(rect));
-        assertThat(((Group) rendered.getChildren().get(0)).getChildren().size(), is(1));
+        assertThat(((Group) rendered.getChildren()
+            .get(0)).getChildren()
+            .size(), is(1));
         assertThat(firstShape(rendered).isVisible(), is(false));
     }
 
@@ -349,15 +361,15 @@ public class ISvgGraphicsAttributesTest {
     public void testVisibilityIsInherited() throws Exception {
         SvgGroup group = new SvgGroup();
         group.setVisibility("hidden");
-        group.getContent().add(new SvgRectangle());
+        group.getContent()
+            .add(new SvgRectangle());
 
         assertThat(firstShape(render(group)).isVisible(), is(false));
     }
 
     /**
-     * A descendant may become visible again inside a hidden ancestor, which is why visibility travels down as an
-     * inherited property rather than by hiding the group node - an invisible JavaFX parent would hide the child
-     * unconditionally and make the override impossible.
+     * A descendant may become visible again inside a hidden ancestor, which is why visibility travels down as an inherited property rather than by hiding the group node - an
+     * invisible JavaFX parent would hide the child unconditionally and make the override impossible.
      */
     @Test
     public void testVisibleChildOverridesHiddenAncestor() throws Exception {
@@ -365,11 +377,15 @@ public class ISvgGraphicsAttributesTest {
         rect.setVisibility("visible");
         SvgGroup group = new SvgGroup();
         group.setVisibility("hidden");
-        group.getContent().add(rect);
+        group.getContent()
+            .add(rect);
 
-        Group rendered = (Group) render(group).getChildren().get(0);
+        Group rendered = (Group) render(group).getChildren()
+            .get(0);
         assertThat(rendered.isVisible(), is(true));
-        assertThat(rendered.getChildren().get(0).isVisible(), is(true));
+        assertThat(rendered.getChildren()
+            .get(0)
+            .isVisible(), is(true));
     }
 
     // --- fill rule ---------------------------------------------------------
@@ -389,7 +405,8 @@ public class ISvgGraphicsAttributesTest {
         path.setD("M0 0 L10 0 L10 10 Z");
         SvgGroup group = new SvgGroup();
         group.setFillRule(FillRule.EVEN_ODD);
-        group.getContent().add(path);
+        group.getContent()
+            .add(path);
 
         assertThat(((SVGPath) firstShape(render(group))).getFillRule(), is(FillRule.EVEN_ODD));
     }
@@ -402,23 +419,26 @@ public class ISvgGraphicsAttributesTest {
     }
 
     /**
-     * {@code clip-path} is not inherited (confirmed absent from {@code SvgInheritedStyle}'s inherited set) - a
-     * group's own clip must not cascade onto a child that declares none of its own, unlike {@code fill}/
-     * {@code cursor} above.
+     * {@code clip-path} is not inherited (confirmed absent from {@code SvgInheritedStyle}'s inherited set) - a group's own clip must not cascade onto a child that declares none of
+     * its own, unlike {@code fill}/ {@code cursor} above.
      */
     @Test
     public void testClipPathIsNotInheritedByAChildThatDeclaresNone() throws Exception {
         SvgClipPath clipPath = new SvgClipPath();
         clipPath.setId("clip");
-        clipPath.getContent().add(new SvgCircle());
+        clipPath.getContent()
+            .add(new SvgCircle());
 
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(clipPath);
+        svg.getContent()
+            .add(clipPath);
         SvgGroup group = new SvgGroup();
         group.setClipPath("url(#clip)");
         SvgRectangle rect = new SvgRectangle();
-        group.getContent().add(rect);
-        svg.getContent().add(group);
+        group.getContent()
+            .add(rect);
+        svg.getContent()
+            .add(group);
 
         RenderContext context = RenderContext.root(svg.getElementIndex(), 0, 0);
         Group renderedGroup = group.createGraphic(context);
@@ -429,8 +449,7 @@ public class ISvgGraphicsAttributesTest {
     // --- mask ----------------------------------------------------------------
 
     /**
-     * {@code applyMask} is a no-op (returns the exact same node) when {@code mask} is absent - it must never build a
-     * replacement {@link Node} it doesn't need.
+     * {@code applyMask} is a no-op (returns the exact same node) when {@code mask} is absent - it must never build a replacement {@link Node} it doesn't need.
      */
     @Test
     public void testAbsentMaskReturnsTheSameNode() throws Exception {
@@ -445,9 +464,8 @@ public class ISvgGraphicsAttributesTest {
     // --- filter ----------------------------------------------------------------
 
     /**
-     * {@code applyFilter} is a no-op when {@code filter} is absent - unlike {@code applyClip}/{@code applyMask},
-     * there is no separate property to assert against directly, so this just confirms nothing throws and no effect
-     * is set.
+     * {@code applyFilter} is a no-op when {@code filter} is absent - unlike {@code applyClip}/{@code applyMask}, there is no separate property to assert against directly, so this
+     * just confirms nothing throws and no effect is set.
      */
     @Test
     public void testAbsentFilterLeavesTheNodeUnaffected() throws Exception {
@@ -478,20 +496,24 @@ public class ISvgGraphicsAttributesTest {
 
     private static SvgGroup groupOf(ISvgElement child) {
         SvgGroup group = new SvgGroup();
-        group.getContent().add(child);
+        group.getContent()
+            .add(child);
         return group;
     }
 
     private static Group render(SvgGroup group) {
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(group);
+        svg.getContent()
+            .add(group);
         return svg.createGroup();
     }
 
     private static Shape firstShape(Group rendered) {
-        Node node = rendered.getChildren().get(0);
+        Node node = rendered.getChildren()
+            .get(0);
         while (node instanceof Group group) {
-            node = group.getChildren().get(0);
+            node = group.getChildren()
+                .get(0);
         }
         return (Shape) node;
     }

@@ -1,35 +1,33 @@
 package nz.co.ctg.foxglove.animate;
 
 import java.util.Optional;
+import javafx.animation.Animation;
+import javafx.util.Duration;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import javafx.animation.Animation;
-import javafx.util.Duration;
-
 /**
- * A parsed, typed view of one animation element's timing - the SMIL clock-value grammar and the handful of
- * timing attributes {@link ISvgAnimationElement} declares as raw strings.
+ * A parsed, typed view of one animation element's timing - the SMIL clock-value grammar and the handful of timing attributes {@link ISvgAnimationElement} declares as raw strings.
  * <p>
- * Scoped to a first increment, per the issue's own suggestion: {@code begin}/{@code end} support a plain clock-value
- * offset only. Syncbase (<code>other.end+2s</code>), event, repeat and accessKey begin-values, and
- * semicolon-separated lists, all fail to parse as a plain offset and come back {@link Optional#empty()} - the same
- * documented "unsupported, degrades rather than throws" treatment used throughout this renderer, not a crash and not
- * silently wrong. Full SMIL begin-value support is its own, much larger, piece of work.
+ * Scoped to a first increment, per the issue's own suggestion: {@code begin}/{@code end} support a plain clock-value offset only. Syncbase (<code>other.end+2s</code>), event,
+ * repeat and accessKey begin-values, and semicolon-separated lists, all fail to parse as a plain offset and come back {@link Optional#empty()} - the same documented "unsupported,
+ * degrades rather than throws" treatment used throughout this renderer, not a crash and not silently wrong. Full SMIL begin-value support is its own, much larger, piece of work.
  * <p>
- * {@code min}/{@code max}/{@code restart} are intentionally not represented here at all yet - parsed by
- * {@link ISvgAnimationElement} already, but not enforced by anything in this first increment (documented gap).
+ * {@code min}/{@code max}/{@code restart} are intentionally not represented here at all yet - parsed by {@link ISvgAnimationElement} already, but not enforced by anything in this
+ * first increment (documented gap).
  */
 public record SvgAnimationTiming(Optional<Duration> begin, Duration duration, Optional<Duration> end, int repeatCount,
-    Optional<Duration> repeatDuration, FillBehavior fill) {
+                                 Optional<Duration> repeatDuration, FillBehavior fill) {
 
     public enum FillBehavior {
-        FREEZE,
-        REMOVE
+            FREEZE,
+            REMOVE
     }
 
-    private static final String[] METRIC_SUFFIXES = {"ms", "min", "h", "s"};
+    private static final String[] METRIC_SUFFIXES = {
+        "ms", "min", "h", "s"
+    };
 
     public static SvgAnimationTiming parse(ISvgAnimationElement element) {
         Optional<Duration> begin = parseClockValue(element.getBegin());
@@ -42,9 +40,8 @@ public record SvgAnimationTiming(Optional<Duration> begin, Duration duration, Op
     }
 
     /**
-     * {@code dur} (and {@code repeatDur}, which shares the same grammar plus {@code indefinite}): a plain clock
-     * value, or the {@code indefinite} keyword mapped to {@link Duration#INDEFINITE} - {@code media} (an intrinsic
-     * media duration) is not resolvable by anything in this renderer and comes back empty, the same as any other
+     * {@code dur} (and {@code repeatDur}, which shares the same grammar plus {@code indefinite}): a plain clock value, or the {@code indefinite} keyword mapped to
+     * {@link Duration#INDEFINITE} - {@code media} (an intrinsic media duration) is not resolvable by anything in this renderer and comes back empty, the same as any other
      * unsupported value.
      */
     private static Optional<Duration> parseDur(String raw) {
@@ -63,9 +60,8 @@ public record SvgAnimationTiming(Optional<Duration> begin, Duration duration, Op
 
     /**
      * A bare SMIL clock value only - {@code Full-clock-value} ({@code "02:30:03"}, hh:mm:ss), {@code
-     * Partial-clock-value} ({@code "12:30"}, mm:ss), or {@code Timecount-value} (a number with an optional
-     * {@code h}/{@code min}/{@code s}/{@code ms} suffix, defaulting to seconds - {@code "5s"}, {@code "500ms"},
-     * {@code "2"}). Also used for {@code begin}/{@code end}, whose only supported form is one of these.
+     * Partial-clock-value} ({@code "12:30"}, mm:ss), or {@code Timecount-value} (a number with an optional {@code h}/{@code min}/{@code s}/{@code ms} suffix, defaulting to seconds
+     * - {@code "5s"}, {@code "500ms"}, {@code "2"}). Also used for {@code begin}/{@code end}, whose only supported form is one of these.
      */
     static Optional<Duration> parseClockValue(String raw) {
         String value = StringUtils.trimToNull(raw);
@@ -123,9 +119,8 @@ public record SvgAnimationTiming(Optional<Duration> begin, Duration duration, Op
     }
 
     /**
-     * A bare number (SMIL allows a fraction; rounded to the nearest whole cycle - {@link Animation#setCycleCount}
-     * has no fractional notion of a cycle) or {@code indefinite} mapped to {@link Animation#INDEFINITE}. Absent or
-     * unparseable defaults to {@code 1}, the SMIL initial value.
+     * A bare number (SMIL allows a fraction; rounded to the nearest whole cycle - {@link Animation#setCycleCount} has no fractional notion of a cycle) or {@code indefinite} mapped
+     * to {@link Animation#INDEFINITE}. Absent or unparseable defaults to {@code 1}, the SMIL initial value.
      */
     private static int parseRepeatCount(String raw) {
         String value = StringUtils.trimToNull(raw);

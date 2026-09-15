@@ -1,9 +1,5 @@
 package nz.co.ctg.foxglove.animate;
 
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.animate.SvgAnimationTiming.FillBehavior;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.IsCloseTo.closeTo;
@@ -11,10 +7,13 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import javafx.animation.Animation;
 import javafx.util.Duration;
 
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.animate.SvgAnimationTiming.FillBehavior;
+
 /**
- * Exercises #30's SMIL clock-value parsing and the handful of timing attributes it feeds into
- * {@link SvgAnimationTiming} - the bulk of the genuinely novel logic in the animation infrastructure, and the
- * easiest part to get subtly wrong (the colon-separated forms especially).
+ * Exercises #30's SMIL clock-value parsing and the handful of timing attributes it feeds into {@link SvgAnimationTiming} - the bulk of the genuinely novel logic in the animation
+ * infrastructure, and the easiest part to get subtly wrong (the colon-separated forms especially).
  */
 public class SvgAnimationTimingTest {
 
@@ -48,7 +47,8 @@ public class SvgAnimationTimingTest {
 
     @Test
     public void testDurFractionalSeconds() {
-        assertThat(timingWithDur("1.5s").duration().toMillis(), closeTo(1500, 1e-6));
+        assertThat(timingWithDur("1.5s").duration()
+            .toMillis(), closeTo(1500, 1e-6));
     }
 
     // --- dur: colon forms ------------------------------------------------------
@@ -65,7 +65,8 @@ public class SvgAnimationTimingTest {
 
     @Test
     public void testDurFullClockValueWithFraction() {
-        assertThat(timingWithDur("00:00:01.5").duration().toMillis(), closeTo(1500, 1e-6));
+        assertThat(timingWithDur("00:00:01.5").duration()
+            .toMillis(), closeTo(1500, 1e-6));
     }
 
     // --- dur: keywords -----------------------------------------------------
@@ -90,36 +91,43 @@ public class SvgAnimationTimingTest {
     @Test
     public void testBeginPlainOffsetParses() {
         SvgAnimationTiming timing = timing(a -> a.setBegin("2s"));
-        assertThat(timing.begin().orElseThrow(), is(Duration.seconds(2)));
+        assertThat(timing.begin()
+            .orElseThrow(), is(Duration.seconds(2)));
     }
 
     @Test
     public void testBeginNegativeOffsetParses() {
         SvgAnimationTiming timing = timing(a -> a.setBegin("-2s"));
-        assertThat(timing.begin().orElseThrow(), is(Duration.seconds(-2)));
+        assertThat(timing.begin()
+            .orElseThrow(), is(Duration.seconds(-2)));
     }
 
     @Test
     public void testEndPlainOffsetParses() {
         SvgAnimationTiming timing = timing(a -> a.setEnd("5s"));
-        assertThat(timing.end().orElseThrow(), is(Duration.seconds(5)));
+        assertThat(timing.end()
+            .orElseThrow(), is(Duration.seconds(5)));
     }
 
     @Test
     public void testBeginSyncbaseValueIsUnsupportedAndParsesEmpty() {
         SvgAnimationTiming timing = timing(a -> a.setBegin("other.end+2s"));
-        assertThat(timing.begin().isEmpty(), is(true));
+        assertThat(timing.begin()
+            .isEmpty(), is(true));
     }
 
     @Test
     public void testBeginEventValueIsUnsupportedAndParsesEmpty() {
         SvgAnimationTiming timing = timing(a -> a.setBegin("click"));
-        assertThat(timing.begin().isEmpty(), is(true));
+        assertThat(timing.begin()
+            .isEmpty(), is(true));
     }
 
     @Test
     public void testBeginAbsentParsesEmpty() {
-        assertThat(timing(a -> { }).begin().isEmpty(), is(true));
+        assertThat(timing(a -> {
+        }).begin()
+            .isEmpty(), is(true));
     }
 
     // --- repeatCount ---------------------------------------------------------
@@ -136,7 +144,8 @@ public class SvgAnimationTimingTest {
 
     @Test
     public void testRepeatCountAbsentDefaultsToOne() {
-        assertThat(timing(a -> { }).repeatCount(), is(1));
+        assertThat(timing(a -> {
+        }).repeatCount(), is(1));
     }
 
     // --- repeatDur -------------------------------------------------------------
@@ -144,12 +153,15 @@ public class SvgAnimationTimingTest {
     @Test
     public void testRepeatDurationParses() {
         SvgAnimationTiming timing = timing(a -> a.setRepeatDuration("10s"));
-        assertThat(timing.repeatDuration().orElseThrow(), is(Duration.seconds(10)));
+        assertThat(timing.repeatDuration()
+            .orElseThrow(), is(Duration.seconds(10)));
     }
 
     @Test
     public void testRepeatDurationAbsentParsesEmpty() {
-        assertThat(timing(a -> { }).repeatDuration().isEmpty(), is(true));
+        assertThat(timing(a -> {
+        }).repeatDuration()
+            .isEmpty(), is(true));
     }
 
     // --- fill ------------------------------------------------------------------
@@ -166,7 +178,8 @@ public class SvgAnimationTimingTest {
 
     @Test
     public void testFillAbsentDefaultsToRemove() {
-        assertThat(timing(a -> { }).fill(), is(FillBehavior.REMOVE));
+        assertThat(timing(a -> {
+        }).fill(), is(FillBehavior.REMOVE));
     }
 
     // --- helpers -----------------------------------------------------------

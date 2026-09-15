@@ -1,18 +1,18 @@
 package nz.co.ctg.foxglove.adapter;
 
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+
 import nz.co.ctg.foxglove.type.SvgPaint;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 /**
  * Binds {@code fill} and {@code stroke}.
  * <p>
- * The value is not always a paint that can be built while parsing - {@code url(#grad)} names an element that may not
- * have been read yet, and {@code currentColor} depends on where the value ends up being used - so it unmarshals to
- * an {@link SvgPaint}, which carries the unresolved cases through to render time. A blank value unmarshals to null,
- * leaving the property unspecified so that it inherits.
+ * The value is not always a paint that can be built while parsing - {@code url(#grad)} names an element that may not have been read yet, and {@code currentColor} depends on where
+ * the value ends up being used - so it unmarshals to an {@link SvgPaint}, which carries the unresolved cases through to render time. A blank value unmarshals to null, leaving the
+ * property unspecified so that it inherits.
  */
 public class SvgPaintAdapter extends XmlAdapter<String, SvgPaint> {
 

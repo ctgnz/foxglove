@@ -1,6 +1,16 @@
 package nz.co.ctg.foxglove.text;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.number.IsCloseTo.closeTo;
+
 import java.util.List;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,23 +18,10 @@ import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.element.SvgGroup;
 import nz.co.ctg.foxglove.shape.SvgPath;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.number.IsCloseTo.closeTo;
-
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
-
 /**
- * Exercises #29's acceptance criteria: text renders along a referenced path with correct per-glyph rotation,
- * honouring {@code startOffset}. A quarter circle of radius 1000 centred at the origin, from (1000,0) to
- * (0,1000), is used throughout - its tangent angle is exactly {@code startOffset fraction * 90 + 90} degrees,
- * letting rotation be checked exactly via {@code startOffset} rather than depending on font metrics to land a
- * glyph at a particular arc length.
+ * Exercises #29's acceptance criteria: text renders along a referenced path with correct per-glyph rotation, honouring {@code startOffset}. A quarter circle of radius 1000 centred
+ * at the origin, from (1000,0) to (0,1000), is used throughout - its tangent angle is exactly {@code startOffset fraction * 90 + 90} degrees, letting rotation be checked exactly
+ * via {@code startOffset} rather than depending on font metrics to land a glyph at a particular arc length.
  */
 public class SvgTextPathRenderingTest {
 
@@ -83,12 +80,16 @@ public class SvgTextPathRenderingTest {
     @Test
     public void testTextAfterATextPathContinuesPastItRatherThanOverlappingWhatCameBefore() throws Exception {
         SvgText text = new SvgText();
-        text.getContent().add("Before ");
+        text.getContent()
+            .add("Before ");
         SvgTextPath textPath = new SvgTextPath();
         textPath.setXlinkHref("#p");
-        textPath.getContent().add("on path");
-        text.getContent().add(textPath);
-        text.getContent().add(" after");
+        textPath.getContent()
+            .add("on path");
+        text.getContent()
+            .add(textPath);
+        text.getContent()
+            .add(" after");
 
         SvgPath path = new SvgPath();
         path.setId("p");
@@ -101,10 +102,12 @@ public class SvgTextPathRenderingTest {
 
         Text before = (Text) children.get(0);
         double afterPathEndX = ((Text) children.get(children.size() - 2)).getX()
-            + ((Text) children.get(children.size() - 2)).getLayoutBounds().getWidth();
+                               + ((Text) children.get(children.size() - 2)).getLayoutBounds()
+                                   .getWidth();
         Text after = (Text) children.get(children.size() - 1);
 
-        assertThat(after.getX() >= before.getX() + before.getLayoutBounds().getWidth(), is(true));
+        assertThat(after.getX() >= before.getX() + before.getLayoutBounds()
+            .getWidth(), is(true));
         assertThat(after.getX(), closeTo(afterPathEndX, 1e-6));
     }
 
@@ -113,8 +116,10 @@ public class SvgTextPathRenderingTest {
         SvgText text = new SvgText();
         SvgTextPath textPath = new SvgTextPath();
         textPath.setXlinkHref("#missing");
-        textPath.getContent().add("Hello");
-        text.getContent().add(textPath);
+        textPath.getContent()
+            .add("Hello");
+        text.getContent()
+            .add(textPath);
 
         Node rendered = render(text, null);
         assertThat(rendered, instanceOf(Group.class));
@@ -135,8 +140,10 @@ public class SvgTextPathRenderingTest {
         SvgTextPath textPath = new SvgTextPath();
         textPath.setXlinkHref("#p");
         textPath.setStartOffset(startOffset);
-        textPath.getContent().add(text);
-        svgText.getContent().add(textPath);
+        textPath.getContent()
+            .add(text);
+        svgText.getContent()
+            .add(textPath);
 
         SvgPath path = new SvgPath();
         path.setId("p");
@@ -148,12 +155,18 @@ public class SvgTextPathRenderingTest {
     private static Node render(SvgText text, SvgPath path) {
         SvgGroup group = new SvgGroup();
         if (path != null) {
-            group.getContent().add(path);
+            group.getContent()
+                .add(path);
         }
-        group.getContent().add(text);
+        group.getContent()
+            .add(text);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(group);
-        return ((Group) svg.createGroup().getChildren().get(0)).getChildren().get(path != null ? 1 : 0);
+        svg.getContent()
+            .add(group);
+        return ((Group) svg.createGroup()
+            .getChildren()
+            .get(0)).getChildren()
+            .get(path != null ? 1 : 0);
     }
 
 }

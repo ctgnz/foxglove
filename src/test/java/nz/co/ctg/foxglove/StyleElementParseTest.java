@@ -1,8 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -12,11 +9,13 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 /**
- * Exercises a {@code <style>} block against a document that has been through the parser, rather than one assembled
- * in memory, so the acceptance criterion for #15 - "a {@code <style>} block with element, {@code .class} and
- * {@code #id} selectors affects rendering" - is proven end to end, the same way {@link SvgPaintParseTest} does for
- * paint references.
+ * Exercises a {@code <style>} block against a document that has been through the parser, rather than one assembled in memory, so the acceptance criterion for #15 - "a
+ * {@code <style>} block with element, {@code .class} and {@code #id} selectors affects rendering" - is proven end to end, the same way {@link SvgPaintParseTest} does for paint
+ * references.
  */
 public class StyleElementParseTest {
 

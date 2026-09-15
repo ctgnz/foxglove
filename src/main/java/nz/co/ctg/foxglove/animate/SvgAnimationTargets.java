@@ -7,9 +7,8 @@ import nz.co.ctg.foxglove.ISvgLinkable;
 import nz.co.ctg.foxglove.SvgElementIndex;
 
 /**
- * Resolves an animation element's target: {@code xlink:href} if present and resolvable, otherwise the element's own
- * parent in the parsed tree - SMIL's default target rule, and the reason {@link SvgElementIndex#getParent} (already
- * public for {@code <use>}'s own cycle guard) is enough here without any new parent-tracking of its own.
+ * Resolves an animation element's target: {@code xlink:href} if present and resolvable, otherwise the element's own parent in the parsed tree - SMIL's default target rule, and the
+ * reason {@link SvgElementIndex#getParent} (already public for {@code <use>}'s own cycle guard) is enough here without any new parent-tracking of its own.
  */
 public final class SvgAnimationTargets {
 

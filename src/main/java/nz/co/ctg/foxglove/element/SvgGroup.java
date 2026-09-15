@@ -2,6 +2,7 @@ package nz.co.ctg.foxglove.element;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.Group;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -13,8 +14,8 @@ import nz.co.ctg.foxglove.ISvgDescribable;
 import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.ISvgEventListener;
 import nz.co.ctg.foxglove.ISvgExternalResources;
-import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.ISvgTransformable;
+import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.SvgStyle;
 import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
@@ -50,16 +51,13 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import javafx.scene.Group;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "g", propOrder = {
     "content"
 })
 @XmlRootElement(name = "g", namespace = "http://www.w3.org/2000/svg")
-public class SvgGroup extends AbstractSvgStylable
-    implements ISvgDescribable, ISvgStructuralElement, ISvgExternalResources, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures, ISvgContainer, FxGraphic<Group> {
+public class SvgGroup extends AbstractSvgStylable implements ISvgDescribable, ISvgStructuralElement, ISvgExternalResources, ISvgEventListener, ISvgTransformable, ISvgConditionalFeatures, ISvgContainer, FxGraphic<Group> {
 
     @XmlElements({
         @XmlElement(name = "desc", type = SvgDescription.class, namespace = "http://www.w3.org/2000/svg"),

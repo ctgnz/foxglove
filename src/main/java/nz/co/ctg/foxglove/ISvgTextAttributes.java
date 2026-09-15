@@ -1,11 +1,5 @@
 package nz.co.ctg.foxglove;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.base.MoreObjects.ToStringHelper;
-
-import nz.co.ctg.foxglove.adapter.SizeAdapter;
-
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import javafx.css.Size;
@@ -15,13 +9,17 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import nz.co.ctg.foxglove.adapter.SizeAdapter;
+
 public interface ISvgTextAttributes extends ISvgAttributes {
     /**
-     * SVG's initial {@code font-size}, "medium" - a keyword with a browser-dependent absolute size, most commonly
-     * 16px, and what this renders as absent any {@code font-size} anywhere in the ancestor chain. Without this,
-     * {@link nz.co.ctg.foxglove.adapter.SizeAdapter#parse} falls back to a bare {@code 0px} for a blank value - a
-     * font built at size zero has zero-width, zero-height glyphs, so unstyled text would render completely
-     * invisible rather than at a reasonable default size.
+     * SVG's initial {@code font-size}, "medium" - a keyword with a browser-dependent absolute size, most commonly 16px, and what this renders as absent any {@code font-size}
+     * anywhere in the ancestor chain. Without this, {@link nz.co.ctg.foxglove.adapter.SizeAdapter#parse} falls back to a bare {@code 0px} for a blank value - a font built at size
+     * zero has zero-width, zero-height glyphs, so unstyled text would render completely invisible rather than at a reasonable default size.
      */
     Size INITIAL_FONT_SIZE = new Size(16, SizeUnits.PX);
 
@@ -230,24 +228,24 @@ public interface ISvgTextAttributes extends ISvgAttributes {
     }
 
     /**
-     * Applies the resolved font properties to a text node.
-     * <p>
-     * The font properties are inherited, so they are read from the style resolved against the ancestors rather than
-     * from this element alone - otherwise {@code <g font-family="serif"><text/></g>} would draw in the default font.
-     *
-     * @param parent the style inherited from the ancestors, already resolved - see {@link SvgInheritedStyle}
-     */
-    /**
      * The font size an already-resolved style asks for, falling back to the initial 16px.
      * <p>
-     * Exposed separately because an SVG font (#61) renders each glyph as a {@code Path}, which has no font to be
-     * asked afterwards - the layout needs the size up front to scale outlines and place baselines, rather than
-     * reading it back off a {@code Text} node it would no longer be building.
+     * Exposed separately because an SVG font (#61) renders each glyph as a {@code Path}, which has no font to be asked afterwards - the layout needs the size up front to scale
+     * outlines and place baselines, rather than reading it back off a {@code Text} node it would no longer be building.
      */
     static Size resolveFontSize(ISvgStylable style) {
         return StringUtils.isBlank(style.getFontSize()) ? INITIAL_FONT_SIZE : SizeAdapter.parse(style.getFontSize());
     }
 
+    /**
+     * Applies the resolved font properties to a text node.
+     * <p>
+     * The font properties are inherited, so they are read from the style resolved against the ancestors rather than from this element alone - otherwise
+     * {@code <g font-family="serif"><text/></g>} would draw in the default font.
+     *
+     * @param parent
+     *            the style inherited from the ancestors, already resolved - see {@link SvgInheritedStyle}
+     */
     default void applyTextProperties(ISvgStylable parent, Text svgText) {
         ISvgStylable style = SvgInheritedStyle.resolve(parent, this);
         Size size = resolveFontSize(style);

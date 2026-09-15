@@ -1,15 +1,14 @@
 package nz.co.ctg.foxglove.geometry;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 
+import java.util.List;
 import javafx.geometry.Point2D;
+
+import org.junit.jupiter.api.Test;
 
 public class SvgPathDataTest {
 
@@ -70,7 +69,8 @@ public class SvgPathDataTest {
         assertThat(last.getX(), closeTo(10, 1e-9));
         assertThat(last.getY(), closeTo(0, 1e-9));
         // the curve bulges below the chord, so its midpoint-ish sample should have y > 0
-        assertThat(points.get(points.size() / 2).getY() > 0, is(true));
+        assertThat(points.get(points.size() / 2)
+            .getY() > 0, is(true));
     }
 
     @Test
@@ -114,23 +114,33 @@ public class SvgPathDataTest {
     public void testSubpathsWalksPastAFurtherMoveto() throws Exception {
         List<SvgPathData.Subpath> subpaths = SvgPathData.subpaths("M0,0 L10,0 M100,100 L200,200");
         assertThat(subpaths, hasSize(2));
-        assertThat(subpaths.get(0).vertices(), hasSize(2));
-        assertThat(subpaths.get(0).closed(), is(false));
-        assertThat(subpaths.get(1).vertices(), hasSize(2));
-        assertThat(subpaths.get(1).vertices().get(0), is(new Point2D(100, 100)));
-        assertThat(subpaths.get(1).closed(), is(false));
+        assertThat(subpaths.get(0)
+            .vertices(), hasSize(2));
+        assertThat(subpaths.get(0)
+            .closed(), is(false));
+        assertThat(subpaths.get(1)
+            .vertices(), hasSize(2));
+        assertThat(subpaths.get(1)
+            .vertices()
+            .get(0), is(new Point2D(100, 100)));
+        assertThat(subpaths.get(1)
+            .closed(), is(false));
     }
 
     @Test
     public void testSubpathsWalksPastAClosepath() throws Exception {
         List<SvgPathData.Subpath> subpaths = SvgPathData.subpaths("M0,0 L10,0 L10,10 Z M50,50 L60,60");
         assertThat(subpaths, hasSize(2));
-        List<Point2D> first = subpaths.get(0).vertices();
+        List<Point2D> first = subpaths.get(0)
+            .vertices();
         assertThat(first, hasSize(4));
         assertThat(first.get(3), is(new Point2D(0, 0)));
-        assertThat(subpaths.get(0).closed(), is(true));
-        assertThat(subpaths.get(1).vertices(), hasSize(2));
-        assertThat(subpaths.get(1).closed(), is(false));
+        assertThat(subpaths.get(0)
+            .closed(), is(true));
+        assertThat(subpaths.get(1)
+            .vertices(), hasSize(2));
+        assertThat(subpaths.get(1)
+            .closed(), is(false));
     }
 
     @Test
@@ -138,16 +148,22 @@ public class SvgPathDataTest {
         // no curves, so flatten()'s dense sampling and subpaths()'s real-vertices-only output should coincide
         String d = "M0,0 L10,0 L10,10";
         assertThat(SvgPathData.subpaths(d), hasSize(1));
-        assertThat(SvgPathData.subpaths(d).get(0).vertices(), is(SvgPathData.flatten(d)));
+        assertThat(SvgPathData.subpaths(d)
+            .get(0)
+            .vertices(), is(SvgPathData.flatten(d)));
     }
 
     @Test
     public void testSubpathsOnACurveKeepsOnlyTheRealEndpoint() throws Exception {
         // flatten() densely samples the curve; subpaths() keeps only its actual endpoint
-        List<Point2D> vertices = SvgPathData.subpaths("M0,0 C0,10 10,10 10,0").get(0).vertices();
+        List<Point2D> vertices = SvgPathData.subpaths("M0,0 C0,10 10,10 10,0")
+            .get(0)
+            .vertices();
         assertThat(vertices, hasSize(2));
-        assertThat(vertices.get(1).getX(), closeTo(10, 1e-9));
-        assertThat(vertices.get(1).getY(), closeTo(0, 1e-9));
+        assertThat(vertices.get(1)
+            .getX(), closeTo(10, 1e-9));
+        assertThat(vertices.get(1)
+            .getY(), closeTo(0, 1e-9));
     }
 
     @Test
@@ -162,8 +178,10 @@ public class SvgPathDataTest {
     public void testToJavaFxPathOnALineProducesAMoveToAndALineTo() throws Exception {
         javafx.scene.shape.Path path = SvgPathData.toJavaFxPath("M0,0 L10,0");
         assertThat(path.getElements(), hasSize(2));
-        assertThat(path.getElements().get(0), org.hamcrest.CoreMatchers.instanceOf(javafx.scene.shape.MoveTo.class));
-        assertThat(path.getElements().get(1), org.hamcrest.CoreMatchers.instanceOf(javafx.scene.shape.LineTo.class));
+        assertThat(path.getElements()
+            .get(0), org.hamcrest.CoreMatchers.instanceOf(javafx.scene.shape.MoveTo.class));
+        assertThat(path.getElements()
+            .get(1), org.hamcrest.CoreMatchers.instanceOf(javafx.scene.shape.LineTo.class));
     }
 
     @Test
@@ -171,29 +189,34 @@ public class SvgPathDataTest {
         // unlike subpaths() (which keeps only the real endpoint), this needs real intermediate samples so
         // PathTransition actually follows the curve rather than a single straight chord across it
         javafx.scene.shape.Path path = SvgPathData.toJavaFxPath("M0,0 C0,10 10,10 10,0");
-        assertThat(path.getElements().size() > 2, is(true));
+        assertThat(path.getElements()
+            .size() > 2, is(true));
     }
 
     @Test
     public void testToJavaFxPathWalksEverySubpathUnlikeFlatten() throws Exception {
         javafx.scene.shape.Path path = SvgPathData.toJavaFxPath("M0,0 L10,0 M20,20 L30,20");
-        long moveTos = path.getElements().stream().filter(javafx.scene.shape.MoveTo.class::isInstance).count();
+        long moveTos = path.getElements()
+            .stream()
+            .filter(javafx.scene.shape.MoveTo.class::isInstance)
+            .count();
         assertThat(moveTos, is(2L));
     }
 
     @Test
     public void testToJavaFxPathOfABlankPathIsEmpty() throws Exception {
-        assertThat(SvgPathData.toJavaFxPath("").getElements(), hasSize(0));
-        assertThat(SvgPathData.toJavaFxPath(null).getElements(), hasSize(0));
+        assertThat(SvgPathData.toJavaFxPath("")
+            .getElements(), hasSize(0));
+        assertThat(SvgPathData.toJavaFxPath(null)
+            .getElements(), hasSize(0));
     }
 
     // --- elliptical arc flags (#115) ----------------------------------------
 
     /**
-     * SVG's grammar defines an arc flag as a single character, {@code flag ::= "0" | "1"}, not as a number - so a
-     * separator between the two flags is optional and {@code 10} means {@code large-arc-flag=1 sweep-flag=0}.
-     * Reading it as the number ten instead shifts every later argument along by one, which is how a path ending
-     * {@code 25,25z} used to walk its final coordinate onto the {@code z} and throw.
+     * SVG's grammar defines an arc flag as a single character, {@code flag ::= "0" | "1"}, not as a number - so a separator between the two flags is optional and {@code 10} means
+     * {@code large-arc-flag=1 sweep-flag=0}. Reading it as the number ten instead shifts every later argument along by one, which is how a path ending {@code 25,25z} used to walk
+     * its final coordinate onto the {@code z} and throw.
      */
     @Test
     public void testArcFlagsNeedNoSeparatorBetweenThem() throws Exception {
@@ -213,8 +236,8 @@ public class SvgPathDataTest {
     }
 
     /**
-     * Asserts the two forms flatten identically <i>and</i> that they actually produced an arc - without the second
-     * check, two paths that both degraded to the same truncated prefix would satisfy the first one happily.
+     * Asserts the two forms flatten identically <i>and</i> that they actually produced an arc - without the second check, two paths that both degraded to the same truncated prefix
+     * would satisfy the first one happily.
      */
     private static void assertArcEquivalent(String compact, String canonical) {
         List<Point2D> expected = SvgPathData.flatten(canonical);
@@ -236,8 +259,8 @@ public class SvgPathDataTest {
     }
 
     /**
-     * The separator <i>before</i> the first flag is required, unlike the ones between and after - so the arc's
-     * {@code ry} and rotation greedily swallow the digits the flags needed, and the path is in error.
+     * The separator <i>before</i> the first flag is required, unlike the ones between and after - so the arc's {@code ry} and rotation greedily swallow the digits the flags
+     * needed, and the path is in error.
      */
     @Test
     public void testAMissingSeparatorBeforeTheFlagsPutsThePathInError() throws Exception {
@@ -248,9 +271,8 @@ public class SvgPathDataTest {
     // --- malformed data degrades rather than throwing (#115) ----------------
 
     /**
-     * The crash this issue was filed for. A path whose arguments have been shifted along lands a command letter in
-     * a coordinate slot; that used to reach {@code Double.parseDouble} and throw {@code NumberFormatException} out
-     * of the renderer, taking the whole document with it.
+     * The crash this issue was filed for. A path whose arguments have been shifted along lands a command letter in a coordinate slot; that used to reach {@code Double.parseDouble}
+     * and throw {@code NumberFormatException} out of the renderer, taking the whole document with it.
      */
     @Test
     public void testACommandLetterInACoordinateSlotDoesNotThrow() throws Exception {
@@ -268,13 +290,16 @@ public class SvgPathDataTest {
         List<SvgPathData.Subpath> subpaths = SvgPathData.subpaths("M0,0 L10,0 Z M20,20 L30,z");
         // the first subpath completed before the error and is kept; the broken one is not
         assertThat(subpaths, hasSize(1));
-        assertThat(subpaths.get(0).closed(), is(true));
+        assertThat(subpaths.get(0)
+            .closed(), is(true));
     }
 
     @Test
     public void testToJavaFxPathDegradesRatherThanThrowing() throws Exception {
         javafx.scene.shape.Path path = SvgPathData.toJavaFxPath("M10,10 L20,20 L30,z");
-        assertThat(path.getElements(), hasSize(SvgPathData.toJavaFxPath("M10,10 L20,20").getElements().size()));
+        assertThat(path.getElements(), hasSize(SvgPathData.toJavaFxPath("M10,10 L20,20")
+            .getElements()
+            .size()));
     }
 
 }

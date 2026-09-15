@@ -1,9 +1,10 @@
 package nz.co.ctg.foxglove.adapter;
 
+import javafx.scene.text.FontPosture;
+
 import org.apache.commons.lang3.StringUtils;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import javafx.scene.text.FontPosture;
 
 public class FontPostureAdapter extends XmlAdapter<String, FontPosture> {
 

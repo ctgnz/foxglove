@@ -2,6 +2,7 @@ package nz.co.ctg.foxglove.shape;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.shape.Circle;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 
@@ -23,8 +24,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import javafx.scene.shape.Circle;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "circle", propOrder = {

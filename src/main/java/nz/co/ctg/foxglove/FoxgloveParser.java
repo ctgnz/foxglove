@@ -57,10 +57,15 @@ public class FoxgloveParser {
     public FoxgloveParser() {
         try {
             Map<String, Object> properties = Collections.singletonMap(JAXBContextProperties.OXM_METADATA_SOURCE, getBindings());
-            context = JAXBContext.newInstance(new Class[] { SvgGraphic.class }, properties);
+            context = JAXBContext.newInstance(new Class<?>[] {
+                SvgGraphic.class
+            }, properties);
             xmlInputFactory = XMLInputFactory.newFactory();
-            Catalog catalog = CatalogManager.catalog(CatalogFeatures.builder().with(Feature.RESOLVE, "ignore").build(),
-                FoxgloveParser.class.getResource("/catalog.xml").toURI());
+            Catalog catalog = CatalogManager.catalog(CatalogFeatures.builder()
+                .with(Feature.RESOLVE, "ignore")
+                .build(),
+                FoxgloveParser.class.getResource("/catalog.xml")
+                    .toURI());
             CatalogResolver resolver = CatalogManager.catalogResolver(catalog);
             xmlInputFactory.setProperty(XMLInputFactory.RESOLVER, resolver);
             xmlInputFactory.setProperty(XMLInputFactory.IS_VALIDATING, false);

@@ -47,17 +47,15 @@ import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
-
+/**
+ * Never rendered directly - a {@code <symbol>} only appears through a {@code <use>} that references it, which instantiates it as if it were an {@code <svg>} using the
+ * {@code <use>}'s own width/height and this element's {@code viewBox}. Deliberately does not implement {@link nz.co.ctg.foxglove.FxGraphic}, so it is excluded from a container's
+ * {@link ISvgContainer#appendContent} the same way {@code <defs>} is.
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content"
 })
-/**
- * Never rendered directly - a {@code <symbol>} only appears through a {@code <use>} that references it, which
- * instantiates it as if it were an {@code <svg>} using the {@code <use>}'s own width/height and this element's
- * {@code viewBox}. Deliberately does not implement {@link nz.co.ctg.foxglove.FxGraphic}, so it is excluded from a
- * container's {@link ISvgContainer#appendContent} the same way {@code <defs>} is.
- */
 @XmlRootElement(name = "symbol")
 public class SvgSymbol extends AbstractSvgStylable implements ISvgStructuralElement, ISvgExternalResources, ISvgEventListener, ISvgFitToViewBox, ISvgContainer {
 

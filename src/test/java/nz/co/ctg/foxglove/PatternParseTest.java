@@ -1,13 +1,6 @@
 package nz.co.ctg.foxglove;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import nz.co.ctg.foxglove.paint.SvgPattern;
-
 import static nz.co.ctg.foxglove.JavaFxTestSupport.onFxThread;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -21,10 +14,15 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import nz.co.ctg.foxglove.paint.SvgPattern;
+
 /**
- * Exercises pattern references against a document that has been through the parser, rather than one assembled in
- * memory, following {@link SvgPaintParseTest}'s convention for gradients. Resolving a pattern rasterises via
- * {@code Node.snapshot(...)}, which requires the JavaFX Application Thread - see {@link JavaFxTestSupport}.
+ * Exercises pattern references against a document that has been through the parser, rather than one assembled in memory, following {@link SvgPaintParseTest}'s convention for
+ * gradients. Resolving a pattern rasterises via {@code Node.snapshot(...)}, which requires the JavaFX Application Thread - see {@link JavaFxTestSupport}.
  */
 public class PatternParseTest {
 
@@ -89,7 +87,8 @@ public class PatternParseTest {
     }
 
     private static Color colorAt(ImagePattern paint, double tileX, double tileY) {
-        PixelReader reader = paint.getImage().getPixelReader();
+        PixelReader reader = paint.getImage()
+            .getPixelReader();
         return reader.getColor((int) Math.round(tileX * SvgPattern.rasterScale), (int) Math.round(tileY * SvgPattern.rasterScale));
     }
 

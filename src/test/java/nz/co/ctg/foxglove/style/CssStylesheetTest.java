@@ -1,15 +1,15 @@
 package nz.co.ctg.foxglove.style;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import nz.co.ctg.foxglove.SvgStyle;
 import nz.co.ctg.foxglove.shape.SvgRectangle;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
 
 public class CssStylesheetTest {
 
@@ -21,7 +21,8 @@ public class CssStylesheetTest {
 
     @Test
     public void testNoStyleElementsYieldsAnEmptyStylesheet() throws Exception {
-        assertThat(CssStylesheet.of(List.of()).matchingDeclarations(new SvgRectangle()), is(empty()));
+        assertThat(CssStylesheet.of(List.of())
+            .matchingDeclarations(new SvgRectangle()), is(empty()));
     }
 
     @Test
@@ -61,13 +62,15 @@ public class CssStylesheetTest {
     public void testATypeOtherThanTextCssIsIgnored() throws Exception {
         SvgStyle other = style("rect { fill: red; }");
         other.setType("text/plain");
-        assertThat(CssStylesheet.of(List.of(other)).matchingDeclarations(new SvgRectangle()), is(empty()));
+        assertThat(CssStylesheet.of(List.of(other))
+            .matchingDeclarations(new SvgRectangle()), is(empty()));
     }
 
     @Test
     public void testBlankTypeIsTreatedAsTextCss() throws Exception {
         SvgStyle blank = style("rect { fill: red; }");
-        assertThat(CssStylesheet.of(List.of(blank)).matchingDeclarations(new SvgRectangle()), is(List.of(new CssDeclaration("fill", "red", false))));
+        assertThat(CssStylesheet.of(List.of(blank))
+            .matchingDeclarations(new SvgRectangle()), is(List.of(new CssDeclaration("fill", "red", false))));
     }
 
     @Test

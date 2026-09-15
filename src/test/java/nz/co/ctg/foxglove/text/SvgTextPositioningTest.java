@@ -1,8 +1,18 @@
 package nz.co.ctg.foxglove.text;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.number.IsCloseTo.closeTo;
+
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,20 +20,9 @@ import nz.co.ctg.foxglove.FoxgloveParser;
 import nz.co.ctg.foxglove.SvgGraphic;
 import nz.co.ctg.foxglove.element.SvgGroup;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.number.IsCloseTo.closeTo;
-
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
-
 /**
- * Exercises #28's acceptance criteria: text-anchor, list-valued x/y/dx/dy positioning glyphs individually,
- * per-glyph rotate, text-decoration, and the baseline-attribute approximation.
+ * Exercises #28's acceptance criteria: text-anchor, list-valued x/y/dx/dy positioning glyphs individually, per-glyph rotate, text-decoration, and the baseline-attribute
+ * approximation.
  */
 public class SvgTextPositioningTest {
 
@@ -34,19 +33,25 @@ public class SvgTextPositioningTest {
         // character; the second run has to continue from the flowing cursor, not jump back to x=10 too.
         SvgText text = new SvgText();
         text.setX(List.of(10.0));
-        text.getContent().add("Hello ");
+        text.getContent()
+            .add("Hello ");
         SvgTextSpan span = new SvgTextSpan();
-        span.getContent().add("world");
-        text.getContent().add(span);
-        text.getContent().add(" and more");
+        span.getContent()
+            .add("world");
+        text.getContent()
+            .add(span);
+        text.getContent()
+            .add(" and more");
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
         assertThat(children, hasSize(3));
         double helloX = ((Text) children.get(0)).getX();
-        double helloWidth = ((Text) children.get(0)).getLayoutBounds().getWidth();
+        double helloWidth = ((Text) children.get(0)).getLayoutBounds()
+            .getWidth();
         double worldX = ((Text) children.get(1)).getX();
-        double worldWidth = ((Text) children.get(1)).getLayoutBounds().getWidth();
+        double worldWidth = ((Text) children.get(1)).getLayoutBounds()
+            .getWidth();
         double andMoreX = ((Text) children.get(2)).getX();
 
         assertThat(helloX, is(10.0));
@@ -59,7 +64,8 @@ public class SvgTextPositioningTest {
         SvgText text = new SvgText();
         text.setX(List.of(10.0));
         text.setY(List.of(20.0));
-        text.getContent().add("Hello");
+        text.getContent()
+            .add("Hello");
 
         Node rendered = render(text);
         assertThat(rendered, instanceOf(Text.class));
@@ -72,7 +78,8 @@ public class SvgTextPositioningTest {
         SvgText text = new SvgText();
         text.setX(List.of(10.0, 20.0, 30.0));
         text.setY(List.of(100.0));
-        text.getContent().add("abc");
+        text.getContent()
+            .add("abc");
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -92,7 +99,8 @@ public class SvgTextPositioningTest {
     public void testRotateAppliesToEachGlyphIndividuallyRepeatingTheLastValue() throws Exception {
         SvgText text = new SvgText();
         text.setRotate(List.of(10.0, 20.0));
-        text.getContent().add("abc");
+        text.getContent()
+            .add("abc");
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -106,16 +114,19 @@ public class SvgTextPositioningTest {
     public void testTextAnchorMiddleCentresTheLine() throws Exception {
         SvgText start = new SvgText();
         start.setX(List.of(50.0));
-        start.getContent().add("Hello");
+        start.getContent()
+            .add("Hello");
         Text startNode = (Text) render(start);
 
         SvgText middle = new SvgText();
         middle.setX(List.of(50.0));
         middle.setTextAnchor("middle");
-        middle.getContent().add("Hello");
+        middle.getContent()
+            .add("Hello");
         Node middleNode = render(middle);
 
-        double width = startNode.getLayoutBounds().getWidth();
+        double width = startNode.getLayoutBounds()
+            .getWidth();
         assertThat(middleNode.getTranslateX(), closeTo(-width / 2.0, 1e-6));
     }
 
@@ -123,32 +134,35 @@ public class SvgTextPositioningTest {
     public void testTextAnchorEndAlignsTheLineToItsEnd() throws Exception {
         SvgText start = new SvgText();
         start.setX(List.of(50.0));
-        start.getContent().add("Hello");
+        start.getContent()
+            .add("Hello");
         Text startNode = (Text) render(start);
 
         SvgText end = new SvgText();
         end.setX(List.of(50.0));
         end.setTextAnchor("end");
-        end.getContent().add("Hello");
+        end.getContent()
+            .add("Hello");
         Node endNode = render(end);
 
-        double width = startNode.getLayoutBounds().getWidth();
+        double width = startNode.getLayoutBounds()
+            .getWidth();
         assertThat(endNode.getTranslateX(), closeTo(-width, 1e-6));
     }
 
     // --- vertical writing-mode (#139) ----------------------------------------
 
     /**
-     * {@code writing-mode="tb"} stacks glyphs top-to-bottom instead of laying them left-to-right: the cursor
-     * advances {@code y} by one em per character (the specification's own default for {@code vert-adv-y}) rather
-     * than {@code x} by the glyph's own width, and each glyph is centred horizontally on the column - the usual
-     * convention for vertical layout, and this renderer's approximation of {@code vert-origin-x}'s own default.
+     * {@code writing-mode="tb"} stacks glyphs top-to-bottom instead of laying them left-to-right: the cursor advances {@code y} by one em per character (the specification's own
+     * default for {@code vert-adv-y}) rather than {@code x} by the glyph's own width, and each glyph is centred horizontally on the column - the usual convention for vertical
+     * layout, and this renderer's approximation of {@code vert-origin-x}'s own default.
      */
     @Test
     public void testVerticalWritingModeStacksGlyphsTopToBottomOneEmApart() throws Exception {
         SvgText text = new SvgText();
         text.setWritingMode("tb");
-        text.getContent().add("AB");
+        text.getContent()
+            .add("AB");
 
         Group rendered = (Group) render(text);
         List<Node> children = rendered.getChildren();
@@ -161,7 +175,8 @@ public class SvgTextPositioningTest {
             b.getY(), closeTo(16.0, 1e-6));
         assertThat("no horizontal drift between characters", b.getX(), closeTo(a.getX(), 1e-6));
         assertThat("centred on the column, not flush against it - applied as a translate, not x itself",
-            a.getTranslateX(), closeTo(-a.getLayoutBounds().getWidth() / 2.0, 1e-6));
+            a.getTranslateX(), closeTo(-a.getLayoutBounds()
+                .getWidth() / 2.0, 1e-6));
     }
 
     /** As {@link #testTextAnchorMiddleCentresTheLine}, but along the flow axis {@code writing-mode="tb"} swaps to y. */
@@ -169,14 +184,17 @@ public class SvgTextPositioningTest {
     public void testTextAnchorMiddleCentresVerticalTextAlongY() throws Exception {
         SvgText start = new SvgText();
         start.setWritingMode("tb");
-        start.getContent().add("AB");
+        start.getContent()
+            .add("AB");
         Group startNode = (Group) render(start);
-        double height = ((Text) startNode.getChildren().get(1)).getY() + 16.0; // 2 ems, one per glyph
+        double height = ((Text) startNode.getChildren()
+            .get(1)).getY() + 16.0; // 2 ems, one per glyph
 
         SvgText middle = new SvgText();
         middle.setWritingMode("tb");
         middle.setTextAnchor("middle");
-        middle.getContent().add("AB");
+        middle.getContent()
+            .add("AB");
         Node middleNode = render(middle);
 
         assertThat(middleNode.getTranslateX(), closeTo(0.0, 1e-6));
@@ -188,14 +206,17 @@ public class SvgTextPositioningTest {
     public void testTextAnchorEndAlignsVerticalTextToItsEndAlongY() throws Exception {
         SvgText start = new SvgText();
         start.setWritingMode("tb");
-        start.getContent().add("AB");
+        start.getContent()
+            .add("AB");
         Group startNode = (Group) render(start);
-        double height = ((Text) startNode.getChildren().get(1)).getY() + 16.0;
+        double height = ((Text) startNode.getChildren()
+            .get(1)).getY() + 16.0;
 
         SvgText end = new SvgText();
         end.setWritingMode("tb");
         end.setTextAnchor("end");
-        end.getContent().add("AB");
+        end.getContent()
+            .add("AB");
         Node endNode = render(end);
 
         assertThat(endNode.getTranslateX(), closeTo(0.0, 1e-6));
@@ -203,28 +224,28 @@ public class SvgTextPositioningTest {
     }
 
     /**
-     * An SVG font's own vertical metrics are never read (#139's own documented scope limit) - a run resolving to
-     * one falls through to the ordinary horizontal path regardless of {@code writing-mode}, rather than silently
-     * mispositioning glyphs using metrics nothing actually declared. Parse-driven, per this codebase's own standing
-     * rule for anything touching an SVG font binding (#105/#119/#136): an in-memory fixture through typed setters
-     * would prove nothing about whether {@code writing-mode} and an inline {@code <font>} actually interact the way
-     * this asserts, only that the Java objects can be constructed.
+     * An SVG font's own vertical metrics are never read (#139's own documented scope limit) - a run resolving to one falls through to the ordinary horizontal path regardless of
+     * {@code writing-mode}, rather than silently mispositioning glyphs using metrics nothing actually declared. Parse-driven, per this codebase's own standing rule for anything
+     * touching an SVG font binding (#105/#119/#136): an in-memory fixture through typed setters would prove nothing about whether {@code writing-mode} and an inline {@code <font>}
+     * actually interact the way this asserts, only that the Java objects can be constructed.
      */
     @Test
     public void testVerticalWritingModeIsIgnoredWhenTheRunUsesAnSvgFont() throws Exception {
         String document = """
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50">
-              <defs>
-                <font horiz-adv-x="500">
-                  <font-face font-family="VerticalTestFont" units-per-em="1000" ascent="800" descent="-200"/>
-                  <glyph unicode="A" horiz-adv-x="500" d="M0,0 L10,0 L10,10 Z"/>
-                </font>
-              </defs>
-              <text id="subject" font-family="VerticalTestFont" writing-mode="tb">A</text>
-            </svg>
-            """;
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50">
+                          <defs>
+                            <font horiz-adv-x="500">
+                              <font-face font-family="VerticalTestFont" units-per-em="1000" ascent="800" descent="-200"/>
+                              <glyph unicode="A" horiz-adv-x="500" d="M0,0 L10,0 L10,10 Z"/>
+                            </font>
+                          </defs>
+                          <text id="subject" font-family="VerticalTestFont" writing-mode="tb">A</text>
+                        </svg>
+                        """;
         SvgGraphic svg = new FoxgloveParser().parse(new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8)));
-        Node rendered = svg.createGroup().getChildren().get(0);
+        Node rendered = svg.createGroup()
+            .getChildren()
+            .get(0);
 
         // a single glyph from an SVG font is a bare outline node, not split/centred the way vertical plain text is -
         // confirming this took the ordinary horizontal path rather than throwing or silently mispositioning it
@@ -235,7 +256,8 @@ public class SvgTextPositioningTest {
     public void testTextDecorationUnderlineRenders() throws Exception {
         SvgText text = new SvgText();
         text.setTextDecoration("underline");
-        text.getContent().add("Hello");
+        text.getContent()
+            .add("Hello");
 
         Text rendered = (Text) render(text);
         assertThat(rendered.isUnderline(), is(true));
@@ -246,7 +268,8 @@ public class SvgTextPositioningTest {
     public void testTextDecorationLineThroughRenders() throws Exception {
         SvgText text = new SvgText();
         text.setTextDecoration("line-through");
-        text.getContent().add("Hello");
+        text.getContent()
+            .add("Hello");
 
         Text rendered = (Text) render(text);
         assertThat(rendered.isStrikethrough(), is(true));
@@ -257,32 +280,38 @@ public class SvgTextPositioningTest {
     public void testBaselineShiftSuperMovesTextUp() throws Exception {
         SvgText plain = new SvgText();
         plain.setY(List.of(100.0));
-        plain.getContent().add("Hello");
+        plain.getContent()
+            .add("Hello");
         Text plainNode = (Text) render(plain);
 
         SvgText shifted = new SvgText();
         shifted.setY(List.of(100.0));
         shifted.setBaselineShift("super");
-        shifted.getContent().add("Hello");
+        shifted.getContent()
+            .add("Hello");
         Text shiftedNode = (Text) render(shifted);
 
-        assertThat(shiftedNode.getY(), closeTo(plainNode.getY() - 0.30 * shiftedNode.getFont().getSize(), 1e-6));
+        assertThat(shiftedNode.getY(), closeTo(plainNode.getY() - 0.30 * shiftedNode.getFont()
+            .getSize(), 1e-6));
     }
 
     @Test
     public void testAlignmentBaselineMiddleShiftsText() throws Exception {
         SvgText plain = new SvgText();
         plain.setY(List.of(100.0));
-        plain.getContent().add("Hello");
+        plain.getContent()
+            .add("Hello");
         Text plainNode = (Text) render(plain);
 
         SvgText shifted = new SvgText();
         shifted.setY(List.of(100.0));
         shifted.setAlignmentBaseline("middle");
-        shifted.getContent().add("Hello");
+        shifted.getContent()
+            .add("Hello");
         Text shiftedNode = (Text) render(shifted);
 
-        assertThat(shiftedNode.getY(), closeTo(plainNode.getY() - 0.30 * shiftedNode.getFont().getSize(), 1e-6));
+        assertThat(shiftedNode.getY(), closeTo(plainNode.getY() - 0.30 * shiftedNode.getFont()
+            .getSize(), 1e-6));
     }
 
     private static double rotationOf(Node node) {
@@ -296,10 +325,15 @@ public class SvgTextPositioningTest {
 
     private static Node render(SvgText text) {
         SvgGroup group = new SvgGroup();
-        group.getContent().add(text);
+        group.getContent()
+            .add(text);
         SvgGraphic svg = new SvgGraphic();
-        svg.getContent().add(group);
-        return ((Group) svg.createGroup().getChildren().get(0)).getChildren().get(0);
+        svg.getContent()
+            .add(group);
+        return ((Group) svg.createGroup()
+            .getChildren()
+            .get(0)).getChildren()
+            .get(0);
     }
 
 }

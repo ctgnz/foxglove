@@ -1,7 +1,11 @@
 package nz.co.ctg.foxglove.style;
 
+import static nz.co.ctg.foxglove.ISvgTextAttributes.TEXT_FONT_STYLE;
+import static nz.co.ctg.foxglove.ISvgTextAttributes.TEXT_FONT_WEIGHT;
+
 import java.util.Map;
 import java.util.function.Function;
+import javafx.scene.shape.FillRule;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -14,21 +18,15 @@ import nz.co.ctg.foxglove.adapter.StrokeLineCapAdapter;
 import nz.co.ctg.foxglove.adapter.StrokeLineJoinAdapter;
 import nz.co.ctg.foxglove.adapter.SvgPaintAdapter;
 
-import static nz.co.ctg.foxglove.ISvgTextAttributes.TEXT_FONT_STYLE;
-import static nz.co.ctg.foxglove.ISvgTextAttributes.TEXT_FONT_WEIGHT;
-
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import javafx.scene.shape.FillRule;
 
 /**
- * Converts a raw CSS-syntax value into the typed object a property's setter expects, the same way regardless of
- * whether it came from a stylesheet rule or the inline {@code style} attribute - the "table-driven property setter"
- * that replaced {@code AbstractSvgStylable}'s old twelve-case switch.
+ * Converts a raw CSS-syntax value into the typed object a property's setter expects, the same way regardless of whether it came from a stylesheet rule or the inline {@code style}
+ * attribute - the "table-driven property setter" that replaced {@code AbstractSvgStylable}'s old twelve-case switch.
  * <p>
- * A property with no entry here is stored as the trimmed raw string, which covers every plain-string property in
- * {@code ISvgGraphicsAttributes}, {@code ISvgPresentationAttributes} and {@code ISvgTextAttributes} without needing
- * one entry per property - only the properties whose setter expects something other than a {@link String} need a
- * conversion registered.
+ * A property with no entry here is stored as the trimmed raw string, which covers every plain-string property in {@code ISvgGraphicsAttributes}, {@code ISvgPresentationAttributes}
+ * and {@code ISvgTextAttributes} without needing one entry per property - only the properties whose setter expects something other than a {@link String} need a conversion
+ * registered.
  */
 public final class SvgPropertyTable {
 
@@ -41,7 +39,7 @@ public final class SvgPropertyTable {
 
     private static final Function<String, Object> IDENTITY = String::trim;
 
-    private static final Map<String, Function<String, Object>> CONVERTERS = ImmutableMap.<String, Function<String, Object>>builder()
+    private static final Map<String, Function<String, Object>> CONVERTERS = ImmutableMap.<String, Function<String, Object>> builder()
         .put(ISvgGraphicsAttributes.GRAPHX_FILL, unmarshal(PAINT))
         .put(ISvgGraphicsAttributes.GRAPHX_STROKE, unmarshal(PAINT))
         .put(ISvgGraphicsAttributes.GRAPHX_FILL_RULE, SvgPropertyTable::parseFillRule)
@@ -56,13 +54,13 @@ public final class SvgPropertyTable {
         .build();
 
     /**
-     * Applies one raw declaration value to {@code target}: converts it via the table (or stores it as a trimmed
-     * string if the property has no entry), silently doing nothing if the value fails to convert - an invalid
-     * declaration is dropped, the same as CSS ignores one, rather than forced in as null.
+     * Applies one raw declaration value to {@code target}: converts it via the table (or stores it as a trimmed string if the property has no entry), silently doing nothing if the
+     * value fails to convert - an invalid declaration is dropped, the same as CSS ignores one, rather than forced in as null.
      */
     public static void apply(ISvgAttributes target, String property, String rawValue) {
         try {
-            Object value = CONVERTERS.getOrDefault(property, IDENTITY).apply(rawValue);
+            Object value = CONVERTERS.getOrDefault(property, IDENTITY)
+                .apply(rawValue);
             if (value != null) {
                 target.set(property, value);
             }

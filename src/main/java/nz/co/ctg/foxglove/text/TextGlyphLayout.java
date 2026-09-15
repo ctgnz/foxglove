@@ -6,6 +6,13 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import javafx.geometry.Point2D;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,55 +24,36 @@ import nz.co.ctg.foxglove.geometry.PathLengthLookup;
 import nz.co.ctg.foxglove.geometry.SvgPathData;
 import nz.co.ctg.foxglove.shape.SvgPath;
 
-import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Transform;
-import javafx.scene.transform.Translate;
-
 /**
- * Positions the runs {@link TextRunBuilder} (#27) produces onto one baseline, applying #28's positioning
- * attributes: list-valued {@code x}/{@code y}/{@code dx}/{@code dy} and {@code rotate} (see
- * {@link ISvgGlyphPositioned}), {@code text-anchor}, and an em-based approximation of {@code baseline-shift}/
- * {@code alignment-baseline}/{@code dominant-baseline} (JavaFX's {@code Text} exposes no font ascent/descent
- * metrics, so this is not a precise implementation of the CSS baseline algorithm - it covers the common
- * superscript/subscript/centring cases).
+ * Positions the runs {@link TextRunBuilder} (#27) produces onto one baseline, applying #28's positioning attributes: list-valued {@code x}/{@code y}/{@code dx}/{@code dy} and
+ * {@code rotate} (see {@link ISvgGlyphPositioned}), {@code text-anchor}, and an em-based approximation of {@code baseline-shift}/
+ * {@code alignment-baseline}/{@code dominant-baseline} (JavaFX's {@code Text} exposes no font ascent/descent metrics, so this is not a precise implementation of the CSS baseline
+ * algorithm - it covers the common superscript/subscript/centring cases).
  * <p>
- * A list addresses the characters of its element's <b>whole subtree, including descendants</b> (#143), not just
- * those the element owns directly - {@code <text x="10 20 30"><tspan>AB</tspan>C</text>} places A/B/C at 10/20/30
- * even though {@code <tspan>} has no list of its own. Each run is resolved against its full ancestor chain,
- * innermost first: the nearest element with a list that still reaches this character wins, and a list that is
- * present but already exhausted at this index falls through to the next element out rather than stopping there.
- * Bookkeeping (how many characters of an element's own list have been consumed) advances for every element in a
- * run's chain, not just its immediate owner - otherwise an ancestor's own later run would re-offer indices its
- * descendants' runs already used.
+ * A list addresses the characters of its element's <b>whole subtree, including descendants</b> (#143), not just those the element owns directly -
+ * {@code <text x="10 20 30"><tspan>AB</tspan>C</text>} places A/B/C at 10/20/30 even though {@code <tspan>} has no list of its own. Each run is resolved against its full ancestor
+ * chain, innermost first: the nearest element with a list that still reaches this character wins, and a list that is present but already exhausted at this index falls through to
+ * the next element out rather than stopping there. Bookkeeping (how many characters of an element's own list have been consumed) advances for every element in a run's chain, not
+ * just its immediate owner - otherwise an ancestor's own later run would re-offer indices its descendants' runs already used.
  * <p>
- * A run whose whole chain declares none of these lists stays a single {@code Text} node, exactly as in #27; only a
- * run that actually uses per-character positioning is split into one node per Unicode code point. {@code
- * textLength}/{@code lengthAdjust} and {@code letter-spacing}/{@code word-spacing}/{@code kerning} are out of scope
- * - the former is absent from #28's acceptance criteria, the latter would need their own per-glyph advance model.
+ * A run whose whole chain declares none of these lists stays a single {@code Text} node, exactly as in #27; only a run that actually uses per-character positioning is split into
+ * one node per Unicode code point. {@code
+ * textLength}/{@code lengthAdjust} and {@code letter-spacing}/{@code word-spacing}/{@code kerning} are out of scope - the former is absent from #28's acceptance criteria, the
+ * latter would need their own per-glyph advance model.
  * <p>
- * A run under a {@code <textPath>} (#29) is laid out differently: always split per code point regardless of its
- * own {@code x}/{@code y}/{@code dx}/{@code dy}/{@code rotate} (not applied while on a path - out of scope), each
- * glyph placed and rotated to match the referenced {@code <path>}'s tangent at an accumulating arc length starting
- * from {@code startOffset}, via {@link nz.co.ctg.foxglove.geometry.PathLengthLookup}. The ordinary linear cursor is
- * synced to the last glyph's position afterward (an approximation - it cannot itself follow the curve) so text
- * after a {@code </textPath>} continues from roughly there rather than jumping back to wherever the linear flow
- * was before the path started.
+ * A run under a {@code <textPath>} (#29) is laid out differently: always split per code point regardless of its own {@code x}/{@code y}/{@code dx}/{@code dy}/{@code rotate} (not
+ * applied while on a path - out of scope), each glyph placed and rotated to match the referenced {@code <path>}'s tangent at an accumulating arc length starting from
+ * {@code startOffset}, via {@link nz.co.ctg.foxglove.geometry.PathLengthLookup}. The ordinary linear cursor is synced to the last glyph's position afterward (an approximation - it
+ * cannot itself follow the curve) so text after a {@code </textPath>} continues from roughly there rather than jumping back to wherever the linear flow was before the path
+ * started.
  * <p>
- * {@code writing-mode="tb"}/{@code "tb-rl"} (#139) swaps which axis the cursor advances along: each character still
- * places at {@code (x, y)} the same way, but the <i>next</i> character's position comes from stepping {@code y}
- * forward by one em (the specification's own default for {@code vert-adv-y}, since no suite document declares one)
- * rather than {@code x} forward by the glyph's own width, and is centred horizontally on the column rather than
- * starting flush against it (the usual convention for vertical CJK layout, and this renderer's approximation of
- * {@code vert-origin-x}'s own default of half the glyph's advance). Deliberately narrower than #139's own full scope:
- * no suite document uses an SVG font, {@code glyph-orientation-vertical} other than {@code 0} (upright, unrotated
- * glyphs - the only value applied), or a positioning list together with vertical text, so none of those are handled
- * - a run resolving to an SVG font falls through to this class's ordinary horizontal handling regardless of
- * {@code writing-mode}, which is honest about what is actually supported rather than silently mispositioning glyphs
- * a font's own vertical metrics were never read for.
+ * {@code writing-mode="tb"}/{@code "tb-rl"} (#139) swaps which axis the cursor advances along: each character still places at {@code (x, y)} the same way, but the <i>next</i>
+ * character's position comes from stepping {@code y} forward by one em (the specification's own default for {@code vert-adv-y}, since no suite document declares one) rather than
+ * {@code x} forward by the glyph's own width, and is centred horizontally on the column rather than starting flush against it (the usual convention for vertical CJK layout, and
+ * this renderer's approximation of {@code vert-origin-x}'s own default of half the glyph's advance). Deliberately narrower than #139's own full scope: no suite document uses an
+ * SVG font, {@code glyph-orientation-vertical} other than {@code 0} (upright, unrotated glyphs - the only value applied), or a positioning list together with vertical text, so
+ * none of those are handled - a run resolving to an SVG font falls through to this class's ordinary horizontal handling regardless of {@code writing-mode}, which is honest about
+ * what is actually supported rather than silently mispositioning glyphs a font's own vertical metrics were never read for.
  */
 final class TextGlyphLayout {
 
@@ -75,10 +63,9 @@ final class TextGlyphLayout {
     /**
      * One laid-out character (or whole run): the node to draw, and how far it advances the cursor.
      * <p>
-     * The advance is carried rather than measured back off the node, because the two glyph sources disagree about
-     * where it comes from. A {@code Text} knows its own rendered width; an SVG-font glyph's advance is declared by
-     * the font as {@code horiz-adv-x} and is <b>not</b> its outline's width - a space has a real advance and no
-     * outline at all. Reading bounds back would work for one source and silently mis-space the other.
+     * The advance is carried rather than measured back off the node, because the two glyph sources disagree about where it comes from. A {@code Text} knows its own rendered width;
+     * an SVG-font glyph's advance is declared by the font as {@code horiz-adv-x} and is <b>not</b> its outline's width - a space has a real advance and no outline at all. Reading
+     * bounds back would work for one source and silently mis-space the other.
      */
     private record Glyph(Node node, double advance) {
     }
@@ -151,7 +138,9 @@ final class TextGlyphLayout {
             // chain, or for `rotate`, which always rotates each character individually. Checked across every
             // ancestor, not just the owner: a <tspan> with no list of its own inside a multi-valued <text> still
             // has to split, or the inherited per-character values it falls through to (#143) would never land.
-            boolean perGlyph = run.ancestors().stream().anyMatch(TextGlyphLayout::hasMultiValuedPositioning);
+            boolean perGlyph = run.ancestors()
+                .stream()
+                .anyMatch(TextGlyphLayout::hasMultiValuedPositioning);
             SvgFontGlyphs runFont = svgFontFor(run, context);
             double runFontSize = fontSizeFor(run, context);
             // an <altGlyph> draws the glyphs it names instead of its own characters (#138); an unresolved reference
@@ -200,7 +189,9 @@ final class TextGlyphLayout {
                         // advance) rather than starting flush against it, the usual convention for vertical layout.
                         // glyphOf already measured this width as the glyph's own advance for the plain-Text branch
                         // vertical text is restricted to (see this class's own javadoc), so no extra measurement.
-                        glyph.node().setTranslateX(glyph.node().getTranslateX() - glyph.advance() / 2);
+                        glyph.node()
+                            .setTranslateX(glyph.node()
+                                .getTranslateX() - glyph.advance() / 2);
                     }
                     nodes.add(glyph.node());
                 }
@@ -232,15 +223,15 @@ final class TextGlyphLayout {
     }
 
     /**
-     * The referenced {@code <path>}'s geometry, flattened and indexed for arc length (#29) - null if the reference
-     * does not resolve to a {@code <path>}, or that path has no usable data, in which case the {@code <textPath>}
-     * simply renders no text rather than guessing a position.
+     * The referenced {@code <path>}'s geometry, flattened and indexed for arc length (#29) - null if the reference does not resolve to a {@code <path>}, or that path has no usable
+     * data, in which case the {@code <textPath>} simply renders no text rather than guessing a position.
      */
     private static PathLengthLookup resolvePathLookup(SvgTextPath path, RenderContext context) {
         if (context.getElementIndex() == null) {
             return null;
         }
-        return context.getElementIndex().resolve(path.getXlinkHref(), SvgPath.class)
+        return context.getElementIndex()
+            .resolve(path.getXlinkHref(), SvgPath.class)
             .map(referenced -> SvgPathData.flatten(referenced.getD()))
             .filter(points -> !points.isEmpty())
             .map(PathLengthLookup::of)
@@ -248,9 +239,8 @@ final class TextGlyphLayout {
     }
 
     /**
-     * {@code startOffset} as an arc length: a bare number is user units along the path, a percentage is a fraction
-     * of the path's total length - the same number-or-percentage idiom used for gradient offsets (see
-     * {@code ISvgGradientElement.parseNumberOrPercentage}).
+     * {@code startOffset} as an arc length: a bare number is user units along the path, a percentage is a fraction of the path's total length - the same number-or-percentage idiom
+     * used for gradient offsets (see {@code ISvgGradientElement.parseNumberOrPercentage}).
      */
     private static double resolveStartOffset(SvgTextPath path, PathLengthLookup lookup) {
         String raw = StringUtils.trimToEmpty(path.getStartOffset());
@@ -272,28 +262,26 @@ final class TextGlyphLayout {
     /** Whether {@code element} has any list that would force per-glyph splitting (#143) - see {@code perGlyph}. */
     private static boolean hasMultiValuedPositioning(AbstractSvgStylable element) {
         return positions(element, ISvgGlyphPositioned::getX).size() > 1
-            || positions(element, ISvgGlyphPositioned::getY).size() > 1
-            || positions(element, ISvgGlyphPositioned::getDx).size() > 1
-            || positions(element, ISvgGlyphPositioned::getDy).size() > 1
-            || !positions(element, ISvgGlyphPositioned::getRotate).isEmpty();
+               || positions(element, ISvgGlyphPositioned::getY).size() > 1
+               || positions(element, ISvgGlyphPositioned::getDx).size() > 1
+               || positions(element, ISvgGlyphPositioned::getDy).size() > 1
+               || !positions(element, ISvgGlyphPositioned::getRotate).isEmpty();
     }
 
     /**
-     * The value one positioning list contributes to the {@code k}-th character of a run, searched from the run's own
-     * owner outward through its ancestors, or null where nothing in the chain has one (#143).
+     * The value one positioning list contributes to the {@code k}-th character of a run, searched from the run's own owner outward through its ancestors, or null where nothing in
+     * the chain has one (#143).
      * <p>
-     * An element's list, once found non-empty, does not automatically win outright: if it does not yet reach index
-     * {@code k} within <i>that element's own</i> running count, the search keeps going outward rather than stopping
-     * - {@code <tspan x="1">AB</tspan>} inside {@code <text x="100 200 300">} must let "B" (beyond the tspan's single
-     * entry) fall through to the {@code <text>}'s own list, even though the {@code <tspan>} does have a list of its
-     * own. {@code rotate} is the one exception ({@code holdLast}): its existing behaviour never runs out once
-     * present (the last value repeats), so the first ancestor with any entries at all wins outright.
+     * An element's list, once found non-empty, does not automatically win outright: if it does not yet reach index {@code k} within <i>that element's own</i> running count, the
+     * search keeps going outward rather than stopping - {@code <tspan x="1">AB</tspan>} inside {@code <text x="100 200 300">} must let "B" (beyond the tspan's single entry) fall
+     * through to the {@code <text>}'s own list, even though the {@code <tspan>} does have a list of its own. {@code rotate} is the one exception ({@code holdLast}): its existing
+     * behaviour never runs out once present (the last value repeats), so the first ancestor with any entries at all wins outright.
      * <p>
-     * {@code ownerIndex} is read, not written, here - safe because a run's own bookkeeping update happens only after
-     * every character of it has been resolved, so the map does not change mid-run.
+     * {@code ownerIndex} is read, not written, here - safe because a run's own bookkeeping update happens only after every character of it has been resolved, so the map does not
+     * change mid-run.
      */
     private static Double resolvePositionedValue(List<AbstractSvgStylable> innermostFirst,
-        Map<AbstractSvgStylable, Integer> ownerIndex, int k, Function<ISvgGlyphPositioned, List<Double>> getter, boolean holdLast) {
+                                                 Map<AbstractSvgStylable, Integer> ownerIndex, int k, Function<ISvgGlyphPositioned, List<Double>> getter, boolean holdLast) {
         for (AbstractSvgStylable element : innermostFirst) {
             List<Double> values = positions(element, getter);
             if (values.isEmpty()) {
@@ -312,9 +300,8 @@ final class TextGlyphLayout {
     }
 
     /**
-     * Records that {@code count} more characters have flowed through every element in {@code ancestors}' subtree
-     * (#143) - not just the run's immediate owner, so that when an ancestor later owns a run of its own directly, it
-     * correctly resumes from where its whole subtree left off rather than only from what it itself has produced.
+     * Records that {@code count} more characters have flowed through every element in {@code ancestors}' subtree (#143) - not just the run's immediate owner, so that when an
+     * ancestor later owns a run of its own directly, it correctly resumes from where its whole subtree left off rather than only from what it itself has produced.
      */
     private static void bumpAncestors(Map<AbstractSvgStylable, Integer> ownerIndex, List<AbstractSvgStylable> ancestors, int count) {
         for (AbstractSvgStylable ancestor : ancestors) {
@@ -323,36 +310,42 @@ final class TextGlyphLayout {
     }
 
     private static List<String> codePoints(String text) {
-        return text.codePoints().mapToObj(Character::toString).toList();
+        return text.codePoints()
+            .mapToObj(Character::toString)
+            .toList();
     }
 
     private static Group groupOf(List<Node> nodes) {
         Group group = new Group();
-        group.getChildren().addAll(nodes);
+        group.getChildren()
+            .addAll(nodes);
         return group;
     }
 
     /**
      * One character as a node plus its advance, from whichever source the run's font resolves to.
      * <p>
-     * The SVG-font branch builds its transforms as a list rather than using {@code translateX}/{@code translateY},
-     * deliberately: JavaFX applies those node properties <i>outside</i> everything in the transforms list, so a
-     * {@code Rotate} added there would pivot in the glyph's own untranslated space rather than about the baseline
-     * point. Ordering them explicitly - rotate, then translate, then scale, outermost first - keeps the pivot where
-     * the caller meant it. (The same trap #19 hit composing {@code <use>}'s x/y with its own transform.)
+     * The SVG-font branch builds its transforms as a list rather than using {@code translateX}/{@code translateY}, deliberately: JavaFX applies those node properties
+     * <i>outside</i> everything in the transforms list, so a {@code Rotate} added there would pivot in the glyph's own untranslated space rather than about the baseline point.
+     * Ordering them explicitly - rotate, then translate, then scale, outermost first - keeps the pivot where the caller meant it. (The same trap #19 hit composing {@code <use>}'s
+     * x/y with its own transform.)
      */
     private static Glyph glyphOf(String piece, TextRunBuilder.Run run, SvgFontGlyphs font, double fontSize,
-        double x, double y, Double rotation, double pivotX, double pivotY) {
+                                 double x, double y, Double rotation, double pivotX, double pivotY) {
         if (font == null) {
             Text node = new Text(piece);
-            run.owner().applyGraphicsProperties(run.ownerContext(), node);
-            run.owner().applyTextProperties(run.ownerContext(), node);
+            run.owner()
+                .applyGraphicsProperties(run.ownerContext(), node);
+            run.owner()
+                .applyTextProperties(run.ownerContext(), node);
             node.setX(x);
             node.setY(y);
             if (rotation != null) {
-                node.getTransforms().add(new Rotate(rotation, pivotX, pivotY));
+                node.getTransforms()
+                    .add(new Rotate(rotation, pivotX, pivotY));
             }
-            return new Glyph(node, node.getLayoutBounds().getWidth());
+            return new Glyph(node, node.getLayoutBounds()
+                .getWidth());
         }
 
         Node outline = font.glyphFor(piece, fontSize);
@@ -361,7 +354,8 @@ final class TextGlyphLayout {
             // a space: a real advance, nothing to draw
             return new Glyph(null, advance);
         }
-        run.owner().applyGraphicsProperties(run.ownerContext(), (javafx.scene.shape.Shape) outline);
+        run.owner()
+            .applyGraphicsProperties(run.ownerContext(), (javafx.scene.shape.Shape) outline);
         font.descaleStroke((javafx.scene.shape.Shape) outline, fontSize);
         List<Transform> transforms = new ArrayList<>();
         if (rotation != null) {
@@ -369,26 +363,27 @@ final class TextGlyphLayout {
         }
         transforms.add(new Translate(x, y));
         transforms.addAll(outline.getTransforms());
-        outline.getTransforms().setAll(transforms);
+        outline.getTransforms()
+            .setAll(transforms);
         return new Glyph(outline, advance);
     }
 
     /**
      * One glyph an {@code <altGlyph>} named, drawn in place of a character it would otherwise have spelt (#138).
      * <p>
-     * Scale and advance come from the font that <i>owns the glyph</i>, carried on the substitute, not from the run's
-     * own {@code font-family}: the two are routinely different fonts, and {@code text-altglyph-01-b} makes the point
-     * by substituting glyphs whose em is 8 units into text set in Arial.
+     * Scale and advance come from the font that <i>owns the glyph</i>, carried on the substitute, not from the run's own {@code font-family}: the two are routinely different
+     * fonts, and {@code text-altglyph-01-b} makes the point by substituting glyphs whose em is 8 units into text set in Arial.
      */
     private static Glyph substituteGlyph(SvgAltGlyphs.Substitute substitute, TextRunBuilder.Run run, double fontSize,
-        double x, double y, Double rotation) {
+                                         double x, double y, Double rotation) {
         SvgFontGlyphs font = substitute.font();
         Node outline = font.glyphNodeOf(substitute.glyph(), fontSize);
         double advance = font.advanceOf(substitute.glyph(), fontSize);
         if (outline == null) {
             return new Glyph(null, advance);
         }
-        run.owner().applyGraphicsProperties(run.ownerContext(), (javafx.scene.shape.Shape) outline);
+        run.owner()
+            .applyGraphicsProperties(run.ownerContext(), (javafx.scene.shape.Shape) outline);
         // #145: the substituted glyph's own outline scale, not the run's font, is what the paint transform carries.
         font.descaleStroke((javafx.scene.shape.Shape) outline, fontSize);
         List<Transform> transforms = new ArrayList<>();
@@ -397,25 +392,26 @@ final class TextGlyphLayout {
         }
         transforms.add(new Translate(x, y));
         transforms.addAll(outline.getTransforms());
-        outline.getTransforms().setAll(transforms);
+        outline.getTransforms()
+            .setAll(transforms);
         return new Glyph(outline, advance);
     }
 
     /** The SVG font this run's {@code font-family} names, or null to render through the JavaFX text system. */
     private static SvgFontGlyphs svgFontFor(TextRunBuilder.Run run, RenderContext context) {
-        return SvgFontResolver.resolve(SvgInheritedStyle.resolve(run.ownerContext(), run.owner()).getFontFamily(), context);
+        return SvgFontResolver.resolve(SvgInheritedStyle.resolve(run.ownerContext(), run.owner())
+            .getFontFamily(), context);
     }
 
     private static double fontSizeFor(TextRunBuilder.Run run, RenderContext context) {
-        return ISvgTextAttributes.resolveFontSize(SvgInheritedStyle.resolve(run.ownerContext(), run.owner())).pixels();
+        return ISvgTextAttributes.resolveFontSize(SvgInheritedStyle.resolve(run.ownerContext(), run.owner()))
+            .pixels();
     }
 
     /**
-     * Shifts the whole result along the flow axis so it is centred ({@code middle}) or ends ({@code end}) at the
-     * flow's start position, rather than beginning there ({@code start}, the initial value) - applied as a single
-     * {@code translateX}/{@code translateY} on the finished node/group rather than by rewriting each glyph's own
-     * position and any {@code Rotate} pivot, which would otherwise need recomputing too. The flow axis is {@code y}
-     * under {@code writing-mode="tb"}/{@code "tb-rl"} (#139), {@code x} otherwise.
+     * Shifts the whole result along the flow axis so it is centred ({@code middle}) or ends ({@code end}) at the flow's start position, rather than beginning there ({@code start},
+     * the initial value) - applied as a single {@code translateX}/{@code translateY} on the finished node/group rather than by rewriting each glyph's own position and any
+     * {@code Rotate} pivot, which would otherwise need recomputing too. The flow axis is {@code y} under {@code writing-mode="tb"}/{@code "tb-rl"} (#139), {@code x} otherwise.
      */
     private static void applyTextAnchor(SvgText root, RenderContext context, double totalAdvance, Node result) {
         if (totalAdvance <= 0) {
@@ -435,12 +431,12 @@ final class TextGlyphLayout {
     }
 
     /**
-     * Whether {@code run}'s fully-resolved (inherited) {@code writing-mode} is one of the two vertical values -
-     * {@code "tb"}/{@code "tb-rl"}, top-to-bottom - rather than a horizontal one (#139). Resolved the same way
-     * {@link #svgFontFor}/{@link #fontSizeFor} resolve their own inherited properties.
+     * Whether {@code run}'s fully-resolved (inherited) {@code writing-mode} is one of the two vertical values - {@code "tb"}/{@code "tb-rl"}, top-to-bottom - rather than a
+     * horizontal one (#139). Resolved the same way {@link #svgFontFor}/{@link #fontSizeFor} resolve their own inherited properties.
      */
     private static boolean writingModeVertical(TextRunBuilder.Run run, RenderContext context) {
-        return isVerticalWritingMode(SvgInheritedStyle.resolve(run.ownerContext(), run.owner()).getWritingMode());
+        return isVerticalWritingMode(SvgInheritedStyle.resolve(run.ownerContext(), run.owner())
+            .getWritingMode());
     }
 
     private static boolean isVerticalWritingMode(String writingMode) {
@@ -449,9 +445,8 @@ final class TextGlyphLayout {
     }
 
     /**
-     * An em-based approximation of {@code baseline-shift}/{@code alignment-baseline}/{@code dominant-baseline},
-     * confirmed with the user as the intended scope: JavaFX's {@code Text} has no font ascent/descent metrics to
-     * implement the CSS baseline-alignment algorithm precisely.
+     * An em-based approximation of {@code baseline-shift}/{@code alignment-baseline}/{@code dominant-baseline}, confirmed with the user as the intended scope: JavaFX's
+     * {@code Text} has no font ascent/descent metrics to implement the CSS baseline-alignment algorithm precisely.
      */
     private static double baselineOffset(TextRunBuilder.Run run, double fontSize) {
         // baseline-shift/alignment-baseline/dominant-baseline are not inherited - like text-decoration, each
