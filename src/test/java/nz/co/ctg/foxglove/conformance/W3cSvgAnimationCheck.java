@@ -64,6 +64,15 @@ public class W3cSvgAnimationCheck {
     private static final Path MANIFEST = Path.of("src/test/resources/conformance/animation-manifest.properties");
 
     /**
+     * #220: this run's own real results, written unconditionally (verify or record mode alike) - not the checked-in baseline above, which only {@code record} mode overwrites.
+     * {@link W3cSvgConformanceCheck} reads this, if present, to show a real pass/fail count on the published dashboard's Animation section instead of a static single-frame
+     * placeholder; its absence (this class never having run) is a graceful no-op there, not an error.
+     */
+    private static final Path RUN_RESULTS = Path.of("target/animation-run-results.properties");
+
+    private static final Path REPORT_DIR = Path.of("target/conformance-report/animation");
+
+    /**
      * What the browser paints behind the page. Both sides must agree on it: compare a transparent capture against an opaque one and every background pixel differs on alpha alone,
      * which reported 99% difference between images that were nearly identical.
      */
@@ -103,6 +112,12 @@ public class W3cSvgAnimationCheck {
         }
 
         printSummary(actual, notes);
+
+        // #220: written unconditionally, before the record/verify branch below - the published dashboard needs a
+        // real result to show regardless of whether this run's own manifest-diff assertion passes, same reasoning
+        // W3cSvgConformanceCheck's own ConformanceReport.write() call already follows.
+        ConformanceManifest.record(RUN_RESULTS, actual, "# This run's own real animation results (#220) - not the checked-in baseline.\n");
+        AnimationConformanceReport.write(actual, notes, REPORT_DIR);
 
         if ("record".equals(System.getProperty("animation.mode", "verify"))) {
             ConformanceManifest.record(MANIFEST, actual,

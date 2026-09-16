@@ -62,9 +62,23 @@ public final class ConformanceReport {
                     footer { margin-top: 2rem; color: #888; font-size: 0.85rem; }
                     """;
 
+    /**
+     * #220: real per-test pass/fail counts from {@link W3cSvgAnimationCheck}'s own seeked-against-a-live-browser comparison, threaded through to {@link #indexPage} so the
+     * Animation section can show the genuine number instead of a static single-frame placeholder. {@code null} (from {@link #write(Map, Path)}/{@link #write(Map, Path, String)},
+     * or any caller with no such run to read - see {@code W3cSvgConformanceCheck}'s own graceful fallback) keeps today's placeholder behaviour exactly as it was before this
+     * existed.
+     */
+    public record AnimationSummary(int passed, int total) {
+    }
+
     /** As {@link #write(Map, Path, String)}, with no reference-image provenance to show - the four existing {@code ConformanceReportTest} call sites keep compiling unchanged. */
     public static void write(Map<String, ConformanceResult> results, Path outputDirectory) {
-        write(results, outputDirectory, null);
+        write(results, outputDirectory, null, null);
+    }
+
+    /** As {@link #write(Map, Path, String, AnimationSummary)}, with no real animation summary available - see that overload's own javadoc on what this changes. */
+    public static void write(Map<String, ConformanceResult> results, Path outputDirectory, String referenceProvenance) {
+        write(results, outputDirectory, referenceProvenance, null);
     }
 
     /**
@@ -75,8 +89,10 @@ public final class ConformanceReport {
      *            #199: a short line naming what the pass/fail comparison was actually run against - {@link W3cSvgConformanceCheck} reads this from the reference set's own
      *            {@code generation-manifest.properties} (#196) and passes it through here so the published site says so, rather than a reader having to infer it. {@code null}
      *            omits the line entirely (used by {@link #write(Map, Path)}, and by any caller with no such manifest to read).
+     * @param animationSummary
+     *            see {@link AnimationSummary}'s own javadoc.
      */
-    public static void write(Map<String, ConformanceResult> results, Path outputDirectory, String referenceProvenance) {
+    public static void write(Map<String, ConformanceResult> results, Path outputDirectory, String referenceProvenance, AnimationSummary animationSummary) {
         // Every test's own page always lives at its raw <chapter>/<test>.html, unconditionally, whatever category
         // it turns out to be - #201 only changes which *listing* pages a test is linked from, never where its own
         // page lives or whether it gets one. This keeps that part of the site untouched from before #201.
@@ -118,7 +134,7 @@ public final class ConformanceReport {
         }
 
         writeFile(outputDirectory.resolve("index.html"),
-            indexPage(staticChapters(rawChapters), animationTests, interactionTests, referenceProvenance));
+            indexPage(staticChapters(rawChapters), animationTests, interactionTests, referenceProvenance, animationSummary));
     }
 
     private static List<ConformanceResult> category(Map<String, ConformanceResult> results, ConformanceCategory category) {
@@ -152,7 +168,7 @@ public final class ConformanceReport {
      * {@link #write} for why neither needs one.
      */
     private static String indexPage(Map<String, List<ConformanceResult>> staticChapters, List<ConformanceResult> animationTests,
-                                    List<ConformanceResult> interactionTests, String referenceProvenance) {
+                                    List<ConformanceResult> interactionTests, String referenceProvenance, AnimationSummary animationSummary) {
         List<ConformanceResult> allStatic = staticChapters.values()
             .stream()
             .flatMap(List::stream)
@@ -207,7 +223,8 @@ public final class ConformanceReport {
                 .append(escape(referenceProvenance))
                 .append("</div>\n");
         }
-        html.append(categorySection("Animation", "animate/index.html", animationTests, ConformanceCategory.ANIMATION));
+        html.append(animationSummary != null ? realAnimationSection(animationSummary)
+            : categorySection("Animation", "animate/index.html", animationTests, ConformanceCategory.ANIMATION));
         html.append(categorySection("Interaction", "interaction/index.html", interactionTests, ConformanceCategory.INTERACTION));
         return html.append(footer(""))
             .toString();
@@ -235,6 +252,35 @@ public final class ConformanceReport {
             .append(escape(heading.toLowerCase(Locale.ROOT)))
             .append(" tests &rarr;</a></p>\n");
         html.append(unmeasurableNote(category));
+        return html.toString();
+    }
+
+    /**
+     * #220: the real counterpart to {@link #categorySection} for Animation once a genuine {@link AnimationSummary} exists - a real pass/fail headline (not a static single-frame
+     * one) linking to {@link AnimationConformanceReport}'s own listing page, with a note explaining *why* the number differs from every other category (a live, seeked comparison,
+     * not a static render) rather than the "not measured" framing {@link #unmeasurableNote} gives every other non-STATIC category.
+     */
+    private static String realAnimationSection(AnimationSummary summary) {
+        StringBuilder html = new StringBuilder();
+        html.append("<h2>Animation</h2>\n");
+        html.append("<div class=\"overall\">")
+            .append(summary.passed())
+            .append(" / ")
+            .append(summary.total())
+            .append(" tests passing (")
+            .append(percent(summary.total() == 0 ? 0.0 : 100.0 * summary.passed() / summary.total()))
+            .append(")</div>\n");
+        html.append("<p><a href=\"animation/index.html\">View all ")
+            .append(summary.total())
+            .append(" animation tests &rarr;</a></p>\n");
+        html.append("""
+                        <div class="note">
+                        Unlike every other category on this page, this is a real, measured result - not a static single frame,
+                        but a live comparison against a headless Chromium reference, seeked to several moments derived from each
+                        test's own real SMIL timing (#208). See
+                        <a href="https://github.com/ctgnz/foxglove/issues/208">ctgnz/foxglove#208</a> for methodology.
+                        </div>
+                        """);
         return html.toString();
     }
 
@@ -440,7 +486,7 @@ public final class ConformanceReport {
         return String.format("%.1f%%", value);
     }
 
-    private static StringBuilder page(String title) {
+    static StringBuilder page(String title) {
         StringBuilder html = new StringBuilder();
         html.append("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n");
         html.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n");
@@ -452,14 +498,14 @@ public final class ConformanceReport {
         return html;
     }
 
-    private static String footer(String rootPrefix) {
+    static String footer(String rootPrefix) {
         return "<footer>Generated " + Instant.now() + " from the latest master build. See "
                + "<a href=\"https://github.com/ctgnz/foxglove/issues/44\">ctgnz/foxglove#44</a> for methodology. "
                + "Reference images are served by <a href=\"" + W3C_SUITE_BASE + "/\">W3C</a>; "
                + "the test suite is &copy; World Wide Web Consortium.</footer>\n</body>\n</html>\n";
     }
 
-    private static void writeFile(Path file, String content) {
+    static void writeFile(Path file, String content) {
         try {
             Files.createDirectories(file.getParent());
             Files.writeString(file, content, StandardCharsets.UTF_8);
@@ -468,7 +514,7 @@ public final class ConformanceReport {
         }
     }
 
-    private static String escape(String value) {
+    static String escape(String value) {
         return value.replace("&", "&amp;")
             .replace("<", "&lt;")
             .replace(">", "&gt;")
