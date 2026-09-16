@@ -11,6 +11,11 @@ import nz.co.ctg.foxglove.FxGraphic;
 import nz.co.ctg.foxglove.ISvgTransformable;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.adapter.DoubleListAdapter;
+import nz.co.ctg.foxglove.animate.SvgAnimateAttribute;
+import nz.co.ctg.foxglove.animate.SvgAnimateColor;
+import nz.co.ctg.foxglove.animate.SvgAnimateMotion;
+import nz.co.ctg.foxglove.animate.SvgAnimateTransform;
+import nz.co.ctg.foxglove.animate.SvgSetAttribute;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -64,7 +69,12 @@ public class SvgText extends AbstractSvgTextContentElement implements ISvgTextPo
         @XmlElementRef(name = "tspan", type = SvgTextSpan.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElementRef(name = "tref", type = SvgTextReference.class, namespace = "http://www.w3.org/2000/svg"),
         @XmlElementRef(name = "textPath", type = SvgTextPath.class, namespace = "http://www.w3.org/2000/svg"),
-        @XmlElementRef(name = "altGlyph", type = SvgAltGlyph.class, namespace = "http://www.w3.org/2000/svg")
+        @XmlElementRef(name = "altGlyph", type = SvgAltGlyph.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElementRef(name = "animate", type = SvgAnimateAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElementRef(name = "set", type = SvgSetAttribute.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElementRef(name = "animateMotion", type = SvgAnimateMotion.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElementRef(name = "animateColor", type = SvgAnimateColor.class, namespace = "http://www.w3.org/2000/svg"),
+        @XmlElementRef(name = "animateTransform", type = SvgAnimateTransform.class, namespace = "http://www.w3.org/2000/svg")
     })
     private List<Object> content;
 
