@@ -167,7 +167,7 @@
         </dependency>
 
         <!--
-            #224: extracts the svg/ entries of the W3C suite tarball FoxgloveParserPreview fetches at its own
+            #224: extracts the svg/ entries of the W3C suite tarball ConformanceSuiteBrowser fetches at its own
             launch time (the JDK has no built-in tar reader - only java.util.zip.GZIPInputStream for the outer
             gzip layer). Test-scope only, same as the Playwright dependency above; not used by any main-scope code.
 

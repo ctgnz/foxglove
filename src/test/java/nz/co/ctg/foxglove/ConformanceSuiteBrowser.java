@@ -87,9 +87,9 @@ import com.microsoft.playwright.Playwright;
  * <p>
  * <b>A killed-rather-than-closed JVM still leaks the Chromium process tree, and leaves the fetched suite on disk</b> - {@link #stop()} closes the browser and deletes the temp
  * directory cleanly on an ordinary window-close/{@code Platform.exit()}, but nothing short of that (a debugger's Stop button, a killed shell) gives it the chance to run. Check for
- * stray {@code chrome.exe}/{@code java.exe} processes, and a stray {@code foxglove-preview-suite-*} temp directory, if a later build in this same environment behaves oddly.
+ * stray {@code chrome.exe}/{@code java.exe} processes, and a stray {@code conformance-suite-browser-*} temp directory, if a later build in this same environment behaves oddly.
  */
-public class FoxgloveParserPreview extends Application {
+public class ConformanceSuiteBrowser extends Application {
 
     /** How often the master clock advances while playing - responsive without being wasteful for a dev tool. */
     private static final Duration TICK = Duration.millis(1000.0 / 30);
@@ -101,7 +101,7 @@ public class FoxgloveParserPreview extends Application {
     private static final String SUITE_SHA256 = "b5f46cca1ad79b670f9179770b2366c57efd5c671d084144090feab4b7ff1030";
 
     public static void main(String[] args) {
-        Application.launch(FoxgloveParserPreview.class, args);
+        Application.launch(ConformanceSuiteBrowser.class, args);
     }
 
     private Stage mainStage;
@@ -157,11 +157,13 @@ public class FoxgloveParserPreview extends Application {
         };
 
         // Modest, close-together sizing (#224) - the suite's own canvases are consistently small, unlike #209's
-        // half-screen split sized for arbitrary, potentially much larger, real-world documents.
+        // half-screen split sized for arbitrary, potentially much larger, real-world documents. Wide enough that
+        // the tree (220px) plus a full 480px-wide canvas plus padding/scrollbar slack fit without the preview
+        // itself needing to scroll horizontally for a typical test.
         Rectangle2D screen = Screen.getPrimary()
             .getVisualBounds();
-        int mainWidth = 620;
-        int mainHeight = 560;
+        int mainWidth = 780;
+        int mainHeight = 580;
         int referenceWidth = 520;
         int referenceHeight = 460;
         mainStage.setX(screen.getMinX());
@@ -175,7 +177,7 @@ public class FoxgloveParserPreview extends Application {
         Scene scene = new Scene(root);
         mainStage.setScene(scene);
         mainStage.setResizable(true);
-        mainStage.setTitle("Icon Previewer");
+        mainStage.setTitle("Conformance Suite Browser");
         mainStage.show();
     }
 
@@ -228,7 +230,7 @@ public class FoxgloveParserPreview extends Application {
      * into a fresh {@link #suiteDir}, deleted in {@link #stop()}.
      */
     private Path fetchAndExtractSuite() throws IOException, InterruptedException, NoSuchAlgorithmException {
-        Path tarball = Files.createTempFile("foxglove-preview-suite-", ".tar.gz");
+        Path tarball = Files.createTempFile("conformance-suite-browser-", ".tar.gz");
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder(URI.create(SUITE_URL))
@@ -242,7 +244,7 @@ public class FoxgloveParserPreview extends Application {
                 throw new IOException("W3C suite checksum mismatch - expected " + SUITE_SHA256 + " but got " + actualSha256);
             }
 
-            suiteDir = Files.createTempDirectory("foxglove-preview-suite-");
+            suiteDir = Files.createTempDirectory("conformance-suite-browser-");
             extractSvgEntries(tarball, suiteDir);
             return suiteDir.resolve("svg");
         } finally {
@@ -343,8 +345,10 @@ public class FoxgloveParserPreview extends Application {
                 startPlayback();
             }
         });
-        playPauseButton.setManaged(false);
-        playPauseButton.setVisible(false);
+        // Always shown, not shown-only-when-animated (#224 tidy-up) - a toolbar that appears/disappears per
+        // selection reads as a layout glitch when clicking through the tree; disabled communicates "nothing to
+        // play here" just as clearly without the whole toolbar shifting.
+        playPauseButton.setDisable(true);
 
         seekSlider = new Slider();
         seekSlider.setMinWidth(200);
@@ -359,8 +363,7 @@ public class FoxgloveParserPreview extends Application {
                     seekTo(Duration.millis(value.doubleValue()));
                 }
             });
-        seekSlider.setManaged(false);
-        seekSlider.setVisible(false);
+        seekSlider.setDisable(true);
 
         return new ToolBar(playPauseButton, seekSlider);
     }
@@ -436,19 +439,18 @@ public class FoxgloveParserPreview extends Application {
     }
 
     /**
-     * Shows Play/Pause and the slider only when there is something to play, and only when it has a fixed length - an indefinitely-repeating document has no natural slider range to
-     * show a position within (documented simplification, not an oversight: the master clock still advances it correctly via {@link #startPlayback}).
+     * Both controls stay permanently shown (#224) - only their enabled state reflects whether there is anything to play: Play/Pause disabled when the document has no animation at
+     * all, the slider disabled whenever Play/Pause is too <i>or</i> whenever the animation is indefinite - it has no fixed length, so no natural slider range to show a position
+     * within (documented simplification, not an oversight: the master clock still advances it correctly via {@link #startPlayback}).
      */
     private void configurePlaybackControls() {
         boolean animated = hasAnimation();
         boolean finite = animated && !totalDuration.isIndefinite() && totalDuration.greaterThan(Duration.ZERO);
 
-        playPauseButton.setManaged(animated);
-        playPauseButton.setVisible(animated);
+        playPauseButton.setDisable(!animated);
         playPauseButton.setText("Play");
 
-        seekSlider.setManaged(finite);
-        seekSlider.setVisible(finite);
+        seekSlider.setDisable(!finite);
         if (finite) {
             seekSlider.setMin(0);
             seekSlider.setMax(totalDuration.toMillis());
@@ -516,7 +518,7 @@ public class FoxgloveParserPreview extends Application {
                 .seek(time);
         }
         seekReference(time);
-        if (seekSlider.isVisible()) {
+        if (!seekSlider.isDisable()) {
             updatingSliderProgrammatically = true;
             seekSlider.setValue(time.toMillis());
             updatingSliderProgrammatically = false;
