@@ -11,6 +11,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javafx.scene.Node;
 import javafx.scene.image.WritableImage;
@@ -27,6 +28,8 @@ import nz.co.ctg.foxglove.ISvgElement;
 import nz.co.ctg.foxglove.JavaFxTestSupport;
 import nz.co.ctg.foxglove.RenderContext;
 import nz.co.ctg.foxglove.SvgGraphic;
+import nz.co.ctg.foxglove.animate.ISvgAnimationElement;
+import nz.co.ctg.foxglove.animate.SvgAnimationTiming;
 
 /**
  * #112: renders every {@code animate-} document in the W3C suite <b>at chosen moments</b> and compares it against a live browser engine seeked to the same moment.
@@ -146,7 +149,8 @@ public class W3cSvgAnimationCheck {
         double worst = 0;
         boolean passed = true;
 
-        for (Duration time : sampleTimes(animated)) {
+        List<Duration> times = deriveSampleTimes(svg, animated);
+        for (Duration time : times) {
             JavaFxTestSupport.onFxThread(() -> {
                 animated.animations()
                     .seek(time);
@@ -172,9 +176,51 @@ public class W3cSvgAnimationCheck {
         }
 
         notes.put(name, String.format("worst differing ratio %.4f across %d moments, %d animation(s) built",
-            worst, SAMPLE_FRACTIONS.length, animated.animations()
+            worst, times.size(), animated.animations()
                 .size()));
         return passed;
+    }
+
+    /**
+     * #208: the moments to compare, derived from every {@link ISvgAnimationElement} in the document's own real {@code begin}/{@code dur}/{@code end} - not blind fractions of an
+     * aggregate total duration. Confirmed against real W3C tests, not assumed: {@code animate-elem-24-t}'s own {@code passCriteria} literally names the moments that matter ("pale
+     * blue guides exist... at times 3s, 6s and 9s") for its one {@code begin="3s" dur="6s"} animation group - exactly this method's begin (3s), begin+dur/2 (6s) and begin+dur
+     * (9s). A document with several independently-timed animations (for example one spanning [1s,5s] and another [4s,7s]) gets samples at every one of those elements' own
+     * boundaries unioned together (here, {0, 1, 3, 4, 5, 5.5, 7}), not 5 arbitrary fractions of whatever the longest one happens to add up to - the fixed-fraction schedule for
+     * that same example ({0, 1.75, 3.5, 5.25, 7.0}) does not land on a single one of the moments that actually matter.
+     * <p>
+     * An element with an unparseable/syncbase/event {@code begin} defaults to {@code Duration.ZERO} for this purpose, the same approximation {@code SvgAnimationController} itself
+     * already makes when actually building the animation - keeping derived samples consistent with how the document will actually play, not a stricter reading of SMIL this
+     * renderer does not implement anyway. Falls back to {@link #sampleTimes(AnimatedGraphic)} whenever fewer than two distinct moments are derivable - a document with no animation
+     * elements at all, or where every element's own timing is indefinite/unparseable beyond the {@code Duration.ZERO} default - since a single-point schedule cannot show a genuine
+     * animation error at all (see that method's own javadoc on why {@code t=0} alone is never enough).
+     */
+    static List<Duration> deriveSampleTimes(SvgGraphic svg, AnimatedGraphic animated) {
+        TreeSet<Double> seconds = new TreeSet<>();
+        for (ISvgAnimationElement element : svg.getElementIndex()
+            .getElementsOfType(ISvgAnimationElement.class)) {
+            SvgAnimationTiming timing = SvgAnimationTiming.parse(element);
+            Duration begin = timing.begin()
+                .orElse(Duration.ZERO);
+            seconds.add(begin.toSeconds());
+
+            Duration duration = timing.duration();
+            Duration effectiveEnd = timing.end()
+                .orElse(duration.isIndefinite() || duration.lessThanOrEqualTo(Duration.ZERO) ? null : begin.add(duration));
+            if (effectiveEnd != null && !effectiveEnd.isIndefinite()) {
+                seconds.add(begin.toSeconds() + (effectiveEnd.toSeconds() - begin.toSeconds()) / 2);
+                seconds.add(effectiveEnd.toSeconds());
+            }
+        }
+        if (seconds.size() < 2) {
+            return sampleTimes(animated);
+        }
+        seconds.add(0.0);
+        List<Duration> times = new ArrayList<>();
+        for (double second : seconds) {
+            times.add(Duration.seconds(second));
+        }
+        return times;
     }
 
     /**
