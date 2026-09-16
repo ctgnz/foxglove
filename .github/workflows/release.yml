@@ -49,8 +49,12 @@ jobs:
           exit 1
         fi
 
+    # Tests already ran (with Xvfb) against this exact commit via maven.yml's own push-to-master trigger, before
+    # it was ever tagged - re-running them here, on a runner with no display and no Xvfb, just hangs indefinitely
+    # rather than failing fast, since JavaFX's own Platform startup blocks waiting for one instead of erroring.
+    # Confirmed directly: 0.10.0's own first release attempt hung for 8+ minutes on exactly this step.
     - name: Publish to the Maven Central Portal
-      run: mvn -B --no-transfer-progress -Prelease deploy
+      run: mvn -B --no-transfer-progress -DskipTests -Prelease deploy
       env:
         MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
