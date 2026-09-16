@@ -150,11 +150,14 @@
         </dependency>
 
         <!--
-            #196: drives headless Chromium to generate fresh W3C conformance reference images, replacing the
-            suite's own stale (circa-2011) reference PNGs - see W3cSvgReferenceGenerator. A plain test-scope
-            dependency, not profile-scoped: declaring it doesn't download the Chromium binary itself (only
-            Playwright.create(), which only that one class calls, does that), and that class never runs as part of
-            the default `mvn test`/`mvn verify` the same way W3cSvgConformanceCheck/W3cSvgAnimationCheck don't.
+            #196: drives headless Chromium to generate fresh W3C conformance reference images (see
+            W3cSvgReferenceGenerator) and, #208, to seek a live reference for the animation check (see
+            PlaywrightAnimationReference, used by W3cSvgAnimationCheck and its own
+            PlaywrightAnimationReferenceCheck). A plain test-scope dependency, not profile-scoped: declaring it
+            doesn't download the Chromium binary itself (only Playwright.create(), which only those classes call,
+            does that), and none of them run as part of the default `mvn test`/`mvn verify` - every one of them,
+            like W3cSvgConformanceCheck, has a name deliberately chosen not to match Surefire's own default
+            test-discovery patterns.
         -->
         <dependency>
             <groupId>com.microsoft.playwright</groupId>

@@ -39,8 +39,8 @@ import nz.co.ctg.foxglove.animate.SvgAnimationTiming;
  * covering SMIL with no end-to-end signal whatsoever. Seeking both sides removes the problem entirely, because "which frame?" stops being a guess.
  * <p>
  * Like {@link W3cSvgConformanceCheck}, this class's name deliberately does not match Surefire's default discovery patterns, so it never runs in the default build - only under
- * {@code mvn -Pconformance test}. That matters more here than there: {@link WebViewReference} needs a <b>shown</b> window to render at all, which CI supplies through
- * {@code xvfb-run} and a developer's default build should not be opening.
+ * {@code mvn -Pconformance test}. That matters more here than there too: rendering the side under test still goes through JavaFX {@code Node.snapshot()}, which CI supplies a real
+ * display for via {@code xvfb-run} and a developer's default build should not be opening.
  * <p>
  * <b>Read the numbers as a relative signal, not an absolute one.</b> The engine draws text with real fonts and this renderer with a fallback, so every label in every document
  * differs for reasons that have nothing to do with animation - the same furniture problem the static check already documents, and the reason the {@code revision} legend is cropped
@@ -86,7 +86,7 @@ public class W3cSvgAnimationCheck {
 
         Map<String, Boolean> actual = new TreeMap<>();
         Map<String, String> notes = new TreeMap<>();
-        WebViewReference reference = WebViewReference.open(WIDTH, HEIGHT);
+        PlaywrightAnimationReference reference = PlaywrightAnimationReference.open(WIDTH, HEIGHT);
         try {
             for (Path document : documents) {
                 String name = baseName(document);
@@ -107,7 +107,7 @@ public class W3cSvgAnimationCheck {
         if ("record".equals(System.getProperty("animation.mode", "verify"))) {
             ConformanceManifest.record(MANIFEST, actual,
                 "# W3C SVG 1.1 animation baseline (#112) - one PASS/FAIL line per animate- test name.\n"
-                                                         + "# Each is this renderer compared against a seeked WebView, not against the suite's own PNGs.\n"
+                                                         + "# Each is this renderer compared against a seeked headless Chromium (Playwright), not against the suite's own PNGs.\n"
                                                          + "# Regenerate deliberately with -Danimation.mode=record after reviewing what changed.\n");
             System.out.println("Recorded " + actual.size() + " animation results to the baseline manifest.");
             return;
@@ -127,7 +127,7 @@ public class W3cSvgAnimationCheck {
      * Compares one document at every sampled moment, passing only if all of them do. The worst moment is the one that matters: an animation that is right at rest and wrong in
      * flight is still wrong.
      */
-    private boolean runOne(Path document, String name, WebViewReference reference, Map<String, String> notes) throws Exception {
+    private boolean runOne(Path document, String name, PlaywrightAnimationReference reference, Map<String, String> notes) throws Exception {
         SvgGraphic svg;
         try (InputStream in = Files.newInputStream(document)) {
             svg = new FoxgloveParser().parse(in);
