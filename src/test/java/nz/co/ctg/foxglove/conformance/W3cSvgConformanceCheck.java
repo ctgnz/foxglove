@@ -145,7 +145,7 @@ public class W3cSvgConformanceCheck {
 
         // Written unconditionally, before the pass/fail branch below - #92's dashboard needs to keep showing a
         // regression, not go stale because the run that found it also failed its own assertion.
-        ConformanceReport.write(results, reportDir, referenceProvenance(referenceDir));
+        ConformanceReport.write(results, reportDir, referenceProvenance(referenceDir), animationSummary());
 
         String mode = System.getProperty("conformance.mode", "verify");
         if ("record".equals(mode)) {
@@ -245,6 +245,25 @@ public class W3cSvgConformanceCheck {
             // fall through to null below
         }
         return null;
+    }
+
+    /**
+     * #220: real per-test animation results, if {@link W3cSvgAnimationCheck} has already written its own {@code target/animation-run-results.properties} this run - it runs first
+     * in CI (see {@code conformance-pages.yml}) specifically so this file exists by the time this class runs. Never fatal, and {@code null} (the dashboard's own graceful fallback,
+     * see {@link ConformanceReport.AnimationSummary}) whenever it hasn't - a local {@code -Dtest=W3cSvgConformanceCheck} run on its own is a completely ordinary, supported way to
+     * use this class, not something that should fail or warn over a file it never had reason to produce itself.
+     */
+    private static ConformanceReport.AnimationSummary animationSummary() {
+        Path path = Path.of("target/animation-run-results.properties");
+        if (!Files.isRegularFile(path)) {
+            return null;
+        }
+        Map<String, Boolean> results = ConformanceManifest.load(path);
+        int passed = (int) results.values()
+            .stream()
+            .filter(Boolean::booleanValue)
+            .count();
+        return new ConformanceReport.AnimationSummary(passed, results.size());
     }
 
     /** Never fatal: a report page missing its prose is far better than a run aborted over unreadable furniture. */

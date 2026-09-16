@@ -124,6 +124,24 @@ public class ConformanceReportTest {
         assertThat(index, containsString("1 / 1 tests passing"));
     }
 
+    /**
+     * #220: when a real {@link ConformanceReport.AnimationSummary} is supplied, the index page's Animation section shows the genuine pass/fail count and links to the real report
+     * ({@link AnimationConformanceReport}'s own {@code animation/index.html}), not the static single-frame placeholder - independent of whatever {@code animate-*}
+     * {@link ConformanceResult}s happen to be in the results map, since the real summary is a wholly separate data source from the static single-frame render.
+     */
+    @Test
+    public void testIndexShowsARealAnimationSummaryWhenProvided() throws Exception {
+        Map<String, ConformanceResult> results = new LinkedHashMap<>();
+        results.put("shapes-rect-01-t", result("shapes-rect-01-t", true, 0.99));
+        ConformanceReport.write(results, outputDir, null, new ConformanceReport.AnimationSummary(3, 81));
+
+        String index = read("index.html");
+        assertThat(index, containsString("3 / 81 tests passing"));
+        assertThat(index, containsString("href=\"animation/index.html\""));
+        assertThat("the real summary replaces the static placeholder note for this section entirely",
+            index, not(containsString("not meaningful")));
+    }
+
     @Test
     public void testATestThatThrewSaysSoOnItsOwnPage() throws Exception {
         Map<String, ConformanceResult> results = new LinkedHashMap<>();

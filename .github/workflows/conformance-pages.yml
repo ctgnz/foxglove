@@ -67,21 +67,16 @@ jobs:
             exit 1
           fi
           gh run download "$RUN_ID" --repo ${{ github.repository }} -n w3c-svg-references -D target/w3c-svg-references-generated
-      - name: Run the W3C SVG conformance suite
-        id: conformance
-        # Deliberately non-fatal here: the dashboard below must still publish (and show the regression) even when
-        # this run's own manifest-diff assertion fails - the job is failed explicitly, after publishing, instead.
-        # In record mode there is no assertion to fail (the check returns right after writing the new baseline), so
-        # this step's outcome is 'success' either way and the final gate step below is a no-op.
-        continue-on-error: true
-        run: xvfb-run --auto-servernum mvn -B -Pconformance test -Dconformance.mode=${{ inputs.mode || 'verify' }}
       - name: Run the W3C SVG animation conformance check
         id: animation
         # #208: was never wired into CI at all before this - the checked-in animation-manifest.properties had sat
         # unrefreshed since #112 first added it (still all-FAIL). Same continue-on-error reasoning as the static
-        # check above: a regression here should be visible, not silently swallowed, but must not stop the dashboard
-        # from publishing (the two checks are otherwise unrelated - this one produces no dashboard content of its
-        # own, see W3cSvgAnimationCheck's own javadoc).
+        # check below: a regression here should be visible, not silently swallowed, but must not stop the dashboard
+        # from publishing.
+        # #220: runs BEFORE the static conformance suite deliberately - it writes target/animation-run-results.
+        # properties unconditionally, which W3cSvgConformanceCheck reads (if present) to show a real animation
+        # pass/fail count on the published dashboard instead of a static single-frame placeholder. Order matters
+        # here: that file has to exist by the time the static check's own ConformanceReport.write() runs.
         continue-on-error: true
         run: xvfb-run --auto-servernum mvn -B -Pconformance test -Dtest=W3cSvgAnimationCheck -Danimation.mode=${{ inputs.animationMode || 'verify' }}
       - name: Upload recorded animation baseline
@@ -93,6 +88,14 @@ jobs:
         with:
           name: animation-manifest
           path: src/test/resources/conformance/animation-manifest.properties
+      - name: Run the W3C SVG conformance suite
+        id: conformance
+        # Deliberately non-fatal here: the dashboard below must still publish (and show the regression) even when
+        # this run's own manifest-diff assertion fails - the job is failed explicitly, after publishing, instead.
+        # In record mode there is no assertion to fail (the check returns right after writing the new baseline), so
+        # this step's outcome is 'success' either way and the final gate step below is a no-op.
+        continue-on-error: true
+        run: xvfb-run --auto-servernum mvn -B -Pconformance test -Dconformance.mode=${{ inputs.mode || 'verify' }}
       - name: Upload recorded baseline manifest
         # #199: the only way to get a record-mode run's output back out of CI, since this job has no write access to
         # commit it directly - download this artifact and commit src/test/resources/conformance/manifest.properties
