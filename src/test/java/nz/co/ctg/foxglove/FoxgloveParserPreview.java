@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +16,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -220,7 +222,9 @@ public class FoxgloveParserPreview extends Application {
     protected void loadFile(Path filePath) {
         try {
             pausePlayback();
-            currentAnimated = createAnimatedGraphic(filePath);
+            SvgGraphic svgElement = parser.parse(Files.newInputStream(filePath));
+            svgElement.setBaseUri(filePath.toUri());
+            currentAnimated = createAnimatedGraphic(svgElement);
             Pane region = new Pane(currentAnimated.node());
             region.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DOTTED, null, BorderStroke.THIN)));
             scrollPane.setContent(region);
@@ -236,8 +240,9 @@ public class FoxgloveParserPreview extends Application {
             // and the pauseAnimations() call that must follow it, not race it - has actually finished.
             String url = filePath.toUri()
                 .toString();
+            Dimension2D intrinsicSize = svgElement.getIntrinsicSize();
             playwrightExecutor.execute(() -> {
-                loadReference(url);
+                loadReference(url, intrinsicSize);
                 Platform.runLater(() -> {
                     seekTo(Duration.ZERO);
                     if (hasAnimation()) {
@@ -250,11 +255,24 @@ public class FoxgloveParserPreview extends Application {
         }
     }
 
-    /** Runs on {@link #playwrightExecutor} only - navigates, then pauses the SMIL clock so nothing moves until this class explicitly seeks it. */
-    private void loadReference(String url) {
+    /**
+     * Runs on {@link #playwrightExecutor} only - navigates, then pauses the SMIL clock so nothing moves until this class explicitly seeks it.
+     * <p>
+     * <b>Forces the loaded document's own root to {@code intrinsicSize}, in pixels.</b> Confirmed directly, not assumed: without this, a document whose root declares
+     * {@code width="100%" height="100%"} (the common case - foxglove's own sample files included) resolves that percentage against the browser's own much larger viewport (half the
+     * screen, #209), then its default {@code preserveAspectRatio="xMidYMid meet"} scales and centres the actual content within that oversized box - "fills the width, centred
+     * vertically," not remotely what this renderer's own {@code RenderContext.root(index, 0, 0)} shows (the document's own intrinsic size, unscaled, anchored at the pane's
+     * origin). Overriding the root's inline {@code style.width}/{@code style.height} to the exact pixel size {@link SvgGraphic#getIntrinsicSize()} itself resolves - the same
+     * authoritative source {@link #createAnimatedGraphic} already renders against - removes the size mismatch that caused the scaling/centring in the first place, so both panes
+     * end up showing the same document at the same pixel size, anchored the same way, which is the entire point of a side-by-side comparison.
+     */
+    private void loadReference(String url, Dimension2D intrinsicSize) {
         try {
             page.navigate(url);
-            page.evaluate("document.documentElement.pauseAnimations(); true;");
+            page.evaluate(String.format(Locale.ROOT,
+                "document.documentElement.style.width='%.3fpx'; document.documentElement.style.height='%.3fpx'; "
+                                                     + "document.documentElement.pauseAnimations(); true;",
+                intrinsicSize.getWidth(), intrinsicSize.getHeight()));
         } catch (RuntimeException e) {
             // a malformed or non-SVG file - the reference pane simply won't animate; our own render is unaffected
         }
@@ -378,9 +396,7 @@ public class FoxgloveParserPreview extends Application {
         }
     }
 
-    private AnimatedGraphic createAnimatedGraphic(Path filePath) throws Exception {
-        SvgGraphic svgElement = parser.parse(Files.newInputStream(filePath));
-        svgElement.setBaseUri(filePath.toUri());
+    private AnimatedGraphic createAnimatedGraphic(SvgGraphic svgElement) {
         // wired up so <a> activation is actually exercisable by clicking in this preview, rather than only visible
         // via a unit test - printing here is a stand-in for whatever a real embedding application would do
         RenderContext context = RenderContext.root(svgElement.getElementIndex(), 0, 0)
