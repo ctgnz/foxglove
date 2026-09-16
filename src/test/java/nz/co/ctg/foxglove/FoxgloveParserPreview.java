@@ -41,8 +41,9 @@ import javafx.util.Duration;
  * WebView's own SMIL clock run independently and drift apart: every tick calls both {@code
  * animations.seek(elapsed)} and the WebView's own {@code setCurrentTime(elapsed)}, so "Play" means "the master clock is advancing," not "two separate clocks were both told to
  * start" - the same explicit-seek approach {@code
- * WebViewReference} already established for the animation conformance harness, chosen here for the same reason: exact, guaranteed sync beats two engines that happen to agree at
- * the start.
+ * PlaywrightAnimationReference} established for the animation conformance harness (#208; a plain {@code WebView} still makes sense here specifically, unlike there, since this tool
+ * is already a JavaFX desktop app with a window of its own to embed one in - see #209 for whether that holds up once this tool gets its own rework), chosen here for the same
+ * reason: exact, guaranteed sync beats two engines that happen to agree at the start.
  * <p>
  * The WebView's own SMIL clock is paused once, right after each document loads ({@code pauseAnimations()}), and never unpaused - it only ever moves because this class explicitly
  * seeks it.
@@ -299,8 +300,8 @@ public class FoxgloveParserPreview extends Application {
     /**
      * Runs {@code javascript} against the loaded document, swallowing any exception - a malformed or non-SVG file (a real possibility here, since {@code Browse...} lets this tool
      * point at any {@code .svg}-named file in a chosen folder) has no {@code document.documentElement.pauseAnimations()}/{@code setCurrentTime()} to call at all, and that must not
-     * crash the JavaFX Application Thread. The same guard {@code WebViewReference} already applies to the identical calls in the animation conformance harness, for the identical
-     * reason.
+     * crash the JavaFX Application Thread. The same guard {@code PlaywrightAnimationReference} already applies to the identical calls in the animation conformance harness, for the
+     * identical reason.
      */
     private void runScript(String javascript) {
         try {
