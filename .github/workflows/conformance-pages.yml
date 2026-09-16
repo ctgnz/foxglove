@@ -17,6 +17,16 @@ on:
         type: choice
         options: [verify, record]
         default: verify
+      animationMode:
+        description: >-
+          animation.mode - same "verify"/"record" shape as `mode` above, independently chosen (#208), for the
+          separate seeked-against-a-live-browser animation check (W3cSvgAnimationCheck) rather than the static one -
+          "record" downloads as the "animation-manifest" artifact instead. Independent because the two checks
+          measure genuinely different things and there is no reason re-baselining one should require re-baselining
+          the other in the same run.
+        type: choice
+        options: [verify, record]
+        default: verify
 
 permissions:
   contents: read
@@ -65,6 +75,24 @@ jobs:
         # this step's outcome is 'success' either way and the final gate step below is a no-op.
         continue-on-error: true
         run: xvfb-run --auto-servernum mvn -B -Pconformance test -Dconformance.mode=${{ inputs.mode || 'verify' }}
+      - name: Run the W3C SVG animation conformance check
+        id: animation
+        # #208: was never wired into CI at all before this - the checked-in animation-manifest.properties had sat
+        # unrefreshed since #112 first added it (still all-FAIL). Same continue-on-error reasoning as the static
+        # check above: a regression here should be visible, not silently swallowed, but must not stop the dashboard
+        # from publishing (the two checks are otherwise unrelated - this one produces no dashboard content of its
+        # own, see W3cSvgAnimationCheck's own javadoc).
+        continue-on-error: true
+        run: xvfb-run --auto-servernum mvn -B -Pconformance test -Dtest=W3cSvgAnimationCheck -Danimation.mode=${{ inputs.animationMode || 'verify' }}
+      - name: Upload recorded animation baseline
+        # #208, same reasoning as the static manifest upload below: this job has no write access to commit directly,
+        # so a record-mode run's only way out is an artifact - download and commit
+        # src/test/resources/conformance/animation-manifest.properties by hand after reviewing the diff.
+        if: inputs.animationMode == 'record'
+        uses: actions/upload-artifact@v4
+        with:
+          name: animation-manifest
+          path: src/test/resources/conformance/animation-manifest.properties
       - name: Upload recorded baseline manifest
         # #199: the only way to get a record-mode run's output back out of CI, since this job has no write access to
         # commit it directly - download this artifact and commit src/test/resources/conformance/manifest.properties
@@ -86,5 +114,5 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
       - name: Fail this run if conformance regressed
-        if: steps.conformance.outcome == 'failure'
+        if: steps.conformance.outcome == 'failure' || steps.animation.outcome == 'failure'
         run: exit 1
