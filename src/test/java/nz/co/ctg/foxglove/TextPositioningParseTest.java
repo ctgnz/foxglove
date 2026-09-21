@@ -1,5 +1,6 @@
 package nz.co.ctg.foxglove;
 
+import static nz.co.ctg.foxglove.JavaFxTestSupport.advanceOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -55,8 +56,7 @@ public class TextPositioningParseTest {
     public void testTextAnchorMiddleShiftsTheWholeLine() throws Exception {
         Node anchored = node("anchored");
         assertThat(anchored, instanceOf(Text.class));
-        assertThat(anchored.getTranslateX(), closeTo(-((Text) anchored).getLayoutBounds()
-            .getWidth() / 2.0, 1e-6));
+        assertThat(anchored.getTranslateX(), closeTo(-advanceOf((Text) anchored) / 2.0, 1e-6));
     }
 
     @Test

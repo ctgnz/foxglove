@@ -1,5 +1,6 @@
 package nz.co.ctg.foxglove.text;
 
+import static nz.co.ctg.foxglove.JavaFxTestSupport.advanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.number.IsCloseTo.closeTo;
@@ -47,8 +48,7 @@ public class SvgTextPositionInheritanceTest {
             .get(1);
 
         assertThat(a.getX(), closeTo(30, 1e-6));
-        assertThat(b.getX(), closeTo(a.getX() + a.getLayoutBounds()
-            .getWidth(), 1e-6));
+        assertThat(b.getX(), closeTo(a.getX() + advanceOf(a), 1e-6));
         assertThat(b.getY(), closeTo(100, 1e-6));
     }
 

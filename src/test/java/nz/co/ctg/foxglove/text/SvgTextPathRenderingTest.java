@@ -1,5 +1,6 @@
 package nz.co.ctg.foxglove.text;
 
+import static nz.co.ctg.foxglove.JavaFxTestSupport.advanceOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -103,12 +104,10 @@ public class SvgTextPathRenderingTest {
 
         Text before = (Text) children.get(0);
         double afterPathEndX = ((Text) children.get(children.size() - 2)).getX()
-                               + ((Text) children.get(children.size() - 2)).getLayoutBounds()
-                                   .getWidth();
+                               + advanceOf((Text) children.get(children.size() - 2));
         Text after = (Text) children.get(children.size() - 1);
 
-        assertThat(after.getX() >= before.getX() + before.getLayoutBounds()
-            .getWidth(), is(true));
+        assertThat(after.getX() >= before.getX() + advanceOf(before), is(true));
         assertThat(after.getX(), closeTo(afterPathEndX, 1e-6));
     }
 
