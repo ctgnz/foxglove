@@ -11,6 +11,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
@@ -64,9 +65,9 @@ final class TextGlyphLayout {
     /**
      * One laid-out character (or whole run): the node to draw, and how far it advances the cursor.
      * <p>
-     * The advance is carried rather than measured back off the node, because the two glyph sources disagree about where it comes from. A {@code Text} knows its own rendered width;
-     * an SVG-font glyph's advance is declared by the font as {@code horiz-adv-x} and is <b>not</b> its outline's width - a space has a real advance and no outline at all. Reading
-     * bounds back would work for one source and silently mis-space the other.
+     * The advance is carried rather than measured back off the node, because neither source reports it as bounds. An SVG-font glyph's advance is declared by the font as
+     * {@code horiz-adv-x} and is <b>not</b> its outline's width; and since #230 a {@code Text} reports the ink it draws rather than its LOGICAL line box, which is where the
+     * advance used to be readable. A space makes the point for both: it advances the cursor and draws nothing at all.
      */
     private record Glyph(Node node, double advance) {
     }
@@ -345,8 +346,13 @@ final class TextGlyphLayout {
                 node.getTransforms()
                     .add(new Rotate(rotation, pivotX, pivotY));
             }
-            return new Glyph(node, node.getLayoutBounds()
-                .getWidth());
+            // The advance has to be read while the node still reports its LOGICAL line box, because that is
+            // what carries the font's advance width - a space has one and no ink at all. Only then switch to
+            // VISUAL, so what the node reports as its bounds is what it actually draws.
+            double advance = node.getLayoutBounds()
+                .getWidth();
+            node.setBoundsType(TextBoundsType.VISUAL);
+            return new Glyph(node, advance);
         }
 
         Node outline = font.glyphFor(piece, fontSize);

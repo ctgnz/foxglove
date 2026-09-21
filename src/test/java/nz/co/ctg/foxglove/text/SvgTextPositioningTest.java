@@ -1,5 +1,6 @@
 package nz.co.ctg.foxglove.text;
 
+import static nz.co.ctg.foxglove.JavaFxTestSupport.advanceOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -48,11 +49,9 @@ public class SvgTextPositioningTest {
         List<Node> children = rendered.getChildren();
         assertThat(children, hasSize(3));
         double helloX = ((Text) children.get(0)).getX();
-        double helloWidth = ((Text) children.get(0)).getLayoutBounds()
-            .getWidth();
+        double helloWidth = advanceOf((Text) children.get(0));
         double worldX = ((Text) children.get(1)).getX();
-        double worldWidth = ((Text) children.get(1)).getLayoutBounds()
-            .getWidth();
+        double worldWidth = advanceOf((Text) children.get(1));
         double andMoreX = ((Text) children.get(2)).getX();
 
         assertThat(helloX, is(10.0));
@@ -126,8 +125,7 @@ public class SvgTextPositioningTest {
             .add("Hello");
         Node middleNode = render(middle);
 
-        double width = startNode.getLayoutBounds()
-            .getWidth();
+        double width = advanceOf(startNode);
         assertThat(middleNode.getTranslateX(), closeTo(-width / 2.0, 1e-6));
     }
 
@@ -146,8 +144,7 @@ public class SvgTextPositioningTest {
             .add("Hello");
         Node endNode = render(end);
 
-        double width = startNode.getLayoutBounds()
-            .getWidth();
+        double width = advanceOf(startNode);
         assertThat(endNode.getTranslateX(), closeTo(-width, 1e-6));
     }
 
@@ -176,8 +173,7 @@ public class SvgTextPositioningTest {
             b.getY(), closeTo(16.0, 1e-6));
         assertThat("no horizontal drift between characters", b.getX(), closeTo(a.getX(), 1e-6));
         assertThat("centred on the column, not flush against it - applied as a translate, not x itself",
-            a.getTranslateX(), closeTo(-a.getLayoutBounds()
-                .getWidth() / 2.0, 1e-6));
+            a.getTranslateX(), closeTo(-advanceOf(a) / 2.0, 1e-6));
     }
 
     /** As {@link #testTextAnchorMiddleCentresTheLine}, but along the flow axis {@code writing-mode="tb"} swaps to y. */

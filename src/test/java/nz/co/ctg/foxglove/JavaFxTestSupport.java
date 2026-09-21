@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.application.Platform;
+import javafx.scene.text.Text;
 
 /**
  * Starts the JavaFX toolkit for tests that need it - resolving a pattern-backed paint, via {@code Node.snapshot(...)}, requires the JavaFX Application Thread and throws
@@ -57,6 +58,20 @@ public final class JavaFxTestSupport {
             }
         });
         return result.get(timeout, unit);
+    }
+
+    /**
+     * How far a laid-out glyph or run advances the text cursor, which is what positioning assertions want to compare against.
+     * <p>
+     * Not the node's own bounds: since #230 a rendered {@code Text} reports the ink it draws, and the advance is a font metric that includes the side bearings the ink stops short
+     * of - a space advances and draws nothing at all. The two were interchangeable while bounds were the LOGICAL line box, which is why these assertions used to read the width
+     * straight off the node. Measuring a fresh {@code Text} in its default LOGICAL mode asks the font the same question the layout itself asks.
+     */
+    public static double advanceOf(Text laidOut) {
+        Text probe = new Text(laidOut.getText());
+        probe.setFont(laidOut.getFont());
+        return probe.getLayoutBounds()
+            .getWidth();
     }
 
     private JavaFxTestSupport() {
