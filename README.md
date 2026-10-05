@@ -1,6 +1,6 @@
 # Foxglove SVG/JavaFX
 
-[![Java CI with Maven](https://github.com/ctgnz/foxglove/actions/workflows/maven.yml/badge.svg)](https://github.com/ctgnz/foxglove/actions/workflows/maven.yml)
+[![Java CI with Maven](https://github.com/ctggames/foxglove/actions/workflows/maven.yml/badge.svg)](https://github.com/ctggames/foxglove/actions/workflows/maven.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.ctgnz/foxglove.svg)](https://central.sonatype.com/artifact/io.github.ctgnz/foxglove)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE.md)
 
@@ -16,7 +16,7 @@ Static rendering is the primary, most complete target: shapes, paths, gradients 
 
 Real, current conformance numbers - not a status claim taken on faith - are published from the [W3C SVG 1.1 (Second Edition) test suite](https://www.w3.org/Graphics/SVG/Test/20110816/) on every push to `master`:
 
-**[ctgnz.github.io/foxglove](https://ctgnz.github.io/foxglove/)** - separately reported for static rendering, animation (seeked against a live browser reference, not a single static frame) and interaction (which stays near-zero by design, per the above).
+**[docs.ctg.co.nz/foxglove](https://docs.ctg.co.nz/foxglove/)** - separately reported for static rendering, animation (seeked against a live browser reference, not a single static frame) and interaction (which stays near-zero by design, per the above).
 
 A live desktop tool for browsing the same test suite and visually comparing this library's rendering against a real browser side by side, `ConformanceSuiteBrowser`, lives under `src/test/java` for anyone working on this repository - see its own class documentation.
 

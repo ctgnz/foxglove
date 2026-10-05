@@ -219,7 +219,7 @@ public final class ConformanceReport {
                 .append("above are computed against a fresh, independently-rendered reference set, not the W3C image shown ")
                 .append("on each test's own page (that one is kept only because it is safely W3C-hosted, and may no longer ")
                 .append("visually agree pixel-for-pixel with what was actually compared). ")
-                .append("See <a href=\"https://github.com/ctgnz/foxglove/issues/200\">ctgnz/foxglove#200</a>.<br>")
+                .append("See <a href=\"https://github.com/ctggames/foxglove/issues/200\">ctggames/foxglove#200</a>.<br>")
                 .append(escape(referenceProvenance))
                 .append("</div>\n");
         }
@@ -278,7 +278,7 @@ public final class ConformanceReport {
                         Unlike every other category on this page, this is a real, measured result - not a static single frame,
                         but a live comparison against a headless Chromium reference, seeked to several moments derived from each
                         test's own real SMIL timing (#208). See
-                        <a href="https://github.com/ctgnz/foxglove/issues/208">ctgnz/foxglove#208</a> for methodology.
+                        <a href="https://github.com/ctggames/foxglove/issues/208">ctggames/foxglove#208</a> for methodology.
                         </div>
                         """);
         return html.toString();
@@ -500,7 +500,7 @@ public final class ConformanceReport {
 
     static String footer(String rootPrefix) {
         return "<footer>Generated " + Instant.now() + " from the latest master build. See "
-               + "<a href=\"https://github.com/ctgnz/foxglove/issues/44\">ctgnz/foxglove#44</a> for methodology. "
+               + "<a href=\"https://github.com/ctggames/foxglove/issues/44\">ctggames/foxglove#44</a> for methodology. "
                + "Reference images are served by <a href=\"" + W3C_SUITE_BASE + "/\">W3C</a>; "
                + "the test suite is &copy; World Wide Web Consortium.</footer>\n</body>\n</html>\n";
     }

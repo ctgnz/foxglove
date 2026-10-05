@@ -20,7 +20,7 @@ public enum ConformanceCategory {
                         in a test document records which moment in time its reference image was captured at - so a correct SMIL \
                         implementation and a broken one are equally likely to mismatch. Animation behaviour is covered by \
                         dedicated unit tests instead; see \
-                        <a href="https://github.com/ctgnz/foxglove/issues/208">ctgnz/foxglove#208</a> for a real measurement \
+                        <a href="https://github.com/ctggames/foxglove/issues/208">ctggames/foxglove#208</a> for a real measurement \
                         methodology, still to be worked out."""),
 
         /**
@@ -35,7 +35,7 @@ public enum ConformanceCategory {
                         or user-driven interaction (a click, a DOM call) that foxglove itself never supplies - foxglove renders \
                         SVG into JavaFX Nodes, and interaction is the consuming application's responsibility, not this library's. \
                         This category is expected to remain near 0% permanently; see \
-                        <a href="https://github.com/ctgnz/foxglove/issues/201">ctgnz/foxglove#201</a>.""");
+                        <a href="https://github.com/ctggames/foxglove/issues/201">ctggames/foxglove#201</a>.""");
 
     private final String noteHtml;
 
