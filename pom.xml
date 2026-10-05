@@ -28,9 +28,9 @@
     </developers>
     
     <scm>
-        <connection>scm:git:git://github.com/ctgnz/foxglove.git</connection>
+        <connection>scm:git:git://github.com/ctggames/foxglove.git</connection>
         <developerConnection>scm:git:ssh://github.com:ctgnz/foxglove.git</developerConnection>
-        <url>http://github.com/ctgnz/foxglove/tree/master</url>
+        <url>http://github.com/ctggames/foxglove/tree/master</url>
     </scm>
 
     <properties>

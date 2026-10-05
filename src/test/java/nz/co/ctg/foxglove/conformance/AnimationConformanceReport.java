@@ -57,7 +57,7 @@ public final class AnimationConformanceReport {
                         comparison</strong> against a headless Chromium reference (#208), not a single static frame - each
                         <code>animate-*</code> test is rendered at several moments derived from its own real SMIL timing and
                         compared against the reference engine seeked to the same moments, the worst moment deciding pass/fail.
-                        See <a href="https://github.com/ctgnz/foxglove/issues/208">ctgnz/foxglove#208</a> for methodology, and
+                        See <a href="https://github.com/ctggames/foxglove/issues/208">ctggames/foxglove#208</a> for methodology, and
                         the <a href="../animate/index.html">animate chapter's static listing</a> for context-only single-frame
                         renders of the same documents.
                         </div>
