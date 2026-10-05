@@ -355,11 +355,11 @@
                 <configuration>
                     <java>
                         <importOrder>
-                            <file>${maven.multiModuleProjectDirectory}/config/eclipse.importorder</file>
+                            <file>${project.basedir}/config/eclipse.importorder</file>
                         </importOrder>
                         <removeUnusedImports/>
                         <eclipse>
-                            <file>${maven.multiModuleProjectDirectory}/config/eclipse-formatter.xml</file>
+                            <file>${project.basedir}/config/eclipse-formatter.xml</file>
                         </eclipse>
                     </java>
                 </configuration>
