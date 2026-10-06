@@ -125,20 +125,37 @@ jobs:
 
     # The files a release publishes, or a rehearsal would publish, in repository layout without signatures
     # or checksums: what the release train compares with its own rehearsal. A real release lists what the
-    # publishing plugin staged; a rehearsal lists what it installed locally. An empty list fails the step, so
-    # a change in either layout cannot pass unnoticed as "nothing to compare".
+    # publishing plugin staged; a rehearsal lists what it installed locally. Either way the list holds only
+    # this repository's own modules, read from its poms, less any the poms' excludeArtifacts keep off
+    # Central: a local repository also holds other ctggames artifacts, from the cache or from a whole-train
+    # rehearsal, and a sibling library can share this version number. An empty list fails the step, so a
+    # change in either layout cannot pass unnoticed as "nothing to compare".
     - name: List the release artifacts
       run: |
         VERSION=$(mvn -q -B help:evaluate -Dexpression=project.version -DforceStdout 2>/dev/null | tail -n1)
         GROUP=$(mvn -q -B help:evaluate -Dexpression=project.groupId -DforceStdout 2>/dev/null | tail -n1 | tr . /)
         STAGING=$(find . -type d -path '*/target/central-staging' | head -n1)
         ROOT=${STAGING:-$HOME/.m2/repository}
-        echo "Listing $GROUP at $VERSION from $ROOT"
+        MODULES=$(python3 - <<'PY'
+        import pathlib, xml.etree.ElementTree as ET
+        ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
+        modules, excluded = set(), set()
+        for pom in pathlib.Path('.').rglob('pom.xml'):
+            if 'target' in pom.parts:
+                continue
+            root = ET.parse(pom).getroot()
+            modules.add(root.find('m:artifactId', ns).text)
+            excluded.update(e.text for e in root.iter('{%s}excludeArtifact' % ns['m']))
+        print('|'.join(sorted(modules - excluded)))
+        PY
+        )
+        echo "Listing $GROUP at $VERSION from $ROOT, for: $MODULES"
         (cd "$ROOT" && find "$GROUP" -type f -path "*/$VERSION/*") \
+          | grep -E "^$GROUP/($MODULES)/$VERSION/" \
           | grep -vE '\.(asc|md5|sha1|sha256|sha512)$|/maven-metadata[^/]*$|/_remote\.repositories$|\.lastUpdated$' \
-          | sort > release-artifacts.txt
+          | sort > release-artifacts.txt || true
         if [ ! -s release-artifacts.txt ]; then
-          echo "::error::no artifacts found for $GROUP at $VERSION under $ROOT"
+          echo "::error::no artifacts found for $GROUP ($MODULES) at $VERSION under $ROOT"
           exit 1
         fi
         cat release-artifacts.txt
