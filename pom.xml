@@ -35,6 +35,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--
+            How a release reaches Central. These defaults stage a validated deployment and leave publishing
+            to a person in the Portal. The release workflow sets them to true and PUBLISHED only when the
+            release train pushed the tag, after its own approval (ctggames/release-train#6).
+        -->
+        <central.autoPublish>false</central.autoPublish>
+        <central.waitUntil>VALIDATED</central.waitUntil>
     </properties>
 
     <!--
@@ -304,9 +311,9 @@
                             Publishes to the Central Portal, which replaced OSSRH. The plugin uploads directly, so
                             no distributionManagement repository is needed.
 
-                            autoPublish is false, so a tag stages a validated deployment on the Portal and
-                            publishing to Central stays a deliberate step. Set it to true to publish automatically,
-                            which is what the previous nexus-staging autoReleaseAfterClose did.
+                            autoPublish is false by default, so a tag stages a validated deployment on the Portal
+                            and publishing to Central stays a deliberate step. The release train turns it on, having
+                            already had its approval (see central.autoPublish).
                         -->
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
@@ -314,7 +321,8 @@
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>central</publishingServerId>
-                            <autoPublish>false</autoPublish>
+                            <autoPublish>${central.autoPublish}</autoPublish>
+                            <waitUntil>${central.waitUntil}</waitUntil>
                         </configuration>
                     </plugin>
                 </plugins>
