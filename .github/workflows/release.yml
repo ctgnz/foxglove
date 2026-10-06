@@ -9,6 +9,15 @@
 
 name: Release to Maven Central
 
+# Needed to create the GitHub Release. Since the move into the ctggames organisation the default
+# workflow token is read-only, so without this the publish succeeds and then the release call 403s -
+# as jmsfx 2.0.1 found (ctggames/jmsfx#163). Declared here rather than widening the repository-wide
+# setting: it grants the one workflow the one permission, and it travels with the file. A re-run uses
+# the workflow at the tagged commit, so this has to be in place before a tag, not fixed afterwards
+# (#236).
+permissions:
+  contents: write
+
 on:
   push:
     tags:
