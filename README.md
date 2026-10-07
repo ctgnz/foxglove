@@ -26,7 +26,7 @@ A live desktop tool for browsing the same test suite and visually comparing this
 <dependency>
     <groupId>io.github.ctgnz</groupId>
     <artifactId>foxglove</artifactId>
-    <version>0.13.0</version>
+    <version>0.10.0</version>
 </dependency>
 ```
 
